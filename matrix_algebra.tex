@@ -11,12 +11,283 @@
 \title{Matrix Algebra}
 
 \setlength{\parindent}{0ex}
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\bullet$}
+\renewcommand{\labelitemiii}{$\bullet$}
+\renewcommand{\labelitemiv}{$\bullet$}
 
 \begin{document}
 
 \maketitle
 
 \tableofcontents
+
+\chapter{Inner Product Space}
+
+\begin{itemize}
+    \item \textbf{Vector space}\\
+
+        A \textit{vector space} over a field $F$ is a set $V$ which closed under
+        the following two operations of addition and scalar multiplication
+        defined for its members (called \textit{vectors}), i.e., the results
+        of the operations are also members of $V$.
+
+        \begin{enumerate}
+            \item The vector addition that maps any two vectors
+                $\mathbf{x}, \mathbf{y} \in V$ to another vector
+                $\mathbf{x} + \mathbf{y} \in V$ satisfiying the following
+                properties:
+                \begin{itemize}
+                    \item Commutativity: $\mathbf{x} + \mathbf{y} = \mathbf{y} + \mathbf{x}$.
+                    \item Associativity: $\mathbf{x} + (\mathbf{y} + \mathbf{z}) = (\mathbf{x} + \mathbf{y}) + \mathbf{z}$.
+                    \item Existence of zero: there is a vector $\mathbf{0} \in V$ such that: $\mathbf{0} + \mathbf{x} = \mathbf{x} + \mathbf{0} = \mathbf{x}$.
+                    \item Existence of inverse: for any vector $\mathbf{x} \in V$,
+                        there is another vector $-\mathbf{x} \in V$ such that $\mathbf{x} + (- \mathbf{x}) = \mathbf{0}$.
+                \end{itemize}
+            \item The scalar multiplication that maps a vector $\mathbf{x \in V}$
+                and scalar $a \in F$ ($F$ can be a real or complex fiels) to another
+                vector $a \mathbf{x} \in V$ with the following properties:
+
+                \begin{itemize}
+                    \item $a (\mathbf{x} + \mathbf{y} = a \mathbf{x} + a \mathbf{y}$.
+                    \item $(a + b) \mathbf{x} = a \mathbf{x} + b \mathbf{x}$.
+                    \item $a b \mathbf{x} = a (b \mathbf{x})$.
+                    \item $\mathbf{1} \mathbf{x} = \mathbf{x}$.
+                \end{itemize}
+        \end{enumerate}
+
+        where $\mathbf{0} = [0, \ldots, 0]^{T}$ and $\mathbf{1} = [1, \ldots, 1]^{T}$
+        are two constant vectors.\\
+
+        A subset $W$ of $V$ is a subspace of $V$, denoted by $W \subseteq V$,
+        if it is also a vector space, i.e., it is closed under the same
+        operations defined in $V$:
+
+        \begin{enumerate}
+            \item The zero vector $\mathbf{0}$ of $V$ must be in $W$
+                (the zero vector is unique in $V$, which $W$ must have).
+            \item For any $\mathbf{x}, \mathbf{y} \in W, \mathbf{x} + \mathbf{y} \in W$.
+            \item For any $\mathbf{x} \in W, a \mathbf{x} \in W$.
+        \end{enumerate}
+
+        Listed below is a set of typical vector spaces:
+
+        \begin{itemize}
+            \item $n$-D vector space $\mathbb{R}^{n}$ or $\mathbb{C}^{n}$
+
+                This space contains all $n$-D vectors expressed as an  $n$-tuple,
+                an ordered list of $n$ elements (or components):
+
+                \begin{equation}
+                    \mathbf{x} = \begin{bmatrix} x_1\\ x_2 \\ \vdots\\ x_n \end{bmatrix} =
+                    \begin{bmatrix} x_1 & \ldots & x_n \end{bmatrix}^{T}
+                ,\end{equation}
+
+                which can be used to represent a discrete signal containing
+                $n$ samples. We will always represent a vector as a vertical
+                or column vector, or the transpose of a horizontal or row
+                vector. The space is denoted by either $\mathbb{C}^{n}$ if the elements
+                are complex $x_{i} \in \mathbb{C}$, or $\mathbb{R}^{n}$ if they
+                are real $x_{i} \in \mathbb{R} (i = 1, \ldots, n)$.
+        \end{itemize}
+
+\end{itemize}
+
+
+
+
+
+
+
+\chapter{Inverse and Determinant of Partitioned Symmetric Matrices}
+From \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node7.html}\\
+
+\begin{itemize}
+    \item \textbf{Theorem 1 (Woodbury identity)}
+
+        \begin{equation}
+            (\mathbf{A} + \mathbf{C} \mathbf{B} \mathbf{D})^{-1} =
+            \mathbf{A}^{-1} - \mathbf{A}^{-1} \mathbf{C} (\mathbf{B}^{-1} + \mathbf{D} \mathbf{A}^{-1} \mathbf{C})^{-1} \mathbf{D} \mathbf{A}^{-1}
+        .\end{equation}
+
+        \textbf{Proof:}
+
+        \begin{equation}
+            \begin{array}{l}
+                (\mathbf{A} + \mathbf{C} \mathbf{B} \mathbf{D}) [\mathbf{A}^{-1} - \mathbf{A}^{-1} \mathbf{C} (\mathbf{B}^{-1} + \mathbf{D} \mathbf{A}^{-1} \mathbf{C})^{-1} \mathbf{D} \mathbf{A}^{-1}]\\
+                = (\mathbf{A} + \mathbf{C} \mathbf{B} \mathbf{D}) \mathbf{A}^{-1} - (\mathbf{A} + \mathbf{C} \mathbf{B} \mathbf{D}) \mathbf{A}^{-1} \mathbf{C} ( \mathbf{B}^{-1} + \mathbf{D} \mathbf{A}^{-1} \mathbf{C})^{-1} \mathbf{D} \mathbf{A}^{-1}\\
+                = \mathbf{I} + \mathbf{C} \mathbf{B} \mathbf{D} \mathbf{A}^{-1} - (\mathbf{C} + \mathbf{C} \mathbf{B} \mathbf{D} \mathbf{A}^{-1} \mathbf{C}) (\mathbf{B}^{-1} + \mathbf{D} \mathbf{A}^{-1} \mathbf{C})^{-1} \mathbf{D} \mathbf{A}^{-1}\\
+                = \mathbf{I} + \mathbf{C} \mathbf{B} \mathbf{D} \mathbf{A}^{-1} - \mathbf{C} \mathbf{B} (\mathbf{B}^{-1} + \mathbf{D} \mathbf{A}^{-1} \mathbf{C}) (\mathbf{B}^{-1} + \mathbf{D} \mathbf{A}^{-1} \mathbf{C})^{-1} \mathbf{D} \mathbf{A}^{-1}\\
+                = \mathbf{I} + \mathbf{C} \mathbf{B} \mathbf{D} \mathbf{A}^{-1} - \mathbf{C} \mathbf{B} \mathbf{D} \mathbf{A}^{-1} = \mathbf{I}.
+            \end{array}
+        \end{equation}
+
+        In particular, if $\mathbf{C} = \mathbf{D} = \mathbf{I}$, then we have
+
+        \begin{equation}
+            (\mathbf{A} + \mathbf{B})^{-1} = \mathbf{A}^{-1} - \mathbf{A}^{-1} (\mathbf{A}^{-1} + \mathbf{B}^{-1})^{-1} \mathbf{A}^{-1}
+        .\end{equation}
+
+    \item \textbf{Theorem 2} (inverse of a partitioned symmetric matrix)\\
+
+        Divide an $n \times n$ symmetric matrix $\mathbf{A}$ into four blocks:
+
+        \begin{equation}
+            \mathbf{A} = \begin{bmatrix}
+                \mathbf{A}_{11} & \mathbf{A}_{12}\\
+                \mathbf{A}_{21} & \mathbf{A}_{22}
+            \end{bmatrix}
+        .\end{equation}
+
+        The inverse matrix $\mathbf{B} = \mathbf{A}^{-1}$ can also be divided into four blocks:
+
+        \begin{equation}
+            \mathbf{B} = \mathbf{A}^{-1} = \begin{bmatrix}
+                \mathbf{B}_{11} & \mathbf{B}_{12}\\
+                \mathbf{B}_{21} & \mathbf{B}_{22}
+            \end{bmatrix}
+        .\end{equation}
+
+        Here we assume the dimensionalities of these blocks are:
+        \begin{itemize}
+            \item $\mathbf{A}_{11}$ and $\mathbf{B}_{11}$ are $p \times p$,
+            \item $\mathbf{A}_{22}$ and $\mathbf{B}_{22}$ are $q \times q$,
+            \item $\mathbf{A}_{12} = \mathbf{A}_{21}^{T}$ and $\mathbf{B}_{12} = \mathbf{B}_{21}^{T}$ are $p \times q$,
+        \end{itemize}
+        with $p + q = n$. Then we have
+
+         \begin{equation}
+            \begin{array}{ll}
+                \mathbf{B}_{11} &= (\mathbf{A}_{11} - \mathbf{A}_{12} \mathbf{A}_{22}^{-1} \mathbf{A}_{21})^{-1}\\
+                       &= \mathbf{A}_{11}^{-1} + \mathbf{A}_{11}^{-1} \mathbf{A}_{12} (\mathbf{A}_{22} - \mathbf{A}_{21} \mathbf{A}_{11}^{-1} \mathbf{A}_{12})^{-1} \mathbf{A}_{21} \mathbf{A}_{11}^{-1}\\
+
+                \mathbf{B}_{22} &= (\mathbf{A}_{22} - \mathbf{A}_{21} \mathbf{A}_{11}^{-1} \mathbf{A}_{12})\\
+                       &= \mathbf{A}_{22}^{-1} + \mathbf{A}_{22}^{-1} \mathbf{A}_{21} (\mathbf{A}_{11} - \mathbf{A}_{12} \mathbf{A}_{22}^{-1} \mathbf{A}_{21})^{-1} \mathbf{A}_{12} \mathbf{A}_{22}^{-1}\\
+
+                \mathbf{B}_{21} &= - \mathbf{A}_{22}^{-1} \mathbf{A}_{21} (\mathbf{A}_{11} - \mathbf{A}_{12} \mathbf{A}_{22}^{-1} \mathbf{A}_{21})^{-1}\\
+                \mathbf{B}_{12} &= - \mathbf{A}_{11}^{-1} \mathbf{A}_{12} (\mathbf{A}_{22} - \mathbf{A}_{21} \mathbf{A}_{11}^{-1} \mathbf{A}_{12})^{-1}
+            \end{array}
+        \end{equation}
+
+        \textbf{Proof:}
+
+        \begin{equation}
+            \begin{array}{ll}
+                \mathbf{I}_{n} &= \mathbf{A} \mathbf{A}^{-1} = \mathbf{A} \mathbf{B} =
+                \begin{bmatrix}
+                    \mathbf{A}_{11} & \mathbf{A}_{12}\\
+                    \mathbf{A}_{21} & \mathbf{A}_{22}
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \mathbf{B}_{11} & \mathbf{B}_{12}\\
+                    \mathbf{B}_{21} & \mathbf{B}_{22}
+                \end{bmatrix}\\
+                               &=
+                \begin{bmatrix}
+                    \mathbf{A}_{11} \mathbf{B}_{11} + \mathbf{A}_{12} \mathbf{B}_{12} & \mathbf{A}_{11} \mathbf{B}_{12} + \mathbf{A}_{12} \mathbf{B}_{22}\\
+                    \mathbf{A}_{21} \mathbf{B}_{11} + \mathbf{A}_{22} \mathbf{B}_{21} & \mathbf{A}_{21} \mathbf{B}_{12} + \mathbf{A}_{22} \mathbf{B}_{22}
+                \end{bmatrix} =
+                \begin{bmatrix}
+                    \mathbf{I}_{p} & \mathbf{0}\\
+                    \mathbf{0} & \mathbf{I}_{q}
+                \end{bmatrix}
+            \end{array}
+        \end{equation}
+
+        Equate each of the four blocks to get:
+
+        \begin{equation}
+            \begin{array}{lcl}
+                \mathbf{A}_{11} \mathbf{B}_{11} + \mathbf{A}_{12} \mathbf{B}_{12} = \mathbf{I}_{p}, & \text{ or } & \mathbf{B}_{11} = \mathbf{A}_{11}^{-1} - \mathbf{A}_{11}^{-1} \mathbf{A}_{12} \mathbf{B}_{21} \\
+                \mathbf{A}_{11} \mathbf{B}_{12} + \mathbf{A}_{12} \mathbf{B}_{22} = \mathbf{0}, & \text{ or } & \mathbf{B}_{12} = - \mathbf{A}_{11}^{-1} \mathbf{A}_{12} \mathbf{B}_{22} \\
+                \mathbf{A}_{21} \mathbf{B}_{11} + \mathbf{A}_{22} \mathbf{B}_{21} = \mathbf{0}, & \text{ or } & \mathbf{B}_{21} - \mathbf{A}_{22}^{-1} \mathbf{A}_{21} \mathbf{B}_{11} \\
+                \mathbf{A}_{21} \mathbf{B}_{12} + \mathbf{A}_{22} \mathbf{B}_{22} = \mathbf{I}_{q}, & \text{ or } & \mathbf{B}_{22} = \mathbf{A}_{22}^{-1} - \mathbf{A}_{22}^{-1} \mathbf{A}_{21} \mathbf{B}_{12}
+            \end{array}
+        \end{equation}
+
+        Plug $\mathbf{B}_{21}$ into $\mathbf{B}_{11}$ to get:
+
+        \begin{equation}
+            \mathbf{B}_{11} = \mathbf{A}_{11}^{-1} + \mathbf{A}_{11}^{-1} \mathbf{A}_{12} \mathbf{A}_{22}^{-1} \mathbf{A}_{21} \mathbf{B}_{11}
+        .\end{equation}
+
+        Solve for $\mathbf{B}_{11}$ to get:
+
+        \begin{equation}
+            \mathbf{B}_{11} = (\mathbf{A}_{11} - \mathbf{A}_{12} \mathbf{A}_{22}^{-1} \mathbf{A}_{21})^{-1}
+        .\end{equation}
+
+        Applying theorem 1 to this expression, we also get the other expression in the theorem.
+        Similarily we can get:
+
+        \begin{equation}
+            \begin{array}{ll}
+                \mathbf{B}_{22} = (\mathbf{A}_{22} - \mathbf{A}_{21} \mathbf{A}_{11}^{-1} \mathbf{A}_{12})^{-1} \\
+                \mathbf{B}_{21} = - \mathbf{A}_{22}^{-1} \mathbf{A}_{21} (\mathbf{A}_{11} - \mathbf{A}_{12} \mathbf{A}_{22}^{-1} \mathbf{A}_{21})^{-1} \\
+                \mathbf{B}_{12} = - \mathbf{A}_{11}^{-1} \mathbf{A}_{12} (\mathbf{A}_{22} - \mathbf{A}_{21} \mathbf{A}_{11}^{-1} \mathbf{A}_{12}^{-1})^{-1}
+            \end{array}
+        \end{equation}
+
+    \item \textbf{Theorem 3} (Determinant of a partitioned symmetric matrix)
+
+        \begin{equation}
+            \begin{array}{ll}
+                |\mathbf{A}|  &= \left|
+                \begin{bmatrix}
+                    \mathbf{A}_{11} & \mathbf{A}_{12}\\
+                    \mathbf{A}_{21} \mathbf{A}_{22}
+                \end{bmatrix}  \right|\\
+                              &=
+                |\mathbf{A}_{22}| |\mathbf{A}_{11} - \mathbf{A}_{12} \mathbf{A}_{22}^{-1} \mathbf{A}_{21}|
+                = |\mathbf{A}_{11}| |\mathbf{A}_{22} - \mathbf{A}_{21} \mathbf{A}_{11}^{-1} \mathbf{A}_{12}|
+            \end{array}
+        \end{equation}
+
+        \textbf{Proof:}
+
+        \begin{equation}
+            \begin{array}{ll}
+                A = \begin{bmatrix}
+                    \mathbf{A}_{11} & \mathbf{A}_{12}\\
+                    \mathbf{A}_{21} 7 \mathbf{A}_{22}
+                \end{bmatrix} &= \begin{bmatrix}
+                    \mathbf{A}_{11} & \mathbf{0}\\
+                    \mathbf{A}_{21} & \mathbf{I}
+                \end{bmatrix} \begin{bmatrix}
+                    \mathbf{I} & \mathbf{A}_{11}^{-1} \mathbf{A}_{12}\\
+                    0 & \mathbf{A}_{22} - \mathbf{A}_{21} \mathbf{A}_{11}^{-1} \mathbf{A}_{12}
+                \end{bmatrix}\\
+                &= \begin{bmatrix}
+                    \mathbf{I} & \mathbf{A}_{12}\\
+                    \mathbf{0} & \mathbf{A}_{22}
+                \end{bmatrix} \begin{bmatrix}
+                    \mathbf{A}_{11} - \mathbf{A}_{12} \mathbf{A}_{22}^{-1} \mathbf{A}_{21} & \mathbf{0}\\
+                    \mathbf{A}_{22}^{-1} \mathbf{A}_{21} & \mathbf{0}
+                \end{bmatrix}
+            \end{array}
+        \end{equation}
+
+        The theorem is proved as we also know that
+
+        \begin{equation}
+            |\mathbf{B} \mathbf{C}| = |\mathbf{B}| |\mathbf{C}|
+        \end{equation}
+
+        and
+
+        \begin{equation}
+            \begin{vmatrix}
+                \mathbf{B} & \mathbf{0}\\
+                \mathbf{X} & \mathbf{C}
+            \end{vmatrix} = \begin{vmatrix}
+                \mathbf{B} & \mathbf{X}\\
+                \mathbf{0} & \mathbf{C}
+            \end{vmatrix} = |\mathbf{B}| |\mathbf{C}|
+        .\end{equation}
+\end{itemize}
+
+
+
 
 \chapter{Unitary Transform}
 From \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node8.html}\\
@@ -84,11 +355,11 @@ The transform coefficient is an inner product $y_i = \langle \mathbf{x}, \mathbf
 
 By this transform, vector $\mathbf{x}$ is represented as a linear combination (weighted sum) of the $n$ column vectors  $\mathbf{a}_1, \mathbf{a}_2, \dots, \mathbf{a}_n$ of matrix $\mathbf{A}$. Geometrically,  $\mathbf{x}$ is a point in the n-dimensional space spanned by these $n$ orthonormal basis vectors. Each coefficient (coordinate)  $y_i$ is the projection of  $\mathbf{x}$ onto the corresponding basis vector $\mathbf{a}_i$.
 
-\begin{figure}[h]
-\centering
-\includegraphics[width=0.7\linewidth]{./img/unitary_transform_1}
-\caption[Unitary transform]{Each coefficient (coordinate) $y_i$ is the projection of ${\bf x}$ onto the corresponding basis vector ${\bf a}_i$}
-\label{fig:unitary_transform_1}
+\begin{figure}[htpb]
+    \centering
+    \includegraphics[width=0.7\textwidth]{./img/unitary_transform_1}
+    \caption[Unitary transform]{Each coefficient (coordinate) $y_i$ is the projection of ${\bf x}$ onto the corresponding basis vector ${\bf a}_i$}
+    \label{fig:unitary_transform_1}
 \end{figure}
 
 As the n-dimensional space can be spanned by the column vectors of \textit{any} $n \times n$ unitary (orthogonal) matrix, a vector  $\bf{x}$ in the space can be represented by any of such matrices, each defining a different transform.\\
@@ -96,11 +367,100 @@ As the n-dimensional space can be spanned by the column vectors of \textit{any} 
 \textbf{Examples:}
 \begin{itemize}
     \item When $\bf{A} = \mathbf{I} = [\dots, \mathbf{e}_i, \dots]$ is an identity matrix, we have
+        \begin{equation}
+            \mathbf{x} = \sum_{i=1}^{n} y_i \mathbf{a}_i = \sum_{i=1}^{n} x_i \mathbf{e}_i
+        \end{equation}
+
+        where $\mathbf{e}_i = [0, \dots, 0, 1, 0, \dots, 0]^{T}$ is the ith column of  $\mathbf{I}$ with the ith element equal 1 and all other 0.
+
+    \item When $a_{mn} = w[m,n] = e^{-j 2 \pi m n / N}$, the corresponding
+        transform is discrete Fourrier transform. The nth column vector
+        $\mathbf{w}_n$ if the transform matrix
+        $\mathbf{W} = [\mathbf{w}_0, \dots, \mathbf{w}_{N-1}]$
+        represents a sinusoid of frequency  $n f_0$,
+        and the corresponding complex coordinate
+        $y_n = (\mathbf{x}, \mathbf{w}_n)$ represents the magnitude
+        $|y_n|$ and phase $\angle y_n$
+        of this nth frequency component. The Fourrier transform
+        $\mathbf{y} = \mathbf{W} \mathbf{x}$ represents a rotation of the coordinate
+        system.\\
+
+        \begin{figure}[htpb]
+            \centering
+            \includegraphics[width=0.7\textwidth]{./img/unitary_transform_2}
+            \caption{The Fourrier transform $\mathbf{y} = \mathbf{W} \mathbf{x}$ represents a rotation of the coordinate system.}
+            \label{fig:unitary_transform_2}
+        \end{figure}
+
+        A unitary (orthogonal if real) transform $\mathbf{y} = \mathbf{A} \mathbf{x}$
+        can be interpreted geometrically as the rotation vector $\mathbf{x}$
+        about the origin, or equivalently, the representation of the same vector
+        in a rotated coordinate system. A unitary transform
+        $\mathbf{y} = \mathbf{A} \mathbf{x}$ does not change the inner product.
+        Let $\mathbf{u} = \mathbf{A}^{*} \mathbf{x}$ and
+        $\mathbf{v} = \mathbf{A}^{*} \mathbf{y}$ be the unitary transforms of
+        vectors  $\mathbf{x}$ and  $\mathbf{y}$, then th inner product of these
+        two vectors is preserved:
+
+        \begin{equation}
+            \langle \mathbf{u}, \mathbf{v} \rangle =
+            \langle \mathbf{A}^{*} \mathbf{u}, \mathbf{A}^{*} \mathbf{v} \rangle =
+            \mathbf{x}^{*} \mathbf{A} \mathbf{A}^{*} \mathbf{y} =
+            \mathbf{x}^{*} \mathbf{y} =
+            \langle \mathbf{x}, \mathbf{y} \rangle
+        \end{equation}
+
+        In particular, if $\mathbf{x} = \mathbf{y}$, we see that he vector norm
+        is preserved by the unitary transform:
+
+        \begin{equation}
+            ||\mathbf{u}||^{2} = \langle{\mathbf{u}, \mathbf{u}}\rangle
+            = \langle{\mathbf{x}, \mathbf{x}}\rangle = ||\mathbf{x}||^{2}
+        \end{equation}
+
+        This is the Parseval's identity that indicates that the notm (length)
+        of a vector is preserved under any unitary transform. If $\mathbf{X}$
+        is interpreted as a signal, then its length
+        $||\mathbf{x}||^{2} = ||\mathbf{y}||^{2}$ represents the total energy
+        of information contained in the signal, which is conserved during any
+        unitary transform. However, some other features of the signal may change,
+        e.g., the signal may be decorrelated and its total energy redistributed
+        among its components after the transform, which may be desirable in many
+        applications.\\
+
+        If $\mathbf{x}$ is a random vector with mean vector  $\mathbf{m}_x$
+        and covariance matrix  $\mathbf{\Sigma}_x$:
+
+        \begin{equation}
+            \begin{array}{lr}
+                \mathbf{m}_{x} = E(\mathbf{x}), &
+                \mathbf{\Sigma}_x = E(\mathbf{x} \mathbf{x}^{*}) - \mathbf{m}_x \mathbf{m}_x^{*}
+            \end{array}
+        ,\end{equation}
+
+        then its transform $\mathbf{y} = \mathbf{A}^{*} \mathbf{x}$has the following
+        mean vector and covariance matrix:
+
+        \begin{equation}
+            \begin{array}{ll}
+                \mathbf{m}_y &= E(\mathbf{y}) = E(\mathbf{A}^{*} \mathbf{x})
+                              = \mathbf{A}^{*} E(\mathbf{x}) = \mathbf{A}^{*} \mathbf{m}_x \\
+                \mathbf{\Sigma}_y &= E(\mathbf{y} \mathbf{y}^{*}) - \mathbf{m}_y \mathbf{m}_y^{*}
+                              = E[(\mathbf{A}^{*} \mathbf{x}) (\mathbf{A}^{*} \mathbf{x})^{*}] - (\mathbf{A}^{*} \mathbf{m}_x) (\mathbf{A}^{*} \mathbf{m}_x)^{*}\\
+                             &= E[\mathbf{A}^{*} (\mathbf{x} \mathbf{x}^{*}) \mathbf{A}] - \mathbf{A}^{*} \mathbf{m}_{x} \mathbf{m}_{x}^{*} \mathbf{A}
+                              = \mathbf{A}^{*} [E(\mathbf{x} \mathbf{x}^{*}) - \mathbf{m}_{x} \mathbf{m}_{m}^{*}] \mathbf{A}\\
+                             &= \mathbf{A}^{*} \mathbf{\Sigma}_{x} \mathbf{}.
+            \end{array}
+        \end{equation}
+
+        In general the unitary transform of any square matrix $\mathbf{A}$
+        by a unitary matrix $\mathbf{R}$ is
+
+        \begin{equation}
+            \mathbf{B} = \mathbf{R}^{*} \mathbf{A} \mathbf{R} 
+        .\end{equation}
 
 \end{itemize}
-
-
-
 
 
 \chapter{Eigenvalue Decomposition}
