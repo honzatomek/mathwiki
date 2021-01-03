@@ -63,6 +63,46 @@ Given any \textit{unitary matrix} $\mathbf{A}$ satisfying $\mathbf{A} \mathbf{A}
 \right.
 \end{equation}
 
+When $\mathbf{A} = \overline{\mathbf{A}}$ is real, $\mathbf{A}^{-1} = \mathbf{A}^{T}$ is an orthogonal matrix and the corresponding transform is an orthogonal transform.\\
+
+The first equation above is the \textit{forward transform} and can be written in component form as:
+\begin{equation}
+    \begin{array}{lr}
+        y_{i} = \overline{\mathbf{a}}_{i}^{T} \mathbf{x}
+        = \langle \mathbf{x}, \mathbf{a}_{i} \rangle
+        = \sum_{j=1}^{n} x_{j} \overline{a}_{ij}, & (i = 1, \dots, n)
+    \end{array}
+.\end{equation}
+
+The transform coefficient is an inner product $y_i = \langle \mathbf{x}, \mathbf{a}_i \rangle$, representing the projection of vector $\mathbf{x}$ onto the ith column vector  $\mathbf{a}_i$ of the transform matrix $\mathbf{A}$. The second equation is the \textit{inverse transform} and can also be written in component form as:
+
+\begin{equation}
+    \begin{array}{lr}
+        x_j = \sum_{i=1}^{n} a_{ji} y_{i}, & (j = 1, \dots, n)
+    \end{array}
+.\end{equation}
+
+By this transform, vector $\mathbf{x}$ is represented as a linear combination (weighted sum) of the $n$ column vectors  $\mathbf{a}_1, \mathbf{a}_2, \dots, \mathbf{a}_n$ of matrix $\mathbf{A}$. Geometrically,  $\mathbf{x}$ is a point in the n-dimensional space spanned by these $n$ orthonormal basis vectors. Each coefficient (coordinate)  $y_i$ is the projection of  $\mathbf{x}$ onto the corresponding basis vector $\mathbf{a}_i$.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.7\linewidth]{./img/unitary_transform_1}
+\caption[Unitary transform]{Each coefficient (coordinate) $y_i$ is the projection of ${\bf x}$ onto the corresponding basis vector ${\bf a}_i$}
+\label{fig:unitary_transform_1}
+\end{figure}
+
+As the n-dimensional space can be spanned by the column vectors of \textit{any} $n \times n$ unitary (orthogonal) matrix, a vector  $\bf{x}$ in the space can be represented by any of such matrices, each defining a different transform.\\
+
+\textbf{Examples:}
+\begin{itemize}
+    \item When $\bf{A} = \mathbf{I} = [\dots, \mathbf{e}_i, \dots]$ is an identity matrix, we have
+
+\end{itemize}
+
+
+
+
+
 \chapter{Eigenvalue Decomposition}
 From: \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node9.html}\\
 
