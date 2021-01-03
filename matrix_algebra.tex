@@ -1,26 +1,76 @@
-\documentclass[]{scrartcl}
-
-%opening
-\title{Matrix Algebra}
-\author{Jan Tomek}
-
+\documentclass[10pt,b5paper,titlepage]{book}
+\usepackage[latin1]{inputenc}
 \usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
 \usepackage{hyperref}
+
+\author{Jan Tomek}
+\title{Matrix Algebra}
+
+\setlength{\parindent}{0ex}
 
 \begin{document}
 
 \maketitle
+
 \tableofcontents
 
+\chapter{Unitary Transform}
+From \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node8.html}\\
 
-\section{Eigenvalue decomposition}
-\setlength{\parindent}{0ex}
+Given any \textit{unitary matrix} $\mathbf{A}$ satisfying $\mathbf{A} \mathbf{A}^{*} = \mathbf{A}^{*} \mathbf{A} = \mathbf{I}$, we can define a \textit{unitary transform} of a vector $\mathbf{x} = [x_{1}, \dots, x_{n}]^{T}$:
+\begin{equation}
+\left\{
+    \begin{array}{lr}
+        \mathbf{y}
+        = \begin{bmatrix}
+            \mathbf{y}_{1}\\
+            \dots\\
+            \mathbf{y}_{n}
+        \end{bmatrix}
+        = \mathbf{A}^{*} \mathbf{x}
+        = \begin{bmatrix}
+             \bar{a}_{1}^{T} \\
+             \vdots  \\
+             \bar{a}_{n}^{T}
+        \end{bmatrix}
+        \begin{bmatrix}
+            x_{1}\\
+            \vdots \\
+            x_{n}
+        \end{bmatrix}, & \text{(forward transform)}\\
+
+        \mathbf{x}
+        = \begin{bmatrix}
+            \mathbf{x}_{1}\\
+            \dots\\
+            \mathbf{x}_{n}
+        \end{bmatrix}
+        = \mathbf{A} \mathbf{y}
+        = \begin{bmatrix}
+            a_{1} & \dots & a_{n}
+        \end{bmatrix}
+        \begin{bmatrix}
+            y_{1}\\
+            \vdots\\
+            y_{n}
+        \end{bmatrix}
+        = \sum_{i=1}^{n} y_{i} a_{i}. & \text{(inverse transform)}
+\end{array}
+\right.
+\end{equation}
+
+\chapter{Eigenvalue Decomposition}
 From: \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node9.html}\\
 
 For any $n \times n$ square matrix $\mathbf{A}$, if there exists a vector $\mathbf{v}$ such that the following \textit{eigenequation} holds:
 \begin{equation}
 \mathbf{A}\mathbf{v}=\lambda{}\mathbf{v}
 \end{equation}
+
 then $\lambda$ and $\mathbf{v}$ are called the \textit{eigenvalue} and \textit{eigenvector} of matrix $\mathbf{A}$, respectively. In other words, the linear transformation of vector $\mathbf{v}$ by $\mathbf{A}$ has the same effect of scaling the vector by factor $\lambda$. (Note that for an $ n\times n$ non-square matrix $\mathbf{A}$ with $m \neq n$, $\mathbf{A}\mathbf{v}$ is an m-D vector but $\lambda\mathbf{v}$ is an n-D vector, i.e., no eigenvalues and eigenvectors are defined.)\\
 
 Given $\mathbf{A}\mathbf{v}=\lambda\mathbf{v}$, we also have $\mathbf{A}c\mathbf{v}=\lambda{}c\mathbf{v}$ for any scalar constant $c$, i.e., the eigenvector $\mathbf{v}$ is not unique but upt ot any scaling factor. For the uniqueness of $\mathbf{v}$, we typically keep it normalised so that $||v|| = 1$.\\
