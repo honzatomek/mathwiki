@@ -506,6 +506,54 @@
                  (or \textit{metric}) $d(\mathbf{x}, \mathbf{y})$ between any two
                  vectors (or points) $\mathbf{x}$ and $\mathbf{y}$ is defined.
 
+             \item \textbf{Angle between two vectors}\\
+
+                 The \textit{angle} between two vectors $\mathbf{x}$ and $\mathbf{y}$
+                 is defined as:
+
+                 \begin{equation}
+                     \theta = \cos^{-1} \left( \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\|\mathbf{x}\| \|\mathbf{y}\|} \right)
+                 .\end{equation}
+
+                 Now the inner product of $\mathbf{x}$ and $\mathbf{y}$
+                 can also be written as:
+
+                 \begin{equation}
+                     \langle \mathbf{x}, \mathbf{y} \rangle
+                     = \|\mathbf{x}\| \|\mathbf{y}\| \cos \theta
+                     \le \|\mathbf{x}\| \|\mathbf{y}\|
+                 .\end{equation}
+
+                 This is the Cauchy-Schwarz inequality. In particular:
+
+                 \begin{itemize}
+                     \item If $\theta = 0, \cos \theta = 1$, then
+                         $\mathbf{x}$ and $\mathbf{y}$ are collinear or linearly
+                         dependent, and the inner product is maximised:
+
+                         \begin{equation}
+                             \langle \mathbf{x}, \mathbf{y} \rangle
+                             = \|\mathbf{x}\| \|\mathbf{y}\|
+                         .\end{equation}
+
+                         i.e., the Cauchy-Schwarz inequality becomes and equality.\\
+
+                     \item If $0 < \theta < \pi / 2$,  $0 < \cos \theta < 1$, we
+                         get the Cauchy-Schwarz inequality:
+
+                         \begin{equation}
+                             \langle \mathbf{x}, \mathbf{y} \rangle
+                             < \|\mathbf{x}\| \|\mathbf{y}\|
+                         .\end{equation}
+
+                     \item If $\theta = \pi / 2$,  $\cos \theta = 0$, then
+                         $\mathbf{x}$ and $\mathbf{y}$ are \textit{orthogonal}
+                         or \textit{perpendicular} to each other, denoted by
+                         $\mathbf{x} \perp \mathbf{y}$, if their inner
+                         product is zero $\langle \mathbf{x}, \mathbf{y} \rangle = 0$,
+                         i.e., the angle between them is
+                         $\theta = \cos^{-1} 0 = \pi / 2$.
+                 \end{itemize}
 
 
          \end{itemize}
