@@ -89,7 +89,276 @@
                 vector. The space is denoted by either $\mathbb{C}^{n}$ if the elements
                 are complex $x_{i} \in \mathbb{C}$, or $\mathbb{R}^{n}$ if they
                 are real $x_{i} \in \mathbb{R} (i = 1, \ldots, n)$.
+
+                A subspace of $\mathbb{R}^{n}$ can be a $\mathbb{R}^{m} (m < n)$
+                that passes origin (zero). For example, any 2-D plane passing
+                through the origin of a 3-D space is its subspace. However, if
+                the 2-D plane does not pass through the origin, it is not a subspace.
+                Also, as 3-D cube or sphere centered at the origin is not a subspace,
+                as it is not closed under the operations of addition and scalar
+                multiplication.
+
+            \item A vector space can be defined to contain all $m \times n$ matrices
+                composed of $n$ $m$-D column vectors:
+
+                \begin{equation}
+                    \mathbf{A} = \begin{bmatrix} \mathbf{a}_1 & \ldots & \mathbf{a}_n \end{bmatrix}
+                    = \begin{bmatrix}
+                        a_{11} & a_{12} & \ldots & a_{1n}\\
+                        a_{21} & a_{22} & \ldots & a_{2n}\\
+                        \vdots & \vdots & \ddots & \vdots\\
+                        a_{m1} & a_{m2} & \ldots & a_{mn}
+                    \end{bmatrix}
+                ,\end{equation}
+
+                where the \textit{i}-th column is an  $m$-D vector
+                $\mathbf{a}^{i} = \begin{bmatrix} a_{1i} & \ldots & a_{mi} \end{bmatrix}^{T}$.
+                Such a matrix can be converted to an $mn$-D vector by cascading all of the column
+                (or row) vectors.
+
+            \item  $l^{2}$ space:\\
+
+                The concept of an $n$-D space  $\mathbb{R}^{n}$ or $\mathbb{C}^{n}$
+                can be generalised by allowing the dimension $n$ to become to
+                infinity so that a vector in the space becomes a sequence
+                $\mathbf{x} = \begin{bmatrix} \ldots & x_{i} & \ldots \end{bmatrix}^{T}$
+                for $0 \le i < \infty$ or $-\infty < i < \infty$. If all vectors
+                are square summable, the space is denoted by $l^{2}$. All discrete energy
+                signals are vectors in $l^{2}$.
+
+            \item $\mathcal{L}^{2}$ space:
+
+                A vector space can also be a set of real or complex valued continuous functions
+                $x(t)$ defined over either a finite range such as $0 \le t < T$,
+                or an infinite range $-\infty < t < \infty$. If all functions are
+                square integrable, the space is denoted $\mathcal{L}^{2}$. All
+                continuous energy signals are vectors in $\mathcal{L}^{2}$.
         \end{itemize}
+
+        Note that the term "vector", generally denoted by $\mathbf{x}$ in the following,
+        may be interpreted in two different ways. First, in the most general sense,
+        it represents a member of a vector space, such as any of the vector spaces
+        considered above, e.g. a function $\mathbf{x} = x (t) \in \mathcal{L}^{2}$
+        Second, in a more narrow sense, it can also represent a tuple of $n$ elements,
+        an $n$-D vector $\mathbf{x} = \begin{bmatrix} x_1 & \ldots & x_n \end{bmatrix}^{T} \in \mathbb{C}^{n}$,
+        where $n$ may be infinity. It should be clear what a vector $\mathbf{x}$
+        from the context.
+
+    \item \textbf{Linear independence}\\
+
+        A set of vectors $\begin{Bmatrix} \mathbf{v}_1 & \ldots & \mathbf{v}_n \end{Bmatrix}$
+        are linearly independent if none of them can be represented as a linear
+        combination of the others.\\
+
+        \textbf{Theorem:} For any set of linarly independent vectors
+        $\begin{Bmatrix} \mathbf{v}_1 & \ldots & \mathbf{v}_n \end{Bmatrix}$,
+        if their linear combination is zero
+
+        \begin{equation}
+            \sum_{j=1}^{n} c_{j} \mathbf{v}_{j} = 0
+        \end{equation}
+
+        then all their coefficients must be zero $c_1 = \ldots = c_{n} = 0$,
+        or $\mathbf{c} = \mathbf{0}$.
+
+        \textbf{Proof:} Assume $c_{k} \neq 0$, then we would get
+
+        \begin{equation}
+            v_{k} = - \frac{1}{c_{k}} \sum_{j=1, i \neq k}^{n} c_{j} \mathbf{v}_{j}
+        .\end{equation}
+
+        i.e., $v_{k}$ is a linear combination of the remaining $n - 1$ vectors,
+        in contradiction with the assumption that they are independent.
+
+        In particular, in tj n-D Euclidean space, the $n$ vectors can be written as
+        $\mathbf{v}_{j} = \begin{bmatrix} v_{1j} & \ldots & v_{nj} \end{bmatrix}^{T} (j = 1, \ldots, n)$,
+        and their linear combination
+
+        \begin{equation}
+            \sum_{j=1}^{n} c_{j} \mathbf{v}_{j}
+            = \begin{bmatrix}
+               \mathbf{v}_1 & \ldots & \mathbf{v}_n
+            \end{bmatrix}
+            \begin{bmatrix}
+                c_1\\ \vdots\\ c_n
+            \end{bmatrix}
+            = \begin{bmatrix}
+                v_{11} & \ldots & v_{1n}\\
+                \vdots & \ddots & \vdots\\
+                v_{n1} & \ldots & v_{mn}
+            \end{bmatrix}
+            \begin{bmatrix} c_1\\ \vdots\\ c_n \end{bmatrix}
+            = \mathbf{V} \mathbf{c}
+        .\end{equation}
+
+        For this to be a zero vector, i.e. for this homogeneous equation
+        $\mathbf{V} \mathbf{c} = \mathbf{0}$ to hold, the coefficient vector
+        $\mathbf{c}$ has to be zero, as $\mathbf{V}$ is a full rank matrix.
+
+
+    \item \textbf{Convex combination}\\
+
+         The \textit{convex combination} of $n$ vectors $\mathbf{x}_{1}, \ldots, \mathbf{x}_{n}$
+         is their sum weighted by coefficients $\{c_1, \ldots, c_{n}\}$
+         that add up to 1:
+
+         \begin{equation}
+             \begin{array}{lr}
+                 \sum_{i=1}^{n} c_{i} \mathbf{x}_{i}, & \sum_{i=1}^{n} c_{i} = 1
+             \end{array}
+         .\end{equation}
+
+         The \textit{convex hull} of these points is the set of all their combinations.
+         For example, the convex hull of three points in a plane is the triangle
+         formed by these points as vertices, in which any point is a convex
+         combination of the three vertices.
+
+     \item \textbf{Inner product}\\
+
+         An \textit{inner product} in a vector space $V$ is a function that maps
+         two vectors $\mathbf{x}, \mathbf{y} \in V$ to a scalar
+         $\langle \mathbf{x}, \mathbf{y} \rangle \in \mathbb{C}$ or $\mathbb{R}$
+         and satisfies the following conditions:
+
+         \begin{itemize}
+             \item Positive definiteness:
+
+                 \begin{equation}
+                     \begin{array}{lr}
+                         \langle \mathbf{x}, \mathbf{x} \rangle \ge 0, &
+                         \langle \mathbf{x}, \mathbf{x} \rangle = 0 \iff \mathbf{x} = \mathbf{0}
+                     \end{array}
+                 .\end{equation}
+
+             \item Conjugate symmetry:
+
+                 \begin{equation}
+                     \langle \mathbf{x}, \mathbf{y} \rangle
+                     = \overline{\langle \mathbf{y}, \mathbf{x} \rangle}
+                 .\end{equation}
+
+                 If the vector space is real, the inner product becomes \textit{symmetric}:
+
+                 \begin{equation}
+                     \langle \mathbf{x}, \mathbf{y} \rangle
+                     = \langle \mathbf{y}, \mathbf{x} \rangle
+                 .\end{equation}
+
+             \item Linearity in the first variable:
+
+                 \begin{equation}
+                     \langle a \mathbf{x} + b \mathbf{y}, \mathbf{z} \rangle
+                     = a \langle \mathbf{x}, \mathbf{z} \rangle
+                     + b \langle \mathbf{y}, \mathbf{z} \rangle
+                 .\end{equation}
+
+                 where $a, b \in \mathbb{C}$. The linearity does not apply
+                 to the second variable unless the coefficients are real
+                 $a, b \in \mathbb{R}$:
+
+                 \begin{equation}
+                     \begin{array}{l}
+                         \langle \mathbf{x}, a \mathbf{y} + b \mathbf{z} \rangle
+                         = \overline{\langle a \mathbf{y} + b \mathbf{z}, \mathbf{x} \rangle}
+                         = \overline{a \langle \mathbf{y}, \mathbf{x} \rangle + b \langle \mathbf{z}, \mathbf{x} \rangle}
+                         = \overline{a} \langle \mathbf{x} \mathbf{y} \rangle
+                         + \overline{b} \langle \mathbf{x} \mathbf{z} \rangle \\
+                         \neq a \langle \mathbf{x}, \mathbf{y} \rangle
+                         + b \langle \mathbf{x}, \mathbf{z} \rangle.
+                     \end{array}
+                 \end{equation}
+
+                 In the special case when $b=0$, we have
+
+                 \begin{equation}
+                     \begin{array}{lr}
+                         \langle a \mathbf{x}, \mathbf{y} \rangle
+                         = a \langle \mathbf{x}, \mathbf{y} \rangle, &
+                         \langle \mathbf{x}, a \mathbf{y} \rangle
+                         = \overline{a} \langle \mathbf{x}, \mathbf{y} \rangle
+                     \end{array}
+                 .\end{equation}
+
+                 More generally we have
+                  \begin{equation}
+                      \begin{array}{lr}
+                          \left\langle \sum_{n} c_n \mathbf{x}_{n}, \mathbf{y} \right\rangle
+                          = \sum_{n} c_n \langle \mathbf{x}_{n}, \mathbf{y} \rangle, &
+                          \left\langle \mathbf{x}, \sum_{n} c_{n} \mathbf{y}_{n} \right\rangle
+                          = \sum_{n} \overline{c}_{n} \langle \mathbf{x}, \mathbf{y}_{n} \rangle
+                      \end{array}
+                 .\end{equation}
+
+                 An \textit{inner product} space is a vector space with inner
+                 product defined. In particular, when the inner product is defined,
+                 $\mathbb{C}^{n}$ is called a \textit{unitary space} and $\mathbb{R}^{n}$
+                 is called an \textit{Euclidean space}.
+
+                 Some examples of the inner product are listed below:
+
+                 \begin{itemize}
+                     \item In a n-D vector space, the inner product, also called
+                         the \textit{dot product}, of two vectors
+                         $\mathbf{x} = \begin{bmatrix} x_1 & \ldots & x_n \end{bmatrix}^{T}$
+                         and $\mathbf{y} = \begin{bmatrix} y_1 & \ldots & y_n \end{bmatrix}^{T}$
+                         is defined as
+
+                         \begin{equation}
+                             \langle \mathbf{x}, \mathbf{y} \rangle
+                             = \mathbf{x}^{T} \overline{\mathbf{y}}
+                             = \mathbf{y}^{*} \mathbf{x}
+                             = \begin{bmatrix} x_1 & \ldots & x_n \end{bmatrix}
+                             \begin{bmatrix} \overline{y}_1\\ \vdots\\ \overline{y}_n \end{bmatrix}
+                             = \sum_{i=1}^{b} x_{i} \overline{y}_{i}
+                         ,\end{equation}
+
+                         where $\mathbf{y}^{*} = \overline{y}^{T}$ is the conjugate transpose
+                         of $\mathbf{y}$.
+
+                     \item In a space of 2-D matrices containing $n \times m$ elements,
+                         the inner product of two matrices $\mathbf{A}$
+                         and $\mathbf{B}$ is defined as
+
+                         \begin{equation}
+                             \langle \mathbf{A}, \mathbf{B} \rangle
+                             = \sum_{i=1}^{m} \sum_{j=1}^{n} a_{ij} \overline{b}_{ij}
+                         .\end{equation}
+
+                         When the column (or row) vectors of $\mathbf{A}$
+                         and $\mathbf{B}$ are concatenated to form two
+                         \textit{mn}-D vectors, their inner product takes the
+                         same form as that of two \textit{n}-D vectors.
+
+                     \item In a function space, the inner product of two function vectors
+                         $\mathbf{x} = x(t)$ and $\mathbf{y} = y(t)$ us defined as
+
+                         \begin{equation}
+                             \langle x(t), y(t) \rangle
+                             = \int_{a}^{b} x(t) \overline{y(t)} dt
+                             = \overline{\int_{a}^{b} y(t) \overline{x(t)}}dt
+                             = \overline{\langle y(t), x(t) \rangle}
+                         .\end{equation}
+
+                     \item The covariance of two random variables $x$ and $y$ can
+                         be considered as an inner product
+
+                         \begin{equation}
+                             \langle x, y, \rangle = \sigma_{xy}^{2}
+                             = E \left| (x - \mu_{x}) \overline{(y - \mu_{y})} \right|
+                             = E(x \overline{y}) - \mu_{x} \overline{\mu}_{y}
+                         .\end{equation}
+
+                         Specially when $\mu_x = \mu_y = 0$, we have
+
+                         \begin{equation}
+                             \langle x, y \rangle = E [x \overline{y}]
+                         .\end{equation}
+                 \end{itemize}
+
+
+         \end{itemize}
+
+
 
 \end{itemize}
 
