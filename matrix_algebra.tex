@@ -1,20 +1,33 @@
 \documentclass[10pt,b5paper,titlepage]{book}
-\usepackage[latin1]{inputenc}
+
+\usepackage[utf8]{inputenc}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+%\usepackage{xcolor}
+\usepackage{color}
 \usepackage{graphicx}
 
 \usepackage{hyperref}
 
 \author{Jan Tomek}
-\title{Matrix Algebra}
+\title{\bf Matrix Algebra}
 
 \setlength{\parindent}{0ex}
 \renewcommand{\labelitemi}{$\bullet$}
 \renewcommand{\labelitemii}{$\bullet$}
 \renewcommand{\labelitemiii}{$\bullet$}
 \renewcommand{\labelitemiv}{$\bullet$}
+
+%Commands definitions
+\newcommand\setbackgroundcolour{\pagecolor[rgb]{0.15,0.15,0.15}}
+\newcommand\settextcolour{\color[rgb]{0.9,0.9,0.9}}
+\newcommand\invertbackgroundtext{\setbackgroundcolour\settextcolour}
+
+%Command execution.
+%If this line is commented, then the appearance remains as usual.
+\invertbackgroundtext
+
 
 \begin{document}
 
@@ -605,7 +618,7 @@ From: \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node1.html}\\
 
         \begin{figure}[h]
             \centering
-            \includegraphics[width=0.5\textwidth]{./img/projection.png}
+            \includegraphics[width=0.5\textwidth]{./img/projection_inv}
             \caption{Projection of $\mathbf{x}$ onto $\mathbf{y}$.}
             \label{fig:projection-png}
         \end{figure}
@@ -886,7 +899,7 @@ By this transform, vector $\mathbf{x}$ is represented as a linear combination (w
 
 \begin{figure}[htpb]
     \centering
-    \includegraphics[width=0.7\textwidth]{./img/unitary_transform_1}
+    \includegraphics[width=0.7\textwidth]{./img/unitary_transform_1_inv}
     \caption[Unitary transform]{Each coefficient (coordinate) $y_i$ is the projection of ${\bf x}$ onto the corresponding basis vector ${\bf a}_i$}
     \label{fig:unitary_transform_1}
 \end{figure}
@@ -916,7 +929,7 @@ As the n-dimensional space can be spanned by the column vectors of \textit{any} 
 
         \begin{figure}[htpb]
             \centering
-            \includegraphics[width=0.7\textwidth]{./img/unitary_transform_2}
+            \includegraphics[width=0.7\textwidth]{./img/unitary_transform_2_inv}
             \caption{The Fourrier transform $\mathbf{y} = \mathbf{W} \mathbf{x}$ represents a rotation of the coordinate system.}
             \label{fig:unitary_transform_2}
         \end{figure}
