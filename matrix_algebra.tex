@@ -355,6 +355,128 @@
                          .\end{equation}
                  \end{itemize}
 
+             \item \textbf{Vector norm}\\
+
+                 In general, the norm $\|\mathbf{x}\|$ of a vector $\mathbf{x} \in V$
+                 is a non-negative real scalar that measures its size of length.
+                 $\|\mathbf{x}\| = 0$ if and only $\mathbf{x} = 0$. There exist
+                 different deffinitions for vector norm, as shown later. A vector
+                 $\mathbf{x}$ is \textit{normalized} (becomes a \textit{unit} vector)
+                 if $\|\mathbf{x}\| = 1$. Any given vector can be normalised when
+                 divided by its own norm $\mathbf{x} / \|\mathbf{x}\|$.
+
+                 The most widely used \textit{2-norm} of a vector is defined as
+
+                 \begin{equation}
+                     \|\mathbf{x}\| = \sqrt{\langle \mathbf{x}, \mathbf{x} \rangle}
+                     = \langle \mathbf{x}, \mathbf{x} \rangle^{1 / 2}
+                 .\end{equation}
+
+                 The vector norm squared $\|\mathbf{x}\|^{2}$ can be considered
+                 as the energy of the vector. In particular, un an \textit{n}-D
+                 unitary space, the 2-norm of a vector
+                 $\mathbf{x} = \begin{bmatrix} x_1 & \ldots & x_n \end{bmatrix}^{T} \in \mathbb{C}^{n}$ is:
+
+                 \begin{equation}
+                     \|\mathbf{x}\| = \sqrt{\langle \mathbf{x}, \mathbf{x} \rangle}
+                     = \sqrt{\mathbf{x}^{T \overline{\mathbf{x}}}}
+                     = \sqrt{\mathbf{x}^{*} \mathbf{x}}
+                     = \left( \sum_{i=1}^{n} x_{i} \overline{x}_{i} \right)^{1 / 2}
+                     = \left( \sum_{i=1}^{n} \left| x_{i} \right|^{2}  \right)^{1 / 2}
+                 .\end{equation}
+
+                 The total energy contained in this vector is its own norm squared:
+
+                 \begin{equation}
+                     \mathcal{E} = \|\mathbf{x}\|^{2}
+                     = \langle \mathbf{x}, \mathbf{x} \rangle
+                     = \sum_{i=1}^{n} \left| x_{i} \right|^{2}
+                 .\end{equation}
+
+                 Similarily, in a function space, the norm of a function vector
+                 $\mathbf{x} = x(t)$ is defined as:
+
+                 \begin{equation}
+                     \|\mathbf{x}\|
+                     = \left( \int_{a}^{b} x(t) \overline{x(t)} dt  \right)^{1 / 2}
+                     = \left( \int_{a}^{b} |x(t)|^{2} dt  \right)^{1 / 2}
+                 ,\end{equation}
+
+                 where the lower and upper integral limits $a < b$ are two real
+                 numbers, which may be extended to all real values  $\mathbb{R}$
+                 in the entire real axis $-\infty < t < \infty$. This norm exists
+                 only if the integral converges to a finite value, i.e. $x(t)$
+                 is an  \textit{energy signal} containing finite energy.
+
+                 \begin{equation}
+                     \int_{-\infty}^{\infty} |x(t)|^{2} dt < \infty  
+                 .\end{equation}
+
+                 All such functions $x(t)$ satisfiying the above are square-integrable,
+                 and they form a function space denoted by $\mathcal{L}^{2}(\mathbb{R})$.
+
+             \item \textbf{Cauchy-Schwarz inequality}\\
+
+                 The Cauchy-Schwarz inequality holds for any two vectors $\mathbf{x}$
+                 and $\mathbf{y}$ in an inner product space $V$:
+
+                 \begin{equation}
+                     \begin{array}{lcr}
+                         | \langle \mathbf{x}, \mathbf{y} \rangle |^{2}
+                         \le \langle \mathbf{x}, \mathbf{x} \rangle
+                         \langle \mathbf{y}, \mathbf{y} \rangle; &
+                         \text{i.e.,} &
+                         0 \le  | \langle \mathbf{x}, \mathbf{y} \rangle |
+                         \le \|\mathbf{x}\| \|\mathbf{y}\|
+                     \end{array}
+                 .\end{equation}
+
+                 \textbf{Proof:}\\
+
+                 If either $\mathbf{x}$ or $\mathbf{y}$ is zero,
+                 $\langle \mathbf{x}, \mathbf{y} \rangle = 0$, the theorem holds
+                 (an equality). Otherwise, we consider the following inner product:
+
+                 \begin{equation}
+                     \langle \mathbf{x} - \lambda \mathbf{y}, \mathbf{x} - \lambda \mathbf{y} \rangle
+                     = \|\mathbf{x}\|^{2}
+                     - \overline{\lambda} \langle \mathbf{x}, \mathbf{y} \rangle
+                     - \lambda \langle \mathbf{y}, \mathbf{x} \rangle
+                     + |\lambda|^{2} \|\mathbf{y}\|^{2}
+                     \ge 0
+                 ,\end{equation}
+
+                 where $\lambda \in \mathbb{C}$ is an arbitrary complex number, which
+                 can be assumed to be:
+
+                 \begin{equation}
+                     \begin{array}{lcr}
+                         \lambda
+                         = \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\|\mathbf{y}\|^{2}},&
+                         \text{then } \overline{\lambda}
+                         = \frac{\langle \mathbf{y}, \mathbf{x} \rangle}{\|\mathbf{y}\|^{2}},&
+                         |\lambda|^{2}
+                         = \frac{|\langle \mathbf{x}, \mathbf{y} \rangle|^{2}}{\|\mathbf{y}\|^{4}}.
+                     \end{array}
+                 \end{equation}
+
+                 Substituting these into the previous equation we get:
+
+                 \begin{equation}
+                     \begin{array}{lcr}
+                         \|\mathbf{x}\|^{2}
+                         - \frac{|\langle \mathbf{x}, \mathbf{y} \rangle|^{2}}
+                         {\|\mathbf{y}\|^{2}} \ge 0;&
+                         \text{i.e.,}&
+                         |\langle \mathbf{x}, \mathbf{y} \rangle|
+                         \le \|\mathbf{x}\| \|\mathbf{y}\|.
+                     \end{array}
+                 \end{equation}
+
+                 The equation holds only if $\mathbf{x} - \lambda \mathbf{y} = 0$
+                 or $\mathbf{x} = \lambda \mathbf{y}$, i.e., the two vectors are
+                 linearly dependent.
+
 
          \end{itemize}
 
