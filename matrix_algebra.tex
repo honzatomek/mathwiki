@@ -24,6 +24,8 @@
 
 \chapter{Inner Product Space}
 
+From: \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node1.html}\\
+
 \begin{itemize}
     \item \textbf{Vector space}\\
 
@@ -198,415 +200,417 @@
 
     \item \textbf{Convex combination}\\
 
-         The \textit{convex combination} of $n$ vectors $\mathbf{x}_{1}, \ldots, \mathbf{x}_{n}$
-         is their sum weighted by coefficients $\{c_1, \ldots, c_{n}\}$
-         that add up to 1:
+        The \textit{convex combination} of $n$ vectors $\mathbf{x}_{1}, \ldots, \mathbf{x}_{n}$
+        is their sum weighted by coefficients $\{c_1, \ldots, c_{n}\}$
+        that add up to 1:
 
-         \begin{equation}
-             \begin{array}{lr}
-                 \sum_{i=1}^{n} c_{i} \mathbf{x}_{i}, & \sum_{i=1}^{n} c_{i} = 1
-             \end{array}
-         .\end{equation}
+        \begin{equation}
+            \begin{array}{lr}
+                \sum_{i=1}^{n} c_{i} \mathbf{x}_{i}, & \sum_{i=1}^{n} c_{i} = 1
+            \end{array}
+        .\end{equation}
 
-         The \textit{convex hull} of these points is the set of all their combinations.
-         For example, the convex hull of three points in a plane is the triangle
-         formed by these points as vertices, in which any point is a convex
-         combination of the three vertices.
+        The \textit{convex hull} of these points is the set of all their combinations.
+        For example, the convex hull of three points in a plane is the triangle
+        formed by these points as vertices, in which any point is a convex
+        combination of the three vertices.
 
-     \item \textbf{Inner product}\\
+    \item \textbf{Inner product}\\
 
-         An \textit{inner product} in a vector space $V$ is a function that maps
-         two vectors $\mathbf{x}, \mathbf{y} \in V$ to a scalar
-         $\langle \mathbf{x}, \mathbf{y} \rangle \in \mathbb{C}$ or $\mathbb{R}$
-         and satisfies the following conditions:
+        An \textit{inner product} in a vector space $V$ is a function that maps
+        two vectors $\mathbf{x}, \mathbf{y} \in V$ to a scalar
+        $\langle \mathbf{x}, \mathbf{y} \rangle \in \mathbb{C}$ or $\mathbb{R}$
+        and satisfies the following conditions:
 
-         \begin{itemize}
-             \item Positive definiteness:
+        \begin{itemize}
+            \item Positive definiteness:
 
+                \begin{equation}
+                    \begin{array}{lr}
+                        \langle \mathbf{x}, \mathbf{x} \rangle \ge 0, &
+                        \langle \mathbf{x}, \mathbf{x} \rangle = 0 \iff \mathbf{x} = \mathbf{0}
+                    \end{array}
+                .\end{equation}
+
+            \item Conjugate symmetry:
+
+                \begin{equation}
+                    \langle \mathbf{x}, \mathbf{y} \rangle
+                    = \overline{\langle \mathbf{y}, \mathbf{x} \rangle}
+                .\end{equation}
+
+                If the vector space is real, the inner product becomes \textit{symmetric}:
+
+                \begin{equation}
+                    \langle \mathbf{x}, \mathbf{y} \rangle
+                    = \langle \mathbf{y}, \mathbf{x} \rangle
+                .\end{equation}
+
+            \item Linearity in the first variable:
+
+                \begin{equation}
+                    \langle a \mathbf{x} + b \mathbf{y}, \mathbf{z} \rangle
+                    = a \langle \mathbf{x}, \mathbf{z} \rangle
+                    + b \langle \mathbf{y}, \mathbf{z} \rangle
+                .\end{equation}
+
+                where $a, b \in \mathbb{C}$. The linearity does not apply
+                to the second variable unless the coefficients are real
+                $a, b \in \mathbb{R}$:
+
+                \begin{equation}
+                    \begin{array}{l}
+                        \langle \mathbf{x}, a \mathbf{y} + b \mathbf{z} \rangle
+                        = \overline{\langle a \mathbf{y} + b \mathbf{z}, \mathbf{x} \rangle}
+                        = \overline{a \langle \mathbf{y}, \mathbf{x} \rangle + b \langle \mathbf{z}, \mathbf{x} \rangle}
+                        = \overline{a} \langle \mathbf{x} \mathbf{y} \rangle
+                        + \overline{b} \langle \mathbf{x} \mathbf{z} \rangle \\
+                        \neq a \langle \mathbf{x}, \mathbf{y} \rangle
+                        + b \langle \mathbf{x}, \mathbf{z} \rangle.
+                    \end{array}
+                \end{equation}
+
+                In the special case when $b=0$, we have
+
+                \begin{equation}
+                    \begin{array}{lr}
+                        \langle a \mathbf{x}, \mathbf{y} \rangle
+                        = a \langle \mathbf{x}, \mathbf{y} \rangle, &
+                        \langle \mathbf{x}, a \mathbf{y} \rangle
+                        = \overline{a} \langle \mathbf{x}, \mathbf{y} \rangle
+                    \end{array}
+                .\end{equation}
+
+                More generally we have
                  \begin{equation}
                      \begin{array}{lr}
-                         \langle \mathbf{x}, \mathbf{x} \rangle \ge 0, &
-                         \langle \mathbf{x}, \mathbf{x} \rangle = 0 \iff \mathbf{x} = \mathbf{0}
+                         \left\langle \sum_{n} c_n \mathbf{x}_{n}, \mathbf{y} \right\rangle
+                         = \sum_{n} c_n \langle \mathbf{x}_{n}, \mathbf{y} \rangle, &
+                         \left\langle \mathbf{x}, \sum_{n} c_{n} \mathbf{y}_{n} \right\rangle
+                         = \sum_{n} \overline{c}_{n} \langle \mathbf{x}, \mathbf{y}_{n} \rangle
                      \end{array}
-                 .\end{equation}
-
-             \item Conjugate symmetry:
-
-                 \begin{equation}
-                     \langle \mathbf{x}, \mathbf{y} \rangle
-                     = \overline{\langle \mathbf{y}, \mathbf{x} \rangle}
-                 .\end{equation}
-
-                 If the vector space is real, the inner product becomes \textit{symmetric}:
-
-                 \begin{equation}
-                     \langle \mathbf{x}, \mathbf{y} \rangle
-                     = \langle \mathbf{y}, \mathbf{x} \rangle
-                 .\end{equation}
-
-             \item Linearity in the first variable:
-
-                 \begin{equation}
-                     \langle a \mathbf{x} + b \mathbf{y}, \mathbf{z} \rangle
-                     = a \langle \mathbf{x}, \mathbf{z} \rangle
-                     + b \langle \mathbf{y}, \mathbf{z} \rangle
-                 .\end{equation}
-
-                 where $a, b \in \mathbb{C}$. The linearity does not apply
-                 to the second variable unless the coefficients are real
-                 $a, b \in \mathbb{R}$:
-
-                 \begin{equation}
-                     \begin{array}{l}
-                         \langle \mathbf{x}, a \mathbf{y} + b \mathbf{z} \rangle
-                         = \overline{\langle a \mathbf{y} + b \mathbf{z}, \mathbf{x} \rangle}
-                         = \overline{a \langle \mathbf{y}, \mathbf{x} \rangle + b \langle \mathbf{z}, \mathbf{x} \rangle}
-                         = \overline{a} \langle \mathbf{x} \mathbf{y} \rangle
-                         + \overline{b} \langle \mathbf{x} \mathbf{z} \rangle \\
-                         \neq a \langle \mathbf{x}, \mathbf{y} \rangle
-                         + b \langle \mathbf{x}, \mathbf{z} \rangle.
-                     \end{array}
-                 \end{equation}
-
-                 In the special case when $b=0$, we have
-
-                 \begin{equation}
-                     \begin{array}{lr}
-                         \langle a \mathbf{x}, \mathbf{y} \rangle
-                         = a \langle \mathbf{x}, \mathbf{y} \rangle, &
-                         \langle \mathbf{x}, a \mathbf{y} \rangle
-                         = \overline{a} \langle \mathbf{x}, \mathbf{y} \rangle
-                     \end{array}
-                 .\end{equation}
-
-                 More generally we have
-                  \begin{equation}
-                      \begin{array}{lr}
-                          \left\langle \sum_{n} c_n \mathbf{x}_{n}, \mathbf{y} \right\rangle
-                          = \sum_{n} c_n \langle \mathbf{x}_{n}, \mathbf{y} \rangle, &
-                          \left\langle \mathbf{x}, \sum_{n} c_{n} \mathbf{y}_{n} \right\rangle
-                          = \sum_{n} \overline{c}_{n} \langle \mathbf{x}, \mathbf{y}_{n} \rangle
-                      \end{array}
-                 .\end{equation}
-
-                 An \textit{inner product} space is a vector space with inner
-                 product defined. In particular, when the inner product is defined,
-                 $\mathbb{C}^{n}$ is called a \textit{unitary space} and $\mathbb{R}^{n}$
-                 is called an \textit{Euclidean space}.
-
-                 Some examples of the inner product are listed below:
-
-                 \begin{itemize}
-                     \item In a n-D vector space, the inner product, also called
-                         the \textit{dot product}, of two vectors
-                         $\mathbf{x} = \begin{bmatrix} x_1 & \ldots & x_n \end{bmatrix}^{T}$
-                         and $\mathbf{y} = \begin{bmatrix} y_1 & \ldots & y_n \end{bmatrix}^{T}$
-                         is defined as
-
-                         \begin{equation}
-                             \langle \mathbf{x}, \mathbf{y} \rangle
-                             = \mathbf{x}^{T} \overline{\mathbf{y}}
-                             = \mathbf{y}^{*} \mathbf{x}
-                             = \begin{bmatrix} x_1 & \ldots & x_n \end{bmatrix}
-                             \begin{bmatrix} \overline{y}_1\\ \vdots\\ \overline{y}_n \end{bmatrix}
-                             = \sum_{i=1}^{b} x_{i} \overline{y}_{i}
-                         ,\end{equation}
-
-                         where $\mathbf{y}^{*} = \overline{y}^{T}$ is the conjugate transpose
-                         of $\mathbf{y}$.
-
-                     \item In a space of 2-D matrices containing $n \times m$ elements,
-                         the inner product of two matrices $\mathbf{A}$
-                         and $\mathbf{B}$ is defined as
-
-                         \begin{equation}
-                             \langle \mathbf{A}, \mathbf{B} \rangle
-                             = \sum_{i=1}^{m} \sum_{j=1}^{n} a_{ij} \overline{b}_{ij}
-                         .\end{equation}
-
-                         When the column (or row) vectors of $\mathbf{A}$
-                         and $\mathbf{B}$ are concatenated to form two
-                         \textit{mn}-D vectors, their inner product takes the
-                         same form as that of two \textit{n}-D vectors.
-
-                     \item In a function space, the inner product of two function vectors
-                         $\mathbf{x} = x(t)$ and $\mathbf{y} = y(t)$ us defined as
-
-                         \begin{equation}
-                             \langle x(t), y(t) \rangle
-                             = \int_{a}^{b} x(t) \overline{y(t)} dt
-                             = \overline{\int_{a}^{b} y(t) \overline{x(t)}}dt
-                             = \overline{\langle y(t), x(t) \rangle}
-                         .\end{equation}
-
-                     \item The covariance of two random variables $x$ and $y$ can
-                         be considered as an inner product
-
-                         \begin{equation}
-                             \langle x, y, \rangle = \sigma_{xy}^{2}
-                             = E \left| (x - \mu_{x}) \overline{(y - \mu_{y})} \right|
-                             = E(x \overline{y}) - \mu_{x} \overline{\mu}_{y}
-                         .\end{equation}
-
-                         Specially when $\mu_x = \mu_y = 0$, we have
-
-                         \begin{equation}
-                             \langle x, y \rangle = E [x \overline{y}]
-                         .\end{equation}
-                 \end{itemize}
-
-             \item \textbf{Vector norm}\\
-
-                 In general, the norm $\|\mathbf{x}\|$ of a vector $\mathbf{x} \in V$
-                 is a non-negative real scalar that measures its size of length.
-                 $\|\mathbf{x}\| = 0$ if and only $\mathbf{x} = 0$. There exist
-                 different deffinitions for vector norm, as shown later. A vector
-                 $\mathbf{x}$ is \textit{normalized} (becomes a \textit{unit} vector)
-                 if $\|\mathbf{x}\| = 1$. Any given vector can be normalised when
-                 divided by its own norm $\mathbf{x} / \|\mathbf{x}\|$.
-
-                 The most widely used \textit{2-norm} of a vector is defined as
-
-                 \begin{equation}
-                     \|\mathbf{x}\| = \sqrt{\langle \mathbf{x}, \mathbf{x} \rangle}
-                     = \langle \mathbf{x}, \mathbf{x} \rangle^{1 / 2}
-                 .\end{equation}
-
-                 The vector norm squared $\|\mathbf{x}\|^{2}$ can be considered
-                 as the energy of the vector. In particular, un an \textit{n}-D
-                 unitary space, the 2-norm of a vector
-                 $\mathbf{x} = \begin{bmatrix} x_1 & \ldots & x_n \end{bmatrix}^{T} \in \mathbb{C}^{n}$ is:
-
-                 \begin{equation}
-                     \|\mathbf{x}\| = \sqrt{\langle \mathbf{x}, \mathbf{x} \rangle}
-                     = \sqrt{\mathbf{x}^{T \overline{\mathbf{x}}}}
-                     = \sqrt{\mathbf{x}^{*} \mathbf{x}}
-                     = \left( \sum_{i=1}^{n} x_{i} \overline{x}_{i} \right)^{1 / 2}
-                     = \left( \sum_{i=1}^{n} \left| x_{i} \right|^{2}  \right)^{1 / 2}
-                 .\end{equation}
-
-                 The total energy contained in this vector is its own norm squared:
-
-                 \begin{equation}
-                     \mathcal{E} = \|\mathbf{x}\|^{2}
-                     = \langle \mathbf{x}, \mathbf{x} \rangle
-                     = \sum_{i=1}^{n} \left| x_{i} \right|^{2}
-                 .\end{equation}
-
-                 Similarily, in a function space, the norm of a function vector
-                 $\mathbf{x} = x(t)$ is defined as:
-
-                 \begin{equation}
-                     \|\mathbf{x}\|
-                     = \left( \int_{a}^{b} x(t) \overline{x(t)} dt  \right)^{1 / 2}
-                     = \left( \int_{a}^{b} |x(t)|^{2} dt  \right)^{1 / 2}
-                 ,\end{equation}
-
-                 where the lower and upper integral limits $a < b$ are two real
-                 numbers, which may be extended to all real values  $\mathbb{R}$
-                 in the entire real axis $-\infty < t < \infty$. This norm exists
-                 only if the integral converges to a finite value, i.e. $x(t)$
-                 is an  \textit{energy signal} containing finite energy.
-
-                 \begin{equation}
-                     \int_{-\infty}^{\infty} |x(t)|^{2} dt < \infty  
-                 .\end{equation}
-
-                 All such functions $x(t)$ satisfiying the above are square-integrable,
-                 and they form a function space denoted by $\mathcal{L}^{2}(\mathbb{R})$.
-
-             \item \textbf{Cauchy-Schwarz inequality}\\
-
-                 The Cauchy-Schwarz inequality holds for any two vectors $\mathbf{x}$
-                 and $\mathbf{y}$ in an inner product space $V$:
-
-                 \begin{equation}
-                     \begin{array}{lcr}
-                         | \langle \mathbf{x}, \mathbf{y} \rangle |^{2}
-                         \le \langle \mathbf{x}, \mathbf{x} \rangle
-                         \langle \mathbf{y}, \mathbf{y} \rangle; &
-                         \text{i.e.,} &
-                         0 \le  | \langle \mathbf{x}, \mathbf{y} \rangle |
-                         \le \|\mathbf{x}\| \|\mathbf{y}\|
-                     \end{array}
-                 .\end{equation}
-
-                 \textbf{Proof:}\\
-
-                 If either $\mathbf{x}$ or $\mathbf{y}$ is zero,
-                 $\langle \mathbf{x}, \mathbf{y} \rangle = 0$, the theorem holds
-                 (an equality). Otherwise, we consider the following inner product:
-
-                 \begin{equation}
-                     \langle \mathbf{x} - \lambda \mathbf{y}, \mathbf{x} - \lambda \mathbf{y} \rangle
-                     = \|\mathbf{x}\|^{2}
-                     - \overline{\lambda} \langle \mathbf{x}, \mathbf{y} \rangle
-                     - \lambda \langle \mathbf{y}, \mathbf{x} \rangle
-                     + |\lambda|^{2} \|\mathbf{y}\|^{2}
-                     \ge 0
-                 ,\end{equation}
-
-                 where $\lambda \in \mathbb{C}$ is an arbitrary complex number, which
-                 can be assumed to be:
-
-                 \begin{equation}
-                     \begin{array}{lcr}
-                         \lambda
-                         = \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\|\mathbf{y}\|^{2}},&
-                         \text{then } \overline{\lambda}
-                         = \frac{\langle \mathbf{y}, \mathbf{x} \rangle}{\|\mathbf{y}\|^{2}},&
-                         |\lambda|^{2}
-                         = \frac{|\langle \mathbf{x}, \mathbf{y} \rangle|^{2}}{\|\mathbf{y}\|^{4}}.
-                     \end{array}
-                 \end{equation}
-
-                 Substituting these into the previous equation we get:
-
-                 \begin{equation}
-                     \begin{array}{lcr}
-                         \|\mathbf{x}\|^{2}
-                         - \frac{|\langle \mathbf{x}, \mathbf{y} \rangle|^{2}}
-                         {\|\mathbf{y}\|^{2}} \ge 0;&
-                         \text{i.e.,}&
-                         |\langle \mathbf{x}, \mathbf{y} \rangle|
-                         \le \|\mathbf{x}\| \|\mathbf{y}\|.
-                     \end{array}
-                 \end{equation}
-
-                 The equation holds only if $\mathbf{x} - \lambda \mathbf{y} = 0$
-                 or $\mathbf{x} = \lambda \mathbf{y}$, i.e., the two vectors are
-                 linearly dependent.
-
-             \item \textbf{Distance between two vectors}\\
-
-                 The distance $d(\mathbf{x}, \mathbf{y}$ between two vectors is
-                 a real constant that satisfies:
-
-                 \begin{itemize}
-                     \item $d(\mathbf{x}, \mathbf{y}) = 0 \iff \mathbf{x} = \mathbf{y}$
-                     \item $d(\mathbf{x}, \mathbf{y}) = d(\mathbf{y}, \mathbf{x})$
-                     \item $d(\mathbf{x}, \mathbf{y} \le  d(\mathbf{x}, \mathbf{z}) + d(\mathbf{z}, \mathbf{y})$
-                 \end{itemize}
-
-                 In and inner product space in which the inner product
-                 $\langle \mathbf{x}, \mathbf{y} \rangle$ between any two vectors
-                 $\mathbf{x}$ and $\mathbf{y}$ is defined, the distance between
-                 the two points can be defined as the norm of the difference
-                 between the two points:
-
-                 \begin{equation}
-                     d(\mathbf{x}, \mathbf{y}) = \|\mathbf{x} - \mathbf{y}\|
-                     = \sqrt{\langle (\mathbf{x} - \mathbf{y}), (\mathbf{x} - \mathbf{y})}
-                 .\end{equation}
-
-                 The norm of a vector can now be seen as its dustance to the origin
-                 $\mathbf{0}$ of the space $\|\mathbf{x}\| = \|\mathbf{x} - \mathbf{0}\|$.\\
-
-                 A vector space $V$ is a \textit{metric space} if a distance
-                 (or \textit{metric}) $d(\mathbf{x}, \mathbf{y})$ between any two
-                 vectors (or points) $\mathbf{x}$ and $\mathbf{y}$ is defined.
-
-             \item \textbf{Angle between two vectors}\\
-
-                 The \textit{angle} between two vectors $\mathbf{x}$ and $\mathbf{y}$
-                 is defined as:
-
-                 \begin{equation}
-                     \theta = \cos^{-1} \left( \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\|\mathbf{x}\| \|\mathbf{y}\|} \right)
-                 .\end{equation}
-
-                 Now the inner product of $\mathbf{x}$ and $\mathbf{y}$
-                 can also be written as:
-
-                 \begin{equation}
-                     \langle \mathbf{x}, \mathbf{y} \rangle
-                     = \|\mathbf{x}\| \|\mathbf{y}\| \cos \theta
-                     \le \|\mathbf{x}\| \|\mathbf{y}\|
-                 .\end{equation}
-
-                 This is the Cauchy-Schwarz inequality. In particular:
-
-                 \begin{itemize}
-                     \item If $\theta = 0, \cos \theta = 1$, then
-                         $\mathbf{x}$ and $\mathbf{y}$ are collinear or linearly
-                         dependent, and the inner product is maximised:
-
-                         \begin{equation}
-                             \langle \mathbf{x}, \mathbf{y} \rangle
-                             = \|\mathbf{x}\| \|\mathbf{y}\|
-                         .\end{equation}
-
-                         i.e., the Cauchy-Schwarz inequality becomes and equality.\\
-
-                     \item If $0 < \theta < \pi / 2$,  $0 < \cos \theta < 1$, we
-                         get the Cauchy-Schwarz inequality:
-
-                         \begin{equation}
-                             \langle \mathbf{x}, \mathbf{y} \rangle
-                             < \|\mathbf{x}\| \|\mathbf{y}\|
-                         .\end{equation}
-
-                     \item If $\theta = \pi / 2$,  $\cos \theta = 0$, then
-                         $\mathbf{x}$ and $\mathbf{y}$ are orthogonal to each
-                         other, and the inner product is minimized:
-
-                         \begin{equation}
-                             \langle \mathbf{x}, \mathbf{y} \rangle = 0
-                         .\end{equation}
-
-                 \end{itemize}
-
-                 Two vectors $\mathbf{x}$ and $\mathbf{y}$ are \textit{orthogonal}
-                 or \textit{perpendicular} to each other, denoted by
-                 $\mathbf{x} \perp \mathbf{y}$, if their inner
-                 product is zero $\langle \mathbf{x}, \mathbf{y} \rangle = 0$,
-                 i.e., the angle between them is
-                 $\theta = \cos^{-1} 0 = \pi / 2$.
-
-             \item \textbf{Projection}\\
-
-                 The \textit{orthogonal projection} of a vector $\mathbf{x} \in V$
-                 onto another vector $\mathbf{y} \in V$ is defined as a vector:
-
-                 \begin{equation}
-                     \mathbf{p}_{y}(\mathbf{x})
-                     = \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\|\mathbf{y}\|}
-                     \frac{\mathbf{y}}{\|\mathbf{y}\|}
-                     = \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\langle \mathbf{y}, \mathbf{y} \rangle} \mathbf{y}
-                     = \|\mathbf{x}\| \cos \theta \frac{\mathbf{y}}{\|\mathbf{y}\|}
-                 ,\end{equation}
-
-                 where $\mathbf{y} / \|\mathbf{y}\|$ is the unit vector along
-                 the direction of $\mathbf{y}$. In particular, if $\mathbf{y}$
-                 is normalized with $\|\mathbf{y}\| = 1$, then:
-
-                 \begin{equation}
-                     \mathbf{p}_{y}(\mathbf{x})
-                     = \langle \mathbf{x}, \mathbf{y} \rangle \mathbf{y}
-                     = \|\mathbf{x}\| \cos \theta \mathbf{y}
-                 .\end{equation}
-
-                 Note that:
-
-                 \begin{equation}
-                     \|\mathbf{p}_{y}(\mathbf{x})\|
-                     = \|\mathbf{x}\| \cos \theta
-                 .\end{equation}
-
-                 If only the magnitude of the projection is of interest, the
-                 unit vector $\mathbf{y} / \|\mathbf{y}\|$ can be dropped:
-
-                 \begin{equation}
-                     p_{y}(\mathbf{x}) = \langle \mathbf{x}, \mathbf{y} \rangle / \|\mathbf{y}\|
-                 .\end{equation}
-
-                 \begin{figure}[htpb]
-                     \centering
-                     \includegraphics[width=0.7\textwidth]{./img/projection.png}
-                     \caption{Projection of $\mathbf{x}$ onto $\mathbf{y}$.}
-                     \label{fig:projection-png}
-                 \end{figure}
-         \end{itemize}
+                .\end{equation}
+        \end{itemize}
+
+        An \textit{inner product} space is a vector space with inner
+        product defined. In particular, when the inner product is defined,
+        $\mathbb{C}^{n}$ is called a \textit{unitary space} and $\mathbb{R}^{n}$
+        is called an \textit{Euclidean space}.
+
+        Some examples of the inner product are listed below:
+
+        \begin{itemize}
+            \item In a n-D vector space, the inner product, also called
+                the \textit{dot product}, of two vectors
+                $\mathbf{x} = \begin{bmatrix} x_1 & \ldots & x_n \end{bmatrix}^{T}$
+                and $\mathbf{y} = \begin{bmatrix} y_1 & \ldots & y_n \end{bmatrix}^{T}$
+                is defined as
+
+                \begin{equation}
+                    \langle \mathbf{x}, \mathbf{y} \rangle
+                    = \mathbf{x}^{T} \overline{\mathbf{y}}
+                    = \mathbf{y}^{*} \mathbf{x}
+                    = \begin{bmatrix} x_1 & \ldots & x_n \end{bmatrix}
+                    \begin{bmatrix} \overline{y}_1\\ \vdots\\ \overline{y}_n \end{bmatrix}
+                    = \sum_{i=1}^{b} x_{i} \overline{y}_{i}
+                ,\end{equation}
+
+                where $\mathbf{y}^{*} = \overline{y}^{T}$ is the conjugate transpose
+                of $\mathbf{y}$.
+
+            \item In a space of 2-D matrices containing $n \times m$ elements,
+                the inner product of two matrices $\mathbf{A}$
+                and $\mathbf{B}$ is defined as
+
+                \begin{equation}
+                    \langle \mathbf{A}, \mathbf{B} \rangle
+                    = \sum_{i=1}^{m} \sum_{j=1}^{n} a_{ij} \overline{b}_{ij}
+                .\end{equation}
+
+                When the column (or row) vectors of $\mathbf{A}$
+                and $\mathbf{B}$ are concatenated to form two
+                \textit{mn}-D vectors, their inner product takes the
+                same form as that of two \textit{n}-D vectors.
+
+            \item In a function space, the inner product of two function vectors
+                $\mathbf{x} = x(t)$ and $\mathbf{y} = y(t)$ us defined as
+
+                \begin{equation}
+                    \langle x(t), y(t) \rangle
+                    = \int_{a}^{b} x(t) \overline{y(t)} dt
+                    = \overline{\int_{a}^{b} y(t) \overline{x(t)}}dt
+                    = \overline{\langle y(t), x(t) \rangle}
+                .\end{equation}
+
+            \item The covariance of two random variables $x$ and $y$ can
+                be considered as an inner product
+
+                \begin{equation}
+                    \langle x, y, \rangle = \sigma_{xy}^{2}
+                    = E \left| (x - \mu_{x}) \overline{(y - \mu_{y})} \right|
+                    = E(x \overline{y}) - \mu_{x} \overline{\mu}_{y}
+                .\end{equation}
+
+                Specially when $\mu_x = \mu_y = 0$, we have
+
+                \begin{equation}
+                    \langle x, y \rangle = E [x \overline{y}]
+                .\end{equation}
+        \end{itemize}
+
+    \item \textbf{Vector norm}\\
+
+        In general, the norm $\|\mathbf{x}\|$ of a vector $\mathbf{x} \in V$
+        is a non-negative real scalar that measures its size of length.
+        $\|\mathbf{x}\| = 0$ if and only $\mathbf{x} = 0$. There exist
+        different deffinitions for vector norm, as shown later. A vector
+        $\mathbf{x}$ is \textit{normalized} (becomes a \textit{unit} vector)
+        if $\|\mathbf{x}\| = 1$. Any given vector can be normalised when
+        divided by its own norm $\mathbf{x} / \|\mathbf{x}\|$.
+
+        The most widely used \textit{2-norm} of a vector is defined as
+
+        \begin{equation}
+            \|\mathbf{x}\| = \sqrt{\langle \mathbf{x}, \mathbf{x} \rangle}
+            = \langle \mathbf{x}, \mathbf{x} \rangle^{1 / 2}
+        .\end{equation}
+
+        The vector norm squared $\|\mathbf{x}\|^{2}$ can be considered
+        as the energy of the vector. In particular, un an \textit{n}-D
+        unitary space, the 2-norm of a vector
+        $\mathbf{x} = \begin{bmatrix} x_1 & \ldots & x_n \end{bmatrix}^{T} \in \mathbb{C}^{n}$ is:
+
+        \begin{equation}
+            \|\mathbf{x}\| = \sqrt{\langle \mathbf{x}, \mathbf{x} \rangle}
+            = \sqrt{\mathbf{x}^{T \overline{\mathbf{x}}}}
+            = \sqrt{\mathbf{x}^{*} \mathbf{x}}
+            = \left( \sum_{i=1}^{n} x_{i} \overline{x}_{i} \right)^{1 / 2}
+            = \left( \sum_{i=1}^{n} \left| x_{i} \right|^{2}  \right)^{1 / 2}
+        .\end{equation}
+
+        The total energy contained in this vector is its own norm squared:
+
+        \begin{equation}
+            \mathcal{E} = \|\mathbf{x}\|^{2}
+            = \langle \mathbf{x}, \mathbf{x} \rangle
+            = \sum_{i=1}^{n} \left| x_{i} \right|^{2}
+        .\end{equation}
+
+        Similarily, in a function space, the norm of a function vector
+        $\mathbf{x} = x(t)$ is defined as:
+
+        \begin{equation}
+            \|\mathbf{x}\|
+            = \left( \int_{a}^{b} x(t) \overline{x(t)} dt  \right)^{1 / 2}
+            = \left( \int_{a}^{b} |x(t)|^{2} dt  \right)^{1 / 2}
+        ,\end{equation}
+
+        where the lower and upper integral limits $a < b$ are two real
+        numbers, which may be extended to all real values  $\mathbb{R}$
+        in the entire real axis $-\infty < t < \infty$. This norm exists
+        only if the integral converges to a finite value, i.e. $x(t)$
+        is an  \textit{energy signal} containing finite energy.
+
+        \begin{equation}
+            \int_{-\infty}^{\infty} |x(t)|^{2} dt < \infty
+        .\end{equation}
+
+        All such functions $x(t)$ satisfiying the above are square-integrable,
+        and they form a function space denoted by $\mathcal{L}^{2}(\mathbb{R})$.
+
+    \item \textbf{Cauchy-Schwarz inequality}\\
+
+        The Cauchy-Schwarz inequality holds for any two vectors $\mathbf{x}$
+        and $\mathbf{y}$ in an inner product space $V$:
+
+        \begin{equation}
+            \begin{array}{lcr}
+                | \langle \mathbf{x}, \mathbf{y} \rangle |^{2}
+                \le \langle \mathbf{x}, \mathbf{x} \rangle
+                \langle \mathbf{y}, \mathbf{y} \rangle; &
+                \text{i.e.,} &
+                0 \le  | \langle \mathbf{x}, \mathbf{y} \rangle |
+                \le \|\mathbf{x}\| \|\mathbf{y}\|
+            \end{array}
+        .\end{equation}
+
+        \textbf{Proof:}\\
+
+        If either $\mathbf{x}$ or $\mathbf{y}$ is zero,
+        $\langle \mathbf{x}, \mathbf{y} \rangle = 0$, the theorem holds
+        (an equality). Otherwise, we consider the following inner product:
+
+        \begin{equation}
+            \langle \mathbf{x} - \lambda \mathbf{y}, \mathbf{x} - \lambda \mathbf{y} \rangle
+            = \|\mathbf{x}\|^{2}
+            - \overline{\lambda} \langle \mathbf{x}, \mathbf{y} \rangle
+            - \lambda \langle \mathbf{y}, \mathbf{x} \rangle
+            + |\lambda|^{2} \|\mathbf{y}\|^{2}
+            \ge 0
+        ,\end{equation}
+
+        where $\lambda \in \mathbb{C}$ is an arbitrary complex number, which
+        can be assumed to be:
+
+        \begin{equation}
+            \begin{array}{lcr}
+                \lambda
+                = \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\|\mathbf{y}\|^{2}},&
+                \text{then } \overline{\lambda}
+                = \frac{\langle \mathbf{y}, \mathbf{x} \rangle}{\|\mathbf{y}\|^{2}},&
+                |\lambda|^{2}
+                = \frac{|\langle \mathbf{x}, \mathbf{y} \rangle|^{2}}{\|\mathbf{y}\|^{4}}.
+            \end{array}
+        \end{equation}
+
+        Substituting these into the previous equation we get:
+
+        \begin{equation}
+            \begin{array}{lcr}
+                \|\mathbf{x}\|^{2}
+                - \frac{|\langle \mathbf{x}, \mathbf{y} \rangle|^{2}}
+                {\|\mathbf{y}\|^{2}} \ge 0;&
+                \text{i.e.,}&
+                |\langle \mathbf{x}, \mathbf{y} \rangle|
+                \le \|\mathbf{x}\| \|\mathbf{y}\|.
+            \end{array}
+        \end{equation}
+
+        The equation holds only if $\mathbf{x} - \lambda \mathbf{y} = 0$
+        or $\mathbf{x} = \lambda \mathbf{y}$, i.e., the two vectors are
+        linearly dependent.
+
+    \item \textbf{Distance between two vectors}\\
+
+        The distance $d(\mathbf{x}, \mathbf{y}$ between two vectors is
+        a real constant that satisfies:
+
+        \begin{itemize}
+            \item $d(\mathbf{x}, \mathbf{y}) = 0 \iff \mathbf{x} = \mathbf{y}$
+            \item $d(\mathbf{x}, \mathbf{y}) = d(\mathbf{y}, \mathbf{x})$
+            \item $d(\mathbf{x}, \mathbf{y} \le  d(\mathbf{x}, \mathbf{z}) + d(\mathbf{z}, \mathbf{y})$
+        \end{itemize}
+
+        In and inner product space in which the inner product
+        $\langle \mathbf{x}, \mathbf{y} \rangle$ between any two vectors
+        $\mathbf{x}$ and $\mathbf{y}$ is defined, the distance between
+        the two points can be defined as the norm of the difference
+        between the two points:
+
+        \begin{equation}
+            d(\mathbf{x}, \mathbf{y}) = \|\mathbf{x} - \mathbf{y}\|
+            = \sqrt{\langle (\mathbf{x} - \mathbf{y}), (\mathbf{x} - \mathbf{y})}
+        .\end{equation}
+
+        The norm of a vector can now be seen as its dustance to the origin
+        $\mathbf{0}$ of the space $\|\mathbf{x}\| = \|\mathbf{x} - \mathbf{0}\|$.\\
+
+        A vector space $V$ is a \textit{metric space} if a distance
+        (or \textit{metric}) $d(\mathbf{x}, \mathbf{y})$ between any two
+        vectors (or points) $\mathbf{x}$ and $\mathbf{y}$ is defined.
+
+    \item \textbf{Angle between two vectors}\\
+
+        The \textit{angle} between two vectors $\mathbf{x}$ and $\mathbf{y}$
+        is defined as:
+
+        \begin{equation}
+            \theta = \cos^{-1} \left( \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\|\mathbf{x}\| \|\mathbf{y}\|} \right)
+        .\end{equation}
+
+        Now the inner product of $\mathbf{x}$ and $\mathbf{y}$
+        can also be written as:
+
+        \begin{equation}
+            \langle \mathbf{x}, \mathbf{y} \rangle
+            = \|\mathbf{x}\| \|\mathbf{y}\| \cos \theta
+            \le \|\mathbf{x}\| \|\mathbf{y}\|
+        .\end{equation}
+
+        This is the Cauchy-Schwarz inequality. In particular:
+
+        \begin{itemize}
+            \item If $\theta = 0, \cos \theta = 1$, then
+                $\mathbf{x}$ and $\mathbf{y}$ are collinear or linearly
+                dependent, and the inner product is maximised:
+
+                \begin{equation}
+                    \langle \mathbf{x}, \mathbf{y} \rangle
+                    = \|\mathbf{x}\| \|\mathbf{y}\|
+                .\end{equation}
+
+                i.e., the Cauchy-Schwarz inequality becomes and equality.\\
+
+            \item If $0 < \theta < \pi / 2$,  $0 < \cos \theta < 1$, we
+                get the Cauchy-Schwarz inequality:
+
+                \begin{equation}
+                    \langle \mathbf{x}, \mathbf{y} \rangle
+                    < \|\mathbf{x}\| \|\mathbf{y}\|
+                .\end{equation}
+
+            \item If $\theta = \pi / 2$,  $\cos \theta = 0$, then
+                $\mathbf{x}$ and $\mathbf{y}$ are orthogonal to each
+                other, and the inner product is minimized:
+
+                \begin{equation}
+                    \langle \mathbf{x}, \mathbf{y} \rangle = 0
+                .\end{equation}
+
+        \end{itemize}
+
+        Two vectors $\mathbf{x}$ and $\mathbf{y}$ are \textit{orthogonal}
+        or \textit{perpendicular} to each other, denoted by
+        $\mathbf{x} \perp \mathbf{y}$, if their inner
+        product is zero $\langle \mathbf{x}, \mathbf{y} \rangle = 0$,
+        i.e., the angle between them is
+        $\theta = \cos^{-1} 0 = \pi / 2$.
+
+    \item \textbf{Projection}\\
+
+        The \textit{orthogonal projection} of a vector $\mathbf{x} \in V$
+        onto another vector $\mathbf{y} \in V$ is defined as a vector:
+
+        \begin{equation}
+            \mathbf{p}_{y}(\mathbf{x})
+            = \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\|\mathbf{y}\|}
+            \frac{\mathbf{y}}{\|\mathbf{y}\|}
+            = \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\langle \mathbf{y}, \mathbf{y} \rangle} \mathbf{y}
+            = \|\mathbf{x}\| \cos \theta \frac{\mathbf{y}}{\|\mathbf{y}\|}
+        ,\end{equation}
+
+        where $\mathbf{y} / \|\mathbf{y}\|$ is the unit vector along
+        the direction of $\mathbf{y}$. In particular, if $\mathbf{y}$
+        is normalized with $\|\mathbf{y}\| = 1$, then:
+
+        \begin{equation}
+            \mathbf{p}_{y}(\mathbf{x})
+            = \langle \mathbf{x}, \mathbf{y} \rangle \mathbf{y}
+            = \|\mathbf{x}\| \cos \theta \mathbf{y}
+        .\end{equation}
+
+        Note that:
+
+        \begin{equation}
+            \|\mathbf{p}_{y}(\mathbf{x})\|
+            = \|\mathbf{x}\| \cos \theta
+        .\end{equation}
+
+        If only the magnitude of the projection is of interest, the
+        unit vector $\mathbf{y} / \|\mathbf{y}\|$ can be dropped:
+
+        \begin{equation}
+            p_{y}(\mathbf{x}) = \langle \mathbf{x}, \mathbf{y} \rangle / \|\mathbf{y}\|
+        .\end{equation}
+
+        \begin{figure}[htpb]
+            \centering
+            \includegraphics[width=0.7\textwidth]{./img/projection.png}
+            \caption{Projection of $\mathbf{x}$ onto $\mathbf{y}$.}
+            \label{fig:projection-png}
+        \end{figure}
+
+
 
 
 
