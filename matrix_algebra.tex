@@ -547,15 +547,65 @@
                          .\end{equation}
 
                      \item If $\theta = \pi / 2$,  $\cos \theta = 0$, then
-                         $\mathbf{x}$ and $\mathbf{y}$ are \textit{orthogonal}
-                         or \textit{perpendicular} to each other, denoted by
-                         $\mathbf{x} \perp \mathbf{y}$, if their inner
-                         product is zero $\langle \mathbf{x}, \mathbf{y} \rangle = 0$,
-                         i.e., the angle between them is
-                         $\theta = \cos^{-1} 0 = \pi / 2$.
+                         $\mathbf{x}$ and $\mathbf{y}$ are orthogonal to each
+                         other, and the inner product is minimized:
+
+                         \begin{equation}
+                             \langle \mathbf{x}, \mathbf{y} \rangle = 0
+                         .\end{equation}
+
                  \end{itemize}
 
+                 Two vectors $\mathbf{x}$ and $\mathbf{y}$ are \textit{orthogonal}
+                 or \textit{perpendicular} to each other, denoted by
+                 $\mathbf{x} \perp \mathbf{y}$, if their inner
+                 product is zero $\langle \mathbf{x}, \mathbf{y} \rangle = 0$,
+                 i.e., the angle between them is
+                 $\theta = \cos^{-1} 0 = \pi / 2$.
 
+             \item \textbf{Projection}\\
+
+                 The \textit{orthogonal projection} of a vector $\mathbf{x} \in V$
+                 onto another vector $\mathbf{y} \in V$ is defined as a vector:
+
+                 \begin{equation}
+                     \mathbf{p}_{y}(\mathbf{x})
+                     = \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\|\mathbf{y}\|}
+                     \frac{\mathbf{y}}{\|\mathbf{y}\|}
+                     = \frac{\langle \mathbf{x}, \mathbf{y} \rangle}{\langle \mathbf{y}, \mathbf{y} \rangle} \mathbf{y}
+                     = \|\mathbf{x}\| \cos \theta \frac{\mathbf{y}}{\|\mathbf{y}\|}
+                 ,\end{equation}
+
+                 where $\mathbf{y} / \|\mathbf{y}\|$ is the unit vector along
+                 the direction of $\mathbf{y}$. In particular, if $\mathbf{y}$
+                 is normalized with $\|\mathbf{y}\| = 1$, then:
+
+                 \begin{equation}
+                     \mathbf{p}_{y}(\mathbf{x})
+                     = \langle \mathbf{x}, \mathbf{y} \rangle \mathbf{y}
+                     = \|\mathbf{x}\| \cos \theta \mathbf{y}
+                 .\end{equation}
+
+                 Note that:
+
+                 \begin{equation}
+                     \|\mathbf{p}_{y}(\mathbf{x})\|
+                     = \|\mathbf{x}\| \cos \theta
+                 .\end{equation}
+
+                 If only the magnitude of the projection is of interest, the
+                 unit vector $\mathbf{y} / \|\mathbf{y}\|$ can be dropped:
+
+                 \begin{equation}
+                     p_{y}(\mathbf{x}) = \langle \mathbf{x}, \mathbf{y} \rangle / \|\mathbf{y}\|
+                 .\end{equation}
+
+                 \begin{figure}[htpb]
+                     \centering
+                     \includegraphics[width=0.7\textwidth]{./img/projection.png}
+                     \caption{Projection of $\mathbf{x}$ onto $\mathbf{y}$.}
+                     \label{fig:projection-png}
+                 \end{figure}
          \end{itemize}
 
 
