@@ -723,6 +723,32 @@ $\mathbf{u}_{1}, \ldots, \mathbf{u}_{k-1}$.
     \label{fig:GramSchmidt}
 \end{figure}
 
+Given a set of orthogonal basis $\begin{pmatrix} \mathbf{u}_1 & \ldots & \mathbf{u}_n \end{pmatrix}$
+satisfying $\langle \mathbf{u}_{i}, \mathbf{u}_{j} \rangle = \mathbf{u}_{i}^{T}\mathbf{u}_{j} = 0$
+for any $\mathbf{i \neq j}$, we can again represent any given vector $\mathbf{x}$
+as a linear combination of these bases as:
+
+\begin{equation}
+    \mathbf{x} = \sum_{i=1}^{n} d_{i} \mathbf{u}_{i}
+.\end{equation}
+
+The coefficients $d_{i}$ can now be obtained easily. Premultiplying
+$\mathbf{u}_{j}^{T}$ on both sides of the equation above, we get:
+
+\begin{equation}
+    \mathbf{u}_{j}^{T} \mathbf{x}
+    = \mathbf{u}_{j}^{T} \left(
+    \sum_{i=1}^{n} d_{i} \mathbf{u}_{i}\right)
+    = \sum_{i=1}^{n} d_{i} \mathbf{u}_{j}^{T} \mathbf{u}_{i}
+    = d_{j} \mathbf{u}_{j}^{T} \mathbf{u}_{j}
+.\end{equation}
+
+\textit{Note:}
+$\sum_{i=1}^{n} d_{i} \mathbf{u}_{j}^{T} \mathbf{u}_{i} = d_{j} \mathbf{u}_{j}^{T} \mathbf{u}_{j}$
+because $\mathbf{u}_{i}^{T} \mathbf{u}_{j} \neq 0 \iff i = j$ \textit{(Tomek)}
+
+
+
 
 
 
