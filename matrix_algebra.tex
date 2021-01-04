@@ -641,6 +641,94 @@ From: \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node1.html}\\
 \end{itemize}
 
 
+\chapter{Orthogonal Basis and Gram-Schmidt Process}
+
+From \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node2.html}\\
+
+Assume \textit{n}-D vector space $\mathbb{R}^{n}$ or $\mathbb{C}^{n}$ is spanned
+by a set of \textit{n} independent basis vectors $\begin{bmatrix} \mathbf{v}_1 & \ldots & \mathbf{v}_n \end{bmatrix}$,
+not necessarily orthogonal, so that any vector $\mathbf{x} \in \mathbb{R}^{n}$
+can be represented as a linear combination of the basis vectors:
+
+\begin{equation}
+    \mathbf{x}
+    = \sum_{i=1}^{n} c_{i} \mathbf{v}_{i}
+    = \begin{bmatrix} \mathbf{v}_1 & \ldots & \mathbf{v}_n \end{bmatrix}
+    \begin{bmatrix} c_1\\ \vdots\\ c_n \end{bmatrix}
+    = \mathbf{V} \mathbf{c}
+,\end{equation}
+
+where $\mathbf{V} = \begin{bmatrix} \mathbf{v}_1 & \ldots & \mathbf{v}_n \end{bmatrix}$ is an
+$m \times n$ matrix composed of the $n$ vectors and the coefficients in
+$\mathbf{c} = \begin{bmatrix} c_1 & \ldots & c_n \end{bmatrix}^{T}$ can be
+found by solving the lienar equation system to get
+$\mathbf{c} = \mathbf{V}^{-1}\mathbf{x}$ with complexity $\mathit{O}(n^{3})$.\\
+
+These linearly independent vectors $\mathbf{v}_{1}, \ldots, \mathbf{v}_{n}$ can be
+converted into a set of orthogonal vectors $\begin{pmatrix} \mathbf{u}_1 & \ldots & \mathbf{u}_n \end{pmatrix}$
+satisfying $\mathbf{u}_{i}^{T}\mathbf{u}_{j} = 0 (i \neq j)$ by the following
+\textit{Gram-Schmidt process}:
+
+\begin{equation}
+    \begin{array}{l}
+        \mathbf{u}_{1} = \mathbf{v}_{1}\\
+        \mathbf{u}_{2} = \mathbf{v}_{2} - \mathbf{p}_{\mathbf{u}_{1}}(\mathbf{v}_{2})
+        = \mathbf{v}_{2} - \left( \frac{\mathbf{v}_{2}^{T}\mathbf{u}_{1}}{\mathbf{u}_{1}^{T}\mathbf{u}_{1}} \right) \mathbf{u}_{1}\\
+        \mathbf{u}_{3} = \mathbf{v}_{3}
+        - \mathbf{p}_{\mathbf{u}_{1}}(\mathbf{v}_{3})
+        - \mathbf{p}_{\mathbf{u}_{2}}(\mathbf{v}_{3})
+        = \mathbf{v}_{3}
+        - \left( \frac{\mathbf{v}_{3}^{T}\mathbf{u}_{1}}{\mathbf{u}_{1}^{T}\mathbf{u}_{1}} \right) \mathbf{u}_{1}
+        - \left( \frac{\mathbf{v}_{3}^{T}\mathbf{u}_{2}}{\mathbf{u}_{2}^{T}\mathbf{u}_{2}} \right) \mathbf{u}_{2}\\
+        \ldots \ldots \ldots\\
+        \mathbf{u}_{k}
+        = \mathbf{v}_{k}
+        - \sum_{i=1}^{k-1} \mathbf{p}_{\mathbf{u}_{i}}(\mathbf{v}_{k})
+        = \mathbf{v}_{k}
+        - \sum_{i=1}^{k-1} \left( \frac{\mathbf{v}_{k}^{T}\mathbf{u}_{i}}{\mathbf{u}_{i}^{T}\mathbf{u}_{i}} \right) \mathbf{u}_{i}.
+    \end{array}
+\end{equation}
+
+where $\mathbf{p}_{\mathbf{u}_{i}}(\mathbf{v}_{k})$ is the projection of
+$\mathbf{v}_{k}$ onto $\mathbf{u}_{i}$:
+
+\begin{equation}
+    \mathbf{p}_{\mathbf{u}_{i}}(\mathbf{v}_{k})
+    = \left( \frac{\mathbf{v}_{k}^{T}\mathbf{u}_{i}}{\mathbf{u}_{i}^{T}\mathbf{u}_{i}} \right) \mathbf{u}_{i}
+.\end{equation}
+
+We see that $\mathbf{u}_{2}$ so obtained is indeed orthogonal to all
+$\mathbf{u}_{1}$:
+
+\begin{equation}
+    \mathbf{u}_{2}^{T}\mathbf{u}_{1}
+    = \left[ \mathbf{v}_{2}
+        - \left( \frac{\mathbf{v}_{2}^{T}\mathbf{u}_{1}}
+        {\mathbf{u}_{i}^{T}\mathbf{u}_{1}} \right)
+        \mathbf{u}_{i} \right]^{T} \mathbf{u}_{1}
+    = \mathbf{v}_{2}^{T}\mathbf{u}_{1}
+    - \frac{\mathbf{v}_{2}^{T}\mathbf{u}_{1}}{\mathbf{u}_{1}^{T}\mathbf{u}_{1}}
+    \mathbf{u}_{1}^{T}\mathbf{u}_{1} = 0
+,\end{equation}
+
+and, by mathematical induction, we can further prove that $\mathbf{u}_{k}^{T}\mathbf{u}_{i} = 0$
+for all $i = 1, \ldots, k-1$. In other words, $\mathbf{u}_{k}$ is the component
+of $\mathbf{v}_{k}$ that is orthogonal to all previously found orthogonal vectors
+$\mathbf{u}_{1}, \ldots, \mathbf{u}_{k-1}$.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{./img/GramSchmidt_inv}
+    \caption{$\mathbf{u}_{2} = \mathbf{v}_{2} - \mathbf{p}_{\mathbf{u}_{1}}(\mathbf{v}_{2})$}
+    \label{fig:GramSchmidt}
+\end{figure}
+
+
+
+
+
+
+
 \chapter{Inverse and Determinant of Partitioned Symmetric Matrices}
 From \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node7.html}\\
 
