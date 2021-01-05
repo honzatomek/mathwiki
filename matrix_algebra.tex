@@ -1234,9 +1234,96 @@ Also, if some eigenvalues are positive and some others are negative,
 $\mathbf{x}^{*}\mathbf{A}\mathbf{x}$ may be either positive or negative depending
 on $\mathbf{x}$, i.e., $\mathbf{A}$ is indefinite.\\
 
-As the eigenvalues of $\mathbf{A}^{-1}$ are $1 / \lambda_{i}, i = (1, \ldots, n)$,
+As the eigenvalues of $\mathbf{A}^{-1}$ are $1 / \lambda_{i}, \; i = (1, \ldots, n)$,
 $\mathbf{A}^{-1}$ and $\mathbf{A}$ share the same positive/negative definiteness.
 
+
+
+\chapter{Woodbury and Sherman-Morrison}
+
+Woodbury Matrix Identity and Sherman-Morison Formula
+
+From: \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node6.html}\\
+
+The \textit{Woodbury matrix identity} gives the inverse of $n \times n$ square
+matrix modified by a perturbation term $\mathbf{U}\mathbf{B}\mathbf{V}^{T}$:
+
+\begin{equation}
+    (\mathbf{A} + \mathbf{U}\mathbf{U}\mathbf{V}^{T})^{-1}
+    = \mathbf{A}^{-1} - \mathbf{A}^{-1}\mathbf{U}
+    (\mathbf{B}^{-1} + \mathbf{V}^{T}\mathbf{A}^{-1}\mathbf{U})^{-1}
+    \mathbf{V}^{T}\mathbf{A}^{-1}
+.\end{equation}
+
+The \textbf{proof} is straightforward:
+
+\begin{equation}
+    \begin{array}{l}
+        (\mathbf{A} + \mathbf{U}\mathbf{U}\mathbf{V}^{T})^{-1}
+        [\mathbf{A}^{-1} - \mathbf{A}^{-1}\mathbf{U}
+        (\mathbf{B}^{-1} + \mathbf{V}^{T}\mathbf{A}^{-1}\mathbf{U})^{-1}
+        \mathbf{V}^{T}\mathbf{A}^{-1}] \\
+        = [\mathbf{I}
+        - \mathbf{U}(\mathbf{B}^{-1}
+        + \mathbf{V}^{T}\mathbf{A}^{-1}\mathbf{U})^{-1}\mathbf{V}^{T}\mathbf{A}^{-1}]\\
+        + [\mathbf{U}\mathbf{B}\mathbf{V}^{T}\mathbf{A}^{-1}
+        - \mathbf{U}\mathbf{B}\mathbf{V}^{T}\mathbf{A}^{-1}\mathbf{U}
+        (\mathbf{B}^{-1} + \mathbf{V}^{T}\mathbf{A}^{-1}\mathbf{U})^{-1}
+        \mathbf{V}^{T}\mathbf{A}^{-1}]\\
+        = \mathbf{I} + \mathbf{U}\mathbf{B}\mathbf{V}^{T}\mathbf{A}^{-1}
+        - [\mathbf{U}(\mathbf{B}^{-1} + \mathbf{V}^{T}\mathbf{A}^{-1}\mathbf{U})^{-1}
+        \mathbf{V}^{T}\mathbf{A}^{-1}\\
+        + \mathbf{U}\mathbf{B}\mathbf{V}^{T}\mathbf{A}^{-1}\mathbf{U}
+        (\mathbf{B}^{-1} + \mathbf{V}^{T}\mathbf{A}^{-1}\mathbf{U})^{-1}
+        \mathbf{V}^{T}\mathbf{A}^{-1}]\\
+        = \mathbf{I} + \mathbf{U}\mathbf{B}\mathbf{V}^{T}\mathbf{A}^{-1}
+        - (\mathbf{U} + \mathbf{U}\mathbf{B}\mathbf{V}^{T}\mathbf{A}^{-1}\mathbf{U})
+        (\mathbf{B}^{-1} + \mathbf{V}^{T}\mathbf{A}^{-1}\mathbf{U})^{-1}
+        \mathbf{V}^{T}\mathbf{A}^{-1}\\
+        = \mathbf{I} + \mathbf{U}\mathbf{B}\mathbf{V}^{T}\mathbf{A}^{-1}
+        - \mathbf{U}\mathbf{B}(\mathbf{B}^{-1} + \mathbf{V}^{T}\mathbf{A}^{-1}\mathbf{U})
+        (\mathbf{B}^{-1} + \mathbf{V}^{T}\mathbf{A}^{-1}\mathbf{U})^{-1}
+        \mathbf{V}^{T}\mathbf{A}^{-1}\\
+        = \mathbf{I} + \mathbf{U}\mathbf{B}\mathbf{V}^{T}\mathbf{A}^{-1}
+        - \mathbf{U}\mathbf{B}\mathbf{V}^{T}\mathbf{A}^{-1} = \mathbf{I}
+    \end{array}
+.\end{equation}
+
+Consider some special cases:
+
+\begin{itemize}
+    \item if $\mathbf{U} = \mathbf{V} = \mathbf{I}$, then we get:
+
+        \begin{equation}
+            (\mathbf{A}+\mathbf{B})^{-1}
+            = \mathbf{A}^{-1}
+            - \mathbf{A}^{-1}(\mathbf{A}^{-1} + \mathbf{B}^{-1})^{-1} \mathbf{A}^{-1}
+        .\end{equation}
+
+    \item if $\mathbf{B} = \mathbf{I}$, and let
+        $\mathbf{U} = \begin{bmatrix} \mathbf{u}_1 & \ldots & \mathbf{u}_m \end{bmatrix}$
+        and $\mathbf{V} = \begin{bmatrix} \mathbf{v}_1 & \ldots & \mathbf{v}_m \end{bmatrix}$,
+        then we get the inverse of a rank-n modified matrix:
+
+        \begin{equation}
+            (\mathbf{A} + \mathbf{U}\mathbf{V}^{T})^{-1}
+            = \left( \mathbf{A}
+            + \sum_{i=1}^{m} \mathbf{u}_{i}\mathbf{v}_{i}^{T} \right)^{-1}
+            = \mathbf{A}^{-1} - \mathbf{A}^{-1}\mathbf{U}
+            (\mathbf{I} + \mathbf{V}^{T}\mathbf{A}^{-1}\mathbf{U})^{-1}
+            \mathbf{V}^{T}\mathbf{A}^{-1}
+        .\end{equation}
+
+    \item More specifically, when $m = 1$, $\mathbf{U} = \mathbf{u}$ and we
+        get the inverse of rand-1 modified matrix:
+
+        \begin{equation}
+            (\mathbf{A} + \mathbf{u}\mathbf{v}^{T})^{-1}
+            = \mathbf{A}^{-1}
+            - \frac{\mathbf{A}^{-1}\mathbf{u}\mathbf{v}^{T}\mathbf{A}^{-1}}
+            {1 + \mathbf{v}^{T}\mathbf{A}^{-1}\mathbf{u}}
+        .\end{equation}
+\end{itemize}
 
 
 
