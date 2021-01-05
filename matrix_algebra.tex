@@ -24,6 +24,33 @@
 \newcommand\settextcolour{\color[rgb]{0.9,0.9,0.9}}
 \newcommand\invertbackgroundtext{\setbackgroundcolour\settextcolour}
 
+% {name}[number of arguments][1st default value] etc..
+% the argument value is then inserted at #argument_number
+\newenvironment{bbox}[1][1.0]
+{
+    \begin{center}
+        \begin{tabular}{|p{#1\textwidth}|}
+            \hline\\
+}
+{
+            \\\\\hline
+        \end{tabular}
+    \end{center}
+}
+
+\newenvironment{bboxtitle}[1][1.0]
+{
+    \begin{center}
+        #1\\[1ex]
+        \begin{tabular}{|p{#1\textwidth}|}
+            \hline\\
+}
+{
+            \\\\\hline
+        \end{tabular}
+    \end{center}
+}
+
 %Command execution.
 %If this line is commented, then the appearance remains as usual.
 \invertbackgroundtext
@@ -665,7 +692,7 @@ found by solving the lienar equation system to get
 $\mathbf{c} = \mathbf{V}^{-1}\mathbf{x}$ with complexity $\mathit{O}(n^{3})$.\\
 
 These linearly independent vectors $\mathbf{v}_{1}, \ldots, \mathbf{v}_{n}$ can be
-converted into a set of orthogonal vectors $\begin{pmatrix} \mathbf{u}_1 & \ldots & \mathbf{u}_n \end{pmatrix}$
+converted into a set of orthogonal vectors $\begin{Bmatrix} \mathbf{u}_1 & \ldots & \mathbf{u}_n \end{Bmatrix}$
 satisfying $\mathbf{u}_{i}^{T}\mathbf{u}_{j} = 0 (i \neq j)$ by the following
 \textit{Gram-Schmidt process}:
 
@@ -723,7 +750,7 @@ $\mathbf{u}_{1}, \ldots, \mathbf{u}_{k-1}$.
     \label{fig:GramSchmidt}
 \end{figure}
 
-Given a set of orthogonal basis $\begin{pmatrix} \mathbf{u}_1 & \ldots & \mathbf{u}_n \end{pmatrix}$
+Given a set of orthogonal basis $\begin{Bmatrix} \mathbf{u}_1 & \ldots & \mathbf{u}_n \end{Bmatrix}$
 satisfying $\langle \mathbf{u}_{i}, \mathbf{u}_{j} \rangle = \mathbf{u}_{i}^{T}\mathbf{u}_{j} = 0$
 for any $\mathbf{i \neq j}$, we can again represent any given vector $\mathbf{x}$
 as a linear combination of these bases as:
@@ -743,9 +770,111 @@ $\mathbf{u}_{j}^{T}$ on both sides of the equation above, we get:
     = d_{j} \mathbf{u}_{j}^{T} \mathbf{u}_{j}
 .\end{equation}
 
+\begin{bbox}[1.0]
 \textit{Note:}
-$\sum_{i=1}^{n} d_{i} \mathbf{u}_{j}^{T} \mathbf{u}_{i} = d_{j} \mathbf{u}_{j}^{T} \mathbf{u}_{j}$
-because $\mathbf{u}_{i}^{T} \mathbf{u}_{j} \neq 0 \iff i = j$ \textit{(Tomek)}
+    $\sum_{i=1}^{n} d_{i} \mathbf{u}_{j}^{T} \mathbf{u}_{i} = d_{j} \mathbf{u}_{j}^{T} \mathbf{u}_{j}$
+    because $\mathbf{u}_{i}^{T} \mathbf{u}_{j} \neq 0 \iff i = j$ \textit{(Tomek)}
+\end{bbox}
+
+Solving for $d_{j}$ we get:
+
+\begin{equation}
+    d_{j} = \frac{\mathbf{u}_{j}^{T}\mathbf{x}}{\mathbf{u}_{j}^{T}\mathbf{u}_{j}},
+    \qquad j = 1, \ldots, n
+.\end{equation}
+
+As the $n$ coefficients are decoupled, each of them can be obtained separately
+with linear computational complexity $O(n)$ with total complexity  $I(n^{2}$
+for all $n$ of them. The complexity is reduced to $O(n^{2})$ from $O(n^{3})$
+for solving the equation system $mathbf{c} = mathbf{V}^{-1}mathbf{b}$, needed in the case
+where the basis is not orthogonal. This is the reason why orthogonal bases are
+preferred in general. Now the vector $mathbf{x}$ can be written as:
+
+\begin{equation}
+    \mathbf{x} = \sum_{i=1}^{n} d_{i} \mathbf{u}_{i}
+    = \sum_{i=1}^{n} \left(
+    \frac{\mathbf{u}_{j}^{T}\mathbf{x}}{\mathbf{u}_{j}^{T}\mathbf{u}_{j}}
+    \right) \mathbf{u}_{i}
+    = \sum_{i=1}^{n} \mathbf{p}_{\mathbf{u}_{i}}(\mathbf{x})
+,\end{equation}
+
+where the ith term of the summation above is simply the projection
+$\mathbf{p}_{\mathbf{u}_{i}}(\mathbf{x})$ of $\mathbf{x}$ onto the ith basis of $\mathbf{u}_{i}$.\\
+
+The concept of orthogonal vectors satisfying $\mathbf{u}^{T}\mathbf{v} = 0$
+can be generalised to \textit{conjugate vectors} that satisfy
+$\mathbf{u}^{T}\mathbf{A}\mathbf{v} = 0$ with respect to a symmetric matrix
+$\mathbf{A} = \mathbf{A}^{T}$. This can be expressed in the form of inner product:
+
+\begin{equation}
+    \mathbf{u}^{T} \mathbf{A} \mathbf{v}
+    = (\mathbf{A}\mathbf{v})^{T}\mathbf{u}
+    = \mathbf{v}^{T}\mathbf{A}\mathbf{u}
+.\end{equation}
+
+Conjugate vectors with respect to $\mathbf{A}$ can also be considered as orthogonal
+to each other with respect to $\mathbf{A}$. Two orthogonal vectors satisfying
+$\mathbf{u}^{T}\mathbf{v} = 0$ can be considered as a special case of conjugate
+vectors with respect to $\mathbf{A} = \mathbf{I}$.\\
+
+Based on this generalized orthogonality, we can also define the projection of
+$\mathbf{v}$ onto $\mathbf{u}$ with respect to $\mathbf{A}$ as:
+
+\begin{equation}
+    \mathbf{p}_{\mathbf{u}}(\mathbf{v}) = \left(
+    \frac{\mathbf{u}^{T}\mathbf{A}\mathbf{v}}{\mathbf{u}^{T}\mathbf{A}\mathbf{u}}
+    \right) \mathbf{u}
+.\end{equation}
+
+Given a set of A-conjugate basis vectors $\begin{Bmatrix} d_1 & \ldots & d_n \end{Bmatrix}$
+satisfying $\mathbf{d}_{i}^{T}\mathbf{A}\mathbf{d}_{j} = 0$ for any $\mathbf{i \neq j}$,
+we can represent any $\mathbf{x}$ as:
+
+\begin{equation}
+    \mathbf{x} = \sum_{i=1}^{n} a_{i}\mathbf{d}_{i}
+.\end{equation}
+
+The coefficients $a_{i}$ can be obtained by pre-multiplying $\mathbf{d}_{j}^{T}\mathbf{A}$
+on both sides:
+
+\begin{equation}
+    \mathbf{d}_{j}^{T}\mathbf{A}\mathbf{x}
+    = \sum_{i=1}^{n} a_{i}\mathbf{d}_{j}^{T}\mathbf{A}\mathbf{d}_{i}
+    = a_{j}\mathbf{d}_{j}^{T}\mathbf{A}\mathbf{d}_{j}
+.\end{equation}
+
+Solving for $a_{i}$ we get:
+
+\begin{equation}
+    a_{j} = \frac{\mathbf{d}_{j}^{T}\mathbf{A}\mathbf{x}}{\mathbf{d}_{j}^{T}\mathbf{A}\mathbf{d}_{j}}
+    ,\qquad j = 1,\ldots,n
+.\end{equation}
+
+and $\mathbf{x}$ is now represented as the sum of its A-projections onto the
+\textit{n} basis vectors $\begin{Bmatrix} d_1 & \ldots & d_n \end{Bmatrix}$:
+
+\begin{equation}
+    \mathbf{x}
+    = \sum_{i=1}^{n} a_{i}\mathbf{d}_{i}
+    = \sum_{i=1}^{n} \left(
+    \frac{\mathbf{s}_{i}^{T}\mathbf{A}\mathbf{x}}{\mathbf{d}_{i}^{T}\mathbf{A}\mathbf{d}_{i}}
+    \right) \mathbf{d}_{i}
+    = \sum_{i=1}^{n} \mathbf{p}_{\mathbf{d}_{i}}(\mathbf{x})
+.\end{equation}
+
+A set of independent basis vectors $\begin{Bmatrix} v_1 & \ldots & v_n \end{Bmatrix}$
+can now be also converted to an orthogonal basis with respect to a symmetric
+vector $\mathbf{A}$ by a Gram-Schmidt process:
+
+\begin{equation}
+    \mathbf{d}_{k} = \mathbf{v}_{k}
+    - \sum_{i=1}^{k-1} \mathbf{p}_{\mathbf{d}_{i}}(\mathbf{v}_{k})
+    = \mathbf{v}_{k}
+    - \sum_{i=1}^{k-1} \left(
+    \frac{\mathbf{v}_{k}^{T}\mathbf{A}\mathbf{d}_{i}}
+    {\mathbf{d}_{i}^{T}\mathbf{A}\mathbf{d}_{i}} \right) \mathbf{d}_{i}
+    , \qquad (k = 1, \ldots, n)
+.\end{equation}
 
 
 
