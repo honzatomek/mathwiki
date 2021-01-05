@@ -1161,6 +1161,87 @@ From: \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node4.html}\\
 
 
 
+\chapter{Positive/Negative (Semi)-Definite Matrices}
+
+From: \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node5.html}\\
+
+Given a Hermitian matrix $\mathbf{A} = \mathbf{A}^{*}$ and any non-zero
+vector $\mathbf{x} \neq 0$, we can construct a quadratic form
+$\mathbf{x}^{*}\mathbf{A}\mathbf{x}$. The matrix $\mathbf{A}$ is said to be:
+
+\begin{itemize}
+    \item \textit{positive definite} $\mathbf{A} > 0$, if $\mathbf{x}^{*}\mathbf{A}\mathbf{x} > 0$,
+    \item \textit{positive semi-definite} $\mathbf{A} \ge 0$, if $\mathbf{x}^{*}\mathbf{A}\mathbf{x} \ge 0$,
+    \item \textit{negative definite} $\mathbf{A} < 0$, if $\mathbf{x}^{*}\mathbf{A}\mathbf{x} < 0$,
+    \item \textit{negative semi-definite} $\mathbf{A} \le 0$, if $\mathbf{x}^{*}\mathbf{A}\mathbf{x} \le 0$,
+    \item \textit{indefinite} if there exists $\mathbf{x}$ and $\mathbf{y}$ such
+        that $\mathbf{x}^{T}\mathbf{A}\mathbf{x} < 0 < \mathbf{y}^{T}\mathbf{A}\mathbf{y}$.
+\end{itemize}
+
+For example, consider the covariance matrix of a random vector $\mathbf{x}$:
+
+\begin{equation}
+    \mathbf{\Sigma}_{x} = E [(\mathbf{x}-\mathbf{m}_{x})(\mathbf{x}-\mathbf{m}_{x})^{*}]
+.\end{equation}
+
+The corresponding quadratic form is:
+
+\begin{equation}
+    \begin{array}{ll}
+         \mathbf{v}^{*}\mathbf{\Sigma}_{x}\mathbf{v}
+         &= \mathbf{v}^{*} E[(\mathbf{x}-\mathbf{m}_{x})(\mathbf{x}-\mathbf{m}_{x})^{*}] \mathbf{v}\\
+         &= E[\mathbf{v}^{*}(\mathbf{x}-\mathbf{m}_{x})(\mathbf{x}-\mathbf{m}_{x})^{*}\mathbf{v}]
+         = E(s^{2}) \ge 0,
+    \end{array}
+\end{equation}
+
+where $s = \mathbf{v}^{*}(\mathbf{x}-\mathbf{m}_{x})$ is a scalar.
+Therefore $\mathbf{\Sigma}_{x}$ is positive semi-definite.
+
+As $\mathbf{A}$ is Hermitian, its eigenvalues $\lambda_{1}, \ldots, \lambda_{n}$
+are real and its eigenvector matrix is unitary $\mathbf{V}^{-1} = \mathbf{V}^{*}$,
+by which it can be diagonalized:
+
+\begin{equation}
+    \mathbf{V}^{-1}\mathbf{A}\mathbf{V}
+    = \mathbf{V}^{*}\mathbf{A}\mathbf{V} = \mathbf{\Lambda}
+    , \qquad \text{i.e.} \qquad
+    \mathbf{A} = \mathbf{V}\mathbf{\Lambda}\mathbf{V}^{*}
+,\end{equation}
+
+where vector $\mathbf{y} = \mathbf{V}^{*}\mathbf{x}$ is a unitary transform of
+vector $\mathbf{x}$:\\
+
+For any $\mathbf{x} = \begin{bmatrix} x_1 & \ldots & x_n \end{bmatrix}^{T}$, we have:
+
+\begin{equation}
+    \begin{array}{ll}
+        \mathbf{x}^{*}\mathbf{A}\mathbf{x}
+        &= \mathbf{x}^{*}(\mathbf{V}\mathbf{\Lambda}\mathbf{V}^{*})\mathbf{x}
+        = (\mathbf{V}^{*}\mathbf{x})^{*}\mathbf{\Lambda}(\mathbf{V}^{*}\mathbf{x})
+        = \mathbf{y}^{*}\mathbf{\Lambda}\mathbf{y}
+        = \sum_{i=1}^{n} \lambda_{i} |y_{i}|^{2}\\
+        &= \left\{\begin{array}{lr}
+                > 0 \text{ is positive definite} & \text{ if } \lambda_{i} > 0\\
+                \ge 0 \text{ is positive semi-definite} & \text{ if } \lambda_{i} \ge 0\\
+                < 0 \text{ is negative definite} & \text{ if } \lambda_{i} < 0\\
+                \le 0 \text{ is negative semi-definite} & \text{ if } \lambda_{i} \le 0\\
+        \end{array}  \right. (\text{for all } i).
+    \end{array}
+\end{equation}
+
+Also, if some eigenvalues are positive and some others are negative,
+$\mathbf{x}^{*}\mathbf{A}\mathbf{x}$ may be either positive or negative depending
+in $\mathbf{x}$, i.e., $\mathbf{A}$ is indefinite.\\
+
+As the eigenvalues of $\mathbf{A}^{-1}$ are $1 / \lambda_{i}, i = (1, \ldots, n)$,
+$\mathbf{A}^{-1}$ and $\mathbf{A}$ share the same positive/negative definiteness.
+
+
+
+
+
+
 
 
 \chapter{Inverse and Determinant of Partitioned Symmetric Matrices}
