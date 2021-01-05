@@ -1325,6 +1325,55 @@ Consider some special cases:
         .\end{equation}
 \end{itemize}
 
+\textbf{Proof I}\\
+
+We first show the following is an identity:
+
+\begin{equation}
+    (\mathbf{I} + \mathbf{w}\mathbf{v}^{T})^{-1}
+    = \mathbf{I} - \frac{\mathbf{w}\mathbf{v}^{T}}{1 + \mathbf{v}^{T}\mathbf{w}}
+.\end{equation}
+
+Pre-multiplying $\mathbf{I} + \mathbf{w}\mathbf{v}^{T}$, the right side becomes
+$\mathbf{I}$ as wel as the left side:
+
+\begin{equation}
+    \mathbf{I} + \mathbf{w}\mathbf{v}^{T}
+    - \frac{\mathbf{w}\mathbf{v}^{T} + \mathbf{w}\mathbf{v}^{T}\mathbf{w}\mathbf{v}^{T}}
+    {1 + \mathbf{v}^{T}\mathbf{w}}
+    = \mathbf{I} + \mathbf{w}\mathbf{v}^{T}
+    - \frac{\mathbf{w}(1 + \mathbf{v}^{T}\mathbf{w})\mathbf{v}^{T}}
+    {1 + \mathbf{v}^{T}\mathbf{w}}
+    = \mathbf{I} + \mathbf{w}\mathbf{v}^{T} - \mathbf{w}\mathbf{v}^{T} = \mathbf{I}
+.\end{equation}
+
+We next let $\mathbf{u} = \mathbf{A}^{-1}\mathbf{u}$, and the left side of the
+formula to be proven becomes:
+
+\begin{equation}
+    \begin{array}{ll}
+        (\mathbf{A}+\mathbf{u}\mathbf{v}^{T})^{-1}
+        &= (\mathbf{A} + \mathbf{A}\mathbf{w}\mathbf{v}^{T})^{-1}
+        = (\mathbf{A}(\mathbf{I}+\mathbf{w}\mathbf{v}^{T}))^{-1}
+        = (\mathbf{I}+\mathbf{w}\mathbf{v}^{T})^{-1}\mathbf{A}^{-1}\\
+        &= \left( \mathbf{I}
+        - \frac{\mathbf{w}\mathbf{v}^{T}}{1+\mathbf{v}^{T}\mathbf{w}}\right) \mathbf{A}^{-1}
+    \end{array}
+.\end{equation}
+
+Substituting $\mathbf{w} = \mathbf{A}^{-1}\mathbf{u}$ we get the
+\textit{Sherman-Morrison formula}:
+
+\begin{equation}
+    (\mathbf{A}+\mathbf{u}\mathbf{v}^{T})^{-1}
+    = \left( \mathbf{I}
+    - \frac{\mathbf{A}^{-1}\mathbf{u}\mathbf{v}^{T}}
+    {1+\mathbf{v}^{T}\mathbf{A}^{-1}\mathbf{u}} \right) \mathbf{A}^{-1}
+    = \mathbf{A}^{-1}
+    - \frac{\mathbf{A}^{-1}\mathbf{u}\mathbf{v}^{T}\mathbf{A}^{-1}}
+    {1 + \mathbf{v}^{T}\mathbf{A}^{-1}\mathbf{u}}
+.\end{equation}
+
 
 
 
