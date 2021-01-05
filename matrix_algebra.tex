@@ -970,6 +970,49 @@ a diagonal matrix are all one, it is the \textit{identity matrix}:
 
     \item \textbf{Conjugate transpose}\\
 
+        The \textit{conjugate transpose} of a matrix $\mathbf{A}$, denoted by
+        $\mathbf{A}^{*}$, is by taking the complex conjugate of its transpose:
+
+        \begin{equation}
+            \mathbf{A}^{*} = (\overline{\mathbf{A}})^{T} = \overline{\mathbf{A}^{T}}
+        ,\end{equation}
+
+        i.e., $(\mathbf{A}^{*})_{ij} = \overline{\mathbf{A}}_{ji}$, the $ij^{th}$
+        entry of $\mathbf{A}^{*}$ is the complex conjugate of the $ji^{th}$ entry
+        of $\mathbf{A}$.
+
+        The properties of the conjugate transpose:
+
+        \begin{itemize}
+            \item $(\mathbf{A}^{*})^{*} = \mathbf{A}$
+            \item $(c \mathbf{A})^{*} = \overline{c}\mathbf{A}^{*}$
+            \item $(\mathbf{A} + \mathbf{B})^{*} = \mathbf{A}^{*} + \mathbf{B}^{*}$
+            \item $(\mathbf{A}\mathbf{B})^{*} = \mathbf{B}^{*}\mathbf{A}^{*}$
+            \item $\det(\mathbf{A}^{*}) = (\det \mathbf{A})^{*} = \overline{\det \mathbf{A}}$
+            \item $tr(\mathbf{A}^{*}) = (tr \mathbf{A})^{*} = \overline{tr \mathbf{A}}$
+            \item $(\mathbf{A^{*}})^{-1} = (\mathbf{A}^{-1})^{*}$
+            \item The eigenvalues of $\mathbf{A}^{*}$ are the complex conjugates
+                of the eigenvalues of $\mathbf{A}$. (But their eigenvectors are
+                not related.)
+            \item $\langle \mathbf{A}\mathbf{x}, \mathbf{y} \rangle = \langle \mathbf{x}, \mathbf{A}^{*}\mathbf{y} \rangle$
+        \end{itemize}
+
+        \textbf{Proof:}
+
+        \begin{equation}
+            \langle \mathbf{A}\mathbf{x}, \mathbf{y} \rangle
+            = (\mathbf{A}\mathbf{x})^{*}\mathbf{y}
+            = \mathbf{x}^{*}\mathbf{A}^{*}\mathbf{y}
+            = \mathbf{x}^{*}(\mathbf{A}^{*}\mathbf{y})
+            = \langle \mathbf{x}, \mathbf{A}^{*}\mathbf{y} \rangle
+        .\end{equation}
+
+        If $\mathbf{A} = \mathbf{A}^{*}$, it is a \textit{Hermitian matrix}.
+        A real Hermitian matrix is a symmetric matrix. The inverse of an invertible
+        Hermitian matrix is also Hermitian, i.e., if $\mathbf{A} = \mathbf{A}^{*}$,
+        then $(\mathbf{A}^{-1})^{*} = \mathbf{A}^{-1}$.
+
+
 
 \end{itemize}
 
