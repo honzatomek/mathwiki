@@ -877,7 +877,101 @@ vector $\mathbf{A}$ by a Gram-Schmidt process:
 .\end{equation}
 
 
+\chapter{Properties of Matrices}
+Rank, Trace, Determinant, Transpose and Inverse of Matrices\\
 
+From: \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node3.html}\\
+
+Let $\mathbf{A}$ be an $m \times n$ square matrix:
+
+\begin{equation}
+    \mathbf{A} = \begin{bmatrix} a_1 & \ldots & a_n \end{bmatrix}
+    = \begin{bmatrix}
+        a_{11} & \ldots & a_{1n}\\
+        \vdots & \ddots & \vdots\\
+        a_{m1} & \ldots & a_{mn}
+    \end{bmatrix}_{m \times n}
+\end{equation}
+
+where:
+
+\begin{equation}
+    \mathbf{a}_{j} = \begin{bmatrix} a_{1j}\\ \vdots\\ a_{mj} \end{bmatrix}
+    ,\qquad (j = 1, \ldots, n)
+\end{equation}
+
+is the $j^{th}$ column vector and
+
+\begin{equation}
+    \begin{bmatrix} a_{i1} & \ldots & a_{in} \end{bmatrix}
+    , \qquad (i = 1, \ldots, m)
+\end{equation}
+
+is the $i^{th}$ row vector. If $m = n$, $\mathbf{A}$ is a \textit{square matrix}.
+In particular, if all entries of a square matrix are zero except those along the
+diagonal, it is a \textit{diagonal matrix}. Morover, if the diagonal entries of
+a diagonal matrix are all one, it is the \textit{identity matrix}:
+
+\begin{equation}
+    \mathbf{I} = \begin{bmatrix}
+        1 & 0 & \ldots & 0\\
+        0 & 1 &   & \vdots\\
+        \vdots & & \ddots & 0\\
+        0 & \ldots & 0 & 1
+    \end{bmatrix}
+.\end{equation}
+
+\begin{itemize}
+    \item \textbf{Rank}\\
+
+        The $m$ row vectors span the \textit{row space} of $\mathbf{A}$ and the
+        $n$ columns span the \textit{column space} of $\mathbf{A}$. The \textit{rank}
+        of each space is its dimension, the number of independent vectors in the
+        space. The row and column spaces have the same rank, which is also the
+        rank of matrix $\mathbf{A}$, i.e.:
+
+        \begin{equation}
+            r = rank(\mathbf{A}) \le \min(m, n)
+        .\end{equation}
+
+        In other words, the rank of matrix $\mathbf{A}$ is the number of its
+        independent rows or columns.
+
+     \item \textbf{Transpose}\\
+
+        The \textit{transpose} $\mathbf{x}^{T}$ of a column vector $\mathbf{x}$
+        is a row vector:
+
+        \begin{equation}
+            \mathbf{x}^{T} = \begin{bmatrix} x_1\\ \vdots\\ x_n \end{bmatrix}^{T}
+            = \begin{bmatrix} x_1 & \ldots & x_n \end{bmatrix}
+        .\end{equation}
+
+        The transpose $\mathbf{A}^{T}$ of a matrix $\mathbf{A}$ is obtained
+        by switching the position of elements $a_{ij}$ and $a_{ji}$,
+        for all $i \in \{1, \ldots, m\}$ and $j \in \{1, \ldots, n\}$.
+        In other words, the $i^{th}$ column of $\mathbf{A}$ becomes the
+        $i^{th}$ row of $\mathbf{A}^{T}$.\\
+
+        The properties of the transpose:
+
+        \begin{itemize}
+            \item $(\mathbf{A}^{T})^{T} = \mathbf{A}$,
+
+            \item $(\mathbf{A} + \mathbf{B})^{T} = \mathbf{A}^{T} + \mathbf{B}^{T}$,
+
+            \item $(\mathbf{A}\mathbf{B})^{T} = \mathbf{B}^{T}\mathbf{A^{T}}$,
+
+            \item $\mathbf{A}^{T}$ and $\mathbf{A}$ have the same eigenvalues
+                and eigenvectors.
+        \end{itemize}
+
+        If $\mathbf{A} = \mathbf{A}^{T}$, it is a \textit{symmetric matrix}.
+
+    \item \textbf{Conjugate transpose}\\
+
+
+\end{itemize}
 
 
 
