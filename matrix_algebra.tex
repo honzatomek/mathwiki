@@ -1012,6 +1012,28 @@ a diagonal matrix are all one, it is the \textit{identity matrix}:
         Hermitian matrix is also Hermitian, i.e., if $\mathbf{A} = \mathbf{A}^{*}$,
         then $(\mathbf{A}^{-1})^{*} = \mathbf{A}^{-1}$.
 
+    \item \textbf{Trace}\\
+
+        The \textit{trace} of a square matrix $A$ is the sum of its diagonal elements:
+
+        \begin{equation}
+            tr(\mathbf{A}) = \sum_{i=1}^{n} a_{ii}
+        .\end{equation}
+
+        The properties of the trace:
+
+        \begin{itemize}
+            \item $tr(c \mathbf{A}) = c \; tr(\mathbf{A})$
+            \item $tr(\mathbf{A}^{T}) = tr(\mathbf{A})$
+            \item $tr(\mathbf{A} + \mathbf{B}) = tr(\mathbf{B} + \mathbf{A})$
+            \item $tr(\mathbf{A} \mathbf{B}) = tr(\mathbf{B} \mathbf{A})$
+            \item $tr(\mathbf{A}^{T} \mathbf{B}) = tr(\mathbf{A} \mathbf{B}^{T})$
+            \item $tr(\mathbf{R}^{-1} \mathbf{A} \mathbf{R})
+                = tr(\mathbf{R}^{-1}(\mathbf{A} \mathbf{R}))
+                = tr((\mathbf{A} \mathbf{R}) \mathbf{R}^{-1})
+                = tr(\mathbf{A})$
+        \end{itemize}
+
 
 
 \end{itemize}
