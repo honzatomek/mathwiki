@@ -1038,7 +1038,7 @@ a diagonal matrix are all one, it is the \textit{identity matrix}:
 
         The \textit{determinant} of a square matrix $\mathbf{A}$ is denoted by
         $\det(\mathbf{A}) = |\mathbf{A}|$, and $\det(\mathbf{A}) \neq 0$ if and
-        only if it is full rank, i.e., $rank(\mathbf{A}) = n$.
+        only if it is full rank, i.e., $rank(\mathbf{A}) = n$.\\
 
         The properties of the determinant:
 
@@ -1050,7 +1050,26 @@ a diagonal matrix are all one, it is the \textit{identity matrix}:
             \item $\det(c\mathbf{A}) = c^{n} \det(\mathbf{A})$.
         \end{itemize}
 
+    \item \textbf{Inverse}\\
 
+        If $\mathbf{A}$ is an $m \times n$ full rank square matrix with $m = n = r$,
+        then there exists an  \textit{inverse matrix} $\mathbf{A}^{-1}$ that
+        satisfies $\mathbf{A}\mathbf{A}^{-1} = \mathbf{A}^{-1}\mathbf{A} = \mathbf{I}$.
+        The inverse $\mathbf{A}^{-1}$ does not exist if $\mathbf{A}$ is not
+        square $(m \neq n)$ or full rank $(r < m = n)$.\\
+
+        The properties of the inverse:
+
+        \begin{itemize}
+            \item $(\mathbf{A}^{-1})^{-1} = \mathbf{A}$,
+            \item $(\mathbf{A}^{T})^{-1} = (\mathbf{A}^{-1})^{T}$,
+            \item $\det(\mathbf{A}^{-1}) = \det(\mathbf{A})^{-1}$,
+            \item $(\mathbf{A}\mathbf{B})^{-1} = \mathbf{B}^{-1}\mathbf{A}^{-1}$.
+        \end{itemize}
+
+        For example, the solution of a linear equation system
+        $\mathbf{A}\mathbf{x} = \mathbf{b}$ of $m$ equations and $n = m$ variables
+        can be obtained as $\mathbf{x} = \mathbf{A}^{-1}\mathbf{b}$.
 \end{itemize}
 
 
