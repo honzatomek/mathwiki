@@ -1447,7 +1447,6 @@ we therefore have:
 
 
 
-
 \chapter{Inverse and Determinant of Partitioned Symmetric Matrices}
 From \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node7.html}\\
 
@@ -2071,5 +2070,77 @@ First, as $\mathbf{P1} = 1$, $\lambda = 1$ is one of the eigenvalues of $\mathbf
 
 i.e. $|\lambda| \leq 1$.
 \end{itemize}
+
+
+
+\chapter{Generalized Eigenvalue Problem}
+
+From: \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node10.html}\\
+
+The \textit{generalized eigenvalue problem} of two symmetric matrices
+$\mathbf{A} = \mathbf{A}^{T}$ and $\mathbf{B} = \mathbf{B}^{T}$ is to find a scalar
+$\lambda_{i}$ and the corresponding vector $\mathbf{v}_{i}$ for the following
+generalized eigen equation to hold:
+
+\begin{equation}
+    \mathbf{A}\mathbf{v}_{i} = \lambda_{i}\mathbf{B}\mathbf{v}_{i},
+    \qquad (i = 1, \ldots, n)
+.\end{equation}
+
+or in matrix form:
+
+\begin{equation}
+    \mathbf{A}\mathbf{V} = \mathbf{B}\mathbf{V}\mathbf{\Lambda}
+.\end{equation}
+
+The eigenvalue and eigenvector matrices $\mathbf{\Lambda}$ and $\mathbf{V}$ can
+be found in the following steps:
+
+\begin{itemize}
+    \item Solve the eigenvalue problem of $\mathbf{B}$ to find its diagonal
+        eigenvalue matrix $\mathbf{\Lambda}_{B}$ and orthogonal eigenvectors
+        matrix $\mathbf{V}_{B} = (\mathbf{V}_{B}^{T})^{-1}$ so that
+
+        \begin{equation}
+            \mathbf{B}\mathbf{V}_{B} = \mathbf{V}_{B}\mathbf{\Lambda}_{B},
+            \qquad \text{or} \qquad
+            \mathbf{V}_{B}^{-1}\mathbf{B}\mathbf{V}_{B}
+            = \mathbf{V}_{B}^{T}\mathbf{B}\mathbf{V}_{B} = \mathbf{\Lambda}_{B}
+        .\end{equation}
+
+    \item Left and right multiplying both sides of the second equation above by
+        $\mathbf{\Lambda}^{-1 / 2}$ (whitening) we get
+
+        \begin{equation}
+            \mathbf{\Lambda}_{B}^{-1 / 2} (\mathbf{V}_{B}^{T}\mathbf{B}\mathbf{V}_{B})
+            \mathbf{\Lambda}_{B}^{-1 / 2}
+            = \mathbf{\Lambda}_{B}^{-1 / 2}\mathbf{\Lambda}_{B}\mathbf{\Lambda}_{B}^{-1 / 2}
+            = \mathbf{I}
+        .\end{equation}
+
+        We define
+
+        \begin{equation}
+            \mathbf{V}_{B}^{'} = \mathbf{V}_{B}\mathbf{\Lambda}_{B}^{-1 / 2}
+        ,\end{equation}
+
+        and the above becomes
+
+        \begin{equation}
+            (\mathbf{V}_{B}^{'})^{T} \mathbf{B} \mathbf{V}_{B}^{'} = \mathbf{I}
+        .\end{equation}
+
+        Note that $\mathbf{V}_{B}^{'}$ is not orthogonal
+
+        \begin{equation}
+            (\mathbf{V^{'}})_{B}^{-1}
+            = (\mathbf{V}_{B}\mathbf{\Lambda}_{B}^{-1 / 2})^{-1}
+            = \mathbf{\Lambda}_{B}^{1 / 2}\mathbf{V}_{B}^{-1}
+            = \mathbf{\Lambda}_{B}^{1 / 2}\mathbf{V}_{B}^{T}
+            \neq \mathbf{\Lambda}_{B}^{-1 / 2} \mathbf{V}_{B}^{T} = \mathbf{V}_{B}^{T}
+        .\end{equation}
+\end{itemize}
+
+
 
 \end{document}
