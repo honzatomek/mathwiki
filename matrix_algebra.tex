@@ -1374,8 +1374,76 @@ Substituting $\mathbf{w} = \mathbf{A}^{-1}\mathbf{u}$ we get the
     {1 + \mathbf{v}^{T}\mathbf{A}^{-1}\mathbf{u}}
 .\end{equation}
 
+\textbf{Proof II}\\
 
+This formula can also be proved based on the following problem. Assuming a linear
+equation system $\mathbf{A}\mathbf{y} = \mathbf{b}$ is solved to get
+$\mathbf{y} = \mathbf{A}^{-1}\mathbf{b}$, we want to solve this system:
 
+\begin{equation}
+    (\mathbf{A} + \mathbf{u}\mathbf{v}^{T})\mathbf{x} = \mathbf{b}
+.\end{equation}
+
+We first pre-multiply both sides of this equation by $\mathbf{A}^{-1}$ to get:
+
+\begin{equation}
+    \mathbf{A}^{-1}(\mathbf{A} + \mathbf{u}\mathbf{v}^{T})\mathbf{x}
+    = (\mathbf{I}+\mathbf{A}^{-1}\mathbf{u}\mathbf{v}^{T})\mathbf{x}
+    = \mathbf{x} + \mathbf{A}^{-1}\mathbf{u}\mathbf{v}^{T}\mathbf{x}
+    = \mathbf{A}^{-1}\mathbf{b} = \mathbf{y}
+.\end{equation}
+
+If we define $\mathbf{w} = \mathbf{A}^{-1}\mathbf{u}$ and $\alpha = \mathbf{v}^{T}\mathbf{x}$,
+the above equation can be written as:
+
+\begin{equation}
+    \mathbf{x} + \mathbf{w}\alpha = \mathbf{y}
+.\end{equation}
+
+Premultiplying both sides of this equation by $\mathbf{v}^{T}$, we get:
+
+\begin{equation}
+    \mathbf{v}^{T}\mathbf{x} + \mathbf{v}^{T}\mathbf{w}\alpha
+    = \mathbf{v}^{T}\mathbf{y}, \qquad i.e. \qquad
+    \qquad \alpha + \mathbf{v}^{T}\mathbf{A}^{-1}\mathbf{u}\alpha
+    = \mathbf{v}^{T}\mathbf{y}
+.\end{equation}
+
+Solving for $\alpha$ we get:
+
+\begin{equation}
+    \alpha = \frac{\mathbf{v}^{T}y}{1+\mathbf{v}^{T}\mathbf{A}^{-1}\mathbf{u}}
+.\end{equation}
+
+Substituting $\alpha$ into the previous equation for $\mathbf{x}$, we get
+
+\begin{equation}
+    \mathbf{x} = \mathbf{y} - \mathbf{w}\alpha
+    = \mathbf{y} - \frac{\mathbf{w}\mathbf{v}^{T}\mathbf{y}}
+    {1 + \mathbf{v}^{T}\mathbf{A}^{-1}\mathbf{u}}
+    = \mathbf{A}^{-1}\mathbf{b}
+    - \frac{\mathbf{A}^{-1}\mathbf{u}\mathbf{v}^{T}\mathbf{A}^{-1}\mathbf{b}}
+    {1 + \mathbf{v}^{T}\mathbf{A}^{-1}\mathbf{u}}
+    = \left( \mathbf{A}^{-1}
+    - \frac{\mathbf{A}^{-1}\mathbf{u}\mathbf{v}^{T}\mathbf{A}^{-1}}
+    {1 + \mathbf{v}^{T}\mathbf{A}^{-1}\mathbf{u}}\right) \mathbf{b}
+.\end{equation}
+
+But solving the equation $(\mathbf{A + \mathbf{u}\mathbf{v}^{T}})\mathbf{x} = \mathbf{b}$
+we also get
+
+\begin{equation}
+    \mathbf{x} = (\mathbf{A} + \mathbf{u}\mathbf{v}^{T})^{-1}\mathbf{b}
+.\end{equation}
+
+we therefore have:
+
+\begin{equation}
+    (\mathbf{A} + \mathbf{u}\mathbf{v}^{T})^{-1}
+    = \mathbf{A}^{-1}
+    - \frac{\mathbf{A}^{-1}\mathbf{u}\mathbf{v}^{T}\mathbf{A}^{-1}}
+    {1 + \mathbf{v}^{T}\mathbf{A}^{-1}\mathbf{u}}
+.\end{equation}
 
 
 
