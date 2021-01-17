@@ -2139,8 +2139,101 @@ be found in the following steps:
             = \mathbf{\Lambda}_{B}^{1 / 2}\mathbf{V}_{B}^{T}
             \neq \mathbf{\Lambda}_{B}^{-1 / 2} \mathbf{V}_{B}^{T} = \mathbf{V}_{B}^{T}
         .\end{equation}
-\end{itemize}
+
+    \item Apply the same transformation to $\mathbf{A}$:
+
+        \begin{equation}
+            (\mathbf{V}_{B}^{'})^{T}\mathbf{A}\mathbf{V}_{B}^{'}
+            =(\mathbf{\Lambda}_{B}^{-1 / 2}\mathbf{V}_{B}^{T})
+            \mathbf{A}(\mathbf{V}_{B}\mathbf{\Lambda}_{B}^{-1 / 2})
+            =\mathbf{A}^{'}
+        .\end{equation}
+
+        Note that $\mathbf{A}^{'}$ is symmetric as well as $\mathbf{A}$:
+
+        \begin{equation}
+            \mathbf{A}^{'T}=(\mathbf{V}_{B}^{'T}\mathbf{A}\mathbf{V}_{B}^{'})^{T}
+            =\mathbf{V}_{B}^{'T}\mathbf{A}\mathbf{V}_{B}^{'}=\mathbf{A}^{'}
+        .\end{equation}
+
+    \item Diagonalize $\mathbf{A}^{'}$
+
+        As $\mathbf{A}$ is symmetric, it can be diagonalized by its orthogonal
+        eigenvector marix $\mathbf{V}_{A}$:
+
+        \begin{equation}
+            \mathbf{V}_{A}^{T}\mathbf{A}^{'}\mathbf{V}_{A}=\mathbf{\Lambda}
+        .\end{equation}
+
+        i.e.,
+
+        \begin{equation}
+            \begin{array}{ll}
+                \mathbf{V}_{A}^{T}(\mathbf{\Lambda}_{B}^{-1 / 2}\mathbf{V}_{B}^{T}
+                \mathbf{A}\mathbf{V}_{B}\mathbf{\Lambda}_{B}^{-1 / 2})\mathbf{V}_{A}
+                &= (\mathbf{V}_{A}^{T}\mathbf{\Lambda}_{B}^{-1 / 2}\mathbf{V}_{B}^{T})
+                \mathbf{A}(\mathbf{V}_{B}\mathbf{\Lambda}_{B}^{-1 / 2}\mathbf{V}_{A}\\
+                &= \mathbf{V}^{T}\mathbf{A}\mathbf{V}=\mathbf{A}
+            \end{array}
+        .\end{equation}
 
 
+        where we have defined
+
+        \begin{equation}
+            \mathbf{V}= \mathbf{V}_{B}\mathbf{\Lambda}_{B}^{-1 / 2}\mathbf{V}_{A} 
+        ,\end{equation}
+
+        which is not orthgonal:
+
+        \begin{equation}
+            \mathbf{V}^{-1}
+            =(\mathbf{V}_{B}\mathbf{\Lambda}_{B}^{-1 / 2}\mathbf{V}_{A})^{-1}
+            =\mathbf{V}_{A}^{-1}\mathbf{\Lambda}_{B}^{1 / 2}\mathbf{V}_{B}^{-1}
+            = \mathbf{V}_{A}^{T}\mathbf{\Lambda}_{B}^{1 / 2}\mathbf{V}_{B}^{T}
+            \neq \mathbf{V}_{A}^{T}\mathbf{\Lambda}_{B}^{-1 / 2}\mathbf{V}_{B}^{T}
+            =\mathbf{V}^{T}
+        .\end{equation}
+
+    \item This $\mathbf{V}$ also diagonalizes $\mathbf{B}$:
+
+        \begin{equation}
+            \begin{array}{ll}
+                \mathbf{V}^{T}\mathbf{B}\mathbf{V}
+                &=(\mathbf{V}_{B}\mathbf{\Lambda}_{B}^{-1 / 2}\mathbf{V}_{A})^{T}
+                \mathbf{B}(\mathbf{V}_{B}\mathbf{\Lambda}_{B}^{-1 / 2}\mathbf{V}_{A})
+                =\mathbf{V}_{A}^{T}\mathbf{\Lambda}_{B}^{-1 / 2}
+                (\mathbf{V}_{B}^{T}\mathbf{B}\mathbf{V}_{B})\mathbf{\Lambda}_{B}^{-1 / 2}\mathbf{V}_{A}\\
+                &= \mathbf{V}_{A}^{T}\mathbf{\Lambda}_{B}^{-1 / 2}\mathbf{\Lambda}_{B}
+                \mathbf{\Lambda}_{B}^{-1 / 2}\mathbf{V}_{A}
+                = \mathbf{V}_{A}^{T}\mathbf{V}_{A}
+                = \mathbf{I}
+            \end{array}
+        .\end{equation}
+
+
+    \item Now we have:
+
+        \begin{equation}
+            \left\{\begin{array}{l}
+                \mathbf{V}^{T}\mathbf{A}\mathbf{V} = \mathbf{\Lambda} \\
+                \mathbf{V}^{T}\mathbf{B}\mathbf{V} = \mathbf{I}
+            \end{array}\right.
+        .\end{equation}
+
+        Right multiplying both sides of the second equation by $\mathbf{\Lambda}$
+        we get $\mathbf{V}^{T}\mathbf{B}\mathbf{V}\mathbf{\Lambda} = \mathbf{\Lambda}$,
+        then equating the left-hand side to that of the first equation, we get:
+
+        \begin{equation}
+            \mathbf{V}^{T}\mathbf{A}\mathbf{V}
+            = \mathbf{V}^{T}\mathbf{B}\mathbf{V}\mathbf{\Lambda},
+            \qquad\text{ i.e. }\qquad
+            \mathbf{A}\mathbf{V} = \mathbf{B}\mathbf{V}\mathbf{\Lambda}
+        ,\end{equation}
+
+        i.e, $\mathbf{\Lambda}$ and $\mathbf{V}$ are the eigenvalue and
+        eigenvector matrices of the generalized eigenvalue problem.
+        Note, however, as shown above, $\mathbf{V}$ is not orthogonal.
 
 \end{document}
