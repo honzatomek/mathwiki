@@ -2236,4 +2236,65 @@ be found in the following steps:
         eigenvector matrices of the generalized eigenvalue problem.
 
         Note, however, as shown above, $\mathbf{V}$ is not orthogonal.
+\end{itemize}
+
+\chapter{Rayleigh Quotient}
+
+From: \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node11.html}\\
+
+The \textit{Rayleigh quotient} $R(\mathbf{A}$ of a hermitian matrix
+$\mathbf{A} = \mathbf{A}^{*}$ (symmetric if $\mathbf{A}$ is real) is defined as:
+
+\begin{equation}
+    R(\mathbf{A}) = \frac{\mathbf{w}^{*}\mathbf{A}\mathbf{w}}{\mathbf{w}^{*}\mathbf{w}}
+,\end{equation}
+
+where $\mathbf{w}$ is any non-zero vector. In particular, if $\mathbf{w} = \mathbf{v}_{i}$
+is the ith eigenvector of $\mathbf{A}$, then the Rayleigh quotient is the corresponding
+to eigenvalue $\lambda_{i}$:
+
+\begin{equation}
+    R(\mathbf{A}) = \frac{\mathbf{v}_{i}^{*}\mathbf{A}\mathbf{v}_{i}}
+    {\mathbf{v}_{i}^{*}\mathbf{v}_{i}}
+    = \frac{\lambda_{i}\mathbf{v}_{i}^{*}\mathbf{v}_{i}}
+    {\mathbf{v}_{i}^{*}\mathbf{v}_{i}}
+    = \lambda_{i}
+.\end{equation}
+
+The Rayleigh quotient of two symmetric matrices $\mathbf{A}$ and $\mathbf{B}$
+is a function of a vector $\mathbf{w}$ defined as:
+
+\begin{equation}
+    R(\mathbf{w}) = \frac{\mathbf{w}^{T}\mathbf{A}\mathbf{w}}
+    {\mathbf{w}^{T}\mathbf{B}\mathbf{w}}
+.\end{equation}
+
+To find the optimal $\mathbf{w}$ corresponding to the extremum (maximum or minimum)
+of $R(\mathbf{w})$, we find its derivative with respect to $\mathbf{w}$:
+
+\begin{equation}
+    \frac{d}{d \mathbf{w}}R(\mathbf{w}) =
+    \frac{2 \mathbf{A}\mathbf{w}(\mathbf{w}^{T}\mathbf{B}\mathbf{w})
+    - 2 \mathbf{B}\mathbf{w}(\mathbf{w}^{T}\mathbf{A}\mathbf{w})}
+    {(\mathbf{w}^{T}\mathbf{B}\mathbf{w})^{2}}
+.\end{equation}
+
+Setting it to zero we get:
+
+\begin{equation}
+    \mathbf{A}\mathbf{w}(\mathbf{w}^{T}\mathbf{B}\mathbf{w})
+    = \mathbf{B}\mathbf{w}(\mathbf{w}^{T}\mathbf{A}\mathbf{w})
+    , \qquad \text{i.e.}\qquad
+    \mathbf{A}\mathbf{w} =
+    \frac{\mathbf{w}^{T}\mathbf{A}\mathbf{w}}
+    {\mathbf{w}^{T}\mathbf{B}\mathbf{w}}\mathbf{B}\mathbf{w}
+    = R(\mathbf{w}) = \lambda \mathbf{B}\mathbf{w}
+.\end{equation}
+
+The second equation can be recognised as a generalised eigenvalue problem with
+$\lambda = R(\mathbf{w})$ being the eigenvalue and $\mathbf{w}$ the corresponding
+eigenvector. Solving this we get the vector $\mathbf{w}$ corresponding to the
+maximum/minimum eigenvalue $\lambda = R(\mathbf{w})$, which maximizes/minimizes
+the Rayleigh quotient.
+
 \end{document}
