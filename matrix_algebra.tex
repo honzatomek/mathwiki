@@ -2297,4 +2297,238 @@ eigenvector. Solving this we get the vector $\mathbf{w}$ corresponding to the
 maximum/minimum eigenvalue $\lambda = R(\mathbf{w})$, which maximizes/minimizes
 the Rayleigh quotient.
 
+
+\chapter{Normal Matrices and Diagonalizability}
+
+From: \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node12.html}\\
+
+\textbf{Theorem:} The product of two unitary matrices is unitary.
+
+\textbf{Proof:} Let $\mathbf{U}$ and $\mathbf{V}$ be unitary, i.e.
+$\mathbf{U}^{*} = \mathbf{U}^{-1}$ and $\mathbf{V}^{*} = \mathbf{V}^{-1}$,
+thrn $\mathbf{U}\mathbf{V}$ is unitary:
+
+\begin{equation}
+    (\mathbf{U}\mathbf{V})^{*} = \mathbf{V}^{*}\mathbf{U}^{*}
+    = \mathbf{V}^{-1}\mathbf{U}^{-1} = (\mathbf{U}\mathbf{V})^{-1}
+.\end{equation}
+
+
+\textbf{Theorem:} Two square matrices $\mathbf{A}$ and $\mathbf{B}$ are simultaneously
+diagonalizable if and only if they commute:
+
+\textbf{Proof:} (\href{http://math.stackexchange.com/questions/236212/simultaneously-diagonalizable-proof}{reference})
+
+\begin{itemize}
+    \item Let $\mathbf{A}$ and $\mathbf{B}$ be simultaneously diagonalizable
+        by $\mathbf{R}$
+
+        \begin{equation}
+            \mathbf{R}^{-1}\mathbf{A}\mathbf{R} = \mathbf{\Lambda}_{A}
+            , \qquad
+            \mathbf{R}^{-1}\mathbf{B}\mathbf{R} = \mathbf{\Lambda}_{B}
+        ,\end{equation}
+
+        then
+
+        \begin{equation}
+            \begin{array}{ll}
+                \mathbf{A}\mathbf{B}
+                &= (\mathbf{R}\mathbf{\Lambda}_{A}\mathbf{R}^{-1})
+                (\mathbf{R}\mathbf{\Lambda}_{B}\mathbf{R}^{-1})
+                = (\mathbf{R}\mathbf{\Lambda}_{A}\mathbf{\Lambda}_{B}\mathbf{R}^{-1})
+                = (\mathbf{R}\mathbf{\Lambda}_{B}\mathbf{\Lambda}_{A}\mathbf{R}^{-1})
+                \\
+                &= (\mathbf{R}\mathbf{\Lambda}_{B}\mathbf{R}^{-1})
+                (\mathbf{R}\mathbf{\Lambda}_{A}\mathbf{R}^{-1})
+                = \mathbf{B}\mathbf{A}
+            \end{array}
+        .\end{equation}
+
+    \item Let $\mathbf{A}$ and $\mathbf{B}$ commute, i.e.,
+        $\mathbf{A}\mathbf{B} = \mathbf{B}\mathbf{A}$. Assuming $\mathbf{u}$ is
+        an eigenvector of $\mathbf{A}$ corresponding to eigenvalue $\lambda$,
+        i.e., $\mathbf{A}\mathbf{u} = \lambda \mathbf{u}$, then:
+
+        \begin{equation}
+            \mathbf{A}\mathbf{B}\mathbf{u} = \mathbf{B}(\mathbf{A}\mathbf{u})
+            = \lambda \mathbf{B}\mathbf{u}
+        ,\end{equation}
+
+        we see that $\mathbf{B}\mathbf{u}$ is also an eigenvector of $\mathbf{A}$
+        corresponding to the same eigenvalue $\lambda$, i.e., $\mathbf{B}\mathbf{u}$
+        must be scaled version of $\mathbf{u}$ (in the same 1-D space).
+        $\mathbf{B}\mathbf{u} = \gamma \mathbf{u}$, i.e., $\mathbf{u}$ is also
+        an eigenvector of $\mathbf{B}$.
+
+\end{itemize}
+
+
+\textbf{Theorem:} A matrix is normal if and only if it is unitarily diagonalizable.
+
+\textbf{Proof:} (\href{http://scipp.ucsc.edu/~haber/ph116A/diag_11.pdf}{reference})
+
+\begin{itemize}
+    \item If $\mathbf{A}$ is unitarily diagonalizable:
+
+        \begin{equation}
+            \mathbf{A}\mathbf{U} = \mathbf{U}\mathbf{\Lambda}
+            , \qquad
+            \mathbf{U}^{-1}\mathbf{A}\mathbf{U}
+            = \mathbf{U}^{*}\mathbf{A}\mathbf{U} = \mathbf{\Lambda}
+            , \qquad
+            \mathbf{A} = \mathbf{U}\mathbf{\Lambda}\mathbf{U}^{*}
+        ,\end{equation}
+
+        where $\mathbf{U}^{*} = \mathbf{U}^{-1}$ is unitary and $\mathbf{\Lambda}$
+        is a diagonal matrix satisfying
+        $\mathbf{\Lambda}^{*}\mathbf{\Lambda} = \mathbf{\Lambda}\mathbf{\Lambda}^{*}$,
+        then $\mathbf{A}$ is normal:
+
+        \begin{equation}
+            \begin{array}{ll}
+                \mathbf{A}\mathbf{A}^{*}
+                &= (\mathbf{U}\mathbf{\Lambda}\mathbf{U}^{*})
+                (\mathbf{U}\mathbf{\Lambda}\mathbf{U}^{*})^{*}
+                = (\mathbf{U}\mathbf{\Lambda}\mathbf{U}^{*})
+                (\mathbf{U}\mathbf{\Lambda}^{*}\mathbf{U}^{*})
+                = \mathbf{U}\mathbf{\Lambda}\mathbf{\Lambda}^{*}\mathbf{U}^{*} \\
+                &= \mathbf{U}\mathbf{\Lambda}^{*}\mathbf{\Lambda}\mathbf{U}^{*}
+                = (\mathbf{U}\mathbf{\Lambda}^{*}\mathbf{U}^{*})
+                (\mathbf{U}\mathbf{\Lambda}\mathbf{U}^{*})
+                = \mathbf{A}^{*}\mathbf{A}
+            \end{array}
+        .\end{equation}
+
+    \item If $\mathbf{A}$ is normal, then it is diagonalizable by unitary matrices.
+        First we show any matrix $\mathbf{A}$ can be written as:
+
+        \begin{equation}
+            \mathbf{A} = \mathbf{B} + i \mathbf{C}
+        ,\end{equation}
+
+        where
+
+        \begin{equation}
+            \mathbf{B} = \frac{1}{2}(\mathbf{A} + \mathbf{A}^{*}) = \mathbf{B}^{*}
+            , \qquad
+            \mathbf{C} = -\frac{1}{2}(\mathbf{A} - \mathbf{A}^{*}) = \mathbf{C}^{*}
+        ,\end{equation}
+
+        are both Hermitian, and diagonalizable by unitary matrix. As $\mathbf{A}$
+        is normal, we have:
+
+        \begin{equation}
+            0 = \mathbf{A}\mathbf{A}^{*} - \mathbf{A}^{*}\mathbf{A}
+            = (\mathbf{B} + i \mathbf{C})(\mathbf{B} - i \mathbf{C})
+            - (\mathbf{B} - i \mathbf{C})(\mathbf{B} + i \mathbf{C})
+            = 2 i (\mathbf{C}\mathbf{B} - \mathbf{B}\mathbf{C})
+        .\end{equation}
+
+        We see that $\mathbf{C}\mathbf{B} = \mathbf{B}\mathbf{C}$, i.e.,
+        $\mathbf{B}$ and $\mathbf{C}$ commute, and they can be simultaneously
+        diagonalized by some unitary matrix $\mathbf{U}$:
+
+        \begin{equation}
+            \mathbf{U}^{*}\mathbf{B}\mathbf{U} = \mathbf{\Lambda}_{B}
+            , \qquad
+            \mathbf{U}^{*}\mathbf{C}\mathbf{U} = \mathbf{\Lambda}_{C}
+        ,\end{equation}
+
+        and so can $\mathbf{A} = \mathbf{B} + i \mathbf{C}$:
+
+        \begin{equation}
+            \mathbf{U}^{*}\mathbf{A}\mathbf{U}
+            = \mathbf{U}^{*}(\mathbf{B} + i \mathbf{C})\mathbf{U}
+            = \mathbf{\Lambda}_{B} + i \mathbf{\Labmda}_{C} = \mathbf{\Lambda}_{A}
+        .\end{equation}
+\end{itemize}
+
+Q.E.D.\\
+
+If $\mathbf{A}$ is normal, i.e., it commutes with its conjugate transpose
+$\mathbf{A}^{*}\mathbf{A} = \mathbf{A}\mathbf{A}^{*}$, then $\mathbf{A}$
+and $\mathbf{A}^{*}$ can be simultaneously diagonalized by their unitary eigenvector
+matrix $\mathbf{U}$:
+
+\begin{equation}
+    \mathbf{A} = \mathbf{U}\mathbf{\Lambda}\mathbf{U}^{*}
+    , \qquad
+    \mathbf{A}^{*} = \mathbf{U}\overline{\mathbf{\Lambda}}\mathbf{U}^{*}
+.\end{equation}
+
+
+\chapter{Centering Matrix}
+
+From: \url{http://fourier.eng.hmc.edu/e176/lectures/algebra/node13.html}\\
+
+The centering matrix is defined as:
+
+\begin{equation}
+    \mathbf{C}_{n} = \mathbf{I}_{n} - \frac{1}{n}\mathbf{1}\mathbf{1}^{T}
+,\end{equation}
+
+where $\mathbf{1} = [1, \ldots , 1]^{T}$ and $\mathbf{1}\mathbf{1}^{T}$
+is an $n \times n$ matrix of all 1's. For example,
+
+\begin{equation}
+    \mathbf{C}_{1} = 0
+;\end{equation}
+
+\begin{equation}
+    \mathbf{C}_{2} =
+    \begin{bmatrix}
+        1 & 0 \\
+        0 & 1
+    \end{bmatrix}
+    - \frac{1}{2}
+    \begin{bmatrix}
+        1 & 1 \\
+        1 & 1
+    \end{bmatrix}
+    = \frac{1}{2}\begin{bmatrix}
+         1 & -1 \\
+        -1 &  1
+    \end{bmatrix}
+;\end{equation}
+
+\begin{equation}
+    \mathbf{C}_{3} = \begin{bmatrix}
+        1 & 0 & 0 \\
+        0 & 1 & 0 \\
+        0 & 0 & 1
+    \end{bmatrix}
+    - \frac{1}{3} \begin{bmatrix}
+        1 & 1 & 1 \\
+        1 & 1 & 1 \\
+        1 & 1 & 1
+    \end{bmatrix}
+    = \frac{1}{3} \begin{bmatrix}
+        2 & -1 & -1 \\
+        -1 & 2 & -1 \\
+        -1 & -1 & 2
+    \end{bmatrix}
+.\end{equation}
+
+When $\mathbf{C}_{n}$ is applied to an n-D vector $\mathbf{v} = [v_{1}, \ldots, v_{n}]^{T}$,
+we get:
+
+\begin{equation}
+    \mathbf{C}_{n}\mathbf{v} = \mathbf{v} - \frac{1}{n}(\mathbf{1}\mathbf{1}^{T})\mathbf{v}
+    = \mathbf{v} - \frac{1}{n}
+    \sum_{i=1}^{n} v_{i}\mathbf{1} = \mathbf{v} - \overline{v}\mathbf{1}
+,\end{equation}
+
+where $\overline{v}$ is the mean of all components of $\mathbf{v}$:
+
+\begin{equation}
+    \overline{v} = \frac{1}{n}\mathbf{1}^{T}\mathbf{v}
+    = \frac{1}{n} \sum_{i=1}^{n} v_{i}
+.\end{equation}
+
+We see that the mean of $\mathbf{v}$ is removed form the resulting vector
+$\mathbf{C}_{n}\mathbf{v}$.
+
+
+
 \end{document}
