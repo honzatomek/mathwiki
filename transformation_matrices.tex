@@ -1,0 +1,551 @@
+\documentclass[10pt,b5paper,titlepage]{book}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+%\usepackage{xcolor}
+\usepackage{color}
+\usepackage{graphicx}
+
+\usepackage{hyperref}
+
+\author{Jan Tomek}
+\title{\bf Transformation Matrices}
+
+\setlength{\parindent}{0ex}
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\bullet$}
+\renewcommand{\labelitemiii}{$\bullet$}
+\renewcommand{\labelitemiv}{$\bullet$}
+
+%Commands definitions
+\newcommand\setbackgroundcolour{\pagecolor[rgb]{0.15,0.15,0.15}}
+\newcommand\settextcolour{\color[rgb]{0.9,0.9,0.9}}
+\newcommand\invertbackgroundtext{\setbackgroundcolour\settextcolour}
+
+% equal by definition
+\newcommand*\eqd{\stackrel{\triangle}{=}}
+
+% {name}[number of arguments][1st default value] etc..
+% the argument value is then inserted at #argument_number
+\newenvironment{bbox}[1][1.0]
+{
+    \begin{center}
+        \begin{tabular}{|p{#1\textwidth}|}
+            \hline\\
+}
+{
+            \\\\\hline
+        \end{tabular}
+    \end{center}
+}
+
+\newenvironment{bboxtitle}[1][1.0]
+{
+    \begin{center}
+        #1\\[1ex]
+        \begin{tabular}{|p{#1\textwidth}|}
+            \hline\\
+}
+{
+            \\\\\hline
+        \end{tabular}
+    \end{center}
+}
+
+%Command execution.
+%If this line is commented, then the appearance remains as usual.
+\invertbackgroundtext
+
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Coordinate Transformation}
+
+\begin{itemize}
+    \item \textbf{Rotation:} \\
+
+        Let $\mathbf{A}^{T} = [a_{x}, a_{y}, a_{z}]$ be the original coordinates,
+        $\mathbf{B}^{T} = [b_{x}, b_{y}, b_{z}]$ be the transformed coordinates, and
+        $\mathbf{T}$ a tranformation matrix in the form:
+
+        \begin{equation}
+            \mathbf{T} = \begin{bmatrix}
+                x_1 & x_2 & x_3 \\
+                y_1 & y_2 & y_3 \\
+                z_1 & z_2 & z_3
+            \end{bmatrix} = \begin{bmatrix}
+                \mathbf{x} \\
+                \mathbf{y} \\
+                \mathbf{z}
+            \end{bmatrix}
+        ,\end{equation}
+
+        where $\mathbf{x} = [x_1, x_2, x_3]$, $\mathbf{y} = [y_1, y_2, y_3]$ and
+        $\mathbf{z} = [z_1, z_2, z_3]$ are the \textit{x-axis}, \textit{y-axis} and
+        \textit{z-axis} \textbf{unit vectors}, respectively, of the new coordinate
+        system defined in the original one, while sharing their origin.
+
+        The following applies:
+
+        \begin{equation}
+            \mathbf{T} \times \mathbf{A} = \mathbf{B}
+        ,\end{equation}
+
+        and
+
+        \begin{equation}
+            \mathbf{T}^{T} \times \mathbf{B} = \mathbf{A}
+        .\end{equation}
+
+        \textbf{Note:} Perpendicular vector is  created using \textit{cross-product}.
+\end{itemize}
+
+
+\chapter{Tensor Transformation}
+
+Let $\mathbf{A}$ be the original tensor,
+$\mathbf{B}^{T}$ be the transformed tensor, and
+$\mathbf{T}$ a tranformation matrix in the form:
+
+\begin{equation}
+    \mathbf{A} = \begin{bmatrix}
+        \sigma^{A}_{11} & \sigma^{A}_{12} & \sigma^{A}_{13} \\
+        \sigma^{A}_{21} & \sigma^{A}_{22} & \sigma^{A}_{23} \\
+        \sigma^{A}_{31} & \sigma^{A}_{32} & \sigma^{A}_{33}
+    \end{bmatrix}
+,\end{equation}
+
+\begin{equation}
+    \mathbf{B} = \begin{bmatrix}
+        \sigma^{B}_{11} & \sigma^{B}_{12} & \sigma^{B}_{13} \\
+        \sigma^{B}_{21} & \sigma^{B}_{22} & \sigma^{B}_{23} \\
+        \sigma^{B}_{31} & \sigma^{B}_{32} & \sigma^{B}_{33}
+    \end{bmatrix}
+,\end{equation}
+
+\begin{equation}
+    \mathbf{T} = \begin{bmatrix}
+        x_1 & x_2 & x_3 \\
+        y_1 & y_2 & y_3 \\
+        z_1 & z_2 & z_3
+    \end{bmatrix} = \begin{bmatrix}
+        \mathbf{x} \\
+        \mathbf{y} \\
+        \mathbf{z}
+    \end{bmatrix}
+,\end{equation}
+
+where $\mathbf{x} = [x_1, x_2, x_3]$, $\mathbf{y} = [y_1, y_2, y_3]$ and
+$\mathbf{z} = [z_1, z_2, z_3]$ are the \textit{x-axis}, \textit{y-axis} and
+\textit{z-axis} \textbf{unit vectors}, respectively, of the new coordinate
+system defined in the original one, while sharing their origin.
+
+Then \textbf{tensor transformation} is performed as such:
+
+\begin{equation}
+    \mathbf{T} \times \mathbf{A} \times \mathbf{T}^{T} = \mathbf{B}
+.\end{equation}
+
+\begin{equation}
+    \mathbf{T}^{T} \times \mathbf{B} \times \mathbf{T} = \mathbf{A}
+.\end{equation}
+
+\begin{itemize}
+    \item \textbf{Principal values:} \\
+
+        The principal values can be found as the \textbf{eigenvalues} of the tensor
+        matrix.
+
+        Characteristic equation of tensor $\mathbf{\Sigma}$:
+
+        \begin{equation}
+            \mathbf{\Sigma}\mathbf{V} = \mathbf{\Lambda} \mathbf{V}
+        ,\end{equation}
+
+        therefore:
+
+        \begin{equation}
+            (\mathbf{\Sigma} - \mathbf{\Lambda}\mathbf{I})\mathbf{V} = 0
+        ,\end{equation}
+
+        and:
+
+        \begin{equation}
+            det(\mathbf{\Sigma} - \mathbf{\Lambda}\mathbf{I}) = 0
+        ,\end{equation}
+
+        where $\mathbf{\Lambda}$ is a diagonal matrix of eigenvalues (principal values)
+        and $\mathbf{V}$ is the eigenvector matrix.
+
+        The characteristic cubic equation can be also written as:
+
+        \begin{equation}
+            \lambda^{3} - I_{1}\lambda^{2} + I_{2}\lambda - I_{3} = 0
+        ,\end{equation}
+
+        giving three roots equal to tensor eigenvalues.\\
+
+        First compute \textbf{Invariants} $\mathbf{I}_{n}$:
+
+        \begin{equation}
+            \begin{array}{ll}
+                I_{1} &= \sigma_{11} + \sigma_{22} + \sigma_{33} \\
+                I_{2} &= \sigma_{11}\sigma_{22} + \sigma_{22}\sigma_{33}
+                + \sigma_{33}\sigma_{11} - \sigma_{12}^{2} - \sigma_{13}^{2} - \sigma_{23}^{2} \\
+                I_{3}
+                &= \sigma_{11}\sigma_{22}\sigma_{33}
+                - \sigma_{11}\sigma_{23}^{2}
+                - \sigma_{22}\sigma_{13}^{2}
+                - \sigma_{33}\sigma_{12}^{2}
+                + 2 \sigma_{12}\sigma_{13}\sigma_{23}
+            \end{array}
+        .\end{equation}
+
+        In matrix form:
+
+        \begin{equation}
+            \begin{array}{ll}
+                I_{1} &= tr[\mathbf{\Sigma}] \\
+                I_{2} &= \left| \begin{matrix}
+                    \sigma_{11} & \sigma_{12} \\
+                    \sigma_{12} & \sigma_{12}
+                \end{matrix} \right| + \left| \begin{matrix}
+                    \sigma_{11} & \sigma_{13} \\
+                    \sigma_{13} & \sigma_{33}
+                \end{matrix} \right| + \left| \begin{matrix}
+                    \sigma_{22} & \sigma_{23} \\
+                    \sigma_{23} & \sigma_{33}
+                \end{matrix} \right| \\
+                    I_{3} &= det(\mathbf{\Sigma})
+            \end{array}
+        .\end{equation}
+
+        Then compute \textit{help values}:
+
+        \begin{equation}
+            Q = \frac{3 I_{2} - I_{1}^{2}}{9}
+        ,\end{equation}
+
+        \begin{equation}
+            R = \frac{2 I_{1}^{3} - 9 I_{1} I_{2} + 27 I_{3}}{54} \\
+        ,\end{equation}
+
+        \begin{equation}
+            \theta = cos^{-1} \left( \frac{ R }{ \sqrt{- Q^{3}}} \right)
+        .\end{equation}
+
+        Lastly to get \textbf{principal values}:
+
+        \begin{equation}
+            \overline{\sigma_{1}}
+            = 2 \sqrt{-Q} \cos{\left(\frac{\theta}{3}\right)} + \frac{1}{3}I_{1}
+        .\end{equation}
+
+        \begin{equation}
+            \overline{\sigma_{2}}
+            = 2 \sqrt{-Q} \cos{\left(\frac{\theta + 2 \pi}{3}\right)} + \frac{1}{3}I_{1}
+        .\end{equation}
+
+        \begin{equation}
+            \overline{\sigma_{3}}
+            = 2 \sqrt{-Q} \cos{\left(\frac{\theta + 4 \pi}{3}\right)} + \frac{1}{3}I_{1}
+        .\end{equation}
+
+        The \textbf{principal values are not sorted}. The principal tensor is then:
+
+        \begin{equation}
+            \mathbf{\Sigma} = \begin{bmatrix}
+                \sigma_{1} & 0 & 0 \\
+                0 & \sigma_{2}  & 0 \\
+                0 & 0 & \sigma_{3}
+            \end{bmatrix}
+        ,\end{equation}
+
+        where $\overline{\sigma}_{1}$, $\overline{\sigma}_{2}$ and $\overline{\sigma}_{3}$
+        $\implies$ $\sigma_1 > \sigma_2 > \sigma_3$.
+
+        Afterwards the \textbf{principal axes} are obtained as:
+
+        \begin{equation}
+            \begin{array}{l}
+                \mathbf{\Gamma}_{1} = \mathbf{\Sigma} - \sigma_{1}\mathbf{I} \\
+                \mathbf{\Gamma}_{2} = \mathbf{\Sigma} - \sigma_{2}\mathbf{I} \\
+                \mathbf{\Gamma}_{3} = \mathbf{\Sigma} - \sigma_{3}\mathbf{I}
+            \end{array}
+        ,\end{equation}
+
+        where $\mathbf{\Gamma}$ is a coordinate system corresponding to the
+        principal value \textit{i} and $\mathbf{I}$ is a $3 \times 3$
+        identity matrix.
+
+        The vectors corresponding to each \textbf{principal value} are obtained:
+
+        \begin{equation}
+            \mathbf{\Gamma}_{1}
+            = \begin{bmatrix}
+                \overline{x}_{11} & \overline{x}_{12} & \overline{x}_{13}\\
+                \overline{y}_{11} & \overline{y}_{12} & \overline{y}_{13}\\
+                \overline{z}_{11} & \overline{z}_{12} & \overline{z}_{13}
+            \end{bmatrix}
+            = \begin{bmatrix}
+                \overline{\mathbf{x}}_{1}\\
+                \overline{\mathbf{y}}_{1}\\
+                \overline{\mathbf{z}}_{1}
+            \end{bmatrix}
+        ,\end{equation}
+        \begin{equation}
+            \mathbf{\Gamma}_{2}
+            = \begin{bmatrix}
+                \overline{x}_{21} & \overline{x}_{22} & \overline{x}_{23}\\
+                \overline{y}_{21} & \overline{y}_{22} & \overline{y}_{23}\\
+                \overline{z}_{21} & \overline{z}_{22} & \overline{z}_{23}
+            \end{bmatrix}
+            = \begin{bmatrix}
+                \overline{\mathbf{x}}_{2}\\
+                \overline{\mathbf{y}}_{2}\\
+                \overline{\mathbf{z}}_{2}
+            \end{bmatrix} \\
+        ,\end{equation}
+        \begin{equation}
+            \mathbf{\Gamma}_{3}
+            = \begin{bmatrix}
+                \overline{x}_{31} & \overline{x}_{32} & \overline{x}_{33}\\
+                \overline{y}_{31} & \overline{y}_{32} & \overline{y}_{33}\\
+                \overline{z}_{31} & \overline{z}_{32} & \overline{z}_{33}
+            \end{bmatrix}
+            = \begin{bmatrix}
+                \overline{\mathbf{x}}_{3}\\
+                \overline{\mathbf{y}}_{3}\\
+                \overline{\mathbf{z}}_{3}
+            \end{bmatrix}
+        ,\end{equation}
+
+        where $\overline{\mathbf{x}}$, $\overline{\mathbf{y}}$ and $\overline{\mathbf{z}}$ are vectors of size 3.
+
+        \begin{equation}
+              \mathbf{x} = \frac{\overline{\mathbf{y}}_{1} \times \overline{\mathbf{z}}_{1}}
+              {|\overline{\mathbf{y}}_{1} \times \overline{\mathbf{z}}_{1}|}\\
+        ,\end{equation}
+        \begin{equation}
+              \mathbf{y} = \frac{\overline{\mathbf{z}}_{2} \times \overline{\mathbf{x}}_{2}}
+              {|\overline{\mathbf{z}}_{2} \times \overline{\mathbf{x}}_{2}|}\\
+        ,\end{equation}
+        \begin{equation}
+              \mathbf{z} = \frac{\overline{\mathbf{x}}_{3} \times \overline{\mathbf{y}}_{3}}
+              {|\overline{\mathbf{x}}_{3} \times \overline{\mathbf{y}}_{3}|}
+        .\end{equation}
+
+        The principal axes are also the \textbf{eigenvectors} of tensor $\mathbf{\Sigma}$:
+
+        \begin{equation}
+            \mathbf{V} = \begin{bmatrix}
+                \mathbf{x} & \mathbf{y} & \mathbf{z}
+            \end{bmatrix} = \begin{bmatrix}
+                x_1 & y_1 & z_1 \\
+                x_2 & y_2 & z_2 \\
+                x_3 & y_3 & z_3
+            \end{bmatrix}
+        .\end{equation}
+
+    \item \textbf{Maximum Shear value:}\\
+
+        From: \url{https://wp.optics.arizona.edu/optomech/wp-content/uploads/sites/53/2016/10/OPTI_222_W21.pdf}\\
+        From: \url{https://www.continuummechanics.org/principalstressesandstrains.html}\\
+        From: \url{https://www.ecourses.ou.edu/cgi-bin/eBook.cgi?doc=&topic=me&chap_sec=07.2&page=theory} \\
+
+        Maximum \textbf{shear stress} occurs at an angle of 45 degrees to principal axes.
+        If principal stresses are aligned such that $\sigma_1 > \sigma_2 > \sigma_3$
+        and the stress tensor is:
+
+        \begin{equation}
+            \mathbf{\Sigma} = \begin{bmatrix}
+                \sigma_1 & 0 & 0 \\
+                0 & \sigma_2 & 0 \\
+                0 & 0 & \sigma_3
+            \end{bmatrix}
+        ,\end{equation}
+
+        then maximum shear stress $\tau_{max}$ can be obtained as follows:
+
+        \begin{equation}
+            \tau_{max} = \frac{\sigma_1 - \sigma_3}{2}
+        \end{equation}
+
+        and is in at 45 degrees angle in the 1-3 plane of the principal axes to the
+        principal coordinate system.
+
+        More generally (in 2D):
+
+        \begin{equation}
+            \tau_{max} = \sqrt{\left(\frac{\sigma_{x} - \sigma_{y}}{2}\right)^{2}
+            + \tau_{xy}^{2}}
+        .\end{equation}
+
+        \begin{bbox}
+            When the principal tensor is rotated by 45 degrees to obtain \textbf{maximum
+            shear stress}, the axial stress components corresponding to this shear
+            stress are equal.
+        \end{bbox}\\
+
+    \item \textbf{Example:}
+
+        Let a stress tensor in principal coordinate system be:
+
+        \begin{equation}
+             \mathbf{\Sigma} = \begin{bmatrix}
+                 433 & 0 & 0 \\
+                 0 & 125 & 0 \\
+                 0 & 0 & 24
+             \end{bmatrix}
+        ,\end{equation}
+
+        then $\sigma_1 = \sigma_{max} = 433 \text{ MPa}$ and
+        $\sigma_3 = \sigma_{min} = 24 \text{ MPa}$.\\
+
+        Transformation matrix for rotating by 45 degrees in 3-1 plane is:
+
+        \begin{equation}
+            \mathbf{T} = \begin{bmatrix}
+                \frac{\sqrt{2}}{2} & 0 & -\frac{\sqrt{2}}{2} \\
+                0 & 1 & 0 \\
+                \frac{\sqrt{2}}{2} & 0 & \frac{\sqrt{2}}{2}
+            \end{bmatrix}
+        .\end{equation}
+
+        Rotating tensor $\mathbf{\Sigma}$ by transformation matrix $\mathbf{T}$ we get:
+
+        \begin{equation}
+            \mathbf{\Sigma}_{\tau} = \mathbf{T}\mathbf{\Sigma}\mathbf{T}^{T}
+            = \begin{bmatrix}
+                228.5 & 0 & 204.5 \\
+                0 & 125 & 0 \\
+                204.5 & 0 & 228.5
+            \end{bmatrix}
+        ,\end{equation}
+
+        where:
+
+        \begin{equation}
+            \begin{array}{l}
+                \tau_{max} = \sigma_{13} = \sigma_{31} = 204.5 \\
+                \sigma_{11} = \sigma_{33} = 228.5 \\
+                \sigma_{22} = \sigma_2
+            \end{array}
+        .\end{equation}
+
+        Check for corrext values:
+
+        \begin{equation}
+            \tau_{max} = \frac{\sigma_1 - \sigma_3}{2} = \frac{433 - 24}{2}
+            = \frac{409}{2} = 204.5 \text{ MPa} \implies \text{OK!}
+        .\end{equation}
+
+        $\sigma_2$ has not changed as it is colinear with the axis of rotation.
+
+        The relationship between principal normal streses and maximum shear stresses
+        can be better understood by examining a plot of the stresses as a function
+        of the rotation angle.
+
+        Notice that there are multiple $\theta_{p}$ and $\theta_{\tau - max}$
+        angles because of the periodical nature of the equations. However, they
+        will give the same absolute values.
+
+        At the principal stress angle, $\theta_{p}$, the shear stress will always be zero,
+        as show on the diagram. And the maximum shear stress will occur when the
+        two principal normal stresses, $\sigma_1$ and $\sigma_2$, are equal.
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.8\textwidth]{img/stresses_as_function_of_angle}
+            \caption{Stresses as a function of angle}
+            \label{fig:stresses_as_function_of_angle-png}
+        \end{figure}
+
+        \begin{bbox}
+            When $\sigma_{x}$ or $\sigma_{y}$ are either max or min, the shear stress
+            $\tau_{xy}$ is equal to 0. When shear stress $\tau_{xy}$ is max or min,
+            the stresses $\sigma_{x}$ and $\sigma_{y}$ are equal.
+        \end{bbox}
+
+
+\end{itemize}
+
+
+\chapter{Moment of Inertia}
+
+Moment of Inertia = \textbf{tensor}.
+
+\begin{itemize}
+    \item \textbf{Steiner's share:}\\
+
+        \begin{equation}
+            \mathbf{I}_{ss} = m \times \begin{bmatrix}
+                y^{2} + z^{2} & -xy & -xz \\
+                -yz & x^{2} + z^{2} & -yz \\
+                -zx & -zy & x^{2} + y^{2}
+            \end{bmatrix}
+        .\end{equation}
+
+        \textbf{Identities for a skew-symmetric matrix}\\
+
+        In order to compare formulations of the parallel axis theorem using
+        skew-symmetric matrices and the tensor formulation, the following
+        identities are useful.
+
+        Let $[\mathbf{R}]$ be the skew-symmetric matrix associated with the
+        position vector $\mathbf{R} = (x, y, z)$, then the prodictuct in
+        the inertia matrix becomes:
+
+        \begin{equation}
+            -[\mathbf{R}][\mathbf{R}] = \begin{bmatrix}
+                0 & -z & y \\
+                z & 0 & -x \\
+                -y & x & 0
+            \end{bmatrix}^{2}
+            = \begin{bmatrix}
+                y^{2} + z^{2} & -xy & -xz \\
+                -yz & x^{2} + z^{2} & -yz \\
+                -zx & -zy & x^{2} + y^{2}
+            \end{bmatrix}
+        .\end{equation}
+
+        This product can be computed using the matrix formed by the outer product
+        $[\mathbf{R} \mathbf{R}^{T}]$ using the identity
+
+        \begin{equation}
+            \begin{array}{ll}
+                 \\
+                -[\mathbf{R}]^{2}
+                &= |\mathbf{R}|^{2}|\mathbf{E}_{3}| - [\mathbf{R}\mathbf{R}^{T}] \\
+                &= \begin{bmatrix}
+                    x^{2} + y^{2} + z^{2} & 0 & 0 \\
+                    0 & x^{2} + y^{2} + z^{2} & 0 \\
+                    0 & 0 & 0
+                \end{bmatrix} - \begin{bmatrix}
+                    x^{2} & xy & xz \\
+                    yx & y^{2} & yz \\
+                    zx & zy & z^{2}
+                \end{bmatrix}
+            \end{array}
+        ,\end{equation}
+
+        where $[\mathbf{E}_{3}$ is the $n \times n$  identity matrix.
+
+        Also notice, that
+
+        \begin{equation}
+            |\mathbf{R}|^{2} = \mathbf{R} \cdot \mathbf{R} = tr [\mathbf{R}\mathbf{R}^{T}]
+        .\end{equation}
+
+        where $tr$ denotes the sum of the diagonal elements of the outer product
+        matrix, known as its \textit{trace}.
+
+\end{itemize}
+
+\end{document}
