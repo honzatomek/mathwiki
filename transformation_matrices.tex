@@ -109,6 +109,10 @@
 
 \chapter{Tensor Transformation}
 
+From: \href{https://wp.optics.arizona.edu/optomech/wp-content/uploads/sites/53/2016/10/OPTI_222_W21.pdf}{source 1},
+\href{https://www.continuummechanics.org/principalstressesandstrains.html}{source 2},
+\href{https://www.ecourses.ou.edu/cgi-bin/eBook.cgi?doc=&topic=me&chap_sec=07.2&page=theory}{source 3} \\
+
 Let $\mathbf{A}$ be the original tensor,
 $\mathbf{B}^{T}$ be the transformed tensor, and
 $\mathbf{T}$ a tranformation matrix in the form:
@@ -355,9 +359,6 @@ Then \textbf{tensor transformation} is performed as such:
 
     \item \textbf{Maximum Shear value:}\\
 
-        From: \url{https://wp.optics.arizona.edu/optomech/wp-content/uploads/sites/53/2016/10/OPTI_222_W21.pdf}\\
-        From: \url{https://www.continuummechanics.org/principalstressesandstrains.html}\\
-        From: \url{https://www.ecourses.ou.edu/cgi-bin/eBook.cgi?doc=&topic=me&chap_sec=07.2&page=theory} \\
 
         Maximum \textbf{shear stress} occurs at an angle of 45 degrees to principal axes.
         If principal stresses are aligned such that $\sigma_1 > \sigma_2 > \sigma_3$
@@ -377,7 +378,7 @@ Then \textbf{tensor transformation} is performed as such:
             \tau_{max} = \frac{\sigma_1 - \sigma_3}{2}
         \end{equation}
 
-        and is in at 45 degrees angle in the 1-3 plane of the principal axes to the
+        and is at 45 degrees angle in the 1-3 plane of the principal axes to the
         principal coordinate system.
 
         More generally (in 2D):
@@ -391,6 +392,20 @@ Then \textbf{tensor transformation} is performed as such:
             When the principal tensor is rotated by 45 degrees to obtain \textbf{maximum
             shear stress}, the axial stress components corresponding to this shear
             stress are equal.
+
+            The value of maximal shear stress is obtained:
+
+            \begin{equation}
+                \tau_{max} = \frac{\sigma_{max} - \sigma_{min}}{2}
+            .\end{equation}
+
+            The value of axial stresses corresponding to maximal shear stress is
+            the average of maximal and minimal axial stresses:
+
+            \begin{equation}
+                \sigma_{\tau_{max}} = \frac{\sigma_{max} + \sigma_{min}}{2}
+            .\end{equation}
+
         \end{bbox}\\
 
     \item \textbf{Example:}
@@ -439,14 +454,19 @@ Then \textbf{tensor transformation} is performed as such:
             \end{array}
         .\end{equation}
 
-        Check for corrext values:
+        Check for correct values:
 
         \begin{equation}
             \tau_{max} = \frac{\sigma_1 - \sigma_3}{2} = \frac{433 - 24}{2}
             = \frac{409}{2} = 204.5 \text{ MPa} \implies \text{OK!}
+        ,\end{equation}
+
+        \begin{equation}
+            \sigma_{11} = \sigma_{33} = \frac{\sigma_1 + \sigma_3}{2}
+            = \frac{433 + 24}{2} = 228.5 \text{ MPa} \implies \text{OK!}
         .\end{equation}
 
-        $\sigma_2$ has not changed as it is colinear with the axis of rotation.
+        \textbf{$\sigma_2$ has not changed as it is colinear with the axis of rotation.}
 
         The relationship between principal normal streses and maximum shear stresses
         can be better understood by examining a plot of the stresses as a function
@@ -457,7 +477,7 @@ Then \textbf{tensor transformation} is performed as such:
         will give the same absolute values.
 
         At the principal stress angle, $\theta_{p}$, the shear stress will always be zero,
-        as show on the diagram. And the maximum shear stress will occur when the
+        as shown on the diagram. And the maximum shear stress will occur when the
         two principal normal stresses, $\sigma_1$ and $\sigma_2$, are equal.
 
         \begin{figure}[h]
@@ -470,7 +490,7 @@ Then \textbf{tensor transformation} is performed as such:
         \begin{bbox}
             When $\sigma_{x}$ or $\sigma_{y}$ are either max or min, the shear stress
             $\tau_{xy}$ is equal to 0. When shear stress $\tau_{xy}$ is max or min,
-            the stresses $\sigma_{x}$ and $\sigma_{y}$ are equal.
+            the stresses $\sigma_{x}$ and $\sigma_{y}$ are equal to their average.
         \end{bbox}
 
 
@@ -478,6 +498,14 @@ Then \textbf{tensor transformation} is performed as such:
 
 
 \chapter{Moment of Inertia}
+
+From: \href{https://en.wikipedia.org/wiki/Parallel_axis_theorem}{Parallel axis theorem}\\
+
+\textit{Parallel axis theorem}, also known as \textit{Huygens-Steiner's theorem}
+or just \textit{Steiner's theorem} can be used to determine the \textbf{moment of inertia}
+or \textbf{second moment of area} of a rigid body about any axis, given the body's
+moment of inertia about a parallel axis through the objects center of gravity
+and the perpendicular distance between the axes.
 
 Moment of Inertia = \textbf{tensor}.
 
@@ -545,6 +573,35 @@ Moment of Inertia = \textbf{tensor}.
 
         where $tr$ denotes the sum of the diagonal elements of the outer product
         matrix, known as its \textit{trace}.
+
+        To obtain matrix of moments of inertia by rotating about any random
+        point $A$ while having the moment of inertia in the center of gravity of
+        the object $\mathbf{I}_{COG}$ and the coordinate distance $d = [x, y, z]$
+        between the point $A$ and \textbf{COG} we:
+
+        \begin{enumerate}
+            \item Compute the moment of inertia relative to point $A$
+
+                 \begin{equation}
+                    \mathbf{I}_{A} = \mathbf{I}_{COG} + m \times \mathbf{I}_{SS}^{A \to COG}
+                .\end{equation}
+
+            \item Transform the tensor $\mathbf{I}_{A}$ to new rotated coordinate
+                system using transformation matrix $\mathbf{T}$:
+
+                \begin{equation}
+                    \mathbf{I}_{A}^{'} = \mathbf{T} \times \mathbf{I}_{A} \times \mathbf{T}^{T}
+                .\end{equation}
+
+            \item Subtract the \textbf{Steiner's share} relative to new \textbf{COG}
+
+                \begin{equation}
+                    \mathbf{I}_{COG}^{'} = \mathbf{I}_{A}^{'} - \mathbf{I}_{SS}^{A' \to COG'}
+                .\end{equation}
+
+        \end{enumerate}
+
+
 
 \end{itemize}
 
