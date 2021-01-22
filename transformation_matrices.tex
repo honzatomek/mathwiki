@@ -113,9 +113,9 @@ From: \href{https://wp.optics.arizona.edu/optomech/wp-content/uploads/sites/53/2
 \href{https://www.continuummechanics.org/principalstressesandstrains.html}{source 2},
 \href{https://www.ecourses.ou.edu/cgi-bin/eBook.cgi?doc=&topic=me&chap_sec=07.2&page=theory}{source 3} \\
 
-Let $\mathbf{A}$ be the original tensor,
-$\mathbf{B}^{T}$ be the transformed tensor, and
-$\mathbf{T}$ a tranformation matrix in the form:
+Let real symmetric matrix  $\mathbf{A}$ be the original tensor,
+real symmetric matrix $\mathbf{B}$ the transformed tensor, and
+unitary matrix $\mathbf{T}$ a tranformation matrix in the form:
 
 \begin{equation}
     \mathbf{A} = \begin{bmatrix}
@@ -148,7 +148,11 @@ $\mathbf{T}$ a tranformation matrix in the form:
 where $\mathbf{x} = [x_1, x_2, x_3]$, $\mathbf{y} = [y_1, y_2, y_3]$ and
 $\mathbf{z} = [z_1, z_2, z_3]$ are the \textit{x-axis}, \textit{y-axis} and
 \textit{z-axis} \textbf{unit vectors}, respectively, of the new coordinate
-system defined in the original one, while sharing their origin.
+system defined in the original one, while sharing their origin.\\
+
+The transformation matrix $\mathbf{T}$ must satisfy
+$\mathbf{T}\mathbf{T}^{T} = \mathbf{T}^{T}\mathbf{T} = \mathbf{I}$, where $\mathbf{I}$
+is an identity matrix.\\
 
 Then \textbf{tensor transformation} is performed as such:
 
