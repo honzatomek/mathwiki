@@ -65,6 +65,326 @@
 
 \tableofcontents
 
+\chapter{Constructing Transformation Matrix}
+
+\section{Rotation Matrix}
+
+From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}\\
+
+\begin{enumerate}
+    \item 2-D (in $\mathbb{R}^{2})$:\\
+        Rotating an object to a new coordinate system:
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.35\textwidth]{img/RotationMatrix_1000}
+            \caption{Rotating object}
+            \label{fig:RotationMatrix_1000-png}
+        \end{figure}
+
+        In $\mathbb{R}^{2}$, consider the matrix that rotates a given
+        vector $\mathbf{v}_{0}$ by a counterclockwise angle $\theta$ in
+        a fixed coordinate system. Then
+
+        \begin{equation}
+            \mathbf{T}_{\theta} = \begin{bmatrix}
+                \cos \theta & -\sin \theta \\
+                \sin \theta & \cos \theta
+            \end{bmatrix}
+        ,\end{equation}
+
+        so
+
+        \begin{equation}
+            \mathbf{v}^{'} = \mathbf{T}_{\theta}\mathbf{v}_{0}
+        .\end{equation}
+
+        \begin{figure}[h]
+            \centering
+            \includegraphics[width=0.5\textwidth]{img/RotationMatrixAxes_1000}
+            \caption{Rotating Axes}
+            \label{fig:RotationMatrixAxes_1000-png}
+        \end{figure}
+
+        On the other hand, consider the matrix that rotates the
+        \textit{coordinate system} through a counterclockwise angle $\theta$.
+        The coordinates of the fixed vector $\mathbf{v}$ in the rotated
+        coordinate system are now given by a rotation matrix which is the
+        \textit{transpose} of the fixed-axis matrix, as can be seen on the
+        second figure, is equivalent to rotating the vector by
+        a counterclockwise angle $-\theta$ relative to a fixed set of axes,
+        giving:
+
+        \begin{equation}
+            \mathbf{T}_{\theta}^{'} = \begin{bmatrix}
+                \cos \theta & \sin \theta \\
+                -\sin \theta & \cos \theta
+            \end{bmatrix}
+        .\end{equation}
+
+        This is the convention commonly used in textbooks.
+
+    \item 3-D ($\mathbb{R}^{3}$):\\
+
+        In $\mathbb{R}^{3}$, coordinate system rotations of the
+        \textit{x-}, \textit{y-} and \textit{z-axis} in a counterclockwise
+        direction when looking towards the origin give the matrices:
+
+        \begin{equation}
+            \mathbf{R}_{x}(\phi) =
+            \begin{bmatrix}
+                1 & 0 & 0 \\
+                0 & \cos \phi & \sin \phi \\
+                0 & -\sin \phi & \cos \phi
+            \end{bmatrix}
+        .\end{equation}
+
+        \begin{equation}
+            \mathbf{R}_{y}(\theta) =
+            \begin{bmatrix}
+                \cos \theta & 0 & -\sin \theta \\
+                0 & 1 & 0 \\
+                \sin \theta & 0 & \cos \theta
+            \end{bmatrix}
+        .\end{equation}
+
+        \begin{equation}
+            \mathbf{R}_{z}(\psi) =
+            \begin{bmatrix}
+                \cos \psi & \sin \psi & 0 \\
+                -\sin \psi & \cos \psi & 0 \\
+                0 & 0 & 1
+            \end{bmatrix}
+        .\end{equation}
+
+        Any \textbf{rotation} can be given as a composition of rotations
+        about three axes (\textbf{Euler's rotation theorem}), and thus
+        be represented by a $3 \times 3$ matrix operating on a vector.
+
+        \begin{equation}
+            \begin{bmatrix}
+                x_{1}^{'} \\ x_{2}^{'} \\ x_{3}^{'}
+            \end{bmatrix}
+            =
+            \begin{bmatrix}
+                t_{11} & t_{12} & t_{13} \\
+                t_{21} & t_{22} & t_{23} \\
+                t_{31} & t_{32} & t_{33}
+            \end{bmatrix}
+            \begin{bmatrix}
+                x_{1} \\ x_{2} \\ x_{3}
+            \end{bmatrix}
+        .\end{equation}
+
+    \item \textbf{Euler's angles of XYZ rotation:}\\
+
+        With the order of \textit{xyz} rotation the rotation matrix is
+        composed as:
+
+        \begin{equation}
+            \begin{array}{ll}
+                \mathbf{T}
+                &= \mathbf{R}_{z}(\psi)\mathbf{R}_{y}(\theta)\mathbf{R}_{x}(\phi) \\
+                &=
+                \begin{bmatrix}
+                    \cos \psi & \sin \psi & 0 \\
+                    -\sin \psi & \cos \psi & 0 \\
+                    0 & 0 & 1
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \cos \theta & 0 & -\sin \theta \\
+                    0 & 1 & 0 \\
+                    \sin \theta & 0 & \cos \theta
+                \end{bmatrix}
+                \begin{bmatrix}
+                    1 & 0 & 0 \\
+                    0 & \cos \phi & \sin \phi \\
+                    0 & -\sin \phi & \cos \phi
+                \end{bmatrix} \\
+                &=
+                \begin{bmatrix}
+                    \cos \theta \cos \psi
+                    & \cos \psi \sin \theta \sin \phi - \cos \phi \sin \psi
+                    & \cos \phi \cos \psi \sin \theta + \sin \phi \sin \psi \\
+                    \cos \theta \sin \psi
+                    & \cos \phi \cos \psi + \sin \theta \sin \phi \sin \psi
+                    & \cos \phi \sin \theta \sin \psi - \cos \psi \sin \phi \\
+                    -\sin \theta
+                    & \cos \theta \sin \phi
+                    & \cos \theta \cos \phi
+                \end{bmatrix}
+            \end{array}
+        .\end{equation}
+
+        Then the three \textit{Euler angles} for a \textit{xyz} rotation
+        can be obtained:
+
+        \begin{equation}
+            \phi = atan2(t_{32}, t_{33})
+        ,\end{equation}
+
+        \begin{equation}
+            \theta = atan2 \left(-t_{31}, \sqrt{ t_{32}^{2} + t_{33}^{2}} \right)
+        ,\end{equation}
+
+        \begin{equation}
+            \psi = atan2(t_{21}, t_{11})
+        ,\end{equation}
+
+        where $atan2(y, x)$ definition is:
+
+        \begin{equation}
+            atan2(y, x) = \left\{ \begin{array}{ll}
+                \arctan\left(\frac{y}{x}\right) & if \quad (x > 0),\\
+                \arctan\left(\frac{y}{x}\right) + \pi & if \quad (x < 0) \land (y \ge 0),\\
+                \arctan\left(\frac{y}{x}\right) - \pi & if \quad (x < 0) \land  (y < 0),\\
+                \frac{\pi}{2} & if \quad (x = 0) \land  (y > 0),\\
+                -\frac{\pi}{2} & if \quad (x = 0) \land  (y < 0),\\
+                undefined & if \quad (x = 0) \land (y = 0)
+            \end{array}
+        .\end{equation}
+
+        \textbf{Note} the angle limitation for values returned while doing
+        an Euler angle decomposition of a \textbf{rotation} matrix:
+
+        \begin{equation}
+            \begin{array}{l}
+                \phi \in (-\pi, \pi) \\
+                \theta \in (-\frac{\pi}{2}, \frac{\pi}{2}) \\
+                \psi \in (-\pi, \pi)
+            \end{array}
+        .\end{equation}
+
+    \item Euler's angles of \textbf{ZYX} rotation:\\
+
+        For a rotation defined in \textit{zyx} order the rotation matrix is:
+
+        \begin{equation}
+            \begin{array}{ll}
+                \mathbf{T}
+                &= \mathbf{R}_{x}(\phi)\mathbf{R}_{y}(\theta)\mathbf{R}_{z}(\psi) \\
+                &=
+                \begin{bmatrix}
+                    1 & 0 & 0 \\
+                    0 & \cos \phi & \sin \phi \\
+                    0 & -\sin \phi & \cos \phi
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \cos \theta & 0 & -\sin \theta \\
+                    0 & 1 & 0 \\
+                    \sin \theta & 0 & \cos \theta
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \cos \psi & \sin \psi & 0 \\
+                    -\sin \psi & \cos \psi & 0 \\
+                    0 & 0 & 1
+                \end{bmatrix} \\
+                &=
+                \begin{bmatrix}
+                    \cos \theta \cos \phi
+                    & - \cos \theta \sin \phi
+                    & \sin \phi \\
+                    \cos \psi \sin \phi + \cos \phi \sin \theta \sin \psi
+                    & \cos \phi \cos \psi - \sin \theta \sin \phi \sin \psi
+                    & -\cos \theta \sin \psi \\
+                    \sin \phi \sin \psi - \cos \phi \cos \psi \sin \theta
+                    & \cos \psi \sin \theta \sin \phi + \cos \phi \sin \psi
+                    & \cos \theta \cos \psi
+                \end{bmatrix}
+            \end{array}
+        .\end{equation}
+
+        \textbf{Note that the angles $\phi$, $\theta$ and $\psi$ defined here are
+        different from the \textit{XYZ} rotation defined above!} The rotation
+        is performed by first rotating around \textit{z-axis} counterclockwise
+        by an angle $\psi$, then around \textit{y-axis} counterclockwise
+        by an angle $\theta$ and finaly around \textit{x-axis}, counterclockwise,
+        by an angle $\phi$.
+
+        Then the \textit{Euler's angles} can be obtained as:
+
+        \begin{equation}
+            \left\{ \begin{array}{l}
+                \phi = \arctan \left( \frac{-t_{12}}{t_{11}} \right)\\
+                \theta = \arcsin \left( t_{13} \right) \\
+                \psi = \arctan \left( \frac{-t_{23}}{t_{33}} \right)
+            \end{array} \right.
+        .\end{equation}
+
+
+    \item Alternate way of constructing \textbf{Rotation matrix} without specifying
+        angles:\\
+
+        The rotation matrix to a new coordinate system can be constructed from
+        its axes, where the rotation matrix can be defined as:
+
+        \begin{equation}
+            \mathbf{T}_{R} = \begin{bmatrix}
+                x_1 & x_2 & x_3 \\
+                y_1 & y_2 & y_3 \\
+                z_1 & z_2 & z_3 \\
+            \end{bmatrix}
+        ,\end{equation}
+
+        where $\mathbf{x} = [x_1, x_2, x_3]^{T}$, $\mathbf{y} = [y_1, y_2, y_3]^{T}$
+        and  $\mathbf{z} = [z_1, z_2, z_3]^{T}$ are unit vectors in the direction
+        of \textit{x-}, \textit{y-} and \textit{z-axis} of the new coordinate
+        system.
+
+
+        \begin{bbox}
+            The \textbf{transformation matrix} can be defined by any two vectors
+            $\mathbf{u}$ and $\mathbf{v}$, where $\mathbf{u}$ defines the direction
+            of \textit{x-axis} and $\mathbf{v}$ defines the \textit{xy-plane}.
+            To construct the \textbf{rotation matrix} use the following steps:
+
+            \begin{enumerate}
+                \item create x-axis of unit lenght
+
+                    \begin{equation}
+                        \mathbf{x} = \frac{\mathbf{u}}{||\mathbf{u}||}
+                    .\end{equation}
+
+                \item create z-axis of unit lenght
+
+                    \begin{equation}
+                        \mathbf{z}
+                        = \frac{\mathbf{u} \times \mathbf{v}}{||\mathbf{u} \times \mathbf{v}||}
+                    .\end{equation}
+
+                \item create y-axis of unit lenght
+
+                    \begin{equation}
+                        \mathbf{y}
+                        = \frac{\mathbf{z} \times \mathbf{x}}{||\mathbf{z} \times \mathbf{x}||}
+                    .\end{equation}
+
+                \item compose \textbf{rotation matrix}
+
+                    \begin{equation}
+                        \mathbf{T}_{R} = \begin{bmatrix}
+                            \mathbf{x}^{T} \\
+                            \mathbf{y}^{T} \\
+                            \mathbf{z}^{T}
+                        \end{bmatrix}
+                    .\end{equation}
+            \end{enumerate}
+
+            The creation of the \textbf{rotation matrix} by any two other vectors is
+            analogic, as \textbf{orthogonal} base must be constructed first, then
+            the matrix is composed of its vectors.
+
+        \end{bbox}
+
+\end{enumerate}
+
+
+
+
+
+
+\end{itemize}
+
 \chapter{Coordinate Transformation}
 
 \begin{itemize}
@@ -115,7 +435,7 @@ From: \href{https://wp.optics.arizona.edu/optomech/wp-content/uploads/sites/53/2
 
 Let real symmetric matrix  $\mathbf{A}$ be the original tensor,
 real symmetric matrix $\mathbf{B}$ the transformed tensor, and
-unitary matrix $\mathbf{T}$ a tranformation matrix in the form:
+orthogonal matrix $\mathbf{T}$ a tranformation matrix in the form:
 
 \begin{equation}
     \mathbf{A} = \begin{bmatrix}
@@ -152,7 +472,8 @@ system defined in the original one, while sharing their origin.\\
 
 The transformation matrix $\mathbf{T}$ must satisfy
 $\mathbf{T}\mathbf{T}^{T} = \mathbf{T}^{T}\mathbf{T} = \mathbf{I}$, where $\mathbf{I}$
-is an identity matrix.\\
+is an identity matrix. This means that transformation matrix must be orthogonal,
+therefore satisfying $\mathbf{T}^{T} = \mathbf{T}^{-1}$.\\
 
 Then \textbf{tensor transformation} is performed as such:
 
