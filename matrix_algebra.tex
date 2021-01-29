@@ -1,6 +1,7 @@
 \documentclass[10pt,b5paper,titlepage]{book}
 
 \usepackage[utf8]{inputenc}
+\usepackage{longtable}
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
@@ -2530,5 +2531,321 @@ We see that the mean of $\mathbf{v}$ is removed form the resulting vector
 $\mathbf{C}_{n}\mathbf{v}$.
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\chapter{Matrix Usage Examples}
+
+\section{Polynomial equations}
+
+If we have a $n + 1$ number of polynomial equations
+
+\begin{equation}
+    \mathbf{f}(x) = \sum_{i=0}^{n} \mathbf{a}_i \mathbf{x}^n
+,\end{equation}
+
+where
+
+\begin{equation}
+    \mathbf{a}_{i} =
+    \begin{bmatrix}
+        a_{0} \\
+        \vdots \\
+        a_{n}
+    \end{bmatrix}
+\end{equation}
+
+is a coefficient vector, and
+
+\begin{equation}
+    \mathbf{f}(x) =
+    \begin{bmatrix}
+        f(x_{0}) \\
+        \vdots \\
+        f(x_{n})
+    \end{bmatrix}
+\end{equation}
+
+is a vector of function values at $n + 1$ points, then to obtain coefficients
+we can write in matrix form:
+
+\begin{equation}
+    \begin{bmatrix}
+        x_0^{n} & \ldots & x_0^{0} \\
+        \vdots & \ddots & \vdots \\
+        x_{n}^{n} & \ldots & x_{n}^{0}
+    \end{bmatrix}
+    \begin{bmatrix}
+        a_{0} \\
+        \vdots \\
+        a_{n}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        f(x_{0}) \\
+        \vdots \\
+        f(x_{n})
+    \end{bmatrix}
+,\end{equation}
+
+\begin{equation}
+    \mathbf{X}\mathbf{a} = \mathbf{f}(x)
+,\end{equation}
+
+therefore:
+
+\begin{equation}
+    \mathbf{a} = \mathbf{X}^{-1} \mathbf{f}(x)
+.\end{equation}\\
+
+\section{Lagrange interpolation polynomials}
+\textbf{Example:}\\
+
+Let's have 3 2nd order Lagrange polynomials
+$f_{n}(x) \in \mathbb{R}$; $i, j \in \mathbb{N}$; $i, j \in \left< 1, k + 1 \right>$,
+where $k$ is the polynomial order, defined so that:
+
+\begin{equation}
+    f_{i}(x_{j}) = \sum_{n=0}^{k} a_{n}x^{n}
+          = \left\{
+              \begin{array}{l}
+                  1 \text{, } i = j \\
+                  0 \text{, } i \neq j \\
+              \end{array}
+          \right. \quad \forall \quad x_{j} \in \left\{
+                0, \frac{1}{k}, \ldots, \frac{k - 1}{k}, 1
+          \right\}
+.\end{equation}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.90\textwidth]{img/matrix_poly.pdf}
+    \caption{$2^{nd}$ order Lagrange polynomial shape functions.}
+    \label{fig:matrix-poly-pdf}
+\end{figure}
+
+Then for $1^{st}$ we have:
+
+\begin{equation}
+    \begin{array}{ll}
+        f_{1}(0) &= 1 \\
+        f_{1}(1/2) &= 0 \\
+        f_{1}(1) &= 0 \\
+    \end{array}
+,\end{equation}
+
+for $2^{nd}$ we have:
+
+\begin{equation}
+    \begin{array}{ll}
+        f_{2}(0) &= 0 \\
+        f_{2}(1/2) &= 1 \\
+        f_{2}(1) &= 0 \\
+    \end{array}
+,\end{equation}
+
+and for $3^{rd}$:
+
+\begin{equation}
+    \begin{array}{ll}
+        f_{2}(0) &= 0 \\
+        f_{2}(1/2) &= 0 \\
+        f_{2}(1) &= 1 \\
+    \end{array}
+.\end{equation}
+
+That gives us following matrix:
+
+\begin{equation}
+    \begin{array}{r}
+        \\
+        f_{1}(0): \\
+        f_{2}(1 / 2): \\
+        f_{3}(1): \\
+    \end{array}
+    \begin{array}{c}
+        \begin{matrix}
+            x^{2} & x^{1} & x^{0}\\
+        \end{matrix}\\
+        \overline{
+        \begin{bmatrix}
+            0 & 0 & 1 \\
+            1 / 4 & 1 / 2 & 1 \\
+            1 & 1 & 1
+        \end{bmatrix}}
+    \end{array}
+    &
+    \begin{array}{c}
+        \begin{matrix}
+            1. \quad & 2. \quad & 3.
+        \end{matrix} \\
+        \overline{
+        \begin{bmatrix}
+            a_{1,2} & a_{2,2} & a_{3,2} \\
+            a_{1,1} & a_{2,1} & a_{3,1} \\
+            a_{1,0} & a_{2,0} & a_{3,0}
+        \end{bmatrix}
+        }
+    \end{array}
+    =
+    \begin{array}{c}
+        \begin{matrix}
+            1. & 2. & 3.
+        \end{matrix} \\
+        \overline{
+        \begin{bmatrix}
+            1 & 0 & 0 \\
+            0 & 1 & 0 \\
+            0 & 0 & 1
+        \end{bmatrix}
+        }
+    \end{array}
+.\end{equation}
+
+\begin{equation}
+    \begin{bmatrix}
+        a_{1,2} & a_{2,2} & a_{3,2} \\
+        a_{1,1} & a_{2,1} & a_{3,1} \\
+        a_{1,0} & a_{2,0} & a_{3,0}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        0 & 0 & 1 \\
+        1 / 4 & 1 / 2 & 1 \\
+        1 & 1 & 1
+    \end{bmatrix}^{-1}
+    \begin{bmatrix}
+        1 & 0 & 0 \\
+        0 & 1 & 0 \\
+        0 & 0 & 1
+    \end{bmatrix}
+.\end{equation}
+
+\begin{equation}
+    \begin{bmatrix}
+        a_{1,2} & a_{2,2} & a_{3,2} \\
+        a_{1,1} & a_{2,1} & a_{3,1} \\
+        a_{1,0} & a_{2,0} & a_{3,0}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        2 & -4 & 2 \\
+        -3 & 4 & -1 \\
+        1 & 0 & 0
+    \end{bmatrix}
+    \begin{bmatrix}
+        1 & 0 & 0 \\
+        0 & 1 & 0 \\
+        0 & 0 & 1
+    \end{bmatrix}
+.\end{equation}
+
+\begin{equation}
+    \begin{bmatrix}
+        a_{1,2} & a_{2,2} & a_{3,2} \\
+        a_{1,1} & a_{2,1} & a_{3,1} \\
+        a_{1,0} & a_{2,0} & a_{3,0}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        2 & -4 & 2 \\
+        -3 & 4 & -1 \\
+        1 & 0 & 0
+    \end{bmatrix}
+.\end{equation}
+
+This means:
+
+\begin{equation}
+    \begin{array}{ll}
+        f_{1}(x) &= 2 x^{2} - 3 x + 1 \\
+        f_{2}(x) &= -4 x^{2} + 4 x \\
+        f_{3}(x) &= 2 x^{2} - x \\
+    \end{array}
+.\end{equation}
+
+\begin{bbox}
+    \textbf{Note:}\\
+
+    More general Lagrange polynomial definition is: \\
+
+    The \textit{Lagrange interpolation polynomial} is the \textbf{polynomial}
+    $P(x)$ of degree $\leq (n - 1)$ that passes through $n$ points
+$\{x_1, y_1 = f(x_1)\}, \{x_2, y_2 = f(x_2)\}, \ldots, \{x_{n}, y_{n} = f(x_{n})\}$
+    and is given by:
+
+    \begin{equation}
+        P(x) = \sum_{j=1}^{n} P_{j}(x)
+    .\end{equation}
+
+    where
+
+    \begin{equation}
+        P_{j}(x) = y_{j} \prod_{\begin{array}{ll}
+             k = 1 \\
+             k \neq j
+        \end{array}}^{n} \frac{x - x_{k}}{x_{j} - x_{k}}
+    .\end{equation}
+
+    Written explicitely:
+
+    \begin{eqnarray}
+        \begin{split}
+            P(x)
+            &= \frac{(x - x_2)(x - x_3)\ldots(x - x_{n})}
+            {(x_1 - x_2)(x_1 - x_3)\ldots(x_1 - x_{n})} y_1 \\
+            &+ \frac{(x - x_1)(x - x_3)\ldots(x - x_{n})}
+            {(x_2 - x_1)(x_2 - x_3)\ldots(x_2 - x_{n})} y_2 \\
+            &+ \ldots \\
+            &+ \frac{(x - x_1)(x - x_3)\ldots(x - x_{n-1})}
+            {(x_{n} - x_1)(x_{n} - x_4)\ldots(x_{n} - x_{n-1})} y_{n} \\
+        \end{split}
+    .\end{eqnarray}
+\end{bbox}
+
+For our example the polynomial equation can be reduced as the first equation
+goes through points $y_{j} = \{1, 0, 0\}$, therefore terms of $P_{j}(x)$ with
+$y_2$ and $y_3$ are zero and $P_{j}(x)$ gets reduced to (for curve 2, only
+second term applies, for curve 3 only the third one):
+
+\begin{eqnarray}
+    \begin{split}
+        P_1(x) &= \frac{(x - 1 / 2)(x - 1)}{(0 - 1 / 2)(0 - 1)} \times 1
+               &=& \frac{x^{2} - 3 / 2 x + 1 / 2}{1 / 2}
+               &=& 2 x^{2} - 3 x + 1 \\
+        P_2(x) &= \frac{(x - 0)(x - 1)}{(1 / 2 - 0)(1 / 2 - 1)} \times 1
+               &=& \frac{x^{2} - x}{- 1 / 4}
+               &=& -4 x^2 + 4 x \\
+        P_3(x) &= \frac{(x - 0)(x - 1 / 2)}{(1 - 0)(1 - 1 / 2)} \times 1
+               &=& \frac{x^2 - 1 / 2 x}{1 / 2}
+               &=& 2 x^2 - x
+    \end{split}
+,\end{eqnarray}
+
+where the index of $P(x)$ denotes the curve number $f(x)$, not the
+\textit{Lagrange polynomial} member.\\
+
+In other form:
+
+\begin{eqnarray}
+    \begin{split}
+        f_1(x) &=& (2 x - 1)(x - 1) &=& 2 x^2 - 3 x + 1 \\
+        f_2(x) &=& -4 x (x - 1) &=& -4 x^2 + 4 x\\
+        f_3(x) &=& x (2 x - 1) &=& 2 x^2 - x
+    \end{split}
+.\end{eqnarray}
 
 \end{document}

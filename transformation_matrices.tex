@@ -373,7 +373,25 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}\\
             The creation of the \textbf{rotation matrix} by any two other vectors is
             analogic, as \textbf{orthogonal} base must be constructed first, then
             the matrix is composed of its vectors.
+        \end{bbox}
 
+        \begin{bbox}
+            To test, whether the transformation matrix is correct, one can use
+            the orthogonality criterion:
+
+            \begin{equation}
+                \mathbf{T}^{T} = \mathbf{T}^{-1}
+            .\end{equation}
+
+            \begin{equation}
+                \mathbf{T}\mathbf{T}^{T} = \mathbf{T}^{T}\mathbf{T} = \mathbf{I}
+            .\end{equation}
+
+            or
+
+            \begin{equation}
+                det(\mathbf{T}) = 1
+            .\end{equation}
         \end{bbox}
 
 \end{enumerate}
