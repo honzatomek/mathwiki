@@ -10,6 +10,7 @@
 
 % python - needs pip install Pygments
 \usepackage{minted}
+\usemintedstyle{native}
 
 \usepackage{hyperref}
 
@@ -18,6 +19,13 @@
 
 % python code format
 \setminted[python]{breaklines, framesep=2mm, fontsize=\footnotesize, numbersep=5pt}
+\newminted[python]{python}{linenos=true,
+                           frame=lines,
+                           baselinestretch=1.2,
+                           mathescape,
+                           xleftmargin=1cm,
+                           framesep=2mm,
+                           fontsize=\footnotesize}
 
 \setlength{\parindent}{0ex}
 \renewcommand{\labelitemi}{$\bullet$}
@@ -73,8 +81,8 @@
 \chapter{Python code}
 \section{Example01}
 
-\begin{bbox}
-\begin{minted}{python}
+% \begin{minted}{python}
+\begin{python}
 #!/usr/bin/python3
 
 import os
@@ -84,8 +92,8 @@ import numpy as np
 if __name__ == '__main__':
     print('hello')
 
-\end{minted}
-\end{bbox}
+\end{python}
+% \end{minted}
 
 \end{document}
 
