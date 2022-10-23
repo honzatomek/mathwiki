@@ -234,14 +234,16 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}\\
         where $atan2(y, x)$ definition is:
 
         \begin{equation}
-            atan2(y, x) = \left\{ \begin{array}{ll}
-                \arctan\left(\frac{y}{x}\right) & if \quad (x > 0),\\
-                \arctan\left(\frac{y}{x}\right) + \pi & if \quad (x < 0) \land (y \ge 0),\\
-                \arctan\left(\frac{y}{x}\right) - \pi & if \quad (x < 0) \land  (y < 0),\\
-                \frac{\pi}{2} & if \quad (x = 0) \land  (y > 0),\\
-                -\frac{\pi}{2} & if \quad (x = 0) \land  (y < 0),\\
-                undefined & if \quad (x = 0) \land (y = 0)
-            \end{array}
+            atan2(y, x) = \left\{
+                \begin{array}{ll}
+                    \arctan\left(\frac{y}{x}\right) & if \quad (x > 0),\\
+                    \arctan\left(\frac{y}{x}\right) + \pi & if \quad (x < 0) \land (y \ge 0),\\
+                    \arctan\left(\frac{y}{x}\right) - \pi & if \quad (x < 0) \land  (y < 0),\\
+                    \frac{\pi}{2} & if \quad (x = 0) \land  (y > 0),\\
+                    -\frac{\pi}{2} & if \quad (x = 0) \land  (y < 0),\\
+                    undefined & if \quad (x = 0) \land (y = 0)
+                \end{array}
+            \right\}
         .\end{equation}
 
         \textbf{Note} the angle limitation for values returned while doing
@@ -401,7 +403,6 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}\\
 
 
 
-\end{itemize}
 
 \chapter{Coordinate Transformation}
 
@@ -749,7 +750,7 @@ Then \textbf{tensor transformation} is performed as such:
                 \sigma_{\tau_{max}} = \frac{\sigma_{max} + \sigma_{min}}{2}
             .\end{equation}
 
-        \end{bbox}\\
+        \end{bbox}
 
     \item \textbf{Example:}
 
