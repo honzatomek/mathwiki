@@ -2441,7 +2441,7 @@ diagonalizable if and only if they commute:
         \begin{equation}
             \mathbf{U}^{*}\mathbf{A}\mathbf{U}
             = \mathbf{U}^{*}(\mathbf{B} + i \mathbf{C})\mathbf{U}
-            = \mathbf{\Lambda}_{B} + i \mathbf{\Labmda}_{C} = \mathbf{\Lambda}_{A}
+            = \mathbf{\Lambda}_{B} + i \mathbf{\Lambda}_{C} = \mathbf{\Lambda}_{A}
         .\end{equation}
 \end{itemize}
 
@@ -2687,7 +2687,6 @@ That gives us following matrix:
             1 & 1 & 1
         \end{bmatrix}}
     \end{array}
-    &
     \begin{array}{c}
         \begin{matrix}
             1. \quad & 2. \quad & 3.
@@ -2847,5 +2846,198 @@ In other form:
         f_3(x) &=& x (2 x - 1) &=& 2 x^2 - x
     \end{split}
 .\end{eqnarray}
+
+
+\newpage
+\section{3D and 2D}
+Rotation Matrices around axis:
+\begin{eqnarray}
+    \begin{split}
+        \mathbf{T}_x &=
+        \begin{bmatrix}
+            1 & 0 & 0 \\
+            0 & \cos(\theta) & -\sin(\theta) \\
+            0 & \sin(\theta) & \cos(\theta)
+        \end{bmatrix}
+    \end{split}
+\end{eqnarray}
+
+\begin{eqnarray}
+    \begin{split}
+        \mathbf{T}_y &=
+        \begin{bmatrix}
+            \cos(\theta) & 0 & -\sin(\theta) \\
+            0 & 1 & 0 \\
+            \sin(\theta) & 0 & \cos(\theta)
+        \end{bmatrix}
+    \end{split}
+\end{eqnarray}
+
+\begin{eqnarray}
+    \begin{split}
+        \mathbf{T}_z &=
+        \begin{bmatrix}
+            \cos(\theta) & -\sin(\theta) & 0 \\
+            \sin(\theta) & \cos(\theta) & 0 \\
+            0 & 0 & 1
+        \end{bmatrix}
+    \end{split}
+\end{eqnarray}
+
+
+\subsection{Projection from 3D to 2D:} \\
+
+If $ \mathbf{X} = \{x, y, z\}^T $ and $ \mathbf{X_p} $ is the projected 2D coordinate vector, then: \\
+
+\textbf{Orthogonal projection:} \\
+\begin{eqnarray}
+    \begin{split}
+        \mathbf{X}_p &=
+        \begin{bmatrix}
+            S_x & 0 & 0 \\
+            0 & S_y & 0
+        \end{bmatrix}
+        \mathbf{X}
+        &=
+        \begin{bmatrix}
+            S_x * x & S_y * y
+        \end{bmatrix}
+    \end{split}
+\end{eqnarray}
+
+where: \\
+$ S_x $ and $ S_y $ are scale factors. \\
+\\
+\textbf{Perspective projection:} \\
+\begin{eqnarray}
+    \begin{split}
+        \mathbf{X}_p &=
+        \begin{bmatrix}
+            S_x & 0 & 0 \\
+            0 & S_y & 0
+        \end{bmatrix}
+        \mathbf{X} * \frac{d}{z + d}
+    \end{split}
+\end{eqnarray}
+where: \\
+$ d $ is distance from the eye. \\
+
+To project more coordinates at the same time: \\
+\\
+With:
+\begin{eqnarray}
+    \begin{split}
+        \mathbf{X}_{orig} &=
+        \begin{bmatrix}
+            x_1 & y_1 & z_1 \\
+            x_2 & y_2 & z_2 \\
+            \vdots & \vdots & \vdots \\
+            \x_n & y_n & z_n
+        \end{bmatrix}
+    \end{split}
+\end{eqnarray}
+\\
+Then \textbf{orthogonal} projection is:
+\begin{eqnarray}
+    \begin{split}
+        \mathbf{X}_p &= \mathbf{X}_{orig}
+        \begin{bmatrix}
+            S_x & 0 \\
+            0 & S_y \\
+            0 & 0
+        \end{bmatrix} \\
+        \begin{bmatrix}
+            x_{p1} & y_{p1} \\
+            x_{p2} & y_{p2} \\
+            \vdots & \vdots \\
+            x_{pn} & y_{pn}
+        \end{bmatrix}
+        &=
+        \begin{bmatrix}
+            x_1 & y_1 & z_1 \\
+            x_2 & y_2 & z_2 \\
+            \vdots & \vdots & \vdots \\
+            \x_n & y_n & z_n
+        \end{bmatrix}
+        \begin{bmatrix}
+            S_x & 0 \\
+            0 & S_y \\
+            0 & 0
+        \end{bmatrix}
+    \end{split}
+\end{eqnarray}
+\\
+And \textbf{perspective} projection is:
+\begin{eqnarray}
+    \begin{split}
+        \mathbf{X}_p &= \mathbf{X}_{orig}
+        \begin{bmatrix}
+            S_x & 0 \\
+            0 & S_y \\
+            0 & 0
+        \end{bmatrix} \times \frac{d}{\mathbf{X}_{orig}[3] + d} \\
+        \begin{bmatrix}
+            x_{p1} & y_{p1} \\
+            x_{p2} & y_{p2} \\
+            \vdots & \vdots \\
+            x_{pn} & y_{pn}
+        \end{bmatrix}
+        &=
+        \begin{bmatrix}
+            x_1 & y_1 & z_1 \\
+            x_2 & y_2 & z_2 \\
+            \vdots & \vdots & \vdots \\
+            \x_n & y_n & z_n
+        \end{bmatrix}
+        \begin{bmatrix}
+            S_x & 0 \\
+            0 & S_y \\
+            0 & 0
+        \end{bmatrix} \times
+        \begin{bmatrix}
+            \frac{d}{z_1 + d} \\
+            \frac{d}{z_2 + d} \\
+            \vdots \\
+            \frac{d}{z_n + d}
+        \end{bmatrix} \\
+        x_{p1} &= (x_1 * S_x + y_1 * 0 + z_1 * 0) * \frac{d}{z_1 + d} \\
+        y_{p1} &= (x_1 * 0 + y_1 * S_y + z_1 * 0) * \frac{d}{z_1 + d} \\
+               & \vdots \\
+        x_{pn} &= (x_n * S_x + y_n * 0 + z_n * 0) * \frac{d}{z_n + d} \\
+    \end{split}
+\end{eqnarray}
+
+\subsection{Model movement}
+The rotated model coordinates are defined as:
+\begin{eqnarray}
+    \begin{split}
+        \mathbf{X}_r &= \mathbf{T}_r (\mathbf{X} + \mathbf{T}_t)
+    \end{split}
+\end{eqnarray}
+where: \\
+$ \mathbf{X}_r $ are the new rotated coordinates, \\
+$ \mathbf{T}_r $ is the rotation matrix \\
+$ \mathbf{X} $ are the original coordinates, \\
+$ \mathbf{T}_t $ is a translation matrix. \\
+\\
+
+\begin{itemize}
+    \item Then when rotating the \textbf{View} of the model, the new rotation matrix is:
+        \begin{eqnarray}
+            \begin{split}
+                \mathbf{T}_{r,new} &= \mathbf{T}_{r} \mathbf{T}_{r,prev}
+            \end{split}
+        \end{eqnarray}
+
+    \item When rotating the \textbf{model}, the new rotation matrix is:
+        \begin{eqnarray}
+            \begin{split}
+                \mathbf{T}_{r,new} &= \mathbf{T}_{r,prev} \mathbf{T}_{r}
+            \end{split}
+        \end{eqnarray}
+\end{itemize}
+
+
+
 
 \end{document}
