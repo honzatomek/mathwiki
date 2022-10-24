@@ -1,0 +1,716 @@
+\documentclass[10pt,b5paper,titlepage]{book}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+%\usepackage{xcolor}
+\usepackage{color}
+\usepackage{graphicx}
+
+% python - needs pip install Pygments
+\usepackage{minted}
+\usemintedstyle{native}
+
+\usepackage{hyperref}
+
+\author{Jan Tomek}
+\title{\bf FEM Practices}
+
+% python code format
+\setminted[python]{breaklines, framesep=2mm, fontsize=\footnotesize, numbersep=5pt}
+\newminted[python]{python}{linenos=true,
+                           frame=lines,
+                           baselinestretch=1.2,
+                           mathescape,
+                           xleftmargin=1cm,
+                           framesep=2mm,
+                           fontsize=\footnotesize}
+
+\setlength{\parindent}{0ex}
+\setlength{\parskip}{1em plus 0.1em minus 0.2em}
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\bullet$}
+\renewcommand{\labelitemiii}{$\bullet$}
+\renewcommand{\labelitemiv}{$\bullet$}
+
+%Commands definitions
+\newcommand\setbackgroundcolour{\pagecolor[rgb]{0.15,0.15,0.15}}
+\newcommand\settextcolour{\color[rgb]{0.9,0.9,0.9}}
+\newcommand\invertbackgroundtext{\setbackgroundcolour\settextcolour}
+
+% equal by definition
+\newcommand*\eqd{\stackrel{\triangle}{=}}
+
+% {name}[number of arguments][1st default value] etc..
+% the argument value is then inserted at #argument_number
+\newenvironment{bbox}[1][1.0]
+{
+    \begin{center}
+        \begin{tabular}{|p{#1\textwidth}|}
+            \hline\\
+}
+{
+            \\\\\hline
+        \end{tabular}
+    \end{center}
+}
+
+\newenvironment{bboxtitle}[1][1.0]
+{
+    \begin{center}
+        #1\\[1ex]
+        \begin{tabular}{|p{#1\textwidth}|}
+            \hline\\
+}
+{
+            \\\\\hline
+        \end{tabular}
+    \end{center}
+}
+
+\newenvironment{ematrix}
+{
+    \begin{eqnarray}
+        \begin{aligned}
+}
+{
+        \end{aligned}
+    \end{eqnarray}
+}
+
+%Command execution.
+%If this line is commented, then the appearance remains as usual.
+\invertbackgroundtext
+
+\begin{document}
+
+\maketitle
+
+\tableofcontents
+
+\chapter{Dynamics}
+
+\section{SDOF system}
+
+\subsection{Definition}
+
+Let:
+
+\begin{equation}
+    m \ddot{u}(t) + c \dot{u}(t) + k u(t) = f(t)
+\end{equation}
+
+or:
+
+\begin{equation}
+    m a(t) + c v(t) + k u(t) = f(t)
+\end{equation}
+
+be the \textbf{SDOF equation of motion}, then the following applies:
+
+\begin{ematrix}
+    \omega^2 &= \frac{k}{m} \\
+    \omega &= \sqrt{\frac{k}{m}} \\
+    f &= \frac{\omega}{2 \pi} \\
+    T &= \frac{1}{f}
+\end{ematrix}
+
+where:\\
+$ \omega $ is radial eigenfrequency [rad/s],\\
+$ f $ is eigenfrequency [Hz] and\\
+$ T $ is period [s]
+
+The simplest vibratory syslem can be described by a single mass connected to a spring
+(and possibly a dashpot). The mass is allowed to travel only along the spring elongation
+direction. Such systems are called \textit{Single Degree-of-Freedom} (\textbf{SDOF})
+systems and are shown in the figure.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.90\textwidth]{img/SDOF_plot.png}
+    \caption{SDOF system with a linear spring and dashpot}
+    \label{fig:SDOF-plot-png}
+\end{figure}
+
+\subsection{Equation of Motion for SDOF Systems}
+
+SDOF vibration can be analyzed by \textbf{Newton's second law of motion},
+$ F = m a $. The analysis can be easily visualised with the aid of a
+\textbf{free body diagram},
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.90\textwidth]{img/SDOF_FreeBodyDiagram.png}
+    \caption{SDOF Free Body Diagram}
+    \label{fig:SDOF-freebodydiagram-png}
+\end{figure}
+
+The resulting equation of motion is a
+\textbf{second order, non-homegeneous, ordinary differential equation}:
+
+\begin{equation}
+    m \ddot{u} + c \dot{u} + k u = f(t)
+        \left\{ \begin{matrix}
+                u(t=0) = u_0\\
+                \dot{u}(t=0) = \dot{u}_0
+          \end{matrix} \right.
+\end{equation}
+
+with the initial conditions $ u_0 $ and $ \dot{u}_0 $.
+
+
+\subsection{Time Solution for Undamped SDOF Systems}
+
+\textit{https://www.efunda.com/formulae/vibrations/sdof\_free\_undamped.cfm}
+
+The equation of motion derived in the definition can be simplified to:
+
+\begin{equation}
+    m \ddot{u} + k u = f(t)
+        \left\{ \begin{matrix}
+                u(t=0) = u_0\\
+                \dot{u}(t=0) = \dot{u}_0
+          \end{matrix} \right.
+\end{equation}
+
+This equation of motion is a
+\textbf{second order, homegeneous, ordinary differential equation} (ODE). If the mass
+and spring stiffness are constants, the ODE becomes a
+\textbf{linear, homogeneous ODE with constant coefficients} and can be solved
+by the Characteristic Equation method. The characteristic equation for this
+problem is:
+
+\begin{equation}
+    m s^2 + k = 0
+\end{equation}
+
+which determines the 2 independent roots for the undamped vibration problem.
+The final solution (that contains the 2 independent roots from the characteristic
+equation and satisfies the initial conditions) is:
+
+\begin{ematrix}
+    u(t) &= c_1 e^{i \omega_n t} + c_2 e^{- \omega_n t}\\
+         &= d_1 \cos{\omega_n t} + d_2 \sin{\omega_n t} \\
+    \implies u(t) &= u_0 \cos{\omega_n t} + \frac{\dot{u}_0}{\omega_n} \sin{\omega_n t}
+\end{ematrix}
+
+The natural frequency $ \omega_n $ is defined by:
+
+\begin{equation}
+    \omega_n = \sqrt{\frac{k}{m}}
+\end{equation}
+
+and depends only on the system mass and the spring stiffness (i.e. any damping will
+not change the natural frequency of a system).
+
+Alternatively, the solution may be expressed by the equivalent form,
+
+\begin{equation}
+    u(t) = A_0 \cos{\omega_n t - \phi_0}
+\end{equation}
+
+where the amplitude $ A_0 $ and the intial phase $ \phi_0 $ are given by:
+
+\begin{ematrix}
+    A_0 &= \sqrt{u_0^2 + \left(\frac{\dot{u}_0}{\omega_n}\right)^2}\\
+    \phi_0 &= \tan^{-1}\frac{\dot{u}_0}{u_0 \omega_n}
+\end{ematrix}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.90\textwidth]{img/SDOF_Undamped_Response.png}
+    \caption{SDOF Undamped sample time behavior}
+    \label{fig:SDOF-undamped-response-png}
+\end{figure}
+
+Note that an assumption of zero damping is typically not accurate. In reality,
+there almost always exists some resistance in vibratory systems. This reistance
+will damp the vibration and dissipate energy, the oscillatory motion caused by the
+initial disturbance will eventually be reduced to zero.
+
+
+
+
+
+
+
+\section{Damping}
+
+\subsection{Rayleigh Damping}
+\textit{https://www.simscale.com/knowledge-base/rayleigh-damping-coefficients/}
+
+Let \textbf{Rayleigh Damping} be defined as:
+
+\begin{equation}
+    c = \alpha k + \beta m
+\end{equation}
+
+where:\\
+$ c $ is damping value [-],\\
+$ \alpha $ is stiffness dependent damping coefficient,\\
+$ \beta $ is inertia (mass) dependent damping coefficient,\\
+$ m $ is mass and\\
+$ k $ is stiffness.
+
+Thus, substituting this relation to the equation of motion:
+
+\begin{ematrix}
+    m \ddot(u) + \left(\alpha k + \beta m \right) \dot{u} + k u &= f(t) & \space \vert \times \frac{1}{m}\\
+    \ddot{u} + \left(\alpha \frac{k}{m} + \beta \frac{m}{m} \right) \dot{u} + \frac{k}{m} u
+    &= \frac{f(t)}{m} & \space \vert \frac{k}{m} = \omega_n^2 \\
+    \ddot{u} + \left(\alpha \omega_n^2 + \beta \right) \dot{u} + \omega_n^2 u &= \frac{f(t)}{m} & \space
+\end{ematrix}
+
+Damping Ratio:
+
+\begin{ematrix}
+    \zeta &= \frac{c}{2 m \omega_n}\\
+    \zeta &= \frac{1}{2 m \omega_n} \left( \alpha k + \beta m \right)\\
+    \zeta &= \frac{1}{2} \left( \alpha \omega_n + \frac{\beta}{\omega_n} \right)
+\end{ematrix}
+
+where:\\
+$ \zeta $ is damping ratio,\\
+$ c $ is damping value [-],\\
+$ m $ is mass and\\
+$ \omega_n $ is natural frequency [rad/s]
+
+Substituting back:
+
+\begin{equation}
+    \ddot{u} + 2 \zeta \omega_n \dot{u} + \omega_n^2 k u = \frac{f(t)}{m}
+\end{equation}
+
+
+When \textbf{Damping is proportional to inertia}:
+
+In this case, the stiffness coefficient $ \alpha = 0 $ and thus:
+
+\begin{equation}
+    \zeta = \frac{\beta}{2 \omega_n}
+\end{equation}
+
+For a given constant value of $ \beta $, it is seen that the damping is inversely
+proportional to the natural frequency, as shown in the illustration:
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.90\textwidth]{img/inertia_dependent_damping.png}
+    \caption{Schematic of damping proportional to inertia}
+    \label{fig:inertia-dependent-damping-png}
+\end{figure}
+
+Moreover, if one computes $ \beta $ from the damping ration $ \zeta_1 $ at a given
+natural frequency $ \omega_1 $, all the natural frequencies below it will be amplified
+and the frequencies above it will be attenuated. The effect is more dramatic the farther
+the frequencies are from the reference value.
+
+When \textbf{Damping is proportional to stiffness}:
+
+In this case, the mass coefficient $ \beta = 0 $ and thus:
+
+\begin{equation}
+    \zeta = \frac{1}{2} \alpha \omega_n
+\end{equation}
+
+It is seen that, contrary to the first case, here the damping id directly proportional
+to the natural frequency:
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.90\textwidth]{img/stiffness_dependent_damping.png}
+    \caption{Schematic of damping proportional to stiffness}
+    \label{fig:stiffness-dependent-damping-png}
+\end{figure}
+
+If one computes $ \alpha $ from the damping ratio $ \zeta_1 $ at a natural
+frequency $ \omega_1 $, then the natural frequencies below will be attenuated and
+the frequencies above will be amplified.
+
+\textbf{General Case}:
+
+In the case of using the model with two parameters, the proportionality of damping
+against frequency is convex:
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.90\textwidth]{img/general_rayleigh_damping.png}
+    \caption{Schematic of full damping model}
+    \label{fig:general-rayleigh-damping-png}
+\end{figure}
+
+In this case one needs two damping ratios and two natural frequencies to create
+a pair of equations and solve for $ \alpha $ and $ \beta $. The model gives some
+flexibility on where to place the natural frequencies, but in general, frequencies
+too far away from the ones used in the computation will be amplified.
+
+In the particular case of using equal damping ratios for the two frequencies,
+it is important to note that the damping ratio \textbf{will not be constant inside the range}
+defined by the sample points, but the inner frequencies will be attenuated. That is,
+the inner frequencies will have a lower damping ratio.
+
+\textbf{Computing the Rayleigh Damping Coefficients}
+
+In the most common case, a transient response curve frim the system is obtained and
+the damping ratio $ \zeta_1 $ is determined for the lowest natural frequency
+$ \omega_1 $ by measuring the (logarithmic) attenuation of successive peaks.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.90\textwidth]{img/Logarithmic_Decay_Damping_Ratio.png}
+    \caption{Determination of the damping ration from the logarithmic decay}
+    \label{fig:logarithmic-decay-damping-ratio-png}
+\end{figure}
+
+\begin{ematrix}
+    \zeta &= \frac{\delta}{\sqrt{\delta^2 + (2 \pi)^2}}\\
+    \delta &= \ln{\frac{x_0}{x_1}}\\
+    f &= \frac{1}{T} = \frac{1}{t_1 - t_0}\\
+    \omega &= 2 \pi f
+\end{ematrix}
+
+It is then most common to assume the case of damping proportional to the stiffness,
+that is, $ \beta = 0 $, and the $ \alpha $ stiffness coefficient is computed from:
+
+\begin{equation}
+    \alpha = \frac{2 \zeta_1}{\omega_1} = \frac{\zeta+1}{\pi f_1}
+\end{equation}
+
+If the knowledge on the system indicates the case of damping decreasing with the
+frequency, then one can assume the case of damping proportional to the inertia,
+where $ \alpha = 0 $ and determine the mass coefficient $ \beta $:
+
+\begin{equation}
+    \beta = 2 \zeta_1 \omega_1 = 4 \pi \zeta_1 f_1
+\end{equation}
+
+If there is not such test data or knowledge of the system, or if one wishes to apply
+an approximate damping ration over a range of frequencies, then we can use the
+general case and build a system of two equations:
+
+\begin{ematrix}
+    \zeta_1 &= \frac{1}{2} \left( \alpha \omega_1 + \frac{\beta}{\omega_1} \right)\\
+    \zeta_2 &= \frac{1}{2} \left( \alpha \omega_2 + \frac{\beta}{\omega_2} \right)
+\end{ematrix}
+
+Then solve for the unknown coefficients, keeping in mint the considerations given
+above for the general case and the influence of the model on natural frequencies
+inside and outside the range of interest. That is, perhaps one wants to achieve
+a mean damping ratio over the range, then compensate the attenuation by modifying
+the input damping rations, or by performing some least-squares approximation from
+more than two frequency points.
+
+
+
+
+
+
+
+\newpage
+\section{Modal decomposition}
+
+\subsection{Definition}
+
+Let:
+
+\begin{equation}
+    \mathbf{M}\ddot{\mathbf{u}} + \mathbf{C}\dot{\mathbf{u}} +  \mathbf{K}\mathbf{u} = \mathbf{F}\left( t \right)
+\end{equation}
+
+be the \textbf{equation of motion}, then:\\
+$ \mathbf{\Lambda} $ is a \textbf{spectral} matrix\\
+$ \mathbf{\Psi} $ is a \textbf{mode shape} matrix,
+
+such that:
+\begin{equation}
+    \mathbf{\Lambda} =
+    \begin{bmatrix}
+        \lambda_1^2 & \dots & 0\\
+        \vdots & \ddots & \vdots \\
+        0 & \dots & \lambda_n^2
+    \end{bmatrix}
+\end{equation}
+
+where $ \lambda_n^2 $ is the n-th eigenvalue of the problem
+$ (\mathbf{K}-\lambda^2\mathbf{M})\mathbf{X} = 0 $
+
+and:
+\begin{equation}
+    \mathbf{\Psi} =
+    \begin{bmatrix}
+        \mathbf{\psi}_1 & \dots & \mathbf{\psi}_n
+    \end{bmatrix}
+\end{equation}
+
+where $ \mathbf{\psi}_n = \{\psi_{n,1}, \dots, \psi_{n,m}\}^T $ is the eigenvector
+of the n-th eigenvalue $ \lambda_n^2 $.
+
+The \textbf{displacement} $ \mathbf{u} $ can be expressed as a linear combination
+of eigenvectors such that:
+
+\begin{ematrix}
+    \mathbf{u}(t)
+    &= \mathbf{\Psi} \mathbf{q}(t) \\
+    &= \begin{bmatrix}
+        \mathbf{\psi}_1 & \dots & \mathbf{\psi}_n
+    \end{bmatrix} \mathbf{q}(t) \\
+    &= \begin{bmatrix}
+        \mathbf{\psi}_{1,1} & \dots & \mathbf{\psi}_{n,1} \\
+        \vdots & \vdots & \vdots \\
+        \mathbf{\psi}_{1,m} & \dots & \mathbf{\psi}_{n,m}
+    \end{bmatrix}
+    \begin{bmatrix}
+        q_1(t) \\
+        \vdots \\
+        q_n(t)
+    \end{bmatrix}
+\end{ematrix}
+
+where $ \mathbf{q}(t) $ is a vector of modal coefficients.
+
+Then:
+
+\begin{ematrix}
+    \dot{\mathbf{u}}(t) &= \mathbf{\Psi} \dot{\mathbf{q}}(t) \\
+    \ddot{\mathbf{u}}(t) &= \mathbf{\Psi} \ddot{\mathbf{q}}(t)
+\end{ematrix}
+
+First we substitute $ \mathbf{u} = \mathbf{\Psi}\mathbf{q} $ to the
+\textbf{equation of motion}:
+
+\begin{equation}
+    \mathbf{M} \mathbf{\Psi} \ddot{q} +
+    \mathbf{C} \mathbf{\Psi} \dot{q} +
+    \mathbf{K}\mathbf{\Psi}\mathbf{q}
+    = \mathbf{F}(t)
+\end{equation}
+
+By \textbf{premultiplying} with $ \mathbf{\Psi}^T $ we get:
+
+\begin{equation}
+    \mathbf{\Psi}^T \mathbf{M} \mathbf{\Psi} \ddot{\mathbf{q}} +
+    \mathbf{\Psi}^T \mathbf{C} \mathbf{\Psi} \dot{\mathbf{q}} +
+    \mathbf{\Psi}^T \mathbf{K} \mathbf{\Psi} \mathbf{q} =
+    \mathbf{\Psi}\mathbf{F}(t) = \mathbf{Q}(t)
+\end{equation}
+
+where $ \mathbf{Q}(t) = \mathbf{\Psi} \mathbf{F}(t) $ is called a \textbf{modal load}.
+
+\subsection{Orthonormalised Modal Base}
+
+Then one can exploit the properties of \textbf{orthonormalised eigenvectors}, where:
+
+\begin{equation}
+    \mathbf{\psi}_r^T \mathbf{\psi}_s = 0 \Leftrightarrow r \neq s
+\end{equation}
+
+The \textbf{mass}, \textbf{damping} and \textbf{stiffness} matrices are therefore
+reduced to:
+
+\begin{ematrix}
+    \mathbf{\Psi}^T \mathbf{M} \mathbf{\Psi}
+    &= \begin{bmatrix}
+        m_1 & \dots & 0 \\
+        \vdots & \ddots & \vdots \\
+        0 & \dots & m_n
+    \end{bmatrix} \\
+    \mathbf{\Psi}^T \mathbf{C} \mathbf{\Psi}
+    &= \begin{bmatrix}
+        c_1 & \dots & 0 \\
+        \vdots & \ddots & \vdots \\
+        0 & \dots & c_n
+    \end{bmatrix} \\
+    \mathbf{\Psi}^T \mathbf{K} \mathbf{\Psi}
+    &= \begin{bmatrix}
+        k_1 & \dots & 0 \\
+        \vdots & \ddots & \vdots \\
+        0 & \dots & k_n
+    \end{bmatrix}
+\end{ematrix}
+
+where: \\
+$ m_i $ is the \textbf{modal mass} of the i-th shape\\
+$ c_i $ is the \textbf{modal damping} of the i-th shape\\
+$ k_i $ is the \textbf{modal stiffness} of the i-th shape
+
+\begin{bbox}[0.96]
+    \textbf{Note}:
+
+    When are the eigenvectors \textbf{orthonormalised} to \textbf{mass}, the above
+    equations reduce to:
+
+    \begin{ematrix}
+        \mathbf{\Psi}^T \mathbf{M} \mathbf{\Psi}
+        &= \begin{bmatrix}
+            1.0 & \dots & 0 \\
+            \vdots & \ddots & \vdots \\
+            0 & \dots & 1.0
+        \end{bmatrix} = \mathbf{I} \\
+        \mathbf{\Psi}^T \mathbf{C} \mathbf{\Psi}
+        &= \begin{bmatrix}
+            c_1 & \dots & 0 \\
+            \vdots & \ddots & \vdots \\
+            0 & \dots & c_n
+        \end{bmatrix} \\
+        \mathbf{\Psi}^T \mathbf{K} \mathbf{\Psi}
+        &= \begin{bmatrix}
+            \lambda_1^2 & \dots & 0 \\
+            \vdots & \ddots & \vdots \\
+            0 & \dots & \lambda_n^2
+        \end{bmatrix} = \mathbf{\Lambda}^2
+    \end{ematrix}
+
+    \textbf{Mass normalisation}:
+
+    \begin{equation}
+        \mathbf{\psi}_{i,mass} = \frac{\mathbf{\psi}_i}{\mathbf{\psi}_i^T \mathbf{m}_i \mathbf{\psi}_i}
+    \end{equation}
+
+    where:
+
+    $ \mathbf{m}_i $ is the i-th row of the \textbf{mass} matrix $ \mathbf{M} $.
+
+\end{bbox}
+
+
+\subsection{MDOF to SDOF}
+
+The MDOF \textbf{equation of motion} can be then rewritten as a set of \textbf{SDOF}
+equations:
+
+\begin{ematrix}
+    \mathbf{\Psi}^T \mathbf{M} \mathbf{\Psi} \ddot{\mathbf{q}}(t) +
+    \mathbf{\Psi}^T \mathbf{C} \mathbf{\Psi} \dot{\mathbf{q}}(t) +
+    \mathbf{\Psi}^T \mathbf{K} \mathbf{\Psi} \mathbf{q}(t) &=
+    \mathbf{\Psi}^T \mathbf{F}(t) \\
+    \mathbf{M}_{\Psi} \ddot{\mathbf{q}}(t) +
+    \mathbf{C}_{\Psi} \dot{\mathbf{q}}(t) +
+    \mathbf{K}_{\Psi} \mathbf{q}(t) &= \mathbf{Q}(t)
+\end{ematrix}
+
+Written explicitely:
+
+\begin{ematrix}
+    \begin{bmatrix}
+        m_1 & \dots & 0 \\
+        \vdots & \ddots & \vdots \\
+        0 & \dots & m_n
+    \end{bmatrix}
+    \begin{bmatrix}
+        \ddot{q}_1(t) \\
+        \vdots \\
+        \ddot{q}_n(t)
+    \end{bmatrix} &+ \\
+    \begin{bmatrix}
+        c_1 & \dots & 0 \\
+        \vdots & \ddots & \vdots \\
+        0 & \dots & c_n
+    \end{bmatrix}
+    \begin{bmatrix}
+        \dot{q}_1(t) \\
+        \vdots \\
+        \dot{q}_n(t)
+    \end{bmatrix} &+ \\
+    \begin{bmatrix}
+        k_1 & \dots & 0 \\
+        \vdots & \ddots & \vdots \\
+        0 & \dots & k_n
+    \end{bmatrix}
+    \begin{bmatrix}
+        q_1(t) \\
+        \vdots \\
+        q_n(t)
+    \end{bmatrix} &=
+    \begin{bmatrix}
+        Q_1(t) \\
+        \vdots \\
+        Q_n(t)
+    \end{bmatrix}
+\end{ematrix}
+
+It is important to note that all modal matrices (mass, damping and stiffness) are
+purely diagonal (with simple enough damping), so the \textbf{MDOF} problem reduces to a series
+of \textbf{SDOF} problems:
+
+\begin{ematrix}
+    m_1 \ddot{q}_1(t) + c_1 \dot{q}_1(t) + k_1 q_1(t) &= Q_1(t) \\
+    m_2 \ddot{q}_2(t) + c_2 \dot{q}_2(t) + k_2 q_2(t) &= Q_2(t) \\
+    \vdots \\
+    m_n \ddot{q}_n(t) + c_n \dot{q}_n(t) + k_n q_n(t) &= Q_n(t)
+\end{ematrix}
+
+which are solved separately and the results are \textbf{linearly} combined:
+
+\begin{ematrix}
+    \mathbf{u} = \sum_{i=1}^n \mathbf{\psi}_i q_i \\
+    \mathbf{\dot{u}} = \sum_{i=1}^n \mathbf{\psi}_i \dot{q}_i \\
+    \mathbf{\ddot{u}} = \sum_{i=1}^n \mathbf{\psi}_i \ddot{q}_i
+\end{ematrix}
+
+\begin{bbox}[0.96]
+    \textbf{Note:} Above equation can be also written as:
+
+    \begin{ematrix}
+        \mathbf{u} = \sum_{i=1}^n \mathbf{\psi}_i q_{u,i} \\
+        \mathbf{v} = \sum_{i=1}^n \mathbf{\psi}_i q_{v,i} \\
+        \mathbf{a} = \sum_{i=1}^n \mathbf{\psi}_i q_{a,i}
+    \end{ematrix}
+
+    where:\\
+    $ \mathbf{u} $ is displacement \\
+    $ \mathbf{v} $ is velocity \\
+    $ \mathbf{a} $ is acceleration
+
+    and\\
+    $ \mathbf{q}_{u} $ is modal displacement \\
+    $ \mathbf{q}_v $ is modal velocity \\
+    $ \mathbf{q}_a $ is modal acceleration
+
+\end{bbox}
+
+
+\subsection{Initial Conditions}
+
+To get the initial modal conditions, one simply:
+
+\begin{ematrix}
+    \mathbf{q}_0 &= \mathbf{\Psi}^{-1} \mathbf{u}_0 \\
+    \mathbf{\dot{q}}_0 &= \mathbf{\Psi}^{-1} \mathbf{\dot{u}}_0 \\
+    \mathbf{\ddot{q}}_0 &= \mathbf{\Psi}^{-1} \mathbf{\ddot{u}}_0
+\end{ematrix}
+
+where:\\
+$ \mathbf{\Psi}^{-1} $ is an inverse of eigenshape matrix $ \Leftrightarrow $ all eigenvalues
+and eigenshapes are used.
+
+\begin{bbox}[0.96]
+    \textbf{Note}: This is not usually so. Normally one would use
+    \textbf{reduced modal base}, where only the first \textbf{n} eigenmodes are used. Then
+    $ \mathbf{\Psi}^{-1} $ is written as $ \mathbf{\Psi}^{+} $ and called the
+    \textbf{pseudoinverse of mode shape matrix} defined (at least in \textbf{numpy}
+    - \textit{numpy.linal.pinv()}) as:\\
+
+    \smallskip
+    The pseudo-inverse of a matrix $ \mathbf{A} $, denoted $ \mathbf{A}^{+} $,
+    is defined as: “the matrix that ‘solves’ [the least-squares problem]
+    $ \mathbf{A} \mathbf{x} = \mathbf{b} $ ,” i.e., if $ \overline{\mathbf{x}} $
+    is said solution, then $ \mathbf{A}^{+} $ is that matrix such that
+    $ \overline{\mathbf{x}} = \mathbf{A}^{+} \mathbf{b} $.\\
+
+    \smallskip
+    It can be shown that if $ \mathbf{Q}_1 \mathbf{\Sigma} \mathbf{Q}_2^T = \mathbf{A} $
+    is the singular value decomposition of $ \mathbf{A} $, then
+    $ \mathbf{A}^{+} = \mathbf{Q}_2 \mathbf{\Sigma}^{+} \mathbf{Q}_1^T $, where $ \mathbf{Q}_{1,2} $
+    are orthogonal matrices, $ \mathbf{\Sigma} $  is a diagonal matrix consisting of
+    $ \mathbf{A} $’s so-called singular values, (followed, typically, by zeros),
+    and then $ \mathbf{\Sigma}^{+} $ is simply the diagonal matrix consisting
+    of the reciprocals of $ \mathbf{A} $’s singular values (again, followed
+    by zeros).
+\end{bbox}
+
+
+
+
+\end{document}
+
