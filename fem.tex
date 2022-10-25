@@ -712,5 +712,414 @@ and eigenshapes are used.
 
 
 
+\chapter{Iterative Methods}
+
+\section{second order ODE's}
+
+Most of FEM problems are \textbf{second order Ordinary Differential Equations}, e.g:
+
+\begin{ematrix}
+    m \frac{u''(t)}{d^2 t} + c \frac{u'(t)}{dt} + k u(t) &= 0\\
+    m \ddot{u} + c \dot{u} + k u &= 0\\
+    m a + c v + ku &= 0
+\end{ematrix}
+
+while the iterative methods are for \textbf{first order ODE's} only.
+A \textbf{substitution} technique is therefore used to transform the
+\textbf{second order ODE's} to a set of \textbf{first order ODE's} and these are
+then solved sequentialy.
+
+First we begin with a \textbf{second order ODE} in the form of:
+
+\begin{equation}
+    a \frac{y''(x)}{d^2 x} + b \frac{y'(x)}{dx} + c y = d, \quad with \quad y(0) = y_0 \quad and \quad
+    \frac{y'(0)}{dx} = y_1
+\end{equation}
+
+By stating:
+
+\begin{equation}
+    \frac{dy}{dx} = z
+\end{equation}
+
+and substituting back:
+
+\begin{equation}
+    a \frac{dz}{dx} + b z + c y = d
+\end{equation}
+
+now we can write the following set of equations:
+
+\begin{ematrix}
+    \begin{aligned}
+        z &= \frac{dy}{dx}\\
+        \frac{dz}{dx} &= \frac{d - c y - b z}{a}
+    \end{aligned} &
+    \quad \left\{
+    \begin{aligned}
+        y(0) &= y_0\\
+        z(0) &= y_1
+    \end{aligned} \right.
+\end{ematrix}
+
+
+
+\section{Explicit}
+
+\subsection{Euler's method}
+The \textbf{Euler's Method} is an iterative method to solve ODEs. This method's
+huge plus is it is fast. The minus is it gradually diverges from the ideal solution.
+
+The \textbf{Euler's Method} uses the following formula:
+
+\begin{equation}
+    y(t + h) = y(t) + h f(x,y)
+\end{equation}
+
+to construct the tangent at point $ x $ and obtain the value of $ y(x + h) $,
+whose slope is:
+
+\begin{equation}
+    f(x,y) \quad or \quad \frac{dy}{dx}
+\end{equation}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.90\textwidth]{img/Euler.png}
+    \caption{Euler's method schematic}
+    \label{fig:euler-png}
+\end{figure}
+
+In Euler's method, you can approximate the curve of the solution byt the tangent
+in each interval (that is, by a sequence of shor line segments), at steps of $ h $.
+
+\textit{In general}, if you use small step size, the accuracy of the approximation
+increases.
+
+\textbf{General Formula}
+
+\begin{equation}
+    y_{i+1} = y_i + h f(x_i,y_i)
+\end{equation}
+
+where:\\
+$ y_{i+1} $ is the next estimated solution value,\\
+$ y_i $ is the current value,\\
+$ h $ is the interval between steps and\\
+$ f(x_i,y_i) $ is the value of the derivative at the current $ (x_i,y_i) $ point.
+
+\textbf{Pseudocode:}
+
+\begin{itemize}
+    \item define: $ f(x,y) $
+
+    \item input: $ x_0 $, $ y_0 $
+
+    \item input: $ h $, $ n $
+
+    \item for $ j $ from $ 0 $ to $ (n-1) $ do
+        \begin{itemize}
+            \item $ y_{j+1} = y_j + hf(x_j, y_j) $
+            \item $ x_{j+1} = x_j + h $
+            \item Print $ x_{j+1} $ and $= y_{j+1} $
+        \end{itemize}
+    \item End.
+\end{itemize}
+
+
+\begin{bbox}[0.96]
+\textbf{Note:}
+
+If thinking about a problem in time domain:
+
+\begin{itemize}
+    \item define: $ f(t,x) $
+
+    \item input: $ t_0 $, $ x_0 $
+
+    \item input: $ dt $, $ n $
+
+    \item for $ j $ from $ 0 $ to $ (n-1) $ do
+        \begin{itemize}
+            \item $ x_{j+1} = x_j + dt f(t_j, x_j) $
+            \item $ t_{j+1} = t_j + dt $
+            \item Print $ t_{j+1} $ and $= x_{j+1} $
+        \end{itemize}
+    \item end.
+\end{itemize}
+
+\end{bbox}
+
+
+\newpage
+\textbf{Python Code for vibration problem:}
+
+\begin{python}
+#!/usr/bin/python3
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def iterate(h, y0, func, rhs):
+    num_of_odes = y0.shape[0]
+    y1 = np.zeros(num_of_odes, dtype = float)
+    for i in range(num_of_odes-1):
+        y1[i] = y0[i] + y0[i+1] * h
+    y1[-1] = func(y1, rhs)
+    return y1
+
+
+def euler(t, y, func, rhs):
+    N = t.shape[0]
+    for j in range(N-1):
+        dt = t[j+1] - t[j]
+        y[j+1,:] = iterate(dt, y[j,:], func, rhs[j])
+        # print(y[j+1,:])
+    return y
+
+
+def euler_vibration():
+    m = 0.55  # tonnes
+    c = 3.    # Ns/mm
+    k = 1000. # N/mm
+
+    freq = np.sqrt(k / m) / (2 * np.pi)
+
+    # equation to solve
+    # m * a + c * v + k * u = f
+    # a = (f - c * v - k * u) / m
+    acceleration = lambda u, f: (f - c * u[1] - k * u[0]) / m
+
+    T = 2.0     # seconds
+    dt = 0.0001 # timestep s
+    u_0 = 0.    # mm of initial displacement
+    v_0 = 0.    # mm/s of initial velocity
+
+    # times at which to solve
+    t = np.linspace(0, T, int(T/dt) + 1)
+
+    # force vector
+    F = 5000. # N of max impulse
+    t0 = 0.1  # impulse start time
+    t1 = 0.2  # impuls end time
+    f = np.zeros(t.shape[0], dtype=float)
+    # create a half sine impulse of force
+    for i in range(t.shape[0]):
+        if t[i] >= t0 and t[i] <= t1:
+            f[i] = F * np.sin((t[i] - t0) / (t1 - t0) * np.pi)
+        else:
+            f[i] = 0.
+
+    uva = np.zeros((t.shape[0],3), dtype=float)
+    uva[0,0] = u_0
+    uva[0,1] = v_0
+
+    uva = euler(t, uva, acceleration, f)
+
+    fig, axu = plt.subplots()
+    axu.plot(t, uva[:,0], label='displacement', color='red')
+    axf = axu.twinx()
+    axf.plot(t, f, label='force', color='violet')
+    # axv = axu.twinx()
+    # axv.plot(t, uva[:,1], label='velocity', color='blue')
+    # axa = axu.twinx()
+    # axa.plot(t, uva[:,2], label='acceleration', color='green')
+    fig.legend()
+
+    plt.show()
+
+if __name__ == '__main__':
+    euler_vibration()
+
+\end{python}
+
+
+The \textbf{iterate()} function:
+\begin{python}
+def iterate(h, y0, func, rhs):
+    num_of_odes = y0.shape[0]
+    y1 = np.zeros(num_of_odes, dtype = float)
+    for i in range(num_of_odes-1):
+        y1[i] = y0[i] + y0[i+1] * h
+    y1[-1] = func(y1, rhs)
+    return y1
+
+\end{python}
+
+is written for general case of a set of ODEs. When considering the problem
+of vibration (set of 2 ODEs):
+\begin{python}
+def iterate(h, u0, v0, a0, f, m , c, k):
+    u1 = u0 + h * v0
+    v1 = v0 + h * a0
+    # m * a + c * v + k * u = f
+    a1 = (f - c * v1 - k * u1) / m
+    return np.array([u1, v1, a1], dtype=float)
+\end{python}
+
+which is the iteration of a set of \textbf{first order ODEs}:
+\begin{ematrix}
+    v &= \dot{u}\\
+    \dot{v} &= \frac{f - c * v - k * u}{m}
+\end{ematrix}
+
+\newpage
+\subsection{Runge-Kutta 4th order method}
+
+\textbf{Runge-Kutta 4th order method} is another explicit method for solving
+\textbf{first order ODEs}. The basic equation is:
+
+\begin{equation}
+    \frac{dy}{dx} = f(x,y) \quad , y(0) = y_0
+\end{equation}
+
+The formula for the next value $ y_{i+1} $ after a step size equal to $h $ is given by:
+
+\begin{ematrix}
+    k_1 &= h f(x_i, y_i)\\
+    k_2 &= h f(x_i + \frac{h}{2}, y_i + \frac{k_1}{2})\\
+    k_3 &= h f(x_i + \frac{h}{2}, y_i + \frac{k_2}{2})\\
+    k_4 &= h f(x_i + h, y_i + k_3)\\
+    y_{i+1} &= y_i + \frac{k_1}{6} + \frac{k_2}{3} + \frac{k_3}{3} + \frac{k_4}{6} + O(h^5)
+\end{ematrix}
+
+The formula basically computes next value $ y_{i+1} $ using current $ y_i $ plus
+\textbf{weighted average of four increments}:
+
+\begin{itemize}
+    \item $ k_1 $ is the increment based on the slope at the beginning of the
+    interval, using $ y $
+
+    \item $ k_2 $ is the increment based on the slope at the midpoint of the interval,
+        using $ y + h k_1 / 2 $
+
+    \item $ k_3 $ is the increment based on the slope at the midpoint,
+        using $ y + h k_2 / 2 $
+
+    \item $ k_4 $ is the increment based on the slope at the end of the interval,
+        using $ y + h k_3 / 2 $
+
+\end{itemize}
+
+The method is a fourth order method, meaning that the local truncation error is
+on the order of $ O(h^5) $, while the total accumulated error is of order $ O(h^4) $.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.80\textwidth]{img/Runge-Kutta_slopes.png}
+    \caption{4th Order Runge-Kutta's method schematic}
+    \label{fig:rk4-schema-png}
+\end{figure}
+
+\begin{bbox}[0.96]
+\textbf{Note:}
+
+The formula for the next value $ y_{i+1} $ can be also written as:
+
+\begin{ematrix}
+    k_1 &= y_i\\
+    k_2 &= y_i + \frac{h}{2} \frac{d k_1}{dx}\\
+    k_3 &= y_i + \frac{h}{2} \frac{d k_2}{dx}\\
+    k_4 &= y_i + h \frac{k_3}{dx}\\
+    y_{i+1} &= y_i + \frac{h}{6} (\frac{d k_1}{dx} + 2 \frac{d k_2}{dx}
+                              + 2 \frac{d k_3}{dx} + \frac{d k_4}{dx}) + O(h^5)
+\end{ematrix}
+
+This notation is more convenient to use when solving sets of ODEs.
+
+\end{bbox}
+
+\textbf{Python implementation for vibration problem:}
+
+\begin{python}
+#!/usr/bin/python3
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def iterate(h, y0, y, func, rhs):
+    num_of_odes = y0.shape[0]
+    y1 = np.zeros(num_of_odes, dtype = float)
+    for i in range(num_of_odes-1):
+        y1[i] = y0[i] + y[i+1] * h
+    y1[-1] = func(y1, rhs)
+    return y1
+
+
+def runge_kutta_4(t, y, func, rhs):
+    N = t.shape[0]
+    for j in range(N-1):
+        dt = t[j+1] - t[j]
+        y1 = iterate(0., y[j,:], y[j,:], func, rhs[j])
+        y2 = iterate(dt/2, y[j,:], y1, func, 0.5 * (rhs[j+1] + rhs[j]))
+        y3 = iterate(dt/2, y[j,:], y2, func, 0.5 * (rhs[j+1] + rhs[j]))
+        y4 = iterate(dt, y[j,:], y3, func, rhs[j+1])
+
+        # next step solution
+        for i in range(y.shape[1]-1):
+            y[j+1,i] = y[j,i] + dt/6 * (y1[i+1] + 2 * y2[i+1] + 2 * y3[i+1] + y4[i+1])
+        y[j+1,-1] = func(y[j+1,:], rhs[j+1])
+    return y
+
+
+def rk4_vibration():
+    m = 10.   # tonnes
+    c = 5.    # Ns/mm
+    k = 50.   # N/mm
+
+    freq = np.sqrt(k / m) / (2 * np.pi)
+    print(f'f = {freq}')
+
+    # equation to solve
+    # m * a + c * v + k * u = f
+    # a = (f - c * v - k * u) / m
+    acceleration = lambda u, f: (f - c * u[1] - k * u[0]) / m
+
+    T = 10.     # seconds
+    dt = 0.01   # timestep s
+    u_0 = 0.    # mm of initial displacement
+    v_0 = 0.    # mm/s of initial velocity
+
+    # times at which to solve
+    t = np.linspace(0, T, int(T/dt) + 1)
+
+    # force vector
+    F = 1.    # N of max impulse
+    t0 = 1.   # impulse start time
+    t1 = 1.5  # impuls end time
+    f = np.zeros(t.shape[0], dtype=float)
+    # create a half sine impulse of force
+    for i in range(t.shape[0]):
+        if t[i] >= t0 and t[i] <= t1:
+            f[i] = F * np.sin((t[i] - t0) / (t1 - t0) * np.pi)
+        else:
+            f[i] = 0.
+
+    uva = np.zeros((t.shape[0],3), dtype=float)
+    uva[0,0] = u_0
+    uva[0,1] = v_0
+
+    uva = runge_kutta_4(t, uva, acceleration, f)
+
+    fig, axu = plt.subplots()
+    axu.plot(t, uva[:,0], label='displacement', color='red')
+    axf = axu.twinx()
+    axf.plot(t, f, label='force', color='violet')
+    # axv = axu.twinx()
+    # axv.plot(t, uva[:,1], label='velocity', color='blue')
+    axu.plot(t, uva[:,1], label='velocity', color='blue')
+    # axa = axu.twinx()
+    # axa.plot(t, uva[:,2], label='acceleration', color='green')
+    axu.plot(t, uva[:,2], label='acceleration', color='green')
+    fig.legend()
+
+    plt.show()
+
+if __name__ == '__main__':
+    rk4_vibration()
+
+\end{python}
+
+
 \end{document}
 
