@@ -79,6 +79,14 @@ document preamble
 set up format:
 ```tex
 \setminted[python]{breaklines, framesep=2mm, fontsize=\footnotesize, numbersep=5pt}
+% creates \begin{python} ... \end{python} definition
+\newminted[python]{python}{linenos=true,
+                           frame=lines,
+                           baselinestretch=1.2,
+                           mathescape,
+                           xleftmargin=1cm,
+                           framesep=2mm,
+                           fontsize=\footnotesize}
 ```
 
 write code in blocks:
