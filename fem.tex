@@ -39,6 +39,9 @@
 \newcommand\settextcolour{\color[rgb]{0.9,0.9,0.9}}
 \newcommand\invertbackgroundtext{\setbackgroundcolour\settextcolour}
 
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+\newcommand*{\Resize}[2]{\resizebox{#1}{!}{$#2$}}%
+
 % equal by definition
 \newcommand*\eqd{\stackrel{\triangle}{=}}
 
@@ -90,6 +93,33 @@
 \tableofcontents
 
 \chapter{Dynamics}
+
+\section{Function properties}
+
+\subsubsection{Sine and Cosine functions}
+Let a fucntion $ f(t) $ be in the form:
+
+\begin{equation}
+    f(t) = A_1 \cos{\omega t} + B_i \sin{\omega t}
+\end{equation}
+
+then the following relation applies:
+
+\begin{ematrix}
+    f(t) &= A \cos{\left( \omega t - \phi \right)}\\
+    A &= \sqrt{A_1^2 + B_1^2}\\
+    \phi &= \tan^{-1} \left( \frac{B_i}{A_i} \right)
+\end{ematrix}
+
+also:
+\begin{ematrix}
+    \cos{\left( \omega t - \phi \right)} &=
+    \cos{\omega t} \cos{\phi} + \sin{\omega t} \sin{\phi}\\
+    \sin{\left( \omega t - \phi \right)} &=
+    \sin{\omega t} \cos{\phi} + \cos{\omega t} \sin{\phi}
+\end{ematrix}
+
+
 
 \section{SDOF system}
 
@@ -160,14 +190,14 @@ The resulting equation of motion is a
 with the initial conditions $ u_0 $ and $ \dot{u}_0 $.
 
 
-\subsection{Time Solution for Undamped SDOF Systems}
+\subsection{Time Solution for Unforced Undamped SDOF Systems}
 
 \textit{https://www.efunda.com/formulae/vibrations/sdof\_free\_undamped.cfm}
 
 The equation of motion derived in the definition can be simplified to:
 
 \begin{equation}
-    m \ddot{u} + k u = f(t)
+    m \ddot{u} + k u = 0
         \left\{ \begin{matrix}
                 u(t=0) = u_0\\
                 \dot{u}(t=0) = \dot{u}_0
@@ -207,7 +237,7 @@ not change the natural frequency of a system).
 Alternatively, the solution may be expressed by the equivalent form,
 
 \begin{equation}
-    u(t) = A_0 \cos{\omega_n t - \phi_0}
+    u(t) = A_0 \cos{(\omega_n t - \phi_0)}
 \end{equation}
 
 where the amplitude $ A_0 $ and the intial phase $ \phi_0 $ are given by:
@@ -230,11 +260,423 @@ will damp the vibration and dissipate energy, the oscillatory motion caused by t
 initial disturbance will eventually be reduced to zero.
 
 
+\subsection{Time Solution for Unforced Damped SDOF Systems}
+
+\textit{https://www.efunda.com/formulae/vibrations/sdof\_free\_damped.cfm}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.90\textwidth]{img/SDOF_plot.png}
+    \caption{SDOF system with a linear spring and dashpot}
+    \label{fig:SDOF-plot-damped-png}
+\end{figure}
+
+Damping that produces a damping force proportional to the mass's velocity is
+commonly referred to as \textit{viscous damping}, and is denoted graphically
+by a dashpot.
+
+For an unforced damped \textbf{SDOF} system, the general equation of motion
+becomes:
+
+\begin{equation}
+    m \ddot{u} + c \dot{u} + k u = 0
+        \left\{ \begin{matrix}
+                u(t=0) = u_0\\
+                \dot{u}(t=0) = \dot{u}_0
+          \end{matrix} \right.
+\end{equation}
+
+Tis equation of motion is a \textbf{second order, homogeneous, ODE}. If all
+parameters (mass, stiffness and viscous damping) are constants, the \textbf{ODE}
+becomes a \textbf{linear ODE with constant coefficients} and can be solved by
+the \textit{Characteristic Equation method}. The characteristic equation for this
+problem is:
+
+\begin{equation}
+    m s^2 + s_v s + k = 0
+\end{equation}
+
+which determines the 2 independent roots for the damped vibration problem.
+The roots to the characteristic equation fall into one of the following
+3 cases:
+
+\begin{itemize}
+    \item If $ c_v^2 - 4 m k < 0 $, the system is termed \textbf{underdamped}.
+        The roots of the characteristic equation are complex conjugates,
+        corresponding to \textit{oscillatory motion} with an
+        \textit{exponential decay} in amplitude.
+
+    \item If $ c_v^2 - 4 m k = 0 $, the system is termed \textbf{critically-derdamped}.
+        The roots of the characteristic equation are repeated,
+        corresponding to \textit{simple decay motion} with at most
+        \textit{one overshoot} of the systems resting position.
+
+    \item If $ c_v^2 - 4 m k > 0 $, the system is termed \textbf{overderdamped}.
+        The roots of the characteristic equation are prurely real and distinct,
+        corresponding to \textit{simple exponentially decaying motion}.
+
+\end{itemize}
+
+To simplify the solutions coming up, we define the critical damping $ c_c $,
+the damping ratio $ \zeta $, and the damped vibration frequency $ \omega_d $ as:
+
+\begin{ematrix}
+    c_c &= 2 m \sqrt{\frac{k}{m}} = 2 m \omega_n\\
+    \zeta &= \frac{c_v}{c_c}\\
+    \omega_d &= \sqrt{1 - \zeta^2} \omega_n
+\end{ematrix}
+
+where the natural frequency of the system $ \omega_n $ is given by:
+
+\begin{equation}
+    \omega_n = \sqrt{\frac{k}{m}}
+\end{equation}
+
+Note that $ \omega_d $ will equal $ \omega_n $ when the damping of the system
+is zero (i.e. undamped). The time solutions for the free \textbf{SDOF}
+system is presented below for each of the three case scenarios.
+
+\subsubsection{Time Solution of Unforced Underdamped SDOF Systems}
+
+When $ c_v^2 - 4 m k < 0 $ (equivalent to $ \zeta < 1 $ or $ c_v < c_c $),
+the characteristic equation has a pair of complex conjugate roots. The displacement
+solution for this kind of system is:
+
+\begin{ematrix}
+    u(t) &= c_1 e^{-\zeta + i \sqrt{1 - \zeta^2} \omega_n t}
+          + c_2 e^{-\zeta - i \sqrt{1 - \zeta^2} \omega_n t}\\
+         &= e^{-\zeta \omega_n t} \left[ d_1 \cos{(\omega_d t)}
+                                       + d_2 \sin{(\omega_d t)} \right]\\
+    \implies u(t) &= \underbrace{e^{-\zeta \omega_n t}}_{exponential\ decay}
+    \underbrace{\left[ u_0 \cos{(\omega_d t)}
+    + \frac{\dot{u}_0 + \zeta \omega_n u_0}{\omega_d} \sin{(\omega_d t)}
+    \right]}_{periodic\ motion}
+\end{ematrix}
+
+An alternate but equivalent solution is given by:
+
+\begin{equation}
+    u(t) = A_0 \underbrace{e^{-\zeta \omega_n t}}_{exponential\ decay}
+    \underbrace{\cos{(\omega_d t - \phi_0)}}_{periodic\ motion}
+\end{equation}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.70\textwidth]{img/SDOF_UnderDamped_Response.png}
+    \caption{The displacement plot of an underdamped system}
+    \label{fig:SDOF-underdamped-response-png}
+\end{figure}
+
+Note that the displacement amplitude decays exponentially (i.e. the natural
+logarithm of the amplitude ratio for any two displacements separated in time
+by a constant ratio is a constant):
+
+\begin{ematrix}
+    \frac{A_k}{A_{k+1}} &=
+    \frac{A_0 e^{-\zeta \omega_n \left( k T_d \right)} \cos{ \left( \phi_0 \right) }}
+         {A_0 e^{-\zeta \omega_n \left[ (k+1) T_d \right]} \cos{ \left( \phi_0 \right) }}\\
+                        &=
+    \frac{e^{-\zeta \omega_n \left( k T_d \right)}}
+         {e^{-\zeta \omega_n \left[ (k+1) T_d \right]}}\\
+                        &= e^{\zeta \omega_n T_d}\\
+    \implies \ln{\left( \frac{A_k}{A_{k+1}} \right)} &=
+    \zeta \omega_n T_d = \zeta \omega_n \frac{2 \pi}{\omega_d}
+    = \frac{2 \pi \zeta}{\sqrt{1 - \zeta^2}}
+\end{ematrix}
+
+where $ T_d = \frac{1}{f_d} = \frac{2 \pi}{\omega_d} $ is the period of the
+damped vibration.
+
+
+\subsubsection{Time Solution of Unforced Critically-Damped Systems}
+
+When $ c_v^2 - 4 m k = 0 $ (equivalent to $ \zeta = 1 $ or $ c_v = c_c $), the
+characteristic equation has repeated real roots. The displacement solution for
+this kind of system is:
+
+\begin{ematrix}
+    u(t) &= \left( c_1 + c_2 t \right) e^{-\omega_n t}\\
+    \implies u(t) &= e^{-\omega_n t} \left[ u_0 + \left( v_0 + \omega_n u_0 \right) t \right]
+\end{ematrix}
+
+The critical damping factor $ c_c $ can be interpreted as the \textbf{minimum damping}
+that results in non-periodic motion (i.e. simple decay).
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.70\textwidth]{img/SDOF_CriticalDamped_Response.png}
+    \caption{The displacement plot of a critically-damped system with positive initial
+displacement and velocity.}
+    \label{fig:SDOF-critically-damped-response-png}
+\end{figure}
+
+The displacement decays to a negligible level after one natural period $ T_n $.
+Note that if the initial velocity $ v_0 $ is negative while the initial displacement
+$ u_0 $ is positive, there will exist one overshoot of the resting position in
+the displacement plot.
+
+
+\subsubsection{Time Solution of Unforced Overdamped SDOF Systems}
+
+When $ c_v^2 - 4 m k > 0 $ (equivalent to $ \zeta > 1 $ or $ c_v > c_c $),
+the characteristic equation has two distinct real roots. The displacement
+solution for this kind of system is:
+
+\begin{ematrix}
+    u(t) &= c_1 e^{\left( -\zeta + \sqrt{\zeta^2 - 1} \right) \omega_n t}
+          +  c_2 e^{\left( -\zeta - \sqrt{\zeta^2 - 1} \right) \omega_n t}\\
+    \implies u(t) &=
+    \frac{u_0 \omega_n \left( \zeta + \sqrt{\zeta^2 - 1} \right) + v_0}
+    {2 \omega_n \sqrt{\zeta^2 - 1}} e^{\left( -\zeta + \sqrt{\zeta^2 - 1} \right) \omega_n t} +\\
+                  &+
+    \frac{-u_0 \omega_n \left( \zeta - \sqrt{\zeta^2 - 1} \right) - v_0}
+    {2 \omega_n \sqrt{\zeta^2 - 1}} e^{\left( -\zeta - \sqrt{\zeta^2 - 1} \right) \omega_n t}
+\end{ematrix}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.70\textwidth]{img/SDOF_OverDamped_Response.png}
+    \caption{The displaceent plot of an overdamped system response}
+    \label{fig:SDOF-overdamped-response-png}
+\end{figure}
+
+The motion of an overdamped system is non-periodic, regardless of the inital conditions.
+The larger the damping, the longer time to decay from an initial disturbance.
+
+If the system is heavily damped, $ \zeta \gg 1 $, the displacement solution takes
+the approximate form:
+
+\begin{equation}
+    u(t) \approx u_0 + \frac{v_0}{2 \zeta \omega_n}
+    \left(1 - e^{-2 \zeta \omega_n t} \right)
+\end{equation}
+
+
+\subsection{SDOF Systems under Harmonic Excitaion}
+\textit{https://www.efunda.com/formulae/vibrations/sdof\_harmo.cfm}
+
+When a \textbf{SDOF} System is forced by $ f(t) $, the solution for the displacement
+$ x(t) $ consists of two parts: the \textit{complimentary solution}, and the
+\textit{particular solution}. The complimentary solution for the problem
+is given by the \textbf{free vibration of an unforced SDOF System}.
+The \textbf{particular solution} depends on the nature fo the forcing function.
+
+When the forcing function is \textbf{harmonic} (i.e. it consits of at most
+a \textbf{sine} and \textbf{cosine} at the same \textbf{frequency},
+a quantity that can be expressed by the complex exponentional $ e^{i \omega t} $),
+the method if \textbf{Undetermined Coefficients} can be used to find the particular
+solution. Non-harmonic forcing functions are handled by other techniques.
+
+Consider the SDOF system forced by the harmonic function $ f(t) $.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.70\textwidth]{img/SDOF_harmonic.png}
+    \caption{SDOF System forced by the harmonic function $ f(t) $}
+    \label{fig:SDOF-harmonic-response-png}
+\end{figure}
+
+The particular solution for this problem is found to be:
+
+\begin{equation}
+    u_p(t) = \frac{f_0}{ \left( k - m \omega^2 \right) + i c \omega} e^{i \omega t}
+\end{equation}
+
+The general solution is given by the sum of the complimentary and particular
+solutions multiplied by two weighting constants $ c_1 $ and $ c_2 $,
+
+\begin{equation}
+    u(t) = c_1 u_c(t) + c_2 u_p(t)
+\end{equation}
+
+The values of $ c_1 $ and $ c_2 $ are found by matching $ u(t=0) $ to the
+initial conditions.
+
+\subsubsection{Undamped SDOF Systems under Harmonic Excitation}
+
+For an undamped system ( $ c_v = 0 $ ) the total displacement solution is:
+
+\begin{ematrix}
+    u(t) &= d_1 \cos{\omega_n t} + d_2 \sin{\omega_n t} +
+    \frac{f_0}{k - m \omega^2} e^{i \omega t}\\
+    \implies u(t) &= \left( u_0 - \frac{f_0}{k - m \omega^2} \right) \cos{\omega_n t}\\
+                  &+
+    \left(\frac{v_0 - \frac{i \omega f_0}{k - m \omega^2}}{\omega_n} \right)
+    \sin{\omega_n t}\\
+                  &+ \frac{f_0}{k - m \omega^2} e^{i \omega t}
+\end{ematrix}
+
+If the forcing frequency is close to the natural frequency, $ \omega \approx \omega_n $,
+the system will exhibit \textbf{resonance} (very large displacements) due to
+near-zeros in the denominators of $ u(t) $.
+
+When the forcing frequency is equal to the natural frequency, we cannot use the
+$ u(t) $ given above as it would give divide-by-zero. Instead we must use
+\textbf{L'H\^ospital's Rule} to derive a solution free of zeros in the denominators.
+
+\begin{ematrix}
+    u(t) &= u_0 \cos{\omega_n t} + \frac{v_0}{\omega_n} \sin{\omega_n t}\\
+         &+ \lim_{\omega \rightarrow \omega_n} \left\{
+             \frac{f_0}{k - m \omega^2} \left(
+                 e^{i \omega t} - \cos{\omega_n t} - i \omega \sin{\omega_n t}
+                 \right)
+         \right\}\\
+         &= u_0 \cos{\omega_n t} + \frac{v_0}{\omega_n} \sin{\omega_n t}
+         - \frac{f_0 \omega_n}{2 k} \left(
+             i t e^{i \omega)n t} - i \sin{\omega_n t}
+             \right)
+\end{ematrix}
+
+To simplify $ u(t) $, let's assume that the driving force consists only of the
+cosine function $ f(t) = f_0 \cos{\omega t} $.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.35\textwidth]{img/SDOF_harmonic_undamped.png}
+    \caption{SDOF System forced by the harmonic function $ f(t) = f_0 \cos{\omega t} $}
+    \label{fig:SDOF-harmonic-undamped-response-png}
+\end{figure}
+
+The displacement solution reduces to:
+
+\begin{ematrix}
+    u(t) &= u_0 \cos{\omega_n t} + \frac{v_0}{\omega_n} \sin{\omega_n t}\\
+         &+ \lim_{\omega \rightarrow \omega_n} \left\{
+             \frac{f_0}{k - m \omega^2} \left(
+                 \cos{\omega t} - \cos{\omega_n t}
+                 \right)
+         \right\}\\
+         &= \underbrace{u_0 \cos{\omega_n t} + \frac{v_0}{\omega_n} \sin{\omega_n t}}_{
+         free\ vibration\ (complementary)}
+         + \underbrace{\frac{f_0 \omega_n t}{2 k}}_{\Scale[0.75]{
+             \begin{matrix}
+                 amplitude\\
+                 linearly\\
+                 increased
+             \end{matrix}}}
+         \sin{\omega_n t}
+\end{ematrix}
+
+This solution contains one term multiplied by $ t $. This term will cause the displacement
+amplitude to increase linearly wit time as the forcing function pumps energy into
+the system.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.70\textwidth]{img/SDOF_Undamped_Harmonic_Response.png}
+    \caption{Resonance response of undamped SDOF with harmonic excitation}
+    \label{fig:SDOF-undamped-harmonic-response-png}
+\end{figure}
+
+The maximum displacement of an undamped system forced at its resonant frequency will
+increase unbounded according to the solution for $ u(t) $ above. However, real systems
+will inject additional physics once displacements become large enough. These
+additional physics (nonlinear plastic deformation, heat transfer, buckling etc.) will
+serve to limit the maximum displacement exhibited by the system, and allow one to escape
+the "sudden death" impression that such systems will immediately fail.
+
+
+\subsubsection{Damped SDOF Systems under Harmonic Excitation}
+
+\begin{equation}
+    m \ddot{u} + c \dot{u} + k u = F_0 \cos{\left(\omega t \right)}
+\end{equation}
+
+then \textbf{steady state} solution is in the form:
+
+\begin{equation}
+    u_{s.s.} = u_0 \cos{\left(\omega t - \phi \right)}
+\end{equation}
+
+If we plug the \textbf{steady state} solution to the \textbf{equation of motion},
+we get:
+
+\begin{ematrix}
+    u_o \left[ \left(k - m \omega^2\right) \cos{\omega t - \phi} -
+    c \omega \sin{\left( \omega t - \phi \right)} \right]
+    &= F_0 \cos{\left( \omega t \right)} \quad \vert \times \frac{1}{k}\\
+        u_o \left[ \left(1 - \frac{\omega^2}{\omega_n^2} \right) \cos{\omega t - \phi} -
+        2 \zeta \frac{\omega}{\omega_n} \sin{\left( \omega t - \phi \right)} \right]
+    &= \frac{F_0}{k} \cos{\left( \omega t \right)}
+\end{ematrix}
+
+because:
+\begin{equation}
+    \frac{k}{m} = \omega_n
+\end{equation}
+
+\begin{equation}
+    \zeta = \frac{c}{c_c}
+\end{equation}
+
+\begin{equation}
+    c = 2 m \sqrt{\frac{k}{m}} = 2 m \omega_n
+\end{equation}
+
+\begin{equation}
+    \frac{c}{k} = \frac{\zeta c_c}{k} = \frac{\zeta 2 m \omega_n}{k}
+    = \frac{2 \zeta \omega_n^2}{omega_n^2} = \frac{2 \zeta}{\omega_n}
+\end{equation}
+
+after utilising the sine and cosine relations:
+
+\begin{ematrix}
+    \cos{\left( \omega t - \phi \right)} &=
+    \cos{\omega t} \cos{\phi} + \sin{\omega t} \sin{\phi}\\
+    \sin{\left( \omega t - \phi \right)} &=
+    \sin{\omega t} \cos{\phi} + \cos{\omega t} \sin{\phi}
+\end{ematrix}
+
+we get a set of two equatons:
+\begin{ematrix}
+    u_o \left[ \left(1 - \frac{\omega^2}{\omega_n^2} \right) \cos{\phi} +
+    2 \zeta \frac{\omega}{\omega_n} \sin{\phi} \right] \cos{\omega t}
+    &= \frac{F_0}{k} \cos{\left( \omega t \right)}\\
+    u_o \left[ \left(1 - \frac{\omega^2}{\omega_n^2} \right) \sin{\phi} -
+    2 \zeta \frac{\omega}{\omega_n} \cos{\phi} \right] \sin{\omega t}
+    &= 0\\
+\end{ematrix}
+
+and when solving just for amplitudes this reduces to a set of two algebraic equations
+which is then solved for $ u_0 $ and $ \phi $:
+\begin{ematrix}
+    u_o \left[ \left(1 - \frac{\omega^2}{\omega_n^2} \right) \cos{\phi} +
+    2 \zeta \frac{\omega}{\omega_n} \sin{\phi} \right]
+    &= \frac{F_0}{k}\\
+    u_o \left[ \left(1 - \frac{\omega^2}{\omega_n^2} \right) \sin{\phi} -
+    2 \zeta \frac{\omega}{\omega_n} \cos{\phi} \right]
+    &= 0\\
+\end{ematrix}
+
+The solution (\textbf{transfer function}) is finally:
+\begin{ematrix}
+    u_0 &= \frac{\frac{F_0}{k}}{
+        \left[
+            \left( 1 - \frac{\omega^2}{\omega_n^2} \right)^2 +
+            \left( 2 \zeta \frac{\omega}{\omega_n} \right)^2
+    \right]^{\frac{1}{2}}}\\
+    \phi &= \tan^{-1} \left(
+        \frac{2 \zeta \frac{\omega}{\omega_n}}{
+    1 - \frac{\omega^2}{\omega_n^2}} \right)
+\end{ematrix}
+
+where:\\
+$ u_0 $ is displacement amplitude\\
+$ \frac{F_0}{k} $ is displacement from static simulation.
+
+\begin{equation}
+    H_0 = \frac{\frac{F_0}{k}}{
+        \left[
+            \left( 1 - \frac{\omega^2}{\omega_n^2} \right)^2 +
+            \left( 2 \zeta \frac{\omega}{\omega_n} \right)^2
+    \right]^{\frac{1}{2}}}
+\end{equation}
 
 
 
 
 
+\newpage
 \section{Damping}
 
 \subsection{Rayleigh Damping}
