@@ -1011,6 +1011,7 @@ on the order of $ O(h^5) $, while the total accumulated error is of order $ O(h^
     \label{fig:rk4-schema-png}
 \end{figure}
 
+\newpage
 \begin{bbox}[0.96]
 \textbf{Note:}
 
@@ -1024,11 +1025,36 @@ The formula for the next value $ y_{i+1} $ can be also written as:
     y_{i+1} &= y_i + \frac{h}{6} (\frac{d k_1}{dx} + 2 \frac{d k_2}{dx}
                               + 2 \frac{d k_3}{dx} + \frac{d k_4}{dx}) + O(h^5)
 \end{ematrix}
+\end{bbox}
 
-This notation is more convenient to use when solving sets of ODEs.
+\begin{bbox}[0.96]
+This notation is more convenient to use when solving sets of ODEs for vibration
+problem, because it translates to:
+
+\begin{ematrix}
+    u_1 &= u_0\\
+    v_1 &= v_0\\
+    a_1 &= (f - c v_0 - k u_0) / m\\
+    u_2 &= u_0 + \frac{h}{2} v_1\\
+    v_2 &= v_0 + \frac{h}{2} a_1\\
+    a_2 &= (f - c v_1 - k u_1) / m\\
+    u_3 &= u_0 + \frac{h}{2} v_2\\
+    v_3 &= v_0 + \frac{h}{2} a_2\\
+    a_3 &= (f - c v_2 - k u_2) / m\\
+    u_4 &= u_0 + h v_3\\
+    v_4 &= v_0 + h a_3\\
+    a_4 &= (f - c v_3 - k u_3) / m\\
+    u_{i+1} &= u_0 + \frac{h}{6} \left( v_1 + 2 v_2 + 2 v_3 + v_4 \right) \\
+    v_{i+1} &= v_0 + \frac{h}{6} \left( a_1 + 2 a_2 + 2 a_3 + a_4 \right) \\
+    a_{i+1} &= (f - c v_{i+1} - k u_{i+1}) / m\\
+\end{ematrix}
+
+where each of the \textbf{ODEs} are solved sequentially from the values
+already known.
 
 \end{bbox}
 
+\newpage
 \textbf{Python implementation for vibration problem:}
 
 \begin{python}
