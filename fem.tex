@@ -1663,7 +1663,643 @@ where:
 \end{eqarray}
 
 
+\section{Numerical Integration}
 
+\begin{bbox}
+    \textbf{Note:}
+
+    \textbf{Quadrature} is another term for \textbf{Numerical Integration}.
+\end{bbox}
+
+
+\subsection{Newton-Cotes quadrature}
+In the most obvious procedure, points at which the function is to be formed are
+determined \textit{a priori} - usually at equal intervals - and a polynomial
+passed through the values of the function at these points and exactly integrated.
+
+As $ n $ values define a polynomial of degree $ n - 1 $, the errors will be
+of the order $ O(h^n) $ where $ h $ is the element size. This leads to the
+well-known \textbf{Newton-Cotes} \'quadrature formulae\'. The integrals can be
+written as:
+
+\begin{equation}
+    I = \int_{-1}^{1} f(\xi) d\xi = \sum_1^n H_i f(\xi_i)
+\end{equation}
+
+for the range of integration between $ -1 $ and $ +1 $. For example, if $ n = 2 $,
+we have the well-known trapezoidal rule:
+
+\begin{equation}
+    I = f(-1) + f(1)
+\end{equation}
+
+for $ n = 3 $, the well-known \textbf{Simpson} one-third rule:
+
+\begin{equation}
+    I = \frac{1}{3} \left[ f(-1) + 4f(0) + f(1) \right]
+\end{equation}
+
+and for $ n = 4 $:
+
+\begin{equation}
+    I = \frac{1}{4} \left[f(-1) + 3f(-\frac{1}{3}) + 3f(\frac{1}{3}) + f(1) \right]
+\end{equation}
+
+
+\subsection{Gauss quadrature}
+
+If in place of specifying the position of sampling points \textit{a priori} we
+allow these to be located at points to be determined so as to aim for best
+accuracy, then for a given number of sampling points increased accuracy can be
+obtained. Indeed, if we again consider:
+
+\begin{equation}
+    I = \int_{-1}^{1} f(\xi) d\xi = \sum_1^n H_i f(\xi_i)
+\end{equation}
+
+and again assume a polynomial expression, it is easy to see that for $ n $ sampling
+points we have $ 2n $ unknowns ($H_i$ and $\xi_i$) and hence a polynomial of degree
+$ 2n-1 $ could be constructed and exactly integrated. The error is thus of order
+$ O(h^{2n}) $.
+
+The simultaneous equations involved are difficult to solve, but some mathematical
+manipulation will show that the solution can be obtained explicitely in terms
+of \textbf{Legendre polynomials}. Thus this particular process is frequently known
+as \textbf{Gauss-Legendre} quadrature.
+
+For purposes of finite elements analysis complex calculations are involved in
+determining the values of $ f $, the function to be integratet. Thus the
+Gauss-type processes, requiring the least number of such evaluations, are ideally
+suited and are mostly used exvlusively.
+
+Other expresssions for integration of functions of the type
+
+\begin{equation}\label{leggaus}
+    I = \int_{-1}^{1} w(\xi) f(\xi) d\xi = \sum_{1}^{n} H_i f(\xi_i)
+\end{equation}
+
+can be derived for prescribed forms of $ w(\xi) $, again integrating up to a certain
+order of accuracy a polynomial expansion of $ f(\xi) $.
+
+
+\subsection{Linear and Quadrilateral Elements}
+
+\subsubsection{For 1D:}
+
+\begin{equation}
+    I = \int_{-1}^{1} f(\xi) d\xi = \sum_1^n H_i f(\xi_i)
+\end{equation}
+
+
+\subsubsection{For 2D:}
+
+The most obvious way of obtaining the integral:
+
+\begin{equation}
+    I = \int_{-1}^{1} \int_{-1}^{1} f(\xi, \eta) d\xi d\eta
+\end{equation}
+
+Is to first evaluate the inner integral keeping $ \eta $ constant, i.e.:
+
+\begin{equation}
+    \int_{-1}^{1}f(\xi, \eta) d\xi = \sum_{j=1}^n H_j f(\xi_i, \eta) = \psi(\eta)
+\end{equation}
+
+Evaluating the outer integral in a similar manner, we have:
+
+\begin{eqarray}
+    I = \int_{-1}^{1} \psi(\eta) d\eta
+    &= \sum_{i=1}^n H_i \psi(\eta_i)\\
+    &= \sum_{i=1}^n H_i \sum_{j=1}^n H_j f(\xi_i,\eta_i)\\
+    &= \sum_{i=1}^n \sum_{j=1}^n H_i H_j f(\xi_j,\eta_i)
+\end{eqarray}
+
+\subsubsection{For 3D:}
+For a 3D element we have similarly:
+
+\begin{eqarray}
+    I &= \int_{-1}^{1} \int_{-1}^{1} \int_{-1}^{1} f(\xi, \eta, \mu) d\xi d\eta d\mu\\
+    &= \sum_{i=1}^n \sum_{j=1}^n \sum_{k=1}^n H_i H_j f(\xi_i,\eta_j,\mu_k)
+\end{eqarray}
+
+In the above, the number of integrating points in each direction was assumed to be
+the same. Clearly this is not necessary and on occasion it may be an advantage to
+use different numbers in each direction of integration.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.25\textwidth]{img/quad_interpolation_3.png}
+    \caption{Integration points for $ n = 3 $ in a square region. Exact for a
+    polynomial of fifth order in each direction}
+    \label{fig:quad-interpolation-3-png}
+\end{figure}
+
+\begin{table}
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \begin{tabular}{||c c c||}
+        \hline
+        \hline
+        integration point & polynomial order & weight\\
+        \hline
+        \hline
+        0 & n = 1 & 2.0\\
+        \hline
+        \begin{tabular}{c}
+            $ -1/\sqrt{3} $ \\
+            $ 1/\sqrt{3} $
+        \end{tabular} & n = 2 &
+        \begin{tabular}{c}
+            1.0 \\
+            1.0
+        \end{tabular} \\
+        \hline
+        \begin{tabular}{c}
+            $ -\sqrt{0.6} $ \\
+            $ 0.0 $ \\
+            $ \sqrt{0.6} $
+        \end{tabular} & n = 3 &
+        \begin{tabular}{c}
+            $ 5/9 $ \\
+            $ 8/9 $ \\
+            $ 5/9 $
+        \end{tabular} \\
+        \hline
+        \begin{tabular}{c}
+            -0.861 136 311 594 953 \\
+            -0.339 981 043 584 856 \\
+             0.339 981 043 584 856 \\
+             0.861 136 311 594 953 \\
+        \end{tabular} & n = 4 &
+        \begin{tabular}{c}
+            0.347 854 845 137 454 \\
+            0.652 145 154 862 546 \\
+            0.652 145 154 862 546 \\
+            0.347 854 845 137 454 \\
+        \end{tabular} \\
+        \hline
+        \begin{tabular}{c}
+            -0.906 179 845 938 664 \\
+            -0.538 469 310 105 683 \\
+             0.000 000 000 000 000 \\
+             0.538 469 310 105 683 \\
+             0.906 179 845 938 664 \\
+        \end{tabular} & n = 5 &
+        \begin{tabular}{c}
+            0.236 926 885 056 189 \\
+            0.478 628 670 499 366 \\
+            0.568 888 888 888 889 \\
+            0.478 628 670 499 366 \\
+            0.236 926 885 056 189 \\
+        \end{tabular} \\
+        \hline
+        \begin{tabular}{c}
+            -0.932 469 514 203 152 \\
+            -0.661 209 386 466 265 \\
+            -0.238 619 186 083 197 \\
+             0.238 619 186 083 197 \\
+             0.661 209 386 466 265 \\
+             0.932 469 514 203 152 \\
+        \end{tabular} & n = 6 &
+        \begin{tabular}{c}
+            0.171 324 492 379 170 \\
+            0.360 761 573 048 139 \\
+            0.467 913 934 572 691 \\
+            0.467 913 934 572 691 \\
+            0.360 761 573 048 139 \\
+            0.171 324 492 379 170 \\
+        \end{tabular} \\
+        \hline
+        \begin{tabular}{c}
+            -0.949 107 912 342 759 \\
+            -0.741 531 185 599 394 \\
+            -0.405 845 151 377 397 \\
+             0.000 000 000 000 000 \\
+             0.405 845 151 377 397 \\
+             0.741 531 185 599 394 \\
+             0.949 107 912 342 759 \\
+        \end{tabular} & n = 7 &
+        \begin{tabular}{c}
+            0.129 484 966 168 870 \\
+            0.279 705 391 489 277 \\
+            0.381 830 050 505 119 \\
+            0.471 959 183 673 469 \\
+            0.381 830 050 505 119 \\
+            0.279 705 391 489 277 \\
+            0.129 484 966 168 870 \\
+        \end{tabular} \\
+        \hline
+        \hline
+    \end{tabular}
+    \caption{Gauss-Legendre Integration Points and Weights}
+\end{table}
+
+\begin{bbox}
+    To get the \textbf{Gauss-Legendre} points and weights in python use:
+
+    \begin{python}
+import numpy as np
+
+# number of integration points
+N = 3
+
+points, weights = np.polynomial.legendre.leggauss(N)
+    \end{python}
+\end{bbox}
+
+
+\newpage
+\subsection{Triangular and Tetrahedral elements:}
+
+\subsubsection{2D}
+For a triangle, in terms of the \textbf{area coordinates} the integrals are of the
+form:
+
+\begin{equation}
+    I = \int_{0}^{1} \int_{0}^{1-\xi} f(\xi, \eta, \mu) d\eta d\xi, \quad
+    \mu = 1 - \xi - \eta
+\end{equation}
+
+Once again we could $ n $ Gauss points  and arrive at a summation expression of
+the type used in the previous section. However, the limits of integration now
+involve the variable itself and it is convenient to use alternative sampling points
+for the second integration by use of a special Gauss expression for integrals of
+the type given by equation \eqref{leggaus} in which $ w $ is a linear function.
+These have been devised by \textit{Radau} and used successfully in finite element context.
+It is, however, much more desirable (and aesthetically pleasing) to use special
+formulae in which no bias is given to any of the natural coordinates ($\xi, \eta, \mu$).
+Such formulae were first derived by \textit{Hammer et al.} and \textit{Felippa}
+and a series of necessary sampling points and weights.
+
+\newpage
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    % \small
+    % \scriptsize
+    \scalebox{0.80}{
+    \begin{tabular}{||c c c c c c||}
+        \hline
+        \hline
+        Order & Figure & Error & Points &
+        \begin{tabular}{c} Triangular\\Coordinates\end{tabular} & Weights\\
+        \hline
+            Linear &
+            \begin{tabular}{c}
+                \includegraphics[width=0.20\textwidth]{img/tria_linear.png}\\
+            \end{tabular}
+            & $ R = O(h^2) $ & a & $ \frac{1}{3}, \frac{1}{3}, \frac{1}{3} $ & 1\\
+        \hline
+            Quadratic &
+            \begin{tabular}{c}
+                \includegraphics[width=0.20\textwidth]{img/tria_quadratic.png}
+            \end{tabular}
+            & $ R = O(h^3) $ & \begin{tabular}{c}
+                a \\
+                b \\
+                c \\
+            \end{tabular} & \begin{tabular}{c}
+                $ \frac{1}{2}, \frac{1}{2} , 0 $ \\
+                $ 0, \frac{1}{2}, \frac{1}{2} $ \\
+                $ \frac{1}{2}, 0, \frac{1}{2} $ \\
+            \end{tabular} & \begin{tabular}{c}
+                $ \frac{1}{3} $ \\
+                $ \frac{1}{3} $ \\
+                $ \frac{1}{3} $ \\
+            \end{tabular}\\
+        \hline
+            Cubic &
+            \begin{tabular}{c}
+                \includegraphics[width=0.20\textwidth]{img/tria_cubic.png}
+            \end{tabular}
+            & $ R = O(h^4) $ & \begin{tabular}{c}
+                a \\
+                b \\
+                c \\
+                d \\
+            \end{tabular} & \begin{tabular}{c}
+                $ \frac{1}{3}, \frac{1}{3} , \frac{1}{3} $ \\
+                $ 0.6, 0.2, 0.2 $ \\
+                $ 0.2, 0.6, 0.2 $ \\
+                $ 0.2, 0.2, 0.6 $ \\
+            \end{tabular} & \begin{tabular}{c}
+                $ -\frac{27}{48} $ \\
+                $ \frac{25}{48} $ \\
+                $ \frac{25}{48} $ \\
+                $ \frac{25}{48} $ \\
+            \end{tabular}\\
+        \hline
+            Quintic &
+            \begin{tabular}{c}
+                \includegraphics[width=0.20\textwidth]{img/tria_quintic.png}
+            \end{tabular}
+            & $ R = O(h^6) $ & \begin{tabular}{c}
+                a \\
+                b \\
+                c \\
+                d \\
+                e \\
+                f \\
+                g \\
+            \end{tabular} & \begin{tabular}{c}
+                $ \frac{1}{3}, \frac{1}{3} , \frac{1}{3} $ \\
+                $ \alpha_1, \beta_1, \beta_1 $ \\
+                $ \beta_1, \alpha_1, \beta_1 $ \\
+                $ \beta_1, \beta_1, \alpha_1 $ \\
+                $ \alpha_2, \beta_2, \beta_2 $ \\
+                $ \beta_2, \alpha_2, \beta_2 $ \\
+                $ \beta_2, \beta_2, \alpha_2 $ \\
+            \end{tabular} & \begin{tabular}{c}
+                $ 0.225 000 000 0 $ \\
+                $ 0.132 394 152 7 $ \\
+                $ 0.132 394 152 7 $ \\
+                $ 0.132 394 152 7 $ \\
+                $ 0.125 939 180 5 $ \\
+                $ 0.125 939 180 5 $ \\
+                $ 0.125 939 180 5 $ \\
+            \end{tabular}\\
+            & & & \multicolumn{2}{l}{\begin{tabular}{l}
+                with: \\
+                $ \alpha_1 = $ 0.059 715 871 7 \\
+                $ \beta_1 = $ 0.470 142 064 1 \\
+                $ \alpha_2 = $ 0.797 426 985 3 \\
+                $ \beta_2 = $ 0.101 286 507 3 \\
+            \end{tabular}} & \\
+        \hline
+        \hline
+    \end{tabular}}
+    \caption{Triangular Element integration points and weights}
+\end{table}
+
+
+\newpage
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    % \small
+    % \scriptsize
+    \scalebox{0.80}{
+    \begin{tabular}{||c c c c c c||}
+        \hline
+        \hline
+        Order & Figure & Error & Points &
+        \begin{tabular}{c} Tetrahedral\\Coordinates\end{tabular} & Weights\\
+        \hline
+            Linear &
+            \begin{tabular}{c}
+                \includegraphics[width=0.20\textwidth]{img/tetra_linear.png}\\
+            \end{tabular}
+            & $ R = O(h^2) $ & a & $ \frac{1}{4}, \frac{1}{4}, \frac{1}{4}, \frac{1}{4} $ & 1\\
+        \hline
+            Quadratic &
+            \begin{tabular}{c}
+                \includegraphics[width=0.20\textwidth]{img/tetra_quadratic.png}
+            \end{tabular}
+            & $ R = O(h^6) $ & \begin{tabular}{c}
+                a \\
+                b \\
+                c \\
+                d \\
+            \end{tabular} & \begin{tabular}{c}
+                $ \alpha, \beta, \beta, \beta $ \\
+                $ \beta, \alpha, \beta, \beta $ \\
+                $ \beta, \beta, \alpha, \beta $ \\
+                $ \beta, \beta, \beta, \beta $ \\
+            \end{tabular} & \begin{tabular}{c}
+                $ \frac{1}{4} $ \\
+                $ \frac{1}{4} $ \\
+                $ \frac{1}{4} $ \\
+                $ \frac{1}{4} $ \\
+            \end{tabular}\\
+            & & & \multicolumn{2}{l}{\begin{tabular}{l}
+                with: \\
+                $ \alpha = $ 0.585 410 20 \\
+                $ \beta = $ 0.138 196 60 \\
+            \end{tabular}} & \\
+        \hline
+            Cubic &
+            \begin{tabular}{c}
+                \includegraphics[width=0.20\textwidth]{img/tetra_cubic.png}
+            \end{tabular}
+            & $ R = O(h^4) $ & \begin{tabular}{c}
+                a \\
+                b \\
+                c \\
+                d \\
+                e \\
+            \end{tabular} & \begin{tabular}{c}
+                $ \frac{1}{4}, \frac{1}{4}, \frac{1}{4}, \frac{1}{4} $ \\
+                $ \frac{1}{2}, \frac{1}{6}, \frac{1}{6}, \frac{1}{6} $ \\
+                $ \frac{1}{6}, \frac{1}{2}, \frac{1}{6}, \frac{1}{6} $ \\
+                $ \frac{1}{6}, \frac{1}{6}, \frac{1}{2}, \frac{1}{6} $ \\
+                $ \frac{1}{6}, \frac{1}{6}, \frac{1}{6}, \frac{1}{2} $ \\
+            \end{tabular} & \begin{tabular}{c}
+                $ -\frac{4}{5} $ \\
+                $ \frac{9}{20} $ \\
+                $ \frac{9}{20} $ \\
+                $ \frac{9}{20} $ \\
+                $ \frac{9}{20} $ \\
+            \end{tabular}\\
+        \hline
+        \hline
+    \end{tabular}}
+    \caption{Tetrahedral Element integration points and weights}
+\end{table}
+
+
+
+\newpage
+\section{General Element Matrices Procedure}
+The procedure to generate any element stiffness, mass and load matrices can
+be generalised to the following steps:
+
+\begin{enumerate}
+    \item Create Element domain in natural coordinates:
+        \begin{itemize}
+            \item $ -1 $ to $ 1 $ for quadrilateral elements
+            \item $ 0 $ to $ 1 $ for triangular and linear elements
+        \end{itemize}
+
+    \item select the number of Gauss points based on the order of the element
+        \begin{itemize}
+            \item $ 2 $ for linear elements
+            \item $ 3 $ for quadratic elements
+        \end{itemize}
+
+        Example:
+        \begin{python}
+import numpy as np
+gp, gw = np.polynomial.legendre.leggauss(3)
+        \end{python}
+
+    \item Generate the shape functions $ \mathbf{N}_n^e $ in natural coordinates
+        based on the number of Gauss points, dimension of the element and its domain.
+
+        The $ \mathbf{N}_n^e $ matrix has the dimensions of:
+        \begin{itemize}
+            \item number of integration points = number of rows
+            \item number of shape functions = number of columns
+        \end{itemize}
+
+        Therefore:
+
+        \begin{equation}
+            \mathbf{N}_n^e = \begin{bmatrix}
+                N_{1,1}^e & \dots & N_{n,1}^e\\
+                \vdots & \vdots & \vdots\\
+                N_{1,m}^e & \dots & N_{n,m}^e
+            \end{bmatrix}
+        \end{equation}
+         where $ 1 \dots m $ are the integration points and $ 1 \dots n $ are the shape
+         functions.
+
+    \item Transform the shape functions from natural coordinates to global coordinates
+        \begin{eqarray}
+            \mathbf{N}_g^e &= \mathbf{N}_n^e \mathbf{x}^e\\
+            \mathbf{N}_g^e &= \begin{bmatrix}
+                N_{1,1}^e(\xi) & \dots & N_{n,1}^e(\xi)\\
+                \vdots & \vdots & \vdots\\
+                N_{1,m}^e(\xi) & \dots & N_{n,m}^e(\xi)
+            \end{bmatrix}
+            \begin{bmatrix}
+                x_1 & y_1 & z_1\\
+                \vdots & \vdots & \vdots\\
+                x_n & y_n & z_n
+            \end{bmatrix}
+        \end{eqarray}
+
+        The $ \mathbf{x}^e $ matrix is a matrix of global coordinates of the element nodes.
+
+        The resulting matrix has the dimension of:
+        \begin{itemize}
+            \item number of integration points = number of rows
+            \item number of coordinates = number of columns (3D = 3, 2D = 2)
+        \end{itemize}
+
+    \item Generate the shape functions derivatives $ \mathbf{B}_n^e $
+        in natural coordinates
+
+        The shape functions derivatives matrix has 3 dimensions being
+        \textit{number of integration points} $\times$ \textit{number of natural coordinates}
+        $\times$ \textit{number of shape functions}
+
+    \item Create the Matrix of Jacobians from the shape functions derivatives:
+        \begin{equation}
+            \mathbf{J} = \mathbf{B}_n^e \mathbf{x}^e
+        \end{equation}
+
+        The Matrix of Jacobians has the dimension of \textit{number of integration points}
+        $\times$ \textit{number of global coordinates}
+        $\times$ \textit{number of global coordinates}, where number of global coordinates
+        means 2 for 2D and 3 for 3D problem.
+
+    \item Get the Matrix of Jacobian determinants and an inverse Jacobian:
+        \begin{equation}
+            \mathbf{J}^{-1}\\
+            \mathbf{J}_d = det \mathbf{J}
+        \end{equation}
+
+        Example:
+        \begin{python}
+d_jacobi = np.linalg.det(jacobi)
+i_jacobi = np.linalg.inv(jacobi)
+        \end{python}
+
+        The Jacobian determinant is computed for each integration point and has a dimension
+        of \textit{number of integration points} $\times$ \textit{1}
+
+        The inverse Jacobian has the same dimension as the Jacobian (\textbf{must have})
+
+    \item Transform the shape function derviatives from natural coordinates to
+        global coordinates
+        \begin{equation}
+            \mathbf{B}_g^e = \mathbf{J}^{-1} \mathbf{B}_n^e
+        \end{equation}
+
+    \item Create the Material Stiffness matrix $ \mathbf{C} $
+
+    \item Finally for each integration point:
+
+        3D:
+        \begin{eqarray}
+            \mathbf{B}_{i,x}^e &= \textbf{B}_g(i, 0) \\
+            \mathbf{B}_{i,y}^e &= \textbf{B}_g(i, 1) \\
+            \mathbf{B}_{i,z}^e &= \textbf{B}_g(i, 2)\\
+        \end{eqarray}
+
+        where $ \mathbf{B}_{i,x}^e $,  $ \mathbf{B}_{i,y}^e $ and  $ \mathbf{B}_{i,z}^e $
+        are vectors of legth = \textit{number of shape functions}
+
+        Then matrix $ \mathbf{B} $ is:
+
+        \begin{equation}
+            \mathbf{B}_i = \begin{bmatrix}
+                \textbf{B}_{i,x}^e & \mathbf{0} & \mathbf{0}\\
+                \mathbf{0} & \textbf{B}_{i,y}^e & \mathbf{0}\\
+                \mathbf{0} & \mathbf{0} & \textbf{B}_{i,z}^e \\
+                \textbf{B}_{i,y}^e & \textbf{B}_{i,x}^e & \mathbf{0}\\
+                \mathbf{0} & \textbf{B}_{i,z}^e & \textbf{B}_{i,y}^e \\
+                \textbf{B}_{i,z}^e & \mathbf{0} & \textbf{B}_{i,x}^e
+            \end{bmatrix}
+        \end{equation}
+
+        and matrix $ \mathbf{N} $ is:
+
+        \begin{equation}
+            \mathbf{N}_i = \begin{bmatrix}
+                \textbf{N}_{n,i}^e & \mathbf{0} & \mathbf{0}\\
+                \mathbf{0} & \textbf{N}_{n,i}^e & \mathbf{0}\\
+                \mathbf{0} & \mathbf{0} & \textbf{N}_{n,i}^e
+            \end{bmatrix}
+        \end{equation}
+
+        where $ \mathbf{0} $ is a zero vector of length = \textit{number of shape functions}
+        and $ \mathbf{N}_{n,i}^e $ is a vector of shape functions in natural coordinates
+        pertaining to the $i$-th integration point.
+
+        Then:
+
+        \begin{enumerate}
+            \item \begin{equation}
+                    \mathbf{K}_i^e = \mathbf{B}_i^T \mathbf{C} \mathbf{B}_i \ det \mathbf{J}_i
+                    w_i
+                  \end{equation}
+
+            \item \begin{equation}
+                    \mathbf{M}_i^e = \rho \mathbf{N}_i^T \mathbf{N}_i \ det \mathbf{J}_i
+                    w_i
+                  \end{equation}
+            \item \begin{equation}
+                    \mathbf{F}_i^e = \mathbf{N}_i^T \mathbf{F} \ det \mathbf{J}_i
+                    w_i
+                  \end{equation}
+
+                  where $ \mathbf{F} = \begin{bmatrix}f_x \\ f_y \\ f_z\end{bmatrix} $
+        \end{enumerate}
+
+        where $ w_i $ is the multiple of gaussian weights for the respective
+        integration point (for 3D case brick where the natural coordinates
+        are $ \xi $, $ \eta $, $ \mu $ the $ w_i = w_{\xi_i} w_{\eta_i} w_{\mu_i} $
+
+    \item Finally:
+        \begin{enumerate}
+            \item \begin{equation}
+                    \mathbf{K}^e = \sum_{i=1}^n \mathbf{K}_i^e
+                \end{equation}
+
+            \item \begin{equation}
+                    \mathbf{M}^e = \sum_{i=1}^n \mathbf{M}_i^e
+                \end{equation}
+
+            \item \begin{equation}
+                    \mathbf{F}^e = \sum_{i=1}^n \mathbf{F}_i^e
+                \end{equation}
+        \end{enumerate}
+\end{enumerate}
+
+
+
+\newpage
 \section{HEX8}
 
 \subsection{Element Formulation}
@@ -2373,6 +3009,11 @@ def hex8_stresses(coors: np.ndarray,
     print('Element Stresses: {0}\n{1}'.format(stresses.shape, stresses))
 \end{python}
 
+
+\newpage
+\section{TET4 Element}
+
+\subsection{Element Formulation}
 
 
 
