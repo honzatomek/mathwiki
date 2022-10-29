@@ -2680,7 +2680,7 @@ The element stiffness Matrix is given by:
     \mathbf{K}^e = \int_{V^e} \mathbf{B}^T \mathbf{E} \mathbf{B} dV^e
 \end{equation}
 
-As in two-dimensional cas, this is replaced by a numerical integration formula which
+As in two-dimensional case, this is replaced by a numerical integration formula which
 now involves a triple loop over conventional Gauss quadrature rules. Assuming that
 the stress-strain matrix $ \mathbf{E} $ is constant over the element,
 
@@ -2841,20 +2841,45 @@ def hex8_stiffness_mass_load(coors: np.ndarray,
     Ke = np.zeros((domain.size, domain.size), dtype=float)
     Me = np.zeros((domain.size, domain.size), dtype=float)
     Fe = np.zeros((domain.size, 1), dtype=float)
-    o = np.zeros(domain.shape[0], dtype=float)
+    # o = np.zeros(domain.shape[0], dtype=float)
 
     # iterate over Gauss points of domain, * means unpack values
     for i in range(integration_points.shape[0]):
-        B = np.array([[*dpsi_g[i, 0, :], *o, *o],
-                      [*o, *dpsi_g[i, 1, :], *o],
-                      [*o, *o, *dpsi_g[i, 2, :]],
-                      [*dpsi_g[i, 2, :], *o, *dpsi_g[i, 0, :]],
-                      [*o, *dpsi_g[i, 2, :], *dpsi_g[i, 1, :]],
-                      [*dpsi_g[i, 1, :], *dpsi_g[i, 0, :], *o]],
+        # this is smart but arranges dofs by component, not by node
+        # component-wise dof ordering (x1, .. , y1, .. y4, z1, .. , z4)
+        # B = np.array([
+        #   [*dpsi_g[i, 0, :], *o, *o],
+        #   [*o, *dpsi_g[i, 1, :], *o],
+        #   [*o, *o, *dpsi_g[i, 2, :]],
+        #   [*dpsi_g[i, 2, :], *o, *dpsi_g[i, 0, :]],
+        #   [*o, *dpsi_g[i, 2, :], *dpsi_g[i, 1, :]],
+        #   [*dpsi_g[i, 1, :], *dpsi_g[i, 0, :], *o]], dtype=float)
+
+        # dofs ordered by node
+        # node wise dof ordering (x1, y1, z1, .. , x4, y4, z4)
+        dpx = dpsi_g[i,0,:]
+        dpy = dpsi_g[i,1,:]
+        dpz = dpsi_g[i,2,:]
+        B = np.array(
+            [[dpx[0],0,0,dpx[1],0,0,dpx[2],0,0,dpx[3],0,0],
+             [0,dpy[0],0,0,dpy[1],0,0,dpy[2],0,0,dpy[3],0],
+             [0,0,dpz[0],0,0,dpz[1],0,0,dpz[2],0,0,dpz[3]],
+             [dpy[0],dpx[0],0,dpy[1],dpx[1],0,dpy[2],dpx[2],0,dpy[3],dpx[3],0],
+             [0,dpz[0],dpy[0],0,dpz[1],dpy[1],0,dpz[2],dpy[2],0,dpz[3],dpy[3]],
+             [dpz[0],0,dpx[0],dpz[1],0,dpx[1],dpz[2],0,dpx[2],dpz[3],0,dpx[3]],
+             dtype=float)
+
+        # component-wise dof ordering (x1, .. , y1, .. y4, z1, .. , z4)
+        # N = np.array([[*psi[i], *o, *o],
+        #               [*o, *psi[i], *o],
+        #               [*o, *o, *psi[i]]], dtype=float)
+
+        # node wise dof ordering (x1, y1, z1, .. , x4, y4, z4)
+        N = np.array([[psi[i,0],0,0,psi[i,1],0,0,psi[i,2],0,0,psi[i,3],0,0],
+                      [0,psi[i,0],0,0,psi[i,1],0,0,psi[i,2],0,0,psi[i,3],0],
+                      [0,0,psi[i,0],0,0,psi[i,1],0,0,psi[i,2],0,0,psi[i,3]],
                       dtype=float)
-        N = np.array([[*psi[i], *o, *o],
-                      [*o, *psi[i], *o],
-                      [*o, *o, *psi[i]]], dtype=float)
+
         F = np.array([[fx], [fy], [fz]], dtype=float)
 
         Ke += (B.T @ C @ B) * d_jacobi[i] * interpolation_weights[i]
@@ -3010,6 +3035,8 @@ def hex8_stresses(coors: np.ndarray,
 \end{python}
 
 
+
+
 \newpage
 \section{TET4 Element}
 
@@ -3144,35 +3171,37 @@ def tet4_stiffness_mass_load(coors: np.ndarray,
     # iterate over Gauss points of domain, * means unpack values
     for i in range(integration_points.shape[0]):
         # component-wise dof ordering (x1, .. , y1, .. y4, z1, .. , z4)
-        B = np.array([[*dpsi_g[i, 0, :], *o, *o],
-                      [*o, *dpsi_g[i, 1, :], *o],
-                      [*o, *o, *dpsi_g[i, 2, :]],
-                      [*dpsi_g[i, 2, :], *o, *dpsi_g[i, 0, :]],
-                      [*o, *dpsi_g[i, 2, :], *dpsi_g[i, 1, :]],
-                      [*dpsi_g[i, 1, :], *dpsi_g[i, 0, :], *o]],
-                      dtype=float)
+        # B = np.array([[*dpsi_g[i, 0, :], *o, *o],
+        #               [*o, *dpsi_g[i, 1, :], *o],
+        #               [*o, *o, *dpsi_g[i, 2, :]],
+        #               [*dpsi_g[i, 2, :], *o, *dpsi_g[i, 0, :]],
+        #               [*o, *dpsi_g[i, 2, :], *dpsi_g[i, 1, :]],
+        #               [*dpsi_g[i, 1, :], *dpsi_g[i, 0, :], *o]],
+        #               dtype=float)
+
         # node wise dof ordering (x1, y1, z1, .. , x4, y4, z4)
-        # dpx = dpsi_g[i,0,:]
-        # dpy = dpsi_g[i,1,:]
-        # dpz = dpsi_g[i,2,:]
-        # B = np.array(
-        #     [[dpx[0],0,0,dpx[1],0,0,dpx[2],0,0,dpx[3],0,0],
-        #      [0,dpy[0],0,0,dpy[1],0,0,dpy[2],0,0,dpy[3],0],
-        #      [0,0,dpz[0],0,0,dpz[1],0,0,dpz[2],0,0,dpz[3]],
-        #      [dpy[0],dpx[0],0,dpy[1],dpx[1],0,dpy[2],dpx[2],0,dpy[3],dpx[3],0],
-        #      [0,dpz[0],dpy[0],0,dpz[1],dpy[1],0,dpz[2],dpy[2],0,dpz[3],dpy[3]],
-        #      [dpz[0],0,dpx[0],dpz[1],0,dpx[1],dpz[2],0,dpx[2],dpz[3],0,dpx[3]],
-        #      dtype=float)
+        dpx = dpsi_g[i,0,:]
+        dpy = dpsi_g[i,1,:]
+        dpz = dpsi_g[i,2,:]
+        B = np.array(
+            [[dpx[0],0,0,dpx[1],0,0,dpx[2],0,0,dpx[3],0,0],
+             [0,dpy[0],0,0,dpy[1],0,0,dpy[2],0,0,dpy[3],0],
+             [0,0,dpz[0],0,0,dpz[1],0,0,dpz[2],0,0,dpz[3]],
+             [dpy[0],dpx[0],0,dpy[1],dpx[1],0,dpy[2],dpx[2],0,dpy[3],dpx[3],0],
+             [0,dpz[0],dpy[0],0,dpz[1],dpy[1],0,dpz[2],dpy[2],0,dpz[3],dpy[3]],
+             [dpz[0],0,dpx[0],dpz[1],0,dpx[1],dpz[2],0,dpx[2],dpz[3],0,dpx[3]],
+             dtype=float)
 
         # component-wise dof ordering (x1, .. , y1, .. y4, z1, .. , z4)
-        N = np.array([[*psi[i], *o, *o],
-                      [*o, *psi[i], *o],
-                      [*o, *o, *psi[i]]], dtype=float)
+        # N = np.array([[*psi[i], *o, *o],
+        #               [*o, *psi[i], *o],
+        #               [*o, *o, *psi[i]]], dtype=float)
+
         # node wise dof ordering (x1, y1, z1, .. , x4, y4, z4)
-        # N = np.array([[psi[i,0],0,0,psi[i,1],0,0,psi[i,2],0,0,psi[i,3],0,0],
-        #               [0,psi[i,0],0,0,psi[i,1],0,0,psi[i,2],0,0,psi[i,3],0],
-        #               [0,0,psi[i,0],0,0,psi[i,1],0,0,psi[i,2],0,0,psi[i,3]],
-        #               dtype=float)
+        N = np.array([[psi[i,0],0,0,psi[i,1],0,0,psi[i,2],0,0,psi[i,3],0,0],
+                      [0,psi[i,0],0,0,psi[i,1],0,0,psi[i,2],0,0,psi[i,3],0],
+                      [0,0,psi[i,0],0,0,psi[i,1],0,0,psi[i,2],0,0,psi[i,3]],
+                      dtype=float)
 
         F = np.array([[fx], [fy], [fz]], dtype=float)
 
@@ -3195,15 +3224,15 @@ And to get stresses:
 import numpy as np
 np.set_printoptions(precision=2) # , suppress=True)
 
-def hex8_stresses(coors: np.ndarray,
+def tet4_stresses(coors: np.ndarray,
                   disp: np.ndarray,
                   E: float,
                   nu: float):
     """
     In:
-        coors - 8 x 3 coordinate matrix
+        coors - 4 x 3 coordinate matrix
                 [[x1,y1,z1], ... , [xn,yn,zn]
-        disp  - 8 x 3 coordinate matrix
+        disp  - 4 x 3 coordinate matrix
                 [[u1,v1,w1], ... , [un,vn,wn]
         E     - Youngs's Modulus
         nu    - Poisson's Constant
@@ -3273,31 +3302,12 @@ def hex8_stresses(coors: np.ndarray,
           '{0}\n{1}'.format(psi_g.shape, psi_g))
 
     # Shape Functions Derivatives in Natural Coordinates
-    dpsi = 1 / 8 * np.array([[(eta - 1.0) * (1.0 - mu),# 1
-                              (xi - 1) * (1 - mu),
-                             -(1 - xi) * (1 - eta)],
-                             [(1 - eta) * (1 - mu),    # 2
-                              (-1 - xi) * (1 - mu),
-                             -(1 + xi) * (1 - eta)],
-                             [(1 + eta) * (1 - mu),    # 3
-                              (1 + xi) * (1 - mu),
-                             -(1 + xi) * (1 + eta)],
-                             [(-1.0 - eta) * (1 - mu), # 4
-                              (1 - xi) * (1 - mu),
-                             -(1 - xi) * (1 + eta)],
-                             [(1 - eta) * (-1 - mu),   # 5
-                             -(1 - xi) * (1 + mu),
-                              (1 - xi) * (1 - eta)],
-                             [(1 - eta) * (1 + mu),    # 6
-                             -(1 + xi) * (1 + mu),
-                              (1 + xi) * (1 - eta)],
-                             [(1 + eta) * (1 + mu),    # 7
-                              (1 + xi) * (1 + mu),
-                              (1 + xi) * (1 + eta)],
-                             [-(1 + eta) * (1 + mu),   # 8
-                              (1 - xi) * (1 + mu),
-                              (1 - xi) * (1 + eta)]])
-    dpsi = dpsi.T
+    dpsi = np.zeros((integration_points.shape[0], 4, 3), dtype=float)
+    dpsi[:,0,0] = 1
+    dpsi[:,1,1] = 1
+    dpsi[:,2,2] = 1
+    dpsi[:,3,:] = -1
+    dpsi = dpsi.transpose((0, 2, 1))
     print('Shape Functions Derivatives: '
           '{0}\n{1}'.format(dpsi.shape, dpsi))
 
@@ -3330,7 +3340,6 @@ def hex8_stresses(coors: np.ndarray,
                   [0.0, 0.0, 0.0, 0.0, 0.0, (1.0 - 2.0 * nu) / 2.0]],
                   dtype=float)
     print('Material Stiffness Matrix: {0}\n{1}'.format(C.shape, C))
-
     du = disp.T @ np.transpose(dpsi_g, axes=[0, 2, 1])
 
     exx = du[:, 0, 0]
