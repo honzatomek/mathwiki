@@ -1627,6 +1627,100 @@ Which results to:
 
 
 \newpage
+\chapter{Model reduction}
+
+\section{Guyan reduction}
+\textbf{Guyan reduction}, also known as \textbf{static condensation},
+is a \textit{dimensionality reduction} method which reduces the number
+of \textbf{DOFs} by ignoring the interial terms of the equilibrium equations
+and expressing the unloaded \textbf{DOFs} in terms of the loaded \textbf{DOFs}.
+
+The static equilibrium equation:
+
+\begin{eqarray}
+    \begin{bmatrix}
+        \mathbf{K}_{mm} & \mathbf{K}_{ms} \\
+        \mathbf{K}_{sm} & \mathbf{K}_{ss}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \mathbf{u}_m \\
+        \mathbf{u}_s
+    \end{bmatrix} &=
+    \begin{bmatrix}
+        \mathbf{f}_m \\
+        \mathbf{f}_s
+    \end{bmatrix} \\
+    \mathbf{K}_{mm} \mathbf{u}_m + \mathbf{K}_{ms} \mathbf{u}_s &= \mathbf{f}_m \\
+    \mathbf{K}_{sm} \mathbf{u}_m + \mathbf{K}_{ss} \mathbf{u}_s &= \mathbf{f}_s
+\end{eqarray}
+
+Where $ m $ denotes the \textbf{master} DOFs and $ s $ the \textbf{slave} DOFs.
+Stating that $ s $ section of the problem DOFs is unloaded, we can
+write that $ \mathbf{f}_s = \mathbf{0} $. Then the slave DOFs are expressed
+by the following equation:
+
+\begin{equation}
+    \mathbf{K}_{sm} \mathbf{u}_m + \mathbf{K}_{ss} \mathbf{u}_s = \mathbf{0}
+\end{equation}
+
+Solving the above equation in termos of the independent (master) DOFs leads to
+the following dependency relations:
+
+\begin{equation}
+    \mathbf{u}_s = -\mathbf{K}_{ss}^{-1} \mathbf{K}_{sm} \mathbf{u}_m
+\end{equation}
+
+Substituting the dependency relations to the upper (master) partition of the static
+equilibrium problem condenses away the slave DOFs, leading to the following reduced
+system of linear equations:
+
+\begin{equation}
+    \left(\mathbf{K}_{mm} - \mathbf{K}_{ms} \mathbf{K}_{ss}^{-1} \mathbf{K}_{sm} \right)
+    \mathbf{u}_m = \mathbf{f}_m
+\end{equation}
+
+The above system of linear equations is equivalent to the original problem, but expressed
+in terms of \textbf{master} DOFs alone. Thus, the \textbf{Guyan} reduction method
+results in a reduced system by condensing away the \textbf{slave} DOFs.
+
+The \textbf{Guyan reduction} can be also expressed as a \textit{change of basis} which
+produces a low-dimensional representation of the original space, represented by the
+\textbf{master} DOFs. The linear transformation that maps the reduced space onto
+the full space is expressed as:
+
+\begin{equation}
+    \begin{bmatrix}
+        \mathbf{u}_m \\
+        \mathbf{u}_s
+    \end{bmatrix} =
+    \begin{bmatrix}
+        \mathbf{I} \\
+        -\mathbf{K}_{ss}^{-1} \mathbf{K}_{sm}
+    \end{bmatrix}
+    \mathbf{u}_m = \mathbf{T}_G \mathbf{u}_m
+\end{equation}
+
+where $ \mathbf{T}_G $ represents the \textbf{Guyan} reduction \textit{transformation matrix}.
+Thus, the reduced problem is represented as:
+
+\begin{equation}
+    \mathbf{K}_G \mathbf{u}_m = \mathbf{f}_m
+\end{equation}
+
+In the above equation, $ \mathbf{K}_G $ represents the reduced system of linear equations
+that's obtained by applying the \textbf{Guyan reduction} transformation on the
+full system, which is expressed as:
+
+\begin{equation}
+    \mathbf{K}_G = \mathbf{T}_G^T \mathbf{K} \mathbf{T}_G
+\end{equation}
+
+where $ \mathbf{T}_G $ has the dimension of $ n_{DOF} \times n_m $.
+
+
+
+
+\newpage
 \chapter{Element Atlas}
 
 \section{Matrices}
@@ -3041,6 +3135,30 @@ def hex8_stresses(coors: np.ndarray,
 \section{TET4 Element}
 
 \subsection{Element Formulation}
+For a linear tetrahedron no numerical integration is needed (there can be only
+one integration point, shape functions derivatives are equal to 1).
+
+The linear tetrahedron is not often used for stress analysis because of its poor
+performance. Its main value in structural and solid mechanics is educational:
+it serves as a vehicle to introduce the basic steps of formulation of 3D solid elements,
+particularly with regards to the use of natural coordinate systems and node numbering
+conventions. It should be noted that 3D visualisation is notoriously more difficult
+than 2D, so it is needed to procede more slowly here.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.90\textwidth]{img/linear_tetrahedron.png}
+    \caption{(a)The linear tetrahedron element TET4, (b) Node numbering convention.}
+    \label{fig:linear-tetrahedron-png}
+\end{figure}
+
+
+\subsubsection{Tetrahedron Geometry}
+
+The tetrahedron geometry is fully defined by giving the location of the four
+corner nodes with respect to Right-Hand Coordinate Sysetm notation $ (x, ,y z) $:
+
+
 
 
 \subsection{Python Implementation}
