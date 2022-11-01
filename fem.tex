@@ -192,11 +192,10 @@ to adding the element matrices to the global matrices.
 \end{table}
 
 
-
 \begin{table}[ht]
     \centering
-    \renewcommand{\arraystretch}{1.50}
-    \scalebox{0.80}{
+    \renewcommand{\arraystretch}{2.00}
+    \scalebox{0.75}{
     \begin{tabular}{||c c||}
         \hline
         \hline
@@ -251,6 +250,11 @@ to adding the element matrices to the global matrices.
         \end{math} \\
         \hline
         \hline
+        \multicolumn{2}{l}{
+            Notation:
+            $ E = $ Young's modulus, $ \nu = $ Poisson's ratio,
+            $ h = $ thickness of plate, $ I = $ moment of inertia
+        } \\
     \end{tabular}}
     \caption{Generalised stress-strain matrices for isotropic materials}
 \end{table}
@@ -1611,6 +1615,7 @@ which is the iteration of a set of \textbf{first order ODEs}:
     \dot{v} &= \frac{f - c * v - k * u}{m}
 \end{eqarray}
 
+
 \newpage
 \subsection{Runge-Kutta 4th order method}
 
@@ -1810,6 +1815,222 @@ Which results to:
     \caption{4th order Runge-Kutta's implementation for vibration problem example}
     \label{fig:rk4-example-png}
 \end{figure}
+
+
+
+\newpage
+\section{Implicit}
+
+The basic approach is an incremental step-by-step solution with an assumtion
+that the solution for a discrete time $ t $ is known and that the solution for
+the discrete time $ t + \Delta t $ is required, where $ \Delta t $ is
+a suitably chosen time increment. Hence, considering time $ t + \Delta t $:
+
+\begin{equation}\label{implicit-equation}
+    \mathbf{F}^{t + \Delta t} - \mathbf{N}^{t + \Delta t} = \mathbf{0}
+\end{equation}
+
+Where $ \mathbf{F} $ is the vector of external forces (loads) and $ \mathbf{N} $
+is the vector of inner forces.
+
+Assume that $ \mathbf{F}^{t + \Delta t} $ is independent of the deformations.
+Since the solution is known at time $ t $, we can write:
+
+\begin{equation}
+    \mathbf{N}^{t+\Delta t} = \mathbf{N}^t + \Delta \mathbf{N}
+\end{equation}
+
+where $ \Delta \mathbf{N} $ is the increment in nodal point forces corresponding
+to the increment in element displacements and stresses from time $ t $ to time
+$ t + \Delta t $. This vector can be approximated using a \textbf{tangent stiffness matrix}
+$ \mathbf{K}^t $ which corresponds to the geometric and material conditions
+at time $ t $,
+
+\begin{equation}\label{internal-forces-approximation}
+    \Delta \mathbf{N} \doteq \mathbf{K}^{t} \Delta \mathbf{u}
+\end{equation}
+
+where $ \Delta \mathbf{u} $ is a vector of incremental nodal point displacements and
+
+\begin{equation}\label{tangent-stiffness-matrix}
+    \mathbf{K}^{t} = \frac{\partial \mathbf{N}^{t}}{\partial \mathbf{u}^{t}}
+\end{equation}
+
+Hence, the \textbf{tangent stiffness matrix} corresponds to the derivative of the
+internal element nodal point forces $ \mathbf{N}^{t} $ with respect to the
+nodal point displacements $ \mathbf{u}^{t} $.
+
+Substituting \eqref{internal-forces-approximation} and
+\eqref{tangent-stiffness-matrix} into \eqref{implicit-equation}, we obtain
+
+\begin{equation}\label{iteration-equation}
+    \mathbf{K}^{t} \Delta \mathbf{u} = \mathbf{F}^{t + \Delta t} - \mathbf{N}^{t}
+\end{equation}
+
+and solving for $ \mathbf{u}^{\Delta t} $, we can calculate and approximation
+to the displacements at time $ t + \Delta t $,
+
+\begin{equation}\label{iteration-displacements}
+    \mathbf{u}^{t + \Delta t} \doteq \mathbf{u}^{t} + \Delta \mathbf{u}
+\end{equation}
+
+The exact displacements at time $ t + \Delta t $ are those that correspond to the
+applied loads $ \mathbf{F}^{t + \Delta t} $. We calculate in \eqref{iteration-displacements}
+only an approximation to these displacements because \eqref{internal-forces-approximation}
+was used.
+
+Having evaluated an approximation to the displacements corresponding to
+time $ t + \Delta t $, we could now solve for an approximation to the stresses and
+corresponding nodal point forces at time $ t + \Delta t $, and then proceed to the
+next time increment calculations. However, because of the assumption
+\eqref{internal-forces-approximation}, such a solution may be subject to
+very significant errors and, depending on the time or load step sizes used, may
+indeed be unstable. In practice, it is therefore necessary to iterate until the
+solution of \eqref{implicit-equation} is obtained to sufficient accuracy.
+
+
+\subsection{Newton-Raphson}
+Having calculated an \textit{increment} in nodal point displacements, which defones
+a \textit{new total} displacement vector, we can repeat ht incremental solution
+using the currently known total displacements at time $ t $.
+
+The equations used in \textbf{Newton-Raphson} iteration are, $ for\ i = 1, 2, 3, \dots, $
+
+\begin{bbox}
+    \begin{eqarray}\label{newton-raphson}
+        \mathbf{K}_{i-1}^{t + \Delta t} \Delta \mathbf{u}_i &=
+        \mathbf{F}^{t + \Delta t} - \mathbf{N}_{i - 1}^{t + \Delta t} \\
+        \mathbf{u}_{i}^{t+\Delta t} &=  \mathbf{u}_{i}^{t + \Delta t} +
+        \mathbf{u}_{i-1}^{t+\Delta t} + \Delta \mathbf{u}_i
+    \end{eqarray}
+\end{bbox}
+
+with the initial conditions:
+
+\begin{eqarray}
+    \mathbf{u}_{0}^{t + \Delta t} &= \mathbf{u}^t \\
+    \mathbf{K}_{0}^{t + \Delta t} &= \mathbf{K}^t \\
+    \mathbf{N}_{0}^{t + \Delta t} &= \mathbf{N}^t \\
+\end{eqarray}
+
+Note that in the first iteration, the relations in \eqref{newton-raphson}
+reduce to the equations \eqref{iteration-equation} and \eqref{iteration-displacements}.
+Then, in subsequent iterations, the latest estimates for the nodal point
+displacements are used to evaluate the corresponding element stresses and
+nodal point forces $ \mathbf{N}_{i-1}^{t + \Delta t} $ and
+\textbf{tangent stiffness matrix} $ \mathbf{K}_{i-1}^{t + \Delta t} $.
+
+The out-of-balance load vector $ \mathbf{F}^{t + \Delta t} - \mathbf{N}_{i-1}^{t + \Delta t} $
+corresponds to a load vector that is not yet balanced by element stress, and
+hence an increment in the nodal point displacement is required. This updating of the
+nodal point displacement in the iteration is continued until out-of-balance loads
+and incremental displacements are small enough.
+
+An important point is that the calculation of $ \mathbf{N}_{i-1}^{t + \Delta t} $
+from $ \mathbf{u}_{i-1}^{t + \Delta t} $ is \textbf{crucial}. Any errors in this
+calculation will, in general, result in an incorrect response prediction.
+
+The correct evaluation of the \textbf{tangent stiffness matrix}
+$ \mathbf{K}_{i-1}^{t + \Delta t} $ is also important. The use of proper
+\textbf{tangent stiffness matrix} may be necessary for convergence and, in general,
+will result in fewer iterations until convergence is reached.
+
+However, because the expense involved in evaluating and factoring a new
+\textbf{tangent stiffness matrix}, in practice, it can be more efficient,
+depending on the nonlinearities present in the analysis, to evaluate a new
+\textbf{tangent stiffness matrix} only at certain times. Specifically,
+in the \textbf{modified Newton-Raphson method} a new \textbf{tangent stiffness matrix}
+is established only at the beginning of each load step, and in
+\textbf{quasi-Newton} methods \textbf{secant stiffness matrices} are used
+instead of the tangent stiffness matrix.
+
+The use of the iterative solution requires appropriate convergence criteria.
+If inappropriate criteria are used, the iteration may be terminated before
+the necessary solution accuracy is reached or be continued after the required
+accuracy has been reached.
+
+\subsubsection{Full Newton-Raphson Procedure derivation}
+
+The finite element equilibrium requirements amount to finding the solution
+of the equations:
+
+\begin{equation}\label{nr-error}
+    f( \mathbf{u}^* ) = 0
+\end{equation}
+
+Where:
+
+\begin{equation}\label{nr-error-expanded}
+    f( \mathbf{u}^* ) = \mathbf{F}^{t + \Delta t} ( \mathbf{u}^* )
+    - \mathbf{N}^{t + \Delta t} ( \mathbf{u}^* )
+\end{equation}
+
+We denote here and in the following the complete array of the solution as
+$ \mathbf{u}^* $ but realize that this vector may also contain variables other
+than displacements, for example, pressure variables and rotations.
+
+Assume that in the iterative solution we have evaluated $ \mathbf{u}_{i-1}^{t + \Delta t} $;
+then a Taylor series expansion gives:
+
+\begin{eqarray}\label{newton-raphson-taylor-expansion}
+    f(\mathbf{u}^*) &= f(\mathbf{u}_{i-1}^{t + \Delta t})
+    + \left. \left[\frac{\partial N}{\partial \mathbf{u}} \right]
+        \right|_{\mathbf{u}_{i-1}^{t + \Delta t}}
+        \left( \mathbf{u}^* - \mathbf{u}_{i-1}^{t + \Delta t} \right) \\
+                    &+ higher\ order\ terms
+\end{eqarray}
+
+Substituting from \eqref{nr-error-expanded} into \eqref{newton-raphson-taylor-expansion}
+and using \eqref{nr-error}, we obtain:
+
+\begin{eqarray}\label{nr-taylor}
+    & \left. \left[ \frac{\partial \mathbf{N}}{\partial \mathbf{u}} \right]
+        \right|_{\mathbf{u}_{i-1}^{t + \Delta t}}
+    \left(\mathbf{u}^* - \mathbf{u}_{i-1}^{t + \Delta t} \right)
+    + higher\ order\ terms\\
+    & = \mathbf{F}^{t + \Delta t} - \mathbf{N}_{i-1}^{t + \Delta t}
+\end{eqarray}
+
+where we assumed that the externally applied loads are deformation independent.
+
+Neglecting the higher-order terms in \eqref{nr-taylor}, we can calculate an increment
+in the displacements,
+
+\begin{equation}\label{nr-displacement-increment}
+    \mathbf{K}_{i-1}^{t + \Delta t} \Delta \mathbf{u}_i =
+    \mathbf{F}^{t + \Delta t} - \mathbf{N}_{i-1}^{t + \Delta t}
+\end{equation}
+
+where $ \mathbf{K}_{i-1}^{t + \Delta t} $ is the current \textbf{tangent stiffness matrix}
+
+\begin{equation}
+     \mathbf{K}_{i-1}^{t + \Delta t} =
+     \left. \left[ \frac{\partial \mathbf{N}}{\partial \mathbf{u}} \right]
+        \right|_{\mathbf{u}_{i-1}^{t + \Delta t}}
+\end{equation}
+
+and the improved displacement solution is:
+
+\begin{equation}\label{nr-displacement}
+    \mathbf{u}_i^{t + \Delta t} =
+    \mathbf{u}_{i-1}^{t + \Delta t} +
+    \Delta \mathbf{u}_{i}
+\end{equation}
+
+\textit{The relations in} \eqref{nr-displacement-increment} \textit{and} \eqref{nr-displacement}
+\textit{costitute the Newton-Raphson solution of} \eqref{implicit-equation}.
+Since an incremental analysis is performed with time (or load) steps of size
+$ \Delta t $, the initial conditions in this iteration are
+$ \mathbf{K}_0^{t + \Delta t} = \mathbf{K}^t $,
+$ \mathbf{N}_0^{t + \Delta t} = \mathbf{N}^t $, and
+$ \mathbf{u}_0^{t + \Delta t} = \mathbf{u}^t $.
+The iteration is continued \textbf{until appropriate convergence criteria are satisfied.}
+
+% TODO: Bathe FEP_2nd_Edidtion_4th_prinitng.pdf
+%       Page 756 (773)
+
+
+
 
 
 
