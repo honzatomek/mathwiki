@@ -1,0 +1,1801 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<html>
+<head><script src="//archive.org/includes/analytics.js?v=cf34f82" type="text/javascript"></script>
+<script type="text/javascript">window.addEventListener('DOMContentLoaded',function(){var v=archive_analytics.values;v.service='wb';v.server_name='wwwb-app218.us.archive.org';v.server_ms=325;archive_analytics.send_pageview({});});</script>
+<script type="text/javascript" src="/_static/js/bundle-playback.js?v=MzYkZ0TU" charset="utf-8"></script>
+<script type="text/javascript" src="/_static/js/wombat.js?v=UHAOicsW" charset="utf-8"></script>
+<script type="text/javascript">
+  __wm.init("https://web.archive.org/web");
+  __wm.wombat("http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node16.html","20180509135944","https://web.archive.org/","web","/_static/",
+	      "1525874384");
+</script>
+<link rel="stylesheet" type="text/css" href="/_static/css/banner-styles.css?v=S1zqJCYt" />
+<link rel="stylesheet" type="text/css" href="/_static/css/iconochive.css?v=qtvMKcIJ" />
+<!-- End Wayback Rewrite JS Include -->
+
+<title>Matrix norms</title>
+<meta name="description" content="Matrix norms">
+<meta name="keywords" content="algebra">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+
+<meta name="Generator" content="LaTeX2HTML v2008">
+<meta http-equiv="Content-Style-Type" content="text/css">
+
+<link rel="STYLESHEET" href="/web/20180509135944cs_/http://fourier.eng.hmc.edu/e176/lectures/algebra/algebra.css">
+
+<link rel="next" href="node17.html">
+<link rel="previous" href="node15.html">
+<link rel="up" href="algebra.html">
+<link rel="next" href="node17.html">
+</head>
+
+<body><!-- BEGIN WAYBACK TOOLBAR INSERT -->
+<style type="text/css">
+body {
+  margin-top:0 !important;
+  padding-top:0 !important;
+  /*min-width:800px !important;*/
+}
+</style>
+<script>__wm.rw(0);</script>
+<div id="wm-ipp-base" lang="en" style="display:none;direction:ltr;">
+<div id="wm-ipp" style="position:fixed;left:0;top:0;right:0;">
+<div id="donato" style="position:relative;width:100%;">
+  <div id="donato-base">
+    <iframe id="donato-if" src="https://archive.org/includes/donate.php?as_page=1&amp;platform=wb&amp;referer=https%3A//web.archive.org/web/20180509135944/http%3A//fourier.eng.hmc.edu/e176/lectures/algebra/node16.html"
+	    scrolling="no" frameborder="0" style="width:100%; height:100%">
+    </iframe>
+  </div>
+</div><div id="wm-ipp-inside">
+  <div id="wm-toolbar" style="position:relative;display:flex;flex-flow:row nowrap;justify-content:space-between;">
+    <div id="wm-logo" style="/*width:110px;*/padding-top:12px;">
+      <a href="/web/" title="Wayback Machine home page"><img src="/_static/images/toolbar/wayback-toolbar-logo-200.png" srcset="/_static/images/toolbar/wayback-toolbar-logo-100.png, /_static/images/toolbar/wayback-toolbar-logo-150.png 1.5x, /_static/images/toolbar/wayback-toolbar-logo-200.png 2x" alt="Wayback Machine" style="width:100px" border="0" /></a>
+    </div>
+    <div class="c" style="display:flex;flex-flow:column nowrap;justify-content:space-between;flex:1;">
+      <form class="u" style="display:flex;flex-direction:row;flex-wrap:nowrap;" target="_top" method="get" action="/web/submit" name="wmtb" id="wmtb"><input type="text" name="url" id="wmtbURL" value="http://fourier.eng.hmc.edu/e176/lectures/algebra/node16.html" onfocus="this.focus();this.select();" style="flex:1;"/><input type="hidden" name="type" value="replay" /><input type="hidden" name="date" value="20180509135944" /><input type="submit" value="Go" />
+      </form>
+      <div style="display:flex;flex-flow:row nowrap;align-items:flex-end;">
+		<div class="s" id="wm-nav-captures" style="flex:1;">
+	  	  <a class="t" href="/web/20180509135944*/http://fourier.eng.hmc.edu/e176/lectures/algebra/node16.html" title="See a list of every capture for this URL">14 captures</a>
+	  <div class="r" title="Timespan for captures of this URL">13 Aug 2016 - 23 Apr 2021</div>
+	  </div>
+	<div class="k">
+	  <a href="" id="wm-graph-anchor">
+	    <div id="wm-ipp-sparkline" title="Explore captures for this URL" style="position: relative">
+	      <canvas id="wm-sparkline-canvas" width="675" height="27" border="0"></canvas>
+	    </div>
+	  </a>
+	</div>
+      </div>
+    </div>
+    <div class="n">
+      <table>
+	<tbody>
+	  <!-- NEXT/PREV MONTH NAV AND MONTH INDICATOR -->
+	  <tr class="m">
+	    <td class="b" nowrap="nowrap"><a href="https://web.archive.org/web/20161118114200/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node16.html" title="18 Nov 2016"><strong>Nov</strong></a></td>
+	    <td class="c" id="displayMonthEl" title="You are here: 13:59:44 May 09, 2018">MAY</td>
+	    <td class="f" nowrap="nowrap"><a href="https://web.archive.org/web/20180709175335/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node16.html" title="09 Jul 2018"><strong>Jul</strong></a></td>
+	  </tr>
+	  <!-- NEXT/PREV CAPTURE NAV AND DAY OF MONTH INDICATOR -->
+	  <tr class="d">
+	    <td class="b" nowrap="nowrap"><a href="https://web.archive.org/web/20161118114200/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node16.html" title="11:42:00 Nov 18, 2016"><img src="/_static/images/toolbar/wm_tb_prv_on.png" alt="Previous capture" width="14" height="16" border="0" /></a></td>
+	    <td class="c" id="displayDayEl" style="width:34px;font-size:22px;white-space:nowrap;" title="You are here: 13:59:44 May 09, 2018">09</td>
+	    <td class="f" nowrap="nowrap"><a href="https://web.archive.org/web/20180709175335/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node16.html" title="17:53:35 Jul 09, 2018"><img src="/_static/images/toolbar/wm_tb_nxt_on.png" alt="Next capture" width="14" height="16" border="0" /></a></td>
+	  </tr>
+	  <!-- NEXT/PREV YEAR NAV AND YEAR INDICATOR -->
+	  <tr class="y">
+	    <td class="b" nowrap="nowrap"><a href="https://web.archive.org/web/20161118114200/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node16.html" title="18 Nov 2016"><strong>2016</strong></a></td>
+	    <td class="c" id="displayYearEl" title="You are here: 13:59:44 May 09, 2018">2018</td>
+	    <td class="f" nowrap="nowrap"><a href="https://web.archive.org/web/20190514063353/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node16.html" title="14 May 2019"><strong>2019</strong></a></td>
+	  </tr>
+	</tbody>
+      </table>
+    </div>
+    <div class="r" style="display:flex;flex-flow:column nowrap;align-items:flex-end;justify-content:space-between;">
+      <div id="wm-btns" style="text-align:right;height:23px;">
+        	<span class="xxs">
+          <div id="wm-save-snapshot-success">success</div>
+          <div id="wm-save-snapshot-fail">fail</div>
+          <a id="wm-save-snapshot-open" href="#"
+	     title="Share via My Web Archive" >
+            <span class="iconochive-web"></span>
+          </a>
+          <a href="https://archive.org/account/login.php" title="Sign In" id="wm-sign-in">
+            <span class="iconochive-person"></span>
+          </a>
+          <span id="wm-save-snapshot-in-progress" class="iconochive-web"></span>
+	</span>
+        	<a class="xxs" href="http://faq.web.archive.org/" title="Get some help using the Wayback Machine" style="top:-6px;"><span class="iconochive-question" style="color:rgb(87,186,244);font-size:160%;"></span></a>
+	<a id="wm-tb-close" href="#close" style="top:-2px;" title="Close the toolbar"><span class="iconochive-remove-circle" style="color:#888888;font-size:240%;"></span></a>
+      </div>
+      <div id="wm-share" class="xxs">
+        <a href="/web/20180509135944/http://web.archive.org/screenshot/http://fourier.eng.hmc.edu/e176/lectures/algebra/node16.html"
+           id="wm-screenshot"
+           title="screenshot">
+          <span class="wm-icon-screen-shot"></span>
+        </a>
+        <a href="#" id="wm-video" title="video">
+          <span class="iconochive-movies"></span>
+        </a>
+	<a id="wm-share-facebook" href="#" data-url="https://web.archive.org/web/20180509135944/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node16.html" title="Share on Facebook" style="margin-right:5px;" target="_blank"><span class="iconochive-facebook" style="color:#3b5998;font-size:160%;"></span></a>
+	<a id="wm-share-twitter" href="#" data-url="https://web.archive.org/web/20180509135944/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node16.html" title="Share on Twitter" style="margin-right:5px;" target="_blank"><span class="iconochive-twitter" style="color:#1dcaff;font-size:160%;"></span></a>
+      </div>
+      <div style="padding-right:2px;text-align:right;white-space:nowrap;">
+	<a id="wm-expand" class="wm-btn wm-closed" href="#expand" onclick="__wm.ex(event);return false;"><span id="wm-expand-icon" class="iconochive-down-solid"></span> <span class="xxs" style="font-size:80%;">About this capture</span></a>
+      </div>
+    </div>
+  </div>
+    <div id="wm-capinfo" style="border-top:1px solid #777;display:none; overflow: hidden">
+                    <div id="wm-capinfo-collected-by">
+    <div style="background-color:#666;color:#fff;font-weight:bold;text-align:center">COLLECTED BY</div>
+    <div style="padding:3px;position:relative" id="wm-collected-by-content">
+            <div style="display:inline-block;vertical-align:top;width:50%;">
+			<span class="c-logo" style="background-image:url(https://archive.org/services/img/alexacrawls);"></span>
+		Organization: <a style="color:#33f;" href="https://archive.org/details/alexacrawls" target="_new"><span class="wm-title">Alexa Crawls</span></a>
+		<div style="max-height:75px;overflow:hidden;position:relative;">
+	  <div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+	  Starting in 1996, <a href="http://www.alexa.com/">Alexa Internet</a> has been donating their crawl data to the Internet Archive.  Flowing in every day, these data are added to the <a href="http://web.archive.org/">Wayback Machine</a> after an embargo period.
+	</div>
+	      </div>
+      <div style="display:inline-block;vertical-align:top;width:49%;">
+			<span class="c-logo" style="background-image:url(https://archive.org/services/img/alexacrawls)"></span>
+		<div>Collection: <a style="color:#33f;" href="https://archive.org/details/alexacrawls" target="_new"><span class="wm-title">Alexa Crawls</span></a></div>
+		<div style="max-height:75px;overflow:hidden;position:relative;">
+	  <div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+	  Starting in 1996, <a href="http://www.alexa.com/">Alexa Internet</a> has been donating their crawl data to the Internet Archive.  Flowing in every day, these data are added to the <a href="http://web.archive.org/">Wayback Machine</a> after an embargo period.
+	</div>
+	      </div>
+    </div>
+    </div>
+    <div id="wm-capinfo-timestamps">
+    <div style="background-color:#666;color:#fff;font-weight:bold;text-align:center" title="Timestamps for the elements of this page">TIMESTAMPS</div>
+    <div>
+      <div id="wm-capresources" style="margin:0 5px 5px 5px;max-height:250px;overflow-y:scroll !important"></div>
+      <div id="wm-capresources-loading" style="text-align:left;margin:0 20px 5px 5px;display:none"><img src="/_static/images/loading.gif" alt="loading" /></div>
+    </div>
+    </div>
+  </div></div></div></div><div id="wm-ipp-print">The Wayback Machine - https://web.archive.org/web/20180509135944/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node16.html</div>
+<script type="text/javascript">//<![CDATA[
+__wm.bt(675,27,25,2,"web","http://fourier.eng.hmc.edu/e176/lectures/algebra/node16.html","20180509135944",1996,"/_static/",["/_static/css/banner-styles.css?v=S1zqJCYt","/_static/css/iconochive.css?v=qtvMKcIJ"], false);
+  __wm.rw(1);
+//]]></script>
+<!-- END WAYBACK TOOLBAR INSERT -->
+<!--Navigation Panel-->
+<a name="tex2html195" href="node17.html">
+<img width="37" height="24" align="BOTTOM" border="0" alt="next" src="https://web.archive.org/web/20180509135944im_/file:/opt/local/share/lib/latex2html/icons/next.png"></a> 
+<a name="tex2html193" href="algebra.html">
+<img width="26" height="24" align="BOTTOM" border="0" alt="up" src="https://web.archive.org/web/20180509135944im_/file:/opt/local/share/lib/latex2html/icons/up.png"></a> 
+<a name="tex2html187" href="node15.html">
+<img width="63" height="24" align="BOTTOM" border="0" alt="previous" src="https://web.archive.org/web/20180509135944im_/file:/opt/local/share/lib/latex2html/icons/prev.png"></a>   
+<br>
+<b> Next:</b> <a name="tex2html196" href="node17.html">Vector and matrix differentiation</a>
+<b> Up:</b> <a name="tex2html194" href="algebra.html">algebra</a>
+<b> Previous:</b> <a name="tex2html188" href="node15.html">Vector norms</a>
+<br>
+<br>
+<!--End of Navigation Panel-->
+
+<h1><a name="SECTION000160000000000000000">
+Matrix norms</a>
+</h1>
+
+<p>
+The norm of an <img width="55" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img38.png" alt="$m \times n$"> matrix <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$"> is any function that maps
+<img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$"> to a real number <img width="42" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img763.png" alt="$\vert\vert{\bf A}\vert\vert$"> that satisfies the following 
+required properties:
+
+<p>
+
+<ul>
+<li>Positivity:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||\ge 0,\;\;\;\;\;\;
+  ||{\bf A}||=0\;\;\;\mbox{iff}\;\;\;{\bf A}={\bf0}
+\end{displaymath}
+ -->
+
+<img width="282" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img764.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert\ge 0,\;\;\;\;\;\;
+\vert\vert{\bf A}\vert\vert=0\;\;\;\mbox{iff}\;\;\;{\bf A}={\bf0}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li>Homogeneity:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||a{\bf A}||=|a|\;||{\bf A}||
+\end{displaymath}
+ -->
+
+<img width="131" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img765.png" alt="\begin{displaymath}
+\vert\vert a{\bf A}\vert\vert=\vert a\vert\;\vert\vert{\bf A}\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li>Triangle inequality:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}+{\bf B}||\le ||{\bf A}||+||{\bf B}||,
+  \;\;\;\;\;\;\mbox{or}\;\;\;\;\;
+  ||{\bf A}||-||{\bf B}||\le ||{\bf A}-{\bf B}||
+\end{displaymath}
+ -->
+
+<img width="475" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img766.png" alt="\begin{displaymath}
+\vert\vert{\bf A}+{\bf B}\vert\vert\le \vert\vert{\bf A}\ve...
+...\vert{\bf B}\vert\vert\le \vert\vert{\bf A}-{\bf B}\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+The second expression can be obtained by replacing <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$"> by
+  <!-- MATH
+ ${\bf A}-{\bf B}$
+ -->
+<img width="59" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img767.png" alt="${\bf A}-{\bf B}$"> in the first expression.
+</li>
+</ul>
+
+<p>
+In addition to the three required properties for matrix norms, some of
+them also satisfy these additional properties (not necessarily satisfied 
+by other matrix norms):
+
+<ul>
+<li>Subordinance: 
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}{\bf x}||\le ||{\bf A}|| \cdot ||{\bf x}||
+\end{displaymath}
+ -->
+
+<img width="153" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img768.png" alt="\begin{displaymath}
+\vert\vert{\bf A}{\bf x}\vert\vert\le \vert\vert{\bf A}\vert\vert \cdot \vert\vert{\bf x}\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li>submultiplicativity:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}{\bf B}||\le ||{\bf A}|| \cdot ||{\bf B}||
+\end{displaymath}
+ -->
+
+<img width="161" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img769.png" alt="\begin{displaymath}
+\vert\vert{\bf A}{\bf B}\vert\vert\le \vert\vert{\bf A}\vert\vert \cdot \vert\vert{\bf B}\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+</ul>
+
+<p>
+We now consider some commonly used matrix norms. 
+
+<p>
+
+<ul>
+<li><b>The element-wise norms</b>
+
+<p>
+If we treat the <img width="55" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img38.png" alt="$m \times n$"> elements of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$"> are the elements of 
+  an <img width="32" height="19" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img43.png" alt="$mn$">-dimensional vector, then the p-norm of this vector can be used as 
+  the p-norm of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$">:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_p=\left\{ \sum_{i=1}^m\sum_{j=1}^n |a_{ij}|^p\right\}^{1/p}
+\end{displaymath}
+ -->
+
+<img width="209" height="69" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img770.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _p=\left\{ \sum_{i=1}^m\sum_{j=1}^n \vert a_{ij}\vert^p\right\}^{1/p}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+Specially, we consider the following three cases for <!-- MATH
+ $p=1,\;2,\;\infty$
+ -->
+<img width="104" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img771.png" alt="$p=1,\;2,\;\infty$">.
+  
+<ul>
+<li><img width="49" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img772.png" alt="$\vert\vert{\bf A}\vert\vert _1$"> is the absolute sum of all elements of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$">:
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_1=\sum_{i=1}^m\sum_{j=1}^n |a_{ij}|
+\end{displaymath}
+ -->
+
+<img width="151" height="58" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img773.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _1=\sum_{i=1}^m\sum_{j=1}^n \vert a_{ij}\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li><!-- MATH
+ $||{\bf A}||_\infty$
+ -->
+<img width="56" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img774.png" alt="$\vert\vert{\bf A}\vert\vert _\infty$"> is the <em>maximum norm</em>, the maximum absolute
+    value among all <img width="32" height="19" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img43.png" alt="$mn$"> elements of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$">:
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_\infty=\max\{ |a_{ij}|,\;\; 1\le i\le m,\;1\le j\le n \}
+\end{displaymath}
+ -->
+
+<img width="355" height="34" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img775.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _\infty=\max\{ \vert a_{ij}\vert,\;\; 1\le i\le m,\;1\le j\le n \}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li><img width="49" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img776.png" alt="$\vert\vert{\bf A}\vert\vert _2$"> is the <em>Frobenius norm</em> 
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_2=||{\bf A}||_F=\sqrt{\sum_{i=1}^m\sum_{j=1}^n |a_{ij}|^2}
+    =\sqrt{ tr({\bf A}^*{\bf A}) }=\sqrt{\sum_{i=1}^R \lambda_i}
+    =\sqrt{\sum_{i=1}^R \sigma_i^2}
+\end{displaymath}
+ -->
+
+<img width="534" height="68" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img777.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _2=\vert\vert{\bf A}\vert\vert ...
+...sqrt{\sum_{i=1}^R \lambda_i}
+=\sqrt{\sum_{i=1}^R \sigma_i^2}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+where <!-- MATH
+ $r\le \min(m,n)$
+ -->
+<img width="120" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img581.png" alt="$r\le\min(m,n)$"> is the rank of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$">, <!-- MATH
+ $\lambda_i=\sigma_2^2$
+ -->
+<img width="65" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img778.png" alt="$\lambda_i=\sigma_2^2$"> 
+    is the ith non-zero eigenvalues of the positive, semi-definite matrix
+    <!-- MATH
+ ${\bf A}^*{\bf A}$
+ -->
+<img width="44" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img779.png" alt="${\bf A}^*{\bf A}$">, and <!-- MATH
+ $\sigma_i=\sqrt{\lambda_i}$
+ -->
+<img width="78" height="41" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img780.png" alt="$\sigma_i=\sqrt{\lambda_i}$"> the ith singular 
+    value of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$"> (<img width="97" height="34" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img781.png" alt="$i=1,\cdots,r$">). (This Frobenius norm <img width="49" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img776.png" alt="$\vert\vert{\bf A}\vert\vert _2$">
+    is implemented in Matlab by the function <code>norm(A,'fro')</code>.)
+
+<p>
+</li>
+</ul>
+  The Frobenius norm of a unitary (orthogonal if real) matrix <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img395.png" alt="${\bf R}$">
+  satisfying 
+  <!-- MATH
+ ${\bf R}^*={\bf R}^{-1}$
+ -->
+<img width="87" height="22" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img782.png" alt="${\bf R}^*={\bf R}^{-1}$"> or <!-- MATH
+ ${\bf R}^*{\bf R}={\bf R}^{-1}{\bf R}={\bf I}$
+ -->
+<img width="153" height="22" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img783.png" alt="${\bf R}^*{\bf R}={\bf R}^{-1}{\bf R}={\bf I}$">
+  is:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf R}||_F^2= tr({\bf R}^*{\bf R})=tr {\bf I}=n
+\end{displaymath}
+ -->
+
+<img width="227" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img784.png" alt="\begin{displaymath}
+\vert\vert{\bf R}\vert\vert _F^2= tr({\bf R}^*{\bf R})=tr {\bf I}=n
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+The Frobenius norm is the only one out of the above three matrix norms
+  that is <em>unitary invariant</em>, i.e., it is conserved or invariant 
+  under a unitary transformation (such as a rotation) 
+  <!-- MATH
+ ${\bf B}={\bf R}^*{\bf A}{\bf R}$
+ -->
+<img width="101" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img430.png" alt="${\bf B}={\bf R}^*{\bf A}{\bf R}$">:
+  <br>
+<div align="CENTER">
+
+<!-- MATH
+ \begin{eqnarray}
+||{\bf B}||_F^2&=&tr\left({\bf B}^*{\bf B}\right)
+  =tr\left[\left({\bf R}^*{\bf A}{\bf R}\right)^*
+    \left({\bf R}^*{\bf A}{\bf R}\right)\right]
+  =tr \left( {\bf R}^*{\bf A}^*{\bf R}{\bf R}^*{\bf A}{\bf R}\right)
+  \nonumber \\
+  &=&tr \left( {\bf R}^*{\bf A}^*{\bf A}{\bf R}\right)
+  =tr \left( {\bf A}^*{\bf A}\right)=||{\bf A}||_F^2
+  =||{\bf A}||_F^2
+  \nonumber
+\end{eqnarray}
+ -->
+<table align="CENTER" cellpadding="0" width="100%">
+<tr valign="MIDDLE"><td nowrap align="RIGHT"><img width="52" height="41" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img785.png" alt="$\displaystyle \vert\vert{\bf B}\vert\vert _F^2$"></td>
+<td align="CENTER" nowrap><img width="19" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img161.png" alt="$\textstyle =$"></td>
+<td align="LEFT" nowrap><img width="460" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img786.png" alt="$\displaystyle tr\left({\bf B}^*{\bf B}\right)
+=tr\left[\left({\bf R}^*{\bf A}{...
+...ght)\right]
+=tr \left( {\bf R}^*{\bf A}^*{\bf R}{\bf R}^*{\bf A}{\bf R}\right)$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+<tr valign="MIDDLE"><td nowrap align="RIGHT">&nbsp;</td>
+<td align="CENTER" nowrap><img width="19" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img161.png" alt="$\textstyle =$"></td>
+<td align="LEFT" nowrap><img width="364" height="41" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img787.png" alt="$\displaystyle tr \left( {\bf R}^*{\bf A}^*{\bf A}{\bf R}\right)
+=tr \left( {\b...
+...f A}\right)=\vert\vert{\bf A}\vert\vert _F^2
+=\vert\vert{\bf A}\vert\vert _F^2$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+</table></div>
+<br clear="ALL"><p></p>
+where we have used the property of the trace 
+  <!-- MATH
+ $tr\left({\bf A}{\bf B}\right)=tr\left({\bf B}{\bf A}\right)$
+ -->
+<img width="159" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img788.png" alt="$tr\left({\bf A}{\bf B}\right)=tr\left({\bf B}{\bf A}\right)$">.
+
+<p>
+</li>
+<li><b>The natural matrix norms</b>
+
+<p>
+The natural norm <img width="42" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img763.png" alt="$\vert\vert{\bf A}\vert\vert$"> of matrix <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$"> induced by
+  (subordinate to) the vector norm <img width="37" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img98.png" alt="$\vert\vert{\bf x}\vert\vert$"> is defined as
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||=\sup_{||{\bf x}||=1} \{ ||{\bf A}{\bf x}|| \}
+  =\sup_{{\bf x}\ne {\bf0}} \{ ||{\bf A}{\bf x}|| / ||{\bf x}|| \}
+\end{displaymath}
+ -->
+
+<img width="330" height="49" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img789.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert=\sup_{\vert\vert{\bf x}\vert\ve...
+...vert{\bf A}{\bf x}\vert\vert / \vert\vert{\bf x}\vert\vert \}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+Specially the norm of the identity matrix <!-- MATH
+ ${\bf A}={\bf I}$
+ -->
+<img width="54" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img198.png" alt="${\bf A}={\bf I}$"> is
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf I}||=\sup_{||{\bf x}||=1} \{ ||{\bf I}{\bf x}|| \}
+  =\sup_{||{\bf x}||=1} \{ ||{\bf x}|| \}=1
+\end{displaymath}
+ -->
+
+<img width="303" height="49" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img790.png" alt="\begin{displaymath}
+\vert\vert{\bf I}\vert\vert=\sup_{\vert\vert{\bf x}\vert\ve...
+...\vert{\bf x}\vert\vert=1} \{ \vert\vert{\bf x}\vert\vert \}=1
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+We now prove that the induced matrix norm satisfies all five properties 
+  given above. (Recall <!-- MATH
+ $|a+b|\le |a|+|b|$
+ -->
+<img width="143" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img791.png" alt="$\vert a+b\vert\le \vert a\vert+\vert b\vert$">, <!-- MATH
+ $|ab|\le |a|\;|b|$
+ -->
+<img width="103" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img792.png" alt="$\vert ab\vert\le \vert a\vert\;\vert b\vert$">.)
+  
+<ol>
+<li>Positivity: <img width="76" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img793.png" alt="$\vert\vert{\bf A}\vert\vert>0$"> if <!-- MATH
+ ${\bf A}\ne {\bf0}$
+ -->
+<img width="57" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img794.png" alt="${\bf A}\ne {\bf0}$">, this is 
+    trivially obvious.
+</li>
+<li>Homogeneity: <!-- MATH
+ $||a{\bf A}|| = |a|\,||{\bf A}||$
+ -->
+<img width="138" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img795.png" alt="$\vert\vert a{\bf A}\vert\vert = \vert a\vert \vert\vert{\bf A}\vert\vert$">
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||a{\bf A}||=\sup_{||{\bf x}||=1} \{ ||a{\bf A}{\bf x}|| \}
+    =\sup_{||{\bf x}||=1} \{ |a|\;||{\bf A}{\bf x}|| \}
+    =|a|\;\sup_{||{\bf x}||=1} \{ ||{\bf A}{\bf x}|| \}
+    =|a|\;||{\bf A}||
+\end{displaymath}
+ -->
+
+<img width="596" height="49" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img796.png" alt="\begin{displaymath}
+\vert\vert a{\bf A}\vert\vert=\sup_{\vert\vert{\bf x}\vert\...
+...f x}\vert\vert \}
+=\vert a\vert\;\vert\vert{\bf A}\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li>Triangle inequality: <!-- MATH
+ $||{\bf A}+{\bf B}||\le ||{\bf A}||+||{\bf B}||$
+ -->
+<img width="203" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img797.png" alt="$\vert\vert{\bf A}+{\bf B}\vert\vert\le \vert\vert{\bf A}\vert\vert+\vert\vert{\bf B}\vert\vert$">
+    <br>
+<div align="CENTER">
+
+<!-- MATH
+ \begin{eqnarray}
+||{\bf A}+{\bf B}||&=&\sup_{||{\bf x}||=1} \{ ||({\bf A}+{\bf B}){\bf x}|| \}
+      =\sup_{||{\bf x}||=1} \{ ||{\bf A}{\bf x}+{\bf B}{\bf x}|| \}
+      \le \sup_{||{\bf x}||=1} \{ ||{\bf A}{\bf x}||+||{\bf B}{\bf x}|| \}
+      \nonumber \\
+      &\le& \sup_{||{\bf x}||=1} \{ ||{\bf A}{\bf x}|| \}
+      +\sup_{||{\bf x}||=1} \{ ||{\bf B}{\bf x}|| \}
+      =||{\bf A}||+||{\bf B}||
+      \nonumber
+\end{eqnarray}
+ -->
+<table align="CENTER" cellpadding="0" width="100%">
+<tr valign="MIDDLE"><td nowrap align="RIGHT"><img width="80" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img798.png" alt="$\displaystyle \vert\vert{\bf A}+{\bf B}\vert\vert$"></td>
+<td align="CENTER" nowrap><img width="19" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img161.png" alt="$\textstyle =$"></td>
+<td align="LEFT" nowrap><img width="554" height="50" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img799.png" alt="$\displaystyle \sup_{\vert\vert{\bf x}\vert\vert=1} \{ \vert\vert({\bf A}+{\bf B...
+...=1} \{ \vert\vert{\bf A}{\bf x}\vert\vert+\vert\vert{\bf B}{\bf x}\vert\vert \}$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+<tr valign="MIDDLE"><td nowrap align="RIGHT">&nbsp;</td>
+<td align="CENTER" nowrap><img width="19" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img800.png" alt="$\textstyle \le$"></td>
+<td align="LEFT" nowrap><img width="365" height="50" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img801.png" alt="$\displaystyle \sup_{\vert\vert{\bf x}\vert\vert=1} \{ \vert\vert{\bf A}{\bf x}\...
+...}{\bf x}\vert\vert \}
+=\vert\vert{\bf A}\vert\vert+\vert\vert{\bf B}\vert\vert$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+</table></div>
+<br clear="ALL"><p></p>
+</li>
+<li>Subordinance: <!-- MATH
+ $||{\bf A}{\bf x}||\le||{\bf A}||\;||{\bf x}||$
+ -->
+<img width="154" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img802.png" alt="$\vert\vert{\bf A}{\bf x}\vert\vert\le\vert\vert{\bf A}\vert\vert\;\vert\vert{\bf x}\vert\vert$">
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||\;||{\bf x}||=||{\bf x}||\;\sup_{\bf y}\{||{\bf Ay}||/||{\bf y}||\}
+    \ge ||{\bf x}||\;||{\bf Ay}|| / ||{\bf y}||
+\end{displaymath}
+ -->
+
+<img width="431" height="46" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img803.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert\;\vert\vert{\bf x}\vert\vert=\v...
+...t\;\vert\vert{\bf Ay}\vert\vert / \vert\vert{\bf y}\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+As <img width="16" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img86.png" alt="${\bf y}$"> is arbitrary, we let <!-- MATH
+ ${\bf y}={\bf x}$
+ -->
+<img width="53" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img804.png" alt="${\bf y}={\bf x}$"> and get
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||\;||{\bf x}||\ge ||{\bf Ax}||
+\end{displaymath}
+ -->
+
+<img width="145" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img805.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert\;\vert\vert{\bf x}\vert\vert\ge \vert\vert{\bf Ax}\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+In particular, if vector <img width="16" height="19" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.png" alt="${\bf x}$"> is the eigenvector corresponding 
+    to the greatest eigenvalue <img width="43" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img806.png" alt="$\lambda_{max}$"> of <!-- MATH
+ ${\bf A}^*{\bf A}$
+ -->
+<img width="44" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img779.png" alt="${\bf A}^*{\bf A}$">:
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+({\bf A}^*{\bf A})\,{\bf x}=\lambda_{max}\;{\bf x}
+    =||{\bf A}||^2\; {\bf x}
+\end{displaymath}
+ -->
+
+<img width="234" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img807.png" alt="\begin{displaymath}
+({\bf A}^*{\bf A}) {\bf x}=\lambda_{max}\;{\bf x}
+=\vert\vert{\bf A}\vert\vert^2\; {\bf x}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+then the equality of the subordinance property holds. To see this,
+    consider
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}{\bf x}||^2=\langle({\bf Ax})^*,\,({\bf Ax})\rangle
+    ={\bf x}^* ({\bf A}^*{\bf A}) {\bf x}={\bf x}^*||{\bf A}||^2{\bf x}
+    =||{\bf A}||^2 ||{\bf x}||^2
+\end{displaymath}
+ -->
+
+<img width="516" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img808.png" alt="\begin{displaymath}
+\vert\vert{\bf A}{\bf x}\vert\vert^2=\langle({\bf Ax})^*, ...
+... =\vert\vert{\bf A}\vert\vert^2 \vert\vert{\bf x}\vert\vert^2
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+taking square root on both sides we get 
+    <!-- MATH
+ $||{\bf A}{\bf x}||=||{\bf A}||\,||{\bf x}||$
+ -->
+<img width="152" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img809.png" alt="$\vert\vert{\bf A}{\bf x}\vert\vert=\vert\vert{\bf A}\vert\vert \vert\vert{\bf x}\vert\vert$">.
+
+<p>
+</li>
+<li>Submultiplicativity: <!-- MATH
+ $||{\bf AB}||\le||{\bf A}||\;||{\bf B}||$
+ -->
+<img width="162" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img810.png" alt="$\vert\vert{\bf AB}\vert\vert\le\vert\vert{\bf A}\vert\vert\;\vert\vert{\bf B}\vert\vert$">
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}{\bf B}||=\sup_{||{\bf x}||=1}\{||{\bf ABx}||\}
+    \le \sup_{||{\bf x}||=1}\{||{\bf A}||\;||{\bf Bx}||\}  
+    = ||{\bf A}||\;\sup_{||{\bf x}||=1}\{||{\bf Bx}||\}
+    = ||{\bf A}||\;||{\bf B}||
+\end{displaymath}
+ -->
+
+<img width="656" height="49" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img811.png" alt="\begin{displaymath}
+\vert\vert{\bf A}{\bf B}\vert\vert=\sup_{\vert\vert{\bf x}\...
+...}
+= \vert\vert{\bf A}\vert\vert\;\vert\vert{\bf B}\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+In particular, if <!-- MATH
+ ${\bf A}=c{\bf B}^*$
+ -->
+<img width="77" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img812.png" alt="${\bf A}=c{\bf B}^*$"> (i.e., <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$"> and
+    <img width="20" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img88.png" alt="${\bf B}$"> are linearly dependent), then the equality of the 
+    submultiplicativity property holds. To see this, consider
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf B}||=\sqrt{\lambda_{max}({\bf B}^*{\bf B})},\;\;\;\;
+    ||{\bf A}||=|c|\sqrt{\lambda_{max}({\bf B}{\bf B}^*)}
+    =|c| \sqrt{\lambda_{max}({\bf B}^*{\bf B})}
+\end{displaymath}
+ -->
+
+<img width="536" height="36" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img813.png" alt="\begin{displaymath}
+\vert\vert{\bf B}\vert\vert=\sqrt{\lambda_{max}({\bf B}^*{\...
+... B}^*)}
+=\vert c\vert \sqrt{\lambda_{max}({\bf B}^*{\bf B})}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+and
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf AB}||=|c|\,||{\bf B}^*{\bf B}||
+    =|c|\,\sqrt{\lambda_{max}(({\bf B}^*{\bf B})({\bf B}^*{\bf B}))}
+    =|c|\,\sqrt{\lambda_{max}({\bf B}^*{\bf B})^2}
+    =|c|\,\lambda_{max}({\bf B}^*{\bf B})
+\end{displaymath}
+ -->
+
+<img width="677" height="36" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img814.png" alt="\begin{displaymath}
+\vert\vert{\bf AB}\vert\vert=\vert c\vert \vert\vert{\bf B...
+...^*{\bf B})^2}
+=\vert c\vert \lambda_{max}({\bf B}^*{\bf B})
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+i.e., <!-- MATH
+ $||{\bf A}{\bf B}||=||{\bf A}||\;||{\bf B}||$
+ -->
+<img width="162" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img815.png" alt="$\vert\vert{\bf A}{\bf B}\vert\vert=\vert\vert{\bf A}\vert\vert\;\vert\vert{\bf B}\vert\vert$">.
+
+<p>
+</li>
+</ol>
+
+<p>
+Consider in particular the three natural matrix norms <img width="50" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img816.png" alt="$\vert\vert{\bf A}\vert\vert _p$"> 
+  corresponding to the three vector p-norms <!-- MATH
+ $||{\bf x}||_p\;(p=1,\,2,\infty)$
+ -->
+<img width="157" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img817.png" alt="$\vert\vert{\bf x}\vert\vert _p\;(p=1, 2,\infty)$">:
+  
+<ul>
+<li>When <img width="48" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img706.png" alt="$p=1$">, <img width="49" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img772.png" alt="$\vert\vert{\bf A}\vert\vert _1$"> is the maximum absolute column sum:
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_1=\max_{1\le j\le n} \sum_{i=1}^m |a_{ij}|
+\end{displaymath}
+ -->
+
+<img width="169" height="55" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img818.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _1=\max_{1\le j\le n} \sum_{i=1}^m \vert a_{ij}\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+In Matlab this norm is implemented by the function <code>norm(A,1)</code>.
+
+<p>
+<b>Proof:</b> The 1-norm of vector <img width="16" height="19" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.png" alt="${\bf x}$"> is 
+    <!-- MATH
+ $||{\bf x}||_1=\sum_{j=1}^n |x_j|$
+ -->
+<img width="142" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img819.png" alt="$\vert\vert{\bf x}\vert\vert _1=\sum_{j=1}^n \vert x_j\vert$">, we have
+    <br>
+<div align="CENTER">
+
+<!-- MATH
+ \begin{eqnarray}
+||{\bf A}{\bf x}||_1&=&\sum_{i=1}^m\bigg|\sum_{j=1}^na_{ij}x_j\bigg|
+      \le \sum_{i=1}^m \sum_{j=1}^n \left( |a_{ij}|\,|x_j| \right)
+      =\sum_{j=1}^n \left( |x_j|\;\sum_{i=1}^m |a_{ij}| \right)
+      \nonumber \\
+      &\le& \left(\max_{1\le j\le n} \sum_{i=1}^m|a_{ij}|\right)\,
+      \left(\sum_{j=1}^n |x_j|\right)=||{\bf A}||_1\;||{\bf x}||_1
+      \nonumber
+\end{eqnarray}
+ -->
+<table align="CENTER" cellpadding="0" width="100%">
+<tr valign="MIDDLE"><td nowrap align="RIGHT"><img width="61" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img820.png" alt="$\displaystyle \vert\vert{\bf A}{\bf x}\vert\vert _1$"></td>
+<td align="CENTER" nowrap><img width="19" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img161.png" alt="$\textstyle =$"></td>
+<td align="LEFT" nowrap><img width="438" height="66" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img821.png" alt="$\displaystyle \sum_{i=1}^m\bigg\vert\sum_{j=1}^na_{ij}x_j\bigg\vert
+\le \sum_{...
+...t)
+=\sum_{j=1}^n \left( \vert x_j\vert\;\sum_{i=1}^m \vert a_{ij}\vert \right)$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+<tr valign="MIDDLE"><td nowrap align="RIGHT">&nbsp;</td>
+<td align="CENTER" nowrap><img width="19" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img800.png" alt="$\textstyle \le$"></td>
+<td align="LEFT" nowrap><img width="338" height="77" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img822.png" alt="$\displaystyle \left(\max_{1\le j\le n} \sum_{i=1}^m\vert a_{ij}\vert\right) 
+...
+... x_j\vert\right)=\vert\vert{\bf A}\vert\vert _1\;\vert\vert{\bf x}\vert\vert _1$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+</table></div>
+<br clear="ALL"><p></p>
+Assuming the kth column of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$"> has the maximum absolute sum
+    and <img width="16" height="19" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.png" alt="${\bf x}$"> is normalized (as required in the definition) with
+    <img width="72" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img101.png" alt="$\vert\vert{\bf x}\vert\vert=1$">, we have
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_1=\max_{1\le j\le n} \sum_{i=1}^m|a_{ij}|=\sum_{i=1}^m|a_{ik}|
+\end{displaymath}
+ -->
+
+<img width="253" height="55" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img823.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _1=\max_{1\le j\le n} \sum_{i=1}^m\vert a_{ij}\vert=\sum_{i=1}^m\vert a_{ik}\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+and
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}{\bf x}||_1\le ||{\bf A}||_1\;||{\bf x}||_1=\sum_{i=1}^m|a_{ik}|
+\end{displaymath}
+ -->
+
+<img width="253" height="55" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img824.png" alt="\begin{displaymath}
+\vert\vert{\bf A}{\bf x}\vert\vert _1\le \vert\vert{\bf A}\...
+...;\vert\vert{\bf x}\vert\vert _1=\sum_{i=1}^m\vert a_{ik}\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+Now we show that the equality of the above can be achieved, i.e.,
+    <!-- MATH
+ $||{\bf Ax}||_1$
+ -->
+<img width="61" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img825.png" alt="$\vert\vert{\bf Ax}\vert\vert _1$"> is maximized, if we choose 
+    <!-- MATH
+ ${\bf x}={\bf e}_k=[0,\cdots,1,\cdots,0]^T$
+ -->
+<img width="218" height="40" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img826.png" alt="${\bf x}={\bf e}_k=[0,\cdots,1,\cdots,0]^T$">, the kth unit 
+    vector (normalized):    
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}{\bf x}||_1=\sum_{i=1}^m\bigg|\sum_{j=1}^n a_{ij}x_j\bigg|  
+    =\sum_{i=1}^m|a_{ik}|=\max_{1\le j\le n} \sum_{i=1}^m|a_{ij}|
+\end{displaymath}
+ -->
+
+<img width="397" height="58" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img827.png" alt="\begin{displaymath}
+\vert\vert{\bf A}{\bf x}\vert\vert _1=\sum_{i=1}^m\bigg\ver...
+... a_{ik}\vert=\max_{1\le j\le n} \sum_{i=1}^m\vert a_{ij}\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+i.e., <!-- MATH
+ ${\bf x}={\bf e}_k$
+ -->
+<img width="59" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img828.png" alt="${\bf x}={\bf e}_k$"> is the vector among all other normalized 
+    vectors that maximizes <img width="53" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img829.png" alt="$\vert\vert{\bf Ax}\vert\vert$"> as required in the definition,
+    and the resulting maximum <img width="49" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img772.png" alt="$\vert\vert{\bf A}\vert\vert _1$"> is indeed 
+    <!-- MATH
+ $\max_{1\le j\le n} \sum_{i=1}^m|a_{ij}|$
+ -->
+<img width="160" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img830.png" alt="$\max_{1\le j\le n} \sum_{i=1}^m\vert a_{ij}\vert$">. We therefore have
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_1=\sup_{||{\bf x}||_1=1}\{||{\bf Ax}||_1\}
+    =\max_{1\le j\le n} \sum_{i=1}^m|a_{ij}|
+\end{displaymath}
+ -->
+
+<img width="317" height="55" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img831.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _1=\sup_{\vert\vert{\bf x}\vert...
+...\vert _1\}
+=\max_{1\le j\le n} \sum_{i=1}^m\vert a_{ij}\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>  
+
+<p>
+</li>
+<li>When <img width="58" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img708.png" alt="$p=\infty$">, <!-- MATH
+ $||{\bf A}||_\infty$
+ -->
+<img width="56" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img774.png" alt="$\vert\vert{\bf A}\vert\vert _\infty$"> is the maximum absolute 
+    row sum:
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_\infty=\max_{1\le i\le m} \sum_{j=1}^n|a_{ij}|
+\end{displaymath}
+ -->
+
+<img width="179" height="58" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img832.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _\infty=\max_{1\le i\le m} \sum_{j=1}^n\vert a_{ij}\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+In Matlab this norm is implemented by the function <code>norm(A,inf)</code>.
+
+<p>
+<b>Proof:</b> When <img width="58" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img708.png" alt="$p=\infty$">, <img width="16" height="19" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.png" alt="${\bf x}$"> is normalized if 
+    <!-- MATH
+ $||{\bf x}||_\infty=\max \{x_1,\cdots,x_n\}=1$
+ -->
+<img width="245" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img833.png" alt="$\vert\vert{\bf x}\vert\vert _\infty
+=\max\{ x_1,\cdots,x_n\}=1$">. The norm of vector 
+    <img width="32" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img834.png" alt="${\bf Ax}$"> is:
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf Ax}||_\infty=\max\left\{ \sum_{j=1}^n|a_{ij}x_j|,\cdots,
+    \sum_{j=1}^n|a_{mj}x_j|\right\}
+\end{displaymath}
+ -->
+
+<img width="353" height="64" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img835.png" alt="\begin{displaymath}
+\vert\vert{\bf Ax}\vert\vert _\infty=\max\left\{ \sum_{j=1}...
+...ij}x_j\vert,\cdots,
+\sum_{j=1}^n\vert a_{mj}x_j\vert\right\}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+which can be maximized by any normalized vector with <!-- MATH
+ $||{\bf x}||_\infty
+    =\max\{ x_1,\cdots,x_n\}=1$
+ -->
+<img width="245" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img833.png" alt="$\vert\vert{\bf x}\vert\vert _\infty
+=\max\{ x_1,\cdots,x_n\}=1$"> to become
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf Ax}||_\infty=\max\left\{ \sum_{j=1}^n|a_{ij}|,\cdots,
+    \sum_{j=1}^n|a_{mj}|\right\}
+\end{displaymath}
+ -->
+
+<img width="317" height="64" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img836.png" alt="\begin{displaymath}
+\vert\vert{\bf Ax}\vert\vert _\infty=\max\left\{ \sum_{j=1}...
+...rt a_{ij}\vert,\cdots,
+\sum_{j=1}^n\vert a_{mj}\vert\right\}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+We therefore have
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_\infty=\sup_{||{\bf x}||_\infty=1}\{||{\bf Ax}||_\infty\}
+    =\max_i\sum_{j=1}^n|a_{ij}|
+\end{displaymath}
+ -->
+
+<img width="329" height="58" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img837.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _\infty=\sup_{\vert\vert{\bf x}...
+...Ax}\vert\vert _\infty\}
+=\max_i\sum_{j=1}^n\vert a_{ij}\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+
+<p>
+</li>
+<li>When <img width="48" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img707.png" alt="$p=2$">, <img width="49" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img776.png" alt="$\vert\vert{\bf A}\vert\vert _2$">, called the <em>spectral norm</em>, 
+    is the greatest singular value of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$">, square root of the 
+    greatest eigenvalue of <!-- MATH
+ ${\bf A}^*{\bf A}$
+ -->
+<img width="44" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img779.png" alt="${\bf A}^*{\bf A}$">, i.e., its spectral 
+    radius <!-- MATH
+ $\rho({\bf A}^*{\bf A})=\lambda_{max}({\bf A}^*{\bf A})$
+ -->
+<img width="187" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img838.png" alt="$\rho({\bf A}^*{\bf A})=\lambda_{max}({\bf A}^*{\bf A})$">:
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_2=\sigma_{max}({\bf A})=\sqrt{\lambda_{max}({\bf A}^*{\bf A})}
+    =\sqrt{\rho({\bf A}^*{\bf A})}
+\end{displaymath}
+ -->
+
+<img width="377" height="36" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img839.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _2=\sigma_{max}({\bf A})=\sqrt{\lambda_{max}({\bf A}^*{\bf A})}
+=\sqrt{\rho({\bf A}^*{\bf A})}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+where <!-- MATH
+ $\lambda_{max}({\bf A}^*{\bf A})=\sigma_{max}^2({\bf A})$
+ -->
+<img width="192" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img840.png" alt="$\lambda_{max}({\bf A}^*{\bf A})=\sigma_{max}^2({\bf A})$"> is 
+    the maximal eigenvalue of <!-- MATH
+ ${\bf A}^*{\bf A}$
+ -->
+<img width="44" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img779.png" alt="${\bf A}^*{\bf A}$">. In Matlab the spectral
+    norm is implemented by the function <code>norm(A,2)</code> or simply
+    <code>norm(A)</code>.
+
+<p>
+<b>Proof:</b> 
+
+<p>
+First we consider the eigenequation of <!-- MATH
+ ${\bf A}^*{\bf A}$
+ -->
+<img width="44" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img779.png" alt="${\bf A}^*{\bf A}$">:
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf A}^*{\bf A}{\bf v}=\lambda_i{\bf v}_i,\;\;\;(i=1,\cdots,n)
+      \;\;\;\;\;\;\mbox{or}\;\;\;\;\;\;\;
+      {\bf A}^*{\bf A}{\bf V}={\bf V}{\bf\Lambda},
+      \;\;\;\;\;\;\mbox{or}\;\;\;\;\;\;\;
+      {\bf A}^*{\bf A}={\bf V}{\bf\Lambda}{\bf V}^*
+\end{displaymath}
+ -->
+
+<img width="652" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img841.png" alt="\begin{displaymath}
+{\bf A}^*{\bf A}{\bf v}=\lambda_i{\bf v}_i,\;\;\;(i=1,\cdot...
+...\;\;\;\;\;\;\;
+{\bf A}^*{\bf A}={\bf V}{\bf\Lambda}{\bf V}^*
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+where  
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf\Lambda}=diag(\lambda_1,\cdots,\lambda_n),
+      \;\;\;\;\mbox{and}\;\;\;\;\;\;
+      {\bf V}=[{\bf v}_1,\cdots,{\bf v}_n]
+\end{displaymath}
+ -->
+
+<img width="393" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img842.png" alt="\begin{displaymath}
+{\bf\Lambda}=diag(\lambda_1,\cdots,\lambda_n),
+\;\;\;\;\mbox{and}\;\;\;\;\;\;
+{\bf V}=[{\bf v}_1,\cdots,{\bf v}_n]
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+are the eigenvector and eigenvalue matrices of <!-- MATH
+ ${\bf A}^*{\bf A}$
+ -->
+<img width="44" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img779.png" alt="${\bf A}^*{\bf A}$">.
+    As <!-- MATH
+ ${\bf A}^*{\bf A}$
+ -->
+<img width="44" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img779.png" alt="${\bf A}^*{\bf A}$"> is symmetric and positive definite, all of 
+    its eigenvalues are real and positive, and assumed to be sorted
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\lambda_1=\lambda_{max}\ge \lambda_2\ge \cdots \ge 
+    \lambda_n=\lambda_{min} \ge 0
+\end{displaymath}
+ -->
+
+<img width="314" height="31" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img843.png" alt="\begin{displaymath}
+\lambda_1=\lambda_{max}\ge \lambda_2\ge \cdots \ge
+\lambda_n=\lambda_{min} \ge 0
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+and all corresponding eigenvectors are orthogonal and assumed to 
+    be normalized, i.e., <!-- MATH
+ ${\bf v}_i^*{\bf v}_j=\delta_{ij}$
+ -->
+<img width="87" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img844.png" alt="${\bf v}_i^*{\bf v}_j=\delta_{ij}$">, or
+    <!-- MATH
+ ${\bf V}^*={\bf V}^{-1}$
+ -->
+<img width="88" height="22" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img530.png" alt="${\bf V}^*={\bf V}^{-1}$"> is a unitary (orthogonal if real) 
+    matrix. 
+
+<p>
+Next, consider the <img width="48" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img707.png" alt="$p=2$"> norm of <!-- MATH
+ ${\bf A}{\bf x}$
+ -->
+<img width="32" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img845.png" alt="${\bf A}{\bf x}$">:
+    <br>
+<div align="CENTER">
+
+<!-- MATH
+ \begin{eqnarray}
+||{\bf Ax}||_2&=&\left[ ({\bf Ax})^*({\bf Ax})\right]^{1/2}
+      =\left( {\bf x}^*{\bf A}^*{\bf A}{\bf x}\right)^{1/2}
+      =\left({\bf x}^*{\bf V}{\bf\Lambda}{\bf V}^*{\bf x}\right)^{1/2}
+      \nonumber \\
+      &=&\left({\bf y}^*{\bf\Lambda}{\bf y}\right)^{1/2}
+      =\sqrt{ \sum_{i=1}^n y_i^2\lambda_i }
+      \nonumber
+\end{eqnarray}
+ -->
+<table align="CENTER" cellpadding="0" width="100%">
+<tr valign="MIDDLE"><td nowrap align="RIGHT"><img width="61" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img846.png" alt="$\displaystyle \vert\vert{\bf Ax}\vert\vert _2$"></td>
+<td align="CENTER" nowrap><img width="19" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img161.png" alt="$\textstyle =$"></td>
+<td align="LEFT" nowrap><img width="405" height="48" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img847.png" alt="$\displaystyle \left[ ({\bf Ax})^*({\bf Ax})\right]^{1/2}
+=\left( {\bf x}^*{\bf...
+...\right)^{1/2}
+=\left({\bf x}^*{\bf V}{\bf\Lambda}{\bf V}^*{\bf x}\right)^{1/2}$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+<tr valign="MIDDLE"><td nowrap align="RIGHT">&nbsp;</td>
+<td align="CENTER" nowrap><img width="19" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img161.png" alt="$\textstyle =$"></td>
+<td align="LEFT" nowrap><img width="188" height="79" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img848.png" alt="$\displaystyle \left({\bf y}^*{\bf\Lambda}{\bf y}\right)^{1/2}
+=\sqrt{ \sum_{i=1}^n y_i^2\lambda_i }$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+</table></div>
+<br clear="ALL"><p></p>
+Here <!-- MATH
+ ${\bf y}={\bf V}^*{\bf x}$
+ -->
+<img width="77" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img313.png" alt="${\bf y}={\bf V}^*{\bf x}$"> is a unitary transform of <img width="16" height="19" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.png" alt="${\bf x}$">
+    with the 2-norm <!-- MATH
+ $||{\bf y}||_2=||{\bf x}||_2$
+ -->
+<img width="110" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img849.png" alt="$\vert\vert{\bf y}\vert\vert _2=\vert\vert{\bf x}\vert\vert _2$"> conserved.
+
+<p>
+The right-hand side of the equation above is a weighted average of 
+    the <img width="16" height="19" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img29.png" alt="$n$"> eigenvalues <!-- MATH
+ $\lambda_1,\cdots,\lambda_n$
+ -->
+<img width="85" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img310.png" alt="$\lambda_1,\cdots,\lambda_n$">, which is maximized 
+    if they are weighted by a normalized vector <!-- MATH
+ ${\bf y}=[1,0,\cdots,0]^T$
+ -->
+<img width="141" height="40" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img850.png" alt="${\bf y}=[1,0,\cdots,0]^T$"> 
+    with <!-- MATH
+ $||{\bf y}||_2=1$
+ -->
+<img width="79" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img851.png" alt="$\vert\vert{\bf y}\vert\vert _2=1$">, by which the greatest eigenvalue <img width="43" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img806.png" alt="$\lambda_{max}$"> 
+    is maximally weighted while all others are weighted by 0:
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf Ax}||_2\le\sqrt{\lambda_{max}}
+\end{displaymath}
+ -->
+
+<img width="134" height="36" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img852.png" alt="\begin{displaymath}
+\vert\vert{\bf Ax}\vert\vert _2\le\sqrt{\lambda_{max}}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+As <!-- MATH
+ $||{\bf x}||_2=||{\bf y}||_2=1$
+ -->
+<img width="145" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img853.png" alt="$\vert\vert{\bf x}\vert\vert _2=\vert\vert{\bf y}\vert\vert _2=1$">, we have
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_2=\sup_{||{\bf x}||_2=1}\{||{\bf Ax}||_2\}=\sqrt{\lambda_{max}}
+\end{displaymath}
+ -->
+
+<img width="270" height="49" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img854.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _2=\sup_{\vert\vert{\bf x}\vert...
+..._2=1}\{\vert\vert{\bf Ax}\vert\vert _2\}=\sqrt{\lambda_{max}}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+
+<p>
+Out of the three matrix norms defined above, the spectral norm is the
+    only one that is <em>unitary invariant</em>, i.e., it is conserved or 
+    invariant under any unitary transform <!-- MATH
+ ${\bf B}={\bf R}^*{\bf A}{\bf R}$
+ -->
+<img width="101" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img430.png" alt="${\bf B}={\bf R}^*{\bf A}{\bf R}$">:
+    <br>
+<div align="CENTER">
+
+<!-- MATH
+ \begin{eqnarray}
+||{\bf B}||_2^2&=&\lambda_{max}\left({\bf B}^*{\bf B}\right)
+      =\lambda_{max}\left[\left({\bf R}^*{\bf A}{\bf R}\right)^*
+        \left({\bf R}^*{\bf A}{\bf R}\right)\right]
+      =\lambda_{max}\left({\bf R}^*{\bf A}^*{\bf R}{\bf R}^*{\bf A}{\bf R}\right)
+      \nonumber \\
+      &=&\lambda_{max}\left( {\bf R}^*{\bf A}^*{\bf A}{\bf R} \right)
+      =\lambda_{max}\left( {\bf A}^*{\bf A} \right)=||{\bf A}||_2^2
+      \nonumber
+\end{eqnarray}
+ -->
+<table align="CENTER" cellpadding="0" width="100%">
+<tr valign="MIDDLE"><td nowrap align="RIGHT"><img width="49" height="41" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img855.png" alt="$\displaystyle \vert\vert{\bf B}\vert\vert _2^2$"></td>
+<td align="CENTER" nowrap><img width="19" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img161.png" alt="$\textstyle =$"></td>
+<td align="LEFT" nowrap><img width="528" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img856.png" alt="$\displaystyle \lambda_{max}\left({\bf B}^*{\bf B}\right)
+=\lambda_{max}\left[\...
+...t]
+=\lambda_{max}\left({\bf R}^*{\bf A}^*{\bf R}{\bf R}^*{\bf A}{\bf R}\right)$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+<tr valign="MIDDLE"><td nowrap align="RIGHT">&nbsp;</td>
+<td align="CENTER" nowrap><img width="19" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img161.png" alt="$\textstyle =$"></td>
+<td align="LEFT" nowrap><img width="332" height="41" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img857.png" alt="$\displaystyle \lambda_{max}\left( {\bf R}^*{\bf A}^*{\bf A}{\bf R} \right)
+=\lambda_{max}\left( {\bf A}^*{\bf A} \right)=\vert\vert{\bf A}\vert\vert _2^2$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+</table></div>
+<br clear="ALL"><p></p>
+Here we have used the fact that the eigenvalues and eigenvectors are
+    invariant under the unitary transform.
+
+<p>
+</li>
+</ul>
+
+<p>
+<b>Example</b>
+
+<p>
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf A}=\left[\begin{array}{rrr}3&-6&2\\2&5&1\\-3&2&2\end{array}\right],
+    \;\;\;\;\;\;\;
+        {\bf B}=\left[\begin{array}{rrr}3&2&1\\2&-3&0\\1&0&-1\end{array}\right]
+\end{displaymath}
+ -->
+
+<img width="379" height="76" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img858.png" alt="\begin{displaymath}
+{\bf A}=\left[\begin{array}{rrr}3&amp;-6&amp;2 2&amp;5&amp;1 -3&amp;2&amp;2\end...
+...t[\begin{array}{rrr}3&amp;2&amp;1 2&amp;-3&amp;0 1&amp;0&amp;-1\end{array}\right]
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+
+<p>
+<br>
+<div align="CENTER">
+
+<!-- MATH
+ \begin{eqnarray}
+||{\bf A}||_1&=&\max\{|3|+|2|+|-3|,\;|-6|+|5|+|2|,\;|2|+|1|+|2|\}
+    =\max\{8,\;13,\;5\}=13
+    \nonumber \\
+    ||{\bf A}||_\infty&=&\max\{|3|+|-6|+|2|,\;|2|+|5|+|1|,\;|-3|+|2|+|2|\}
+    =\max\{11,\;8,\;7\}=11
+    \nonumber
+\end{eqnarray}
+ -->
+<table align="CENTER" cellpadding="0" width="100%">
+<tr valign="MIDDLE"><td nowrap align="RIGHT"><img width="49" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img859.png" alt="$\displaystyle \vert\vert{\bf A}\vert\vert _1$"></td>
+<td align="CENTER" nowrap><img width="19" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img161.png" alt="$\textstyle =$"></td>
+<td align="LEFT" nowrap><img width="636" height="37" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img860.png" alt="$\displaystyle \max\{\vert 3\vert+\vert 2\vert+\vert-3\vert,\;\vert-6\vert+\vert...
+...\vert 2\vert,\;\vert 2\vert+\vert 1\vert+\vert 2\vert\}
+=\max\{8,\;13,\;5\}=13$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+<tr valign="MIDDLE"><td nowrap align="RIGHT"><img width="56" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img861.png" alt="$\displaystyle \vert\vert{\bf A}\vert\vert _\infty$"></td>
+<td align="CENTER" nowrap><img width="19" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img161.png" alt="$\textstyle =$"></td>
+<td align="LEFT" nowrap><img width="635" height="37" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img862.png" alt="$\displaystyle \max\{\vert 3\vert+\vert-6\vert+\vert 2\vert,\;\vert 2\vert+\vert...
+...\vert 1\vert,\;\vert-3\vert+\vert 2\vert+\vert 2\vert\}
+=\max\{11,\;8,\;7\}=11$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+</table></div>
+<br clear="ALL"><p></p>
+The eigenvalues of <!-- MATH
+ ${\bf A}^*{\bf A}$
+ -->
+<img width="44" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img779.png" alt="${\bf A}^*{\bf A}$"> are
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\lambda_1=69.353,\;\;\;\lambda_2=17.967,\;\;\;\lambda_3=8.680
+\end{displaymath}
+ -->
+
+<img width="324" height="32" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img863.png" alt="\begin{displaymath}
+\lambda_1=69.353,\;\;\;\lambda_2=17.967,\;\;\;\lambda_3=8.680
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+The singular values of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$"> are
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\sigma_1=\sqrt{\lambda_1}=8.328,\;\;\;\sigma_2=\sqrt{\lambda_2}=4.239,
+  \;\;\;\sigma_3=\sqrt{\lambda_3}=2.946
+\end{displaymath}
+ -->
+
+<img width="485" height="36" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img864.png" alt="\begin{displaymath}
+\sigma_1=\sqrt{\lambda_1}=8.328,\;\;\;\sigma_2=\sqrt{\lambda_2}=4.239,
+\;\;\;\sigma_3=\sqrt{\lambda_3}=2.946
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+The spectral norm of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$"> is
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_2=\sigma_{max}=\sqrt{\lambda_{max}}=8.328
+\end{displaymath}
+ -->
+
+<img width="253" height="36" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img865.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _2=\sigma_{max}=\sqrt{\lambda_{max}}=8.328
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+The eigenvector corresponding to greatest eigenvalue <img width="23" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img866.png" alt="$\lambda_1$"> is
+  <!-- MATH
+ ${\bf x}=[0.285,\;-0.957,\,0.057]^T$
+ -->
+<img width="230" height="40" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img867.png" alt="${\bf x}=[0.285,\;-0.957, 0.057]^T$">, which satisfies the equality
+  <!-- MATH
+ $||{\bf Ax}||=||{\bf A}||\;||{\bf x}||$
+ -->
+<img width="154" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img868.png" alt="$\vert\vert{\bf Ax}\vert\vert=\vert\vert{\bf A}\vert\vert\;\vert\vert{\bf x}\vert\vert$">.
+
+<p>
+</li>
+<li><b>The <em>Schatten norms</em></b>
+
+<p>
+The Shatten norm is defined based on the singular values <img width="21" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img869.png" alt="$\sigma_i$"> of 
+  <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$"> or the eigenvalues <!-- MATH
+ $\lambda_i=\sigma^2$
+ -->
+<img width="65" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img870.png" alt="$\lambda_i=\sigma^2$"> of <!-- MATH
+ ${\bf A}^*{\bf A}$
+ -->
+<img width="44" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img779.png" alt="${\bf A}^*{\bf A}$">:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_p=\left(\sum_{i=1}^R \sigma_i^p\right)^{1/p}
+  =\left(\sum_{i=1}^R \left(\sqrt{\lambda_i}\right)^p\right)^{1/p}
+\end{displaymath}
+ -->
+
+<img width="320" height="63" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img871.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _p=\left(\sum_{i=1}^R \sigma_i^...
+...eft(\sum_{i=1}^R \left(\sqrt{\lambda_i}\right)^p\right)^{1/p}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+In particular, consider three common <img width="14" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img872.png" alt="$p$"> values:
+  
+<ul>
+<li><img width="48" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img706.png" alt="$p=1$"> is the <em>nuclear or trace</em> norm:
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_1=\sum_{i=1}^R \sigma_i=\sum_{i=1}^R \sqrt{\lambda_i}
+    =tr\left( \sqrt{{\bf A}^*{\bf A} } \right)
+\end{displaymath}
+ -->
+
+<img width="311" height="58" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img873.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _1=\sum_{i=1}^R \sigma_i=\sum_{...
+... \sqrt{\lambda_i}
+=tr\left( \sqrt{{\bf A}^*{\bf A} } \right)
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li><img width="48" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img707.png" alt="$p=2$"> same as the Frobenius norm:
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_2=\sqrt{\sum_{i=1}^R \sigma_i^2}
+    =\sqrt{\sum_{i=1}^R \lambda_i}=||{\bf A}||_F
+\end{displaymath}
+ -->
+
+<img width="287" height="65" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img874.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _2=\sqrt{\sum_{i=1}^R \sigma_i^...
+...=\sqrt{\sum_{i=1}^R \lambda_i}=\vert\vert{\bf A}\vert\vert _F
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li><img width="58" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img708.png" alt="$p=\infty$"> same as the spectral norm (the induced 2-norm), 
+    the spectral radius of <!-- MATH
+ ${\bf A}^*{\bf A}$
+ -->
+<img width="44" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img779.png" alt="${\bf A}^*{\bf A}$">.
+    <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_\infty=\max\{\sigma_1,\cdots,\sigma_n\}=\sigma_{max}
+    =\sqrt{\lambda_{max}}
+\end{displaymath}
+ -->
+
+<img width="352" height="36" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img875.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _\infty=\max\{\sigma_1,\cdots,\sigma_n\}=\sigma_{max}
+=\sqrt{\lambda_{max}}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+</ul>
+  As the eigenvalues and eigenvectors of <!-- MATH
+ ${\bf A}^*{\bf A}$
+ -->
+<img width="44" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img779.png" alt="${\bf A}^*{\bf A}$"> are invariant
+  under unitary transform, the Schatten norms are unitary invariant as well.
+
+<p>
+</li>
+</ul>
+
+<p>
+All matrix norms defined above are equivalent according to the theorem 
+previously discussed.
+
+<p>
+
+<ul>
+<li>The Frobenius norm <!-- MATH
+ $||{\bf A}||_F=\sqrt{\sum_{i=1}^R \lambda_i}$
+ -->
+<img width="153" height="53" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img876.png" alt="$\vert\vert{\bf A}\vert\vert _F=\sqrt{\sum_{i=1}^R \lambda_i}$">
+  and the induced 2-norm <!-- MATH
+ $||{\bf A}||_2=\sqrt{\lambda_{max}}$
+ -->
+<img width="129" height="41" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img877.png" alt="$\vert\vert{\bf A}\vert\vert _2=\sqrt{\lambda_{max}}$"> are
+  equivalent:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_2\le||{\bf A}||_F\le\sqrt{R}\;||{\bf A}||_2
+\end{displaymath}
+ -->
+
+<img width="222" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img878.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _2\le\vert\vert{\bf A}\vert\vert _F\le\sqrt{R}\;\vert\vert{\bf A}\vert\vert _2
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+The equality on the left holds when all eigenvalues <img width="21" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img407.png" alt="$\lambda_i$"> but one
+  are zero, and the equality on the right holds when all <img width="21" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img407.png" alt="$\lambda_i$"> are 
+  the same.
+</li>
+<li>The Frobenius norm <!-- MATH
+ $||{\bf A}||_F=\sqrt{\sum_{i=1}^R \lambda_i}$
+ -->
+<img width="153" height="53" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img876.png" alt="$\vert\vert{\bf A}\vert\vert _F=\sqrt{\sum_{i=1}^R \lambda_i}$">
+  and the Schatten 1-norm <!-- MATH
+ $||{\bf A}||_1=\sum_{i=1}^R \sqrt{\lambda_i}$
+ -->
+<img width="150" height="43" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img879.png" alt="$\vert\vert{\bf A}\vert\vert _1=\sum_{i=1}^R \sqrt{\lambda_i}$">
+  are equivalent:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_F\le||{\bf A}||_1\le\sqrt{R}\;||{\bf A}||_F
+\end{displaymath}
+ -->
+
+<img width="226" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img880.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _F\le\vert\vert{\bf A}\vert\vert _1\le\sqrt{R}\;\vert\vert{\bf A}\vert\vert _F
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+The equality on the left holds when all eigenvalues <img width="21" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img407.png" alt="$\lambda_i$"> but 
+  one are zero, and the equality on the right holds when all <img width="21" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img407.png" alt="$\lambda_i$">
+  are the same.
+</li>
+<li>The element-wise maximum norm <!-- MATH
+ $||{\bf A}||_{max}=\max_{i,j}\{|a_{ij}|\}$
+ -->
+<img width="196" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img881.png" alt="$\vert\vert{\bf A}\vert\vert _{max}=\max_{i,j}\{\vert a_{ij}\vert\}$">
+  and the Frobenius norm <!-- MATH
+ $||{\bf A}||_F=\sqrt{\sum_{i=1}^m\sum_{j=1}^n|a_{ij}|^2}$
+ -->
+<img width="221" height="47" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img882.png" alt="$\vert\vert{\bf A}\vert\vert _F=\sqrt{\sum_{i=1}^m\sum_{j=1}^n\vert a_{ij}\vert^2}$">
+  are equivalent:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_{max}\le ||{\bf A}||_F\le \sqrt{mn}\;||{\bf A}||_{max}
+\end{displaymath}
+ -->
+
+<img width="275" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img883.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _{max}\le \vert\vert{\bf A}\vert\vert _F\le \sqrt{mn}\;\vert\vert{\bf A}\vert\vert _{max}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+The equality on the left holds when all elements <img width="21" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img407.png" alt="$\lambda_i$"> but one 
+  are zero, and the equality on the right holds when all elements are 
+  the same.
+</li>
+<li>
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\frac{1}{\sqrt{n}}||{\bf A}||_\infty\le||{\bf A}||_2\le\sqrt{m}||{\bf A}||_\infty
+\end{displaymath}
+ -->
+
+<img width="260" height="50" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img884.png" alt="\begin{displaymath}
+\frac{1}{\sqrt{n}}\vert\vert{\bf A}\vert\vert _\infty\le\ve...
+...A}\vert\vert _2\le\sqrt{m}\vert\vert{\bf A}\vert\vert _\infty
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+  <b>Proof:</b> Define an n-D vector <!-- MATH
+ ${\bf e}=[1,\cdots,1]^T$
+ -->
+<img width="121" height="40" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img885.png" alt="${\bf e}=[1,\cdots,1]^T$">, then the
+  greatest absolute row sum of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$"> is
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||_\infty=\max_i\sum_{j=1}^n|a_{ij}|=||{\bf A}{\bf e}||_\infty
+  \le ||{\bf A}{\bf e}||_2\le||{\bf A}||_2\;||{\bf e}||_2=\sqrt{n}||{\bf A}||_2
+\end{displaymath}
+ -->
+
+<img width="548" height="58" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img886.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert _\infty=\max_i\sum_{j=1}^n\vert...
+...rt{\bf e}\vert\vert _2=\sqrt{n}\vert\vert{\bf A}\vert\vert _2
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+i.e.,
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\frac{1}{\sqrt{n}}||{\bf A}||_\infty\le||{\bf A}||_2
+\end{displaymath}
+ -->
+
+<img width="150" height="50" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img887.png" alt="\begin{displaymath}
+\frac{1}{\sqrt{n}}\vert\vert{\bf A}\vert\vert _\infty\le\vert\vert{\bf A}\vert\vert _2
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li>
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\frac{1}{\sqrt{m}}||{\bf A}||_1\le||{\bf A}||_2\le\sqrt{n}||{\bf A}||_1
+\end{displaymath}
+ -->
+
+<img width="246" height="50" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img888.png" alt="\begin{displaymath}
+\frac{1}{\sqrt{m}}\vert\vert{\bf A}\vert\vert _1\le\vert\vert{\bf A}\vert\vert _2\le\sqrt{n}\vert\vert{\bf A}\vert\vert _1
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+
+<p>
+</li>
+</ul>
+
+<p>
+<b>Theorem:</b> The spectral radius of a matrix is bounded by its 
+matrix norm: <!-- MATH
+ $\rho({\bf A})\le||{\bf A}||$
+ -->
+<img width="108" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img889.png" alt="$\rho({\bf A})\le\vert\vert{\bf A}\vert\vert$"> 
+
+<p>
+<b>Proof:</b> Let <img width="15" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img284.png" alt="$\lambda$"> and <img width="16" height="19" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img200.png" alt="${\bf u}$"> be an eigenvalue and the
+corresponding normalized eigenvector of a square matrix <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$">, 
+i.e., <!-- MATH
+ ${\bf A}{\bf u}=\lambda{\bf u}$
+ -->
+<img width="81" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img535.png" alt="${\bf A}{\bf u}=\lambda{\bf u}$"> and <img width="72" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img890.png" alt="$\vert\vert{\bf u}\vert\vert=1$">. 
+As the induced norm, <img width="42" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img763.png" alt="$\vert\vert{\bf A}\vert\vert$"> satisfies
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf A}||=\sup_{||{\bf x}||=1} \{ ||{\bf A}{\bf x}| \}\ge||{\bf Au}||
+=||\lambda{\bf u}||=|\lambda|\;||{\bf u}||=|\lambda|
+\end{displaymath}
+ -->
+
+<img width="437" height="49" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img891.png" alt="\begin{displaymath}
+\vert\vert{\bf A}\vert\vert=\sup_{\vert\vert{\bf x}\vert\ver...
+...ert\lambda\vert\;\vert\vert{\bf u}\vert\vert=\vert\lambda\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+But <img width="15" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img284.png" alt="$\lambda$"> is an arbitrary eigenvalue, it can be the one with the
+maximum absolute value <img width="26" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img892.png" alt="$\vert\lambda\vert$">, i.e., the spectral radius <img width="45" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img442.png" alt="$\rho({\bf A})$">.
+We therefore have <!-- MATH
+ $||{\bf A}||\ge \rho({\bf A})$
+ -->
+<img width="108" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img893.png" alt="$\vert\vert{\bf A}\vert\vert\ge \rho({\bf A})$">. 
+
+<p>
+<b>Theorem:</b> 
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\rho({\bf A})\le ||{\bf A}^k||^{1/k}
+\end{displaymath}
+ -->
+
+<img width="132" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img894.png" alt="\begin{displaymath}
+\rho({\bf A})\le \vert\vert{\bf A}^k\vert\vert^{1/k}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+<b>Proof:</b> Let <img width="15" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img284.png" alt="$\lambda$"> and <img width="16" height="19" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img199.png" alt="${\bf v}$"> by the eigenvalue and the
+corresponding eigenvector of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$"> respectively, i.e.,
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf A}{\bf v}=\lambda{\bf v},\;\;\;\;\mbox{and}\;\;\;\;\;
+{\bf A}^k{\bf v}=\lambda^k{\bf v}
+\end{displaymath}
+ -->
+
+<img width="253" height="32" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img895.png" alt="\begin{displaymath}
+{\bf A}{\bf v}=\lambda{\bf v},\;\;\;\;\mbox{and}\;\;\;\;\;
+{\bf A}^k{\bf v}=\lambda^k{\bf v}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+Taking norm on both sides we get
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||\lambda^k{\bf v}||=|\lambda|^k||{\bf v}||
+=||{\bf A}^k{\bf v}||\le||{\bf A}^k||\;||{\bf v}||
+\end{displaymath}
+ -->
+
+<img width="327" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img896.png" alt="\begin{displaymath}
+\vert\vert\lambda^k{\bf v}\vert\vert=\vert\lambda\vert^k\ver...
+...t\le\vert\vert{\bf A}^k\vert\vert\;\vert\vert{\bf v}\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+Dividing both sides by <!-- MATH
+ $||{\bf v}||\ne 0$
+ -->
+<img width="72" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img897.png" alt="$\vert\vert{\bf v}\vert\vert\ne 0$"> we get
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\lambda^k\le ||{\bf A}^k||,\;\;\;\;\;\mbox{i.e.}\;\;\;\;\;
+\lambda\le ||{\bf A}^k||^{1/k}
+\end{displaymath}
+ -->
+
+<img width="277" height="33" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img898.png" alt="\begin{displaymath}
+\lambda^k\le \vert\vert{\bf A}^k\vert\vert,\;\;\;\;\;\mbox{i.e.}\;\;\;\;\;
+\lambda\le \vert\vert{\bf A}^k\vert\vert^{1/k}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+
+<p>
+<b>Theorem: </b> A square matrix <img width="21" height="20" align="BOTTOM" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img87.png" alt="${\bf A}$"> is convergent, i.e., 
+<!-- MATH
+ $\lim_{n\rightarrow\infty}{\bf A}^n=0$
+ -->
+<img width="129" height="35" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img899.png" alt="$\lim_{n\rightarrow\infty}{\bf A}^n=0$">, if and only if <!-- MATH
+ $\rho({\bf A})<1$
+ -->
+<img width="79" height="39" align="MIDDLE" border="0" src="/web/20180509135944im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img900.png" alt="$\rho({\bf A})<1$">.
+
+<p>
+The proof of this theorem can be found
+<a name="tex2html11" href="https://web.archive.org/web/20180509135944/http://en.wikipedia.org/wiki/Spectral_radius">here</a>.
+
+<p>
+<hr>
+<!--Navigation Panel-->
+<a name="tex2html195" href="node17.html">
+<img width="37" height="24" align="BOTTOM" border="0" alt="next" src="https://web.archive.org/web/20180509135944im_/file:/opt/local/share/lib/latex2html/icons/next.png"></a> 
+<a name="tex2html193" href="algebra.html">
+<img width="26" height="24" align="BOTTOM" border="0" alt="up" src="https://web.archive.org/web/20180509135944im_/file:/opt/local/share/lib/latex2html/icons/up.png"></a> 
+<a name="tex2html187" href="node15.html">
+<img width="63" height="24" align="BOTTOM" border="0" alt="previous" src="https://web.archive.org/web/20180509135944im_/file:/opt/local/share/lib/latex2html/icons/prev.png"></a>   
+<br>
+<b> Next:</b> <a name="tex2html196" href="node17.html">Vector and matrix differentiation</a>
+<b> Up:</b> <a name="tex2html194" href="algebra.html">algebra</a>
+<b> Previous:</b> <a name="tex2html188" href="node15.html">Vector norms</a>
+<!--End of Navigation Panel-->
+<address>
+Ruye Wang
+2018-03-23
+</address>
+</body>
+</html>
+<!--
+     FILE ARCHIVED ON 13:59:44 May 09, 2018 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 22:21:57 Nov 07, 2022.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->
+<!--
+playback timings (ms):
+  captures_list: 186.773
+  exclusion.robots: 0.21
+  exclusion.robots.policy: 0.202
+  cdx.remote: 0.063
+  esindex: 0.008
+  LoadShardBlock: 73.912 (3)
+  PetaboxLoader3.resolve: 60.788 (2)
+  PetaboxLoader3.datanode: 121.563 (4)
+  CDXLines.iter: 20.666 (3)
+  load_resource: 121.837
+-->

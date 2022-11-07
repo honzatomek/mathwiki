@@ -1,0 +1,611 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<html>
+<head><script src="//archive.org/includes/analytics.js?v=cf34f82" type="text/javascript"></script>
+<script type="text/javascript">window.addEventListener('DOMContentLoaded',function(){var v=archive_analytics.values;v.service='wb';v.server_name='wwwb-app219.us.archive.org';v.server_ms=215;archive_analytics.send_pageview({});});</script>
+<script type="text/javascript" src="/_static/js/bundle-playback.js?v=MzYkZ0TU" charset="utf-8"></script>
+<script type="text/javascript" src="/_static/js/wombat.js?v=UHAOicsW" charset="utf-8"></script>
+<script type="text/javascript">
+  __wm.init("https://web.archive.org/web");
+  __wm.wombat("http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node17.html","20160814214113","https://web.archive.org/","web","/_static/",
+	      "1471210873");
+</script>
+<link rel="stylesheet" type="text/css" href="/_static/css/banner-styles.css?v=S1zqJCYt" />
+<link rel="stylesheet" type="text/css" href="/_static/css/iconochive.css?v=qtvMKcIJ" />
+<!-- End Wayback Rewrite JS Include -->
+
+<title>Rank-nullity theorem</title>
+<meta name="description" content="Rank-nullity theorem">
+<meta name="keywords" content="algebra">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+
+<meta name="Generator" content="LaTeX2HTML v2008">
+<meta http-equiv="Content-Style-Type" content="text/css">
+
+<link rel="STYLESHEET" href="/web/20160814214113cs_/http://fourier.eng.hmc.edu/e176/lectures/algebra/algebra.css">
+
+<link rel="next" href="node18.html">
+<link rel="previous" href="node16.html">
+<link rel="up" href="algebra.html">
+<link rel="next" href="node18.html">
+</head>
+
+<body><!-- BEGIN WAYBACK TOOLBAR INSERT -->
+<style type="text/css">
+body {
+  margin-top:0 !important;
+  padding-top:0 !important;
+  /*min-width:800px !important;*/
+}
+</style>
+<script>__wm.rw(0);</script>
+<div id="wm-ipp-base" lang="en" style="display:none;direction:ltr;">
+<div id="wm-ipp" style="position:fixed;left:0;top:0;right:0;">
+<div id="donato" style="position:relative;width:100%;">
+  <div id="donato-base">
+    <iframe id="donato-if" src="https://archive.org/includes/donate.php?as_page=1&amp;platform=wb&amp;referer=https%3A//web.archive.org/web/20160814214113/http%3A//fourier.eng.hmc.edu/e176/lectures/algebra/node17.html"
+	    scrolling="no" frameborder="0" style="width:100%; height:100%">
+    </iframe>
+  </div>
+</div><div id="wm-ipp-inside">
+  <div id="wm-toolbar" style="position:relative;display:flex;flex-flow:row nowrap;justify-content:space-between;">
+    <div id="wm-logo" style="/*width:110px;*/padding-top:12px;">
+      <a href="/web/" title="Wayback Machine home page"><img src="/_static/images/toolbar/wayback-toolbar-logo-200.png" srcset="/_static/images/toolbar/wayback-toolbar-logo-100.png, /_static/images/toolbar/wayback-toolbar-logo-150.png 1.5x, /_static/images/toolbar/wayback-toolbar-logo-200.png 2x" alt="Wayback Machine" style="width:100px" border="0" /></a>
+    </div>
+    <div class="c" style="display:flex;flex-flow:column nowrap;justify-content:space-between;flex:1;">
+      <form class="u" style="display:flex;flex-direction:row;flex-wrap:nowrap;" target="_top" method="get" action="/web/submit" name="wmtb" id="wmtb"><input type="text" name="url" id="wmtbURL" value="http://fourier.eng.hmc.edu/e176/lectures/algebra/node17.html" onfocus="this.focus();this.select();" style="flex:1;"/><input type="hidden" name="type" value="replay" /><input type="hidden" name="date" value="20160814214113" /><input type="submit" value="Go" />
+      </form>
+      <div style="display:flex;flex-flow:row nowrap;align-items:flex-end;">
+		<div class="s" id="wm-nav-captures" style="flex:1;">
+	  	  <a class="t" href="/web/20160814214113*/http://fourier.eng.hmc.edu/e176/lectures/algebra/node17.html" title="See a list of every capture for this URL">1 capture</a>
+	  <div class="r" title="Timespan for captures of this URL">14 Aug 2016</div>
+	  </div>
+	<div class="k">
+	  <a href="" id="wm-graph-anchor">
+	    <div id="wm-ipp-sparkline" title="Explore captures for this URL" style="position: relative">
+	      <canvas id="wm-sparkline-canvas" width="675" height="27" border="0"></canvas>
+	    </div>
+	  </a>
+	</div>
+      </div>
+    </div>
+    <div class="n">
+      <table>
+	<tbody>
+	  <!-- NEXT/PREV MONTH NAV AND MONTH INDICATOR -->
+	  <tr class="m">
+	    <td class="b" nowrap="nowrap">Jul</td>
+	    <td class="c" id="displayMonthEl" title="You are here: 21:41:13 Aug 14, 2016">AUG</td>
+	    <td class="f" nowrap="nowrap">Sep</td>
+	  </tr>
+	  <!-- NEXT/PREV CAPTURE NAV AND DAY OF MONTH INDICATOR -->
+	  <tr class="d">
+	    <td class="b" nowrap="nowrap"><img src="/_static/images/toolbar/wm_tb_prv_off.png" alt="Previous capture" width="14" height="16" border="0" /></td>
+	    <td class="c" id="displayDayEl" style="width:34px;font-size:22px;white-space:nowrap;" title="You are here: 21:41:13 Aug 14, 2016">14</td>
+	    <td class="f" nowrap="nowrap"><img src="/_static/images/toolbar/wm_tb_nxt_off.png" alt="Next capture" width="14" height="16" border="0" /></td>
+	  </tr>
+	  <!-- NEXT/PREV YEAR NAV AND YEAR INDICATOR -->
+	  <tr class="y">
+	    <td class="b" nowrap="nowrap">2015</td>
+	    <td class="c" id="displayYearEl" title="You are here: 21:41:13 Aug 14, 2016">2016</td>
+	    <td class="f" nowrap="nowrap">2017</td>
+	  </tr>
+	</tbody>
+      </table>
+    </div>
+    <div class="r" style="display:flex;flex-flow:column nowrap;align-items:flex-end;justify-content:space-between;">
+      <div id="wm-btns" style="text-align:right;height:23px;">
+        	<span class="xxs">
+          <div id="wm-save-snapshot-success">success</div>
+          <div id="wm-save-snapshot-fail">fail</div>
+          <a id="wm-save-snapshot-open" href="#"
+	     title="Share via My Web Archive" >
+            <span class="iconochive-web"></span>
+          </a>
+          <a href="https://archive.org/account/login.php" title="Sign In" id="wm-sign-in">
+            <span class="iconochive-person"></span>
+          </a>
+          <span id="wm-save-snapshot-in-progress" class="iconochive-web"></span>
+	</span>
+        	<a class="xxs" href="http://faq.web.archive.org/" title="Get some help using the Wayback Machine" style="top:-6px;"><span class="iconochive-question" style="color:rgb(87,186,244);font-size:160%;"></span></a>
+	<a id="wm-tb-close" href="#close" style="top:-2px;" title="Close the toolbar"><span class="iconochive-remove-circle" style="color:#888888;font-size:240%;"></span></a>
+      </div>
+      <div id="wm-share" class="xxs">
+        <a href="/web/20160814214113/http://web.archive.org/screenshot/http://fourier.eng.hmc.edu/e176/lectures/algebra/node17.html"
+           id="wm-screenshot"
+           title="screenshot">
+          <span class="wm-icon-screen-shot"></span>
+        </a>
+        <a href="#" id="wm-video" title="video">
+          <span class="iconochive-movies"></span>
+        </a>
+	<a id="wm-share-facebook" href="#" data-url="https://web.archive.org/web/20160814214113/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node17.html" title="Share on Facebook" style="margin-right:5px;" target="_blank"><span class="iconochive-facebook" style="color:#3b5998;font-size:160%;"></span></a>
+	<a id="wm-share-twitter" href="#" data-url="https://web.archive.org/web/20160814214113/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node17.html" title="Share on Twitter" style="margin-right:5px;" target="_blank"><span class="iconochive-twitter" style="color:#1dcaff;font-size:160%;"></span></a>
+      </div>
+      <div style="padding-right:2px;text-align:right;white-space:nowrap;">
+	<a id="wm-expand" class="wm-btn wm-closed" href="#expand" onclick="__wm.ex(event);return false;"><span id="wm-expand-icon" class="iconochive-down-solid"></span> <span class="xxs" style="font-size:80%;">About this capture</span></a>
+      </div>
+    </div>
+  </div>
+    <div id="wm-capinfo" style="border-top:1px solid #777;display:none; overflow: hidden">
+                    <div id="wm-capinfo-collected-by">
+    <div style="background-color:#666;color:#fff;font-weight:bold;text-align:center">COLLECTED BY</div>
+    <div style="padding:3px;position:relative" id="wm-collected-by-content">
+            <div style="display:inline-block;vertical-align:top;width:50%;">
+			<span class="c-logo" style="background-image:url(https://archive.org/services/img/alexacrawls);"></span>
+		Organization: <a style="color:#33f;" href="https://archive.org/details/alexacrawls" target="_new"><span class="wm-title">Alexa Crawls</span></a>
+		<div style="max-height:75px;overflow:hidden;position:relative;">
+	  <div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+	  Starting in 1996, <a href="http://www.alexa.com/">Alexa Internet</a> has been donating their crawl data to the Internet Archive.  Flowing in every day, these data are added to the <a href="http://web.archive.org/">Wayback Machine</a> after an embargo period.
+	</div>
+	      </div>
+      <div style="display:inline-block;vertical-align:top;width:49%;">
+			<span class="c-logo" style="background-image:url(https://archive.org/services/img/alexacrawls)"></span>
+		<div>Collection: <a style="color:#33f;" href="https://archive.org/details/alexacrawls" target="_new"><span class="wm-title">Alexa Crawls</span></a></div>
+		<div style="max-height:75px;overflow:hidden;position:relative;">
+	  <div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+	  Starting in 1996, <a href="http://www.alexa.com/">Alexa Internet</a> has been donating their crawl data to the Internet Archive.  Flowing in every day, these data are added to the <a href="http://web.archive.org/">Wayback Machine</a> after an embargo period.
+	</div>
+	      </div>
+    </div>
+    </div>
+    <div id="wm-capinfo-timestamps">
+    <div style="background-color:#666;color:#fff;font-weight:bold;text-align:center" title="Timestamps for the elements of this page">TIMESTAMPS</div>
+    <div>
+      <div id="wm-capresources" style="margin:0 5px 5px 5px;max-height:250px;overflow-y:scroll !important"></div>
+      <div id="wm-capresources-loading" style="text-align:left;margin:0 20px 5px 5px;display:none"><img src="/_static/images/loading.gif" alt="loading" /></div>
+    </div>
+    </div>
+  </div></div></div></div><div id="wm-ipp-print">The Wayback Machine - https://web.archive.org/web/20160814214113/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node17.html</div>
+<script type="text/javascript">//<![CDATA[
+__wm.bt(675,27,25,2,"web","http://fourier.eng.hmc.edu/e176/lectures/algebra/node17.html","20160814214113",1996,"/_static/",["/_static/css/banner-styles.css?v=S1zqJCYt","/_static/css/iconochive.css?v=qtvMKcIJ"], false);
+  __wm.rw(1);
+//]]></script>
+<!-- END WAYBACK TOOLBAR INSERT -->
+<!--Navigation Panel-->
+<a name="tex2html202" href="node18.html">
+<img width="37" height="24" align="BOTTOM" border="0" alt="next" src="https://web.archive.org/web/20160814214113im_/file:/opt/local/share/lib/latex2html/icons/next.png"></a> 
+<a name="tex2html200" href="algebra.html">
+<img width="26" height="24" align="BOTTOM" border="0" alt="up" src="https://web.archive.org/web/20160814214113im_/file:/opt/local/share/lib/latex2html/icons/up.png"></a> 
+<a name="tex2html194" href="node16.html">
+<img width="63" height="24" align="BOTTOM" border="0" alt="previous" src="https://web.archive.org/web/20160814214113im_/file:/opt/local/share/lib/latex2html/icons/prev.png"></a>   
+<br>
+<b> Next:</b> <a name="tex2html203" href="node18.html">Taylor series expansion</a>
+<b> Up:</b> <a name="tex2html201" href="algebra.html">algebra</a>
+<b> Previous:</b> <a name="tex2html195" href="node16.html">Solving over-determined linear equations</a>
+<br>
+<br>
+<!--End of Navigation Panel-->
+
+<h1><a name="SECTION000170000000000000000">
+Rank-nullity theorem</a>
+</h1>
+
+<p>
+<b>Definition: </b>
+The number of independent rows in a matrix is called the row rank, 
+the number of independent columns in a matrix is called the column rank.
+
+<p>
+<b>Theorem: </b>
+The row rank and column rank of any matrix are the same.
+
+<p>
+<b>Proof: </b>
+Let the column rank of the following <img width="55" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img36.png" alt="$m \times n$"> matrix <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img85.png" alt="${\bf A}$">
+be <img width="13" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img507.png" alt="$r$">
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf A}=[{\bf a}_1,\cdots,{\bf a}_r,{\bf a}_{r+1},\cdots,{\bf a}_n]
+=[{\bf A}_1,\;{\bf A}_0]
+\end{displaymath}
+ -->
+
+<img width="329" height="33" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img865.png" alt="\begin{displaymath}
+{\bf A}=[{\bf a}_1,\cdots,{\bf a}_r,{\bf a}_{r+1},\cdots,{\bf a}_n]
+=[{\bf A}_1,\;{\bf A}_0]
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+where <!-- MATH
+ ${\bf A}_1=[{\bf a}_1,\cdots,{\bf a}_r]$
+ -->
+<img width="142" height="39" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img866.png" alt="${\bf A}_1=[{\bf a}_1,\cdots,{\bf a}_r]$"> is an <img width="53" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img867.png" alt="$m\times r$">
+sub-matrix formed by the <img width="13" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img507.png" alt="$r$"> linearly independent columns in <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img85.png" alt="${\bf A}$">,
+assumed to be the first <img width="13" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img507.png" alt="$r$"> columns (without loss of generality).
+Now consider the linear combination of another set of <img width="13" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img507.png" alt="$r$"> n-D vectors 
+<!-- MATH
+ $\{{\bf A}_1^T{\bf a}_1,\cdots,{\bf A}_1^T{\bf a}_r\}$
+ -->
+<img width="155" height="40" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img868.png" alt="$\{{\bf A}_1^T{\bf a}_1,\cdots,{\bf A}_1^T{\bf a}_r\}$">:
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\sum_{i=1}^r c_i{\bf A}_1^T{\bf a}_i={\bf A}_1^T\sum_{i=1}^r c_i{\bf a}_i
+={\bf A}_1^T{\bf A}_1{\bf c}={\bf0}
+\end{displaymath}
+ -->
+
+<img width="313" height="55" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img869.png" alt="\begin{displaymath}
+\sum_{i=1}^r c_i{\bf A}_1^T{\bf a}_i={\bf A}_1^T\sum_{i=1}^r c_i{\bf a}_i
+={\bf A}_1^T{\bf A}_1{\bf c}={\bf0}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+which is assumed to be zero. As the <img width="46" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img870.png" alt="$r\times r$"> coefficient matrix 
+<!-- MATH
+ ${\bf A}_1^T{\bf A}_1$
+ -->
+<img width="55" height="40" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img871.png" alt="${\bf A}_1^T{\bf A}_1$"> has full rank <img width="13" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img507.png" alt="$r$"> (<img width="28" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img872.png" alt="${\bf A}_1$"> is formed by <img width="13" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img507.png" alt="$r$">
+independent vectors), we must have <!-- MATH
+ ${\bf c}=[c_1,\cdots,c_r]^T={\bf0}$
+ -->
+<img width="169" height="40" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img873.png" alt="${\bf c}=[c_1,\cdots,c_r]^T={\bf0}$">, 
+indicating <!-- MATH
+ $\{{\bf A}_1^T{\bf a}_1,\cdots,{\bf A}_1^T{\bf a}_r\}$
+ -->
+<img width="155" height="40" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img868.png" alt="$\{{\bf A}_1^T{\bf a}_1,\cdots,{\bf A}_1^T{\bf a}_r\}$"> are
+independent. However, as the linear combinations of <img width="13" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img507.png" alt="$r$"> of the rows
+of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img85.png" alt="${\bf A}$">, these <img width="13" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img507.png" alt="$r$"> independent vector <!-- MATH
+ ${\bf A}_1^T{\bf a}_i$
+ -->
+<img width="47" height="40" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img874.png" alt="${\bf A}_1^T{\bf a}_i$"> 
+(<img width="97" height="34" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img706.png" alt="$i=1,\cdots,r$">) are in the row space of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img85.png" alt="${\bf A}$">. We therefore know
+that the row rank of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img85.png" alt="${\bf A}$"> is no smaller than its column rank. 
+
+<p>
+As the same argument can also be made for <img width="31" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img217.png" alt="${\bf A}^T$">, i.e., the 
+column rank of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img85.png" alt="${\bf A}$"> is no smaller than its row rank, we conclude
+that the column and row ranks of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img85.png" alt="${\bf A}$"> must be the same.  QED
+
+<p>
+<b>Rank-nullity theorem: </b> 
+The rank <img width="13" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img507.png" alt="$r$"> of an <img width="55" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img36.png" alt="$m \times n$"> matrix <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img85.png" alt="${\bf A}$"> and the dimension of
+its nullspace <img width="52" height="39" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img875.png" alt="$N({\bf A})$">, the nullity of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img85.png" alt="${\bf A}$">, is <img width="16" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img27.png" alt="$n$">:
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+rank({\bf A})+dim(N({\bf A}))=rank({\bf A})+Nullity({\bf A})=n
+\end{displaymath}
+ -->
+
+<img width="437" height="33" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img876.png" alt="\begin{displaymath}
+rank({\bf A})+dim(N({\bf A}))=rank({\bf A})+Nullity({\bf A})=n
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+
+<p>
+<b>Proof:</b>
+
+<p>
+Let <!-- MATH
+ ${\bf A}=[{\bf a}_1,\cdots,{\bf a}_r,{\bf a}_{r+1},\cdots,{\bf a}_n]$
+ -->
+<img width="239" height="39" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img877.png" alt="${\bf A}=[{\bf a}_1,\cdots,{\bf a}_r,{\bf a}_{r+1},\cdots,{\bf a}_n]$">
+be an <img width="55" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img36.png" alt="$m \times n$"> matrix of rank <img width="13" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img507.png" alt="$r$">. We assume, without loss of 
+generality, the first <img width="13" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img507.png" alt="$r$"> columns are independent, and the last <img width="48" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img878.png" alt="$n-r$">
+columns are dependent, and write it as <!-- MATH
+ ${\bf A}=[{\bf A}_1,\;{\bf A}_0]$
+ -->
+<img width="117" height="39" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img879.png" alt="${\bf A}=[{\bf A}_1,\;{\bf A}_0]$">.
+Here
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf A}_1=[{\bf a}_1,\cdots,{\bf a}_r]_{m\times r}
+\end{displaymath}
+ -->
+
+<img width="166" height="33" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img880.png" alt="\begin{displaymath}
+{\bf A}_1=[{\bf a}_1,\cdots,{\bf a}_r]_{m\times r}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+is formed by the <img width="13" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img507.png" alt="$r$"> independent columns of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img85.png" alt="${\bf A}$">, i.e., if
+<!-- MATH
+ ${\bf A}_1{\bf x}={\bf0}$
+ -->
+<img width="75" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img881.png" alt="${\bf A}_1{\bf x}={\bf0}$">, then <!-- MATH
+ ${\bf x}={\bf0}$
+ -->
+<img width="52" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img98.png" alt="${\bf x}={\bf0}$">; and
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf A}_0=[{\bf a}_{r+1},\cdots,{\bf a}_n]_{m\times (n-r)}
+\end{displaymath}
+ -->
+
+<img width="213" height="34" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img882.png" alt="\begin{displaymath}
+{\bf A}_0=[{\bf a}_{r+1},\cdots,{\bf a}_n]_{m\times (n-r)}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+is formed by the <img width="48" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img878.png" alt="$n-r$"> dependent columns of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img85.png" alt="${\bf A}$">, i.e., any of
+them can be written as a linear combination of those independent 
+columns <!-- MATH
+ ${\bf a}_1,\cdots,{\bf a}_r$
+ -->
+<img width="82" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img883.png" alt="${\bf a}_1,\cdots,{\bf a}_r$"> in <img width="28" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img872.png" alt="${\bf A}_1$">:
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf a}_{r+k}=\sum_{i=1}^r c_{ik}{\bf a}_i
+=[{\bf a}_1,\cdots,{\bf a}_r]\left[\begin{array}{c}c_{1k}\\\vdots\\c_{rk}\end{array}\right]
+={\bf A}_1{\bf c}_k,\;\;\;\;\;
+(k=1,\cdots,n-r)
+\end{displaymath}
+ -->
+
+<img width="546" height="84" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img884.png" alt="\begin{displaymath}
+{\bf a}_{r+k}=\sum_{i=1}^r c_{ik}{\bf a}_i
+=[{\bf a}_1,\cdot...
+...{array}\right]
+={\bf A}_1{\bf c}_k,\;\;\;\;\;
+(k=1,\cdots,n-r)
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+where <!-- MATH
+ ${\bf c}_k=[c_{1k},\cdots,c_{rk}]^T$
+ -->
+<img width="156" height="40" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img885.png" alt="${\bf c}_k=[c_{1k},\cdots,c_{rk}]^T$"> is a coefficient vector. We 
+can put all these <img width="48" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img878.png" alt="$n-r$"> equations together to write them in matrix form 
+as
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf A}_0=[{\bf a}_{r+1},\cdots,{\bf a}_n]={\bf A}_1[{\bf c}_1,\cdots,{\bf c}_{n-r}]
+={\bf A}_1{\bf C}
+\end{displaymath}
+ -->
+
+<img width="374" height="33" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img886.png" alt="\begin{displaymath}
+{\bf A}_0=[{\bf a}_{r+1},\cdots,{\bf a}_n]={\bf A}_1[{\bf c}_1,\cdots,{\bf c}_{n-r}]
+={\bf A}_1{\bf C}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+where <!-- MATH
+ ${\bf C}=[{\bf c}_1,\cdots,{\bf c}_{n-r}]$
+ -->
+<img width="150" height="39" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img887.png" alt="${\bf C}=[{\bf c}_1,\cdots,{\bf c}_{n-r}]$"> is an <img width="95" height="39" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img888.png" alt="$r\times(n-r)$">
+matrix composed of the <img width="48" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img878.png" alt="$n-r$"> coefficient vectors. The matrix <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img85.png" alt="${\bf A}$"> 
+can now be written as
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf A}=[{\bf A}_1,\;{\bf A}_0]=[{\bf A}_1,\;{\bf A}_1{\bf C}]
+\end{displaymath}
+ -->
+
+<img width="223" height="33" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img889.png" alt="\begin{displaymath}
+{\bf A}=[{\bf A}_1,\;{\bf A}_0]=[{\bf A}_1,\;{\bf A}_1{\bf C}]
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+Define an <img width="97" height="39" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img890.png" alt="$n\times(n-r)$"> matrix
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf X}=\left[\begin{array}{c}-{\bf C}\\{\bf I}\end{array}\right]
+=\left[\begin{array}{ccc}-{\bf c}_1&\cdots&-{\bf c}_{n-r}\\
+{\bf e}_1 & \cdots & {\bf e}_n\end{array}\right]
+=\left[\begin{array}{ccc}-{\bf c}_1&\cdots&-{\bf c}_{n-r}\\
+1 & \cdots & 0\\0 & \cdots & 0\\\vdots & \ddots & \vdots\\
+0 & \cdots & 0\\0&\cdots & 1\end{array}\right]
+\end{displaymath}
+ -->
+
+<img width="497" height="153" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img891.png" alt="\begin{displaymath}
+{\bf X}=\left[\begin{array}{c}-{\bf C} {\bf I}\end{array}\...
+...ts &amp; \vdots\\
+0 &amp; \cdots &amp; 0 0&amp;\cdots &amp; 1\end{array}\right]
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+where <img width="12" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img328.png" alt="${\bf I}$"> is an <!-- MATH
+ $(n-r)\times(n-r)$
+ -->
+<img width="144" height="39" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img892.png" alt="$(n-r)\times(n-r)$"> identity matrix composed
+of <img width="16" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img27.png" alt="$n$"> standard basis vectors <!-- MATH
+ ${\bf e}_1,\cdots,{\bf e}_n$
+ -->
+<img width="83" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img893.png" alt="${\bf e}_1,\cdots,{\bf e}_n$">. Now 
+we have
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf A}{\bf X}=[{\bf A}_1,\;{\bf A}_1{\bf C}]
+\left[\begin{array}{c}-{\bf C}\\{\bf I}\end{array}\right]
+=-{\bf A}_1{\bf C}+{\bf A}_1{\bf C}={\bf O}
+\end{displaymath}
+ -->
+
+<img width="394" height="55" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img894.png" alt="\begin{displaymath}
+{\bf A}{\bf X}=[{\bf A}_1,\;{\bf A}_1{\bf C}]
+\left[\begin{a...
+...\end{array}\right]
+=-{\bf A}_1{\bf C}+{\bf A}_1{\bf C}={\bf O}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+indicating any column <img width="16" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img50.png" alt="${\bf x}$"> in <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img342.png" alt="${\bf X}$"> is a solution of the
+homogeneous equation <!-- MATH
+ ${\bf A}{\bf x}={\bf0}$
+ -->
+<img width="68" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img895.png" alt="${\bf A}{\bf x}={\bf0}$">, i.e., <img width="16" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img50.png" alt="${\bf x}$"> is in 
+the nullspace <img width="52" height="39" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img875.png" alt="$N({\bf A})$">. Also, if we let <!-- MATH
+ ${\bf X}{\bf u}={\bf0}$
+ -->
+<img width="69" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img896.png" alt="${\bf X}{\bf u}={\bf0}$">, 
+we get
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf X}{\bf u}=\left[\begin{array}{c}-{\bf C}\\{\bf I}\end{array}\right]
+{\bf u}=\left[\begin{array}{c}-{\bf C}{\bf u}\\{\bf u}\end{array}\right]
+=\left[\begin{array}{c}{\bf0}\\{\bf0}\end{array}\right]={\bf0}
+\end{displaymath}
+ -->
+
+<img width="341" height="55" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img897.png" alt="\begin{displaymath}
+{\bf X}{\bf u}=\left[\begin{array}{c}-{\bf C} {\bf I}\end{...
+...\left[\begin{array}{c}{\bf0} {\bf0}\end{array}\right]={\bf0}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+i.e., <!-- MATH
+ ${\bf u}={\bf0}$
+ -->
+<img width="52" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img898.png" alt="${\bf u}={\bf0}$">, indicating all columns in <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img342.png" alt="${\bf X}$"> are
+independent. 
+
+<p>
+On the other hand, we can also show that any solution of the 
+homogeneous equation <!-- MATH
+ ${\bf A}{\bf x}={\bf0}$
+ -->
+<img width="68" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img895.png" alt="${\bf A}{\bf x}={\bf0}$"> must be a linear 
+combination of the columns of <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img342.png" alt="${\bf X}$">. Assuming <img width="16" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img50.png" alt="${\bf x}$"> is
+such a solution, i.e., 
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf A}{\bf x}={\bf0}
+  =[{\bf A}_1,\;{\bf A}_1{\bf C}]\left[\begin{array}{c}
+      {\bf x}_1\\{\bf x}_2\end{array}\right]
+  ={\bf A}_1({\bf x}_1+{\bf C}{\bf x}_2)
+\end{displaymath}
+ -->
+
+<img width="370" height="55" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img899.png" alt="\begin{displaymath}
+{\bf A}{\bf x}={\bf0}
+=[{\bf A}_1,\;{\bf A}_1{\bf C}]\left...
+...x}_2\end{array}\right]
+={\bf A}_1({\bf x}_1+{\bf C}{\bf x}_2)
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+As all columns in <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img85.png" alt="${\bf A}$"> are independent, we must have
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf x}_1+{\bf C}{\bf x}_2={\bf0},\;\;\;\;\mbox{or}\;\;\;\;\;
+{\bf x}_1=-{\bf C}{\bf x}_2
+\end{displaymath}
+ -->
+
+<img width="276" height="32" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img900.png" alt="\begin{displaymath}
+{\bf x}_1+{\bf C}{\bf x}_2={\bf0},\;\;\;\;\mbox{or}\;\;\;\;\;
+{\bf x}_1=-{\bf C}{\bf x}_2
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+and we get
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf x}=\left[\begin{array}{c}{\bf x}_1\\{\bf x}_2\end{array}\right]
+=\left[\begin{array}{c}-{\bf C}{\bf x}_2\\{\bf x}_2\end{array}\right]
+=\left[\begin{array}{c}-{\bf C}\\{\bf I}\end{array}\right]{\bf x}_2
+={\bf X}{\bf x}_2
+\end{displaymath}
+ -->
+
+<img width="370" height="55" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img901.png" alt="\begin{displaymath}
+{\bf x}=\left[\begin{array}{c}{\bf x}_1 {\bf x}_2\end{arra...
+...{\bf C} {\bf I}\end{array}\right]{\bf x}_2
+={\bf X}{\bf x}_2
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+indicating <img width="16" height="19" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img50.png" alt="${\bf x}$"> is a linear combination of the <img width="48" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img878.png" alt="$n-r$"> columns in
+<img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img342.png" alt="${\bf X}$">.
+
+<p>
+Based on the two results obtained above, we can now conclude that the
+nullspace <img width="52" height="39" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img875.png" alt="$N({\bf A})$"> is spanned by the <img width="48" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img878.png" alt="$n-r$"> independent column vectors 
+in <img width="21" height="20" align="BOTTOM" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img342.png" alt="${\bf X}$">, i.e., the dimension of <img width="52" height="39" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img875.png" alt="$N({\bf A})$"> is <img width="48" height="35" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img878.png" alt="$n-r$">, and
+<!-- MATH
+ $rank({\bf A})+dim({\bf A})=n$
+ -->
+<img width="198" height="39" align="MIDDLE" border="0" src="/web/20160814214113im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img902.png" alt="$rank({\bf A})+dim({\bf A})=n$">.
+
+<p>
+<hr>
+<!--Navigation Panel-->
+<a name="tex2html202" href="node18.html">
+<img width="37" height="24" align="BOTTOM" border="0" alt="next" src="https://web.archive.org/web/20160814214113im_/file:/opt/local/share/lib/latex2html/icons/next.png"></a> 
+<a name="tex2html200" href="algebra.html">
+<img width="26" height="24" align="BOTTOM" border="0" alt="up" src="https://web.archive.org/web/20160814214113im_/file:/opt/local/share/lib/latex2html/icons/up.png"></a> 
+<a name="tex2html194" href="node16.html">
+<img width="63" height="24" align="BOTTOM" border="0" alt="previous" src="https://web.archive.org/web/20160814214113im_/file:/opt/local/share/lib/latex2html/icons/prev.png"></a>   
+<br>
+<b> Next:</b> <a name="tex2html203" href="node18.html">Taylor series expansion</a>
+<b> Up:</b> <a name="tex2html201" href="algebra.html">algebra</a>
+<b> Previous:</b> <a name="tex2html195" href="node16.html">Solving over-determined linear equations</a>
+<!--End of Navigation Panel-->
+<address>
+Ruye Wang
+2016-04-04
+</address>
+</body>
+</html>
+<!--
+     FILE ARCHIVED ON 21:41:13 Aug 14, 2016 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 22:22:32 Nov 07, 2022.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->
+<!--
+playback timings (ms):
+  captures_list: 126.244
+  exclusion.robots: 0.303
+  exclusion.robots.policy: 0.291
+  cdx.remote: 0.105
+  esindex: 0.013
+  LoadShardBlock: 78.151 (3)
+  PetaboxLoader3.datanode: 110.656 (4)
+  CDXLines.iter: 28.467 (3)
+  load_resource: 79.506
+  PetaboxLoader3.resolve: 27.651
+-->

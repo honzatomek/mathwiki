@@ -1,0 +1,860 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+
+<!--Converted with LaTeX2HTML 2008 (1.71)
+original version by:  Nikos Drakos, CBLU, University of Leeds
+* revised and updated by:  Marcus Hennecke, Ross Moore, Herb Swan
+* with significant contributions from:
+  Jens Lippmann, Marek Rouchal, Martin Wilck and others -->
+<html>
+<head><script src="//archive.org/includes/analytics.js?v=cf34f82" type="text/javascript"></script>
+<script type="text/javascript">window.addEventListener('DOMContentLoaded',function(){var v=archive_analytics.values;v.service='wb';v.server_name='wwwb-app216.us.archive.org';v.server_ms=617;archive_analytics.send_pageview({});});</script>
+<script type="text/javascript" src="/_static/js/bundle-playback.js?v=MzYkZ0TU" charset="utf-8"></script>
+<script type="text/javascript" src="/_static/js/wombat.js?v=UHAOicsW" charset="utf-8"></script>
+<script type="text/javascript">
+  __wm.init("https://web.archive.org/web");
+  __wm.wombat("http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node14.html","20171119064852","https://web.archive.org/","web","/_static/",
+	      "1511074132");
+</script>
+<link rel="stylesheet" type="text/css" href="/_static/css/banner-styles.css?v=S1zqJCYt" />
+<link rel="stylesheet" type="text/css" href="/_static/css/iconochive.css?v=qtvMKcIJ" />
+<!-- End Wayback Rewrite JS Include -->
+
+<title>Vector norms</title>
+<meta name="description" content="Vector norms">
+<meta name="keywords" content="algebra">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+
+<meta name="Generator" content="LaTeX2HTML v2008">
+<meta http-equiv="Content-Style-Type" content="text/css">
+
+<link rel="STYLESHEET" href="/web/20171119064852cs_/http://fourier.eng.hmc.edu/e176/lectures/algebra/algebra.css">
+
+<link rel="next" href="node15.html">
+<link rel="previous" href="node13.html">
+<link rel="up" href="algebra.html">
+<link rel="next" href="node15.html">
+</head>
+
+<body>
+<!--Navigation Panel-->
+<a name="tex2html173" href="node15.html">
+<img width="37" height="24" align="BOTTOM" border="0" alt="next" src="https://web.archive.org/web/20171119064852im_/file:/opt/local/share/lib/latex2html/icons/next.png"></a> 
+<a name="tex2html171" href="algebra.html">
+<img width="26" height="24" align="BOTTOM" border="0" alt="up" src="https://web.archive.org/web/20171119064852im_/file:/opt/local/share/lib/latex2html/icons/up.png"></a> 
+<a name="tex2html165" href="node13.html">
+<img width="63" height="24" align="BOTTOM" border="0" alt="previous" src="https://web.archive.org/web/20171119064852im_/file:/opt/local/share/lib/latex2html/icons/prev.png"></a>   
+<br>
+<b> Next:</b> <a name="tex2html174" href="node15.html">Matrix norms</a>
+<b> Up:</b> <a name="tex2html172" href="algebra.html">algebra</a>
+<b> Previous:</b> <a name="tex2html166" href="node13.html">Pseudo-inverse</a>
+<br>
+<br>
+<!--End of Navigation Panel-->
+
+<h1><a name="SECTION000140000000000000000">
+Vector norms</a>
+</h1>
+
+<p>
+In general, the ``size'' of a given vector <img width="16" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.png" alt="${\bf x}$"> can be represented 
+by its norm denoted by <img width="37" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img99.png" alt="$\vert\vert{\bf x}\vert\vert$">. Moreover, the distance between
+two vectors <img width="16" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.png" alt="${\bf x}$"> and <img width="16" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img86.png" alt="${\bf y}$"> is the norm of their difference 
+<!-- MATH
+ $||{\bf x}-{\bf y}||$
+ -->
+<img width="72" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img652.png" alt="$\vert\vert{\bf x}-{\bf y}\vert\vert$">. In other words, the norm of <img width="16" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.png" alt="${\bf x}$"> is its 
+distance to the origin <img width="15" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img22.png" alt="${\bf0}$"> of the space in which <img width="16" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.png" alt="${\bf x}$"> resides,
+<!-- MATH
+ $||{\bf x}||=||{\bf x}-{\bf0}||$
+ -->
+<img width="129" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img653.png" alt="$\vert\vert{\bf x}\vert\vert=\vert\vert{\bf x}-{\bf0}\vert\vert$">.
+
+<p>
+The most general form of vector norm is defined below:
+
+<p>
+<b>Definition:</b> The norm <img width="37" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img99.png" alt="$\vert\vert{\bf x}\vert\vert$"> of a vector <img width="54" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img9.png" alt="${\bf x} \in V$"> in 
+vector space <img width="20" height="17" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img2.png" alt="$V$"> is a real non-negative value representing the length
+or magnitude of the vector. Specifically, the norm of <img width="54" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img9.png" alt="${\bf x} \in V$"> 
+must satisfy the following three conditions:
+
+<ul>
+<li>Positivity:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf x}||\ge 0,\;\;\;\;\;\;||{\bf x}||=0
+  \;\;\;\mbox{iff}\;\;\;{\bf x}={\bf0}
+\end{displaymath}
+ -->
+
+<img width="267" height="33" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img654.png" alt="\begin{displaymath}
+\vert\vert{\bf x}\vert\vert\ge 0,\;\;\;\;\;\;\vert\vert{\bf x}\vert\vert=0
+\;\;\;\mbox{iff}\;\;\;{\bf x}={\bf0}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li>Homogeneity:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||a{\bf x}||=|a|\;||{\bf x}||,\;\;\;\;\;\;a\in\mathbb{R}
+  \;\;\;\mbox{or}\;\;\;\mathbb{C}
+\end{displaymath}
+ -->
+
+<img width="275" height="33" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img655.png" alt="\begin{displaymath}
+\vert\vert a{\bf x}\vert\vert=\vert a\vert\;\vert\vert{\bf ...
+...t,\;\;\;\;\;\;a\in\mathbb{R}
+\;\;\;\mbox{or}\;\;\;\mathbb{C}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+
+<p>
+</li>
+<li>Triangle inequality:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf x}+{\bf y}||\le ||{\bf x}||+||{\bf y}||
+\end{displaymath}
+ -->
+
+<img width="177" height="33" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img656.png" alt="\begin{displaymath}
+\vert\vert{\bf x}+{\bf y}\vert\vert\le \vert\vert{\bf x}\vert\vert+\vert\vert{\bf y}\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+</ul>
+
+<p>
+The homogeneity indicates that <!-- MATH
+ $||-{\bf x}||=||{\bf x}||$
+ -->
+<img width="118" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img657.png" alt="$\vert\vert-{\bf x}\vert\vert=\vert\vert{\bf x}\vert\vert$">, which 
+can be obtained simply by letting <img width="64" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img658.png" alt="$a=-1$">. 
+The triangle inequality can also be expressed in alternative forms.
+If we define <!-- MATH
+ ${\bf z}=-{\bf y}$
+ -->
+<img width="66" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img659.png" alt="${\bf z}=-{\bf y}$">, the triangle inequality becomes
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf x}-{\bf z}||\le ||{\bf x}||+||{\bf z}||
+\end{displaymath}
+ -->
+
+<img width="173" height="33" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img660.png" alt="\begin{displaymath}
+\vert\vert{\bf x}-{\bf z}\vert\vert\le \vert\vert{\bf x}\vert\vert+\vert\vert{\bf z}\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+If we further define <!-- MATH
+ ${\bf u}={\bf x}-{\bf z}$
+ -->
+<img width="86" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img661.png" alt="${\bf u}={\bf x}-{\bf z}$">, i.e., 
+<!-- MATH
+ ${\bf z}={\bf x}-{\bf u}$
+ -->
+<img width="86" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img662.png" alt="${\bf z}={\bf x}-{\bf u}$">, then the above becomes
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf u}||\le ||{\bf x}||+||{\bf x}-{\bf u}||,
+\;\;\;\;\;\;\mbox{i.e.}\;\;\;\;\;\;
+||{\bf u}||-||{\bf x}||\le ||{\bf x}-{\bf u}||
+=||{\bf u}-{\bf x}||
+\end{displaymath}
+ -->
+
+<img width="549" height="33" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img663.png" alt="\begin{displaymath}
+\vert\vert{\bf u}\vert\vert\le \vert\vert{\bf x}\vert\vert+\...
+...{\bf x}-{\bf u}\vert\vert
+=\vert\vert{\bf u}-{\bf x}\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+Combining the two results above, we get
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf x}||-||{\bf y}||\le||{\bf x}-{\bf y}||\le ||{\bf x}||+||{\bf y}||
+\end{displaymath}
+ -->
+
+<img width="291" height="33" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img664.png" alt="\begin{displaymath}
+\vert\vert{\bf x}\vert\vert-\vert\vert{\bf y}\vert\vert\le\v...
+...ert\le \vert\vert{\bf x}\vert\vert+\vert\vert{\bf y}\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+The first equality holds if <img width="16" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.png" alt="${\bf x}$"> and <img width="16" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img86.png" alt="${\bf y}$"> are in the same
+direction, the second equality holds if they are in opposite direction.
+More specially when <!-- MATH
+ ${\bf y}={\bf0}$
+ -->
+<img width="52" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img665.png" alt="${\bf y}={\bf0}$">, both equalities hold.
+
+<p>
+<img width="338" height="215" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/figures/TriangleInequality1.png" alt="TriangleInequality1.png">
+
+<p>
+Here are some examples of vector norms commonly used:
+
+<ul>
+<li>If the vector <!-- MATH
+ ${\bf x}=x\in \mathbb{R}$
+ -->
+<img width="89" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img666.png" alt="${\bf x}=x\in \mathbb{R}$"> is a real number, then its 
+  norm is simply its absolute value <!-- MATH
+ $||{\bf x}||=|x|$
+ -->
+<img width="83" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img667.png" alt="$\vert\vert{\bf x}\vert\vert=\vert x\vert$">.
+
+<p>
+</li>
+<li>If the vector <!-- MATH
+ ${\bf z}=z=x+j\,y\in \mathbb{C}$
+ -->
+<img width="167" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img668.png" alt="${\bf z}=z=x+j y\in \mathbb{C}$"> is a complex number, 
+  then its norm is simply its modulus <!-- MATH
+ $||{\bf z}||=|z|=\sqrt{x^2+y^2}$
+ -->
+<img width="180" height="41" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img669.png" alt="$\vert\vert{\bf z}\vert\vert=\vert z\vert=\sqrt{x^2+y^2}$">.
+
+<p>
+</li>
+<li>If <!-- MATH
+ ${\bf x}=[x_1,\cdots,x_n]^T\in \mathbb{R}^n$
+ -->
+<img width="189" height="40" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img670.png" alt="${\bf x}=[x_1,\cdots,x_n]^T\in \mathbb{R}^n$"> or <img width="28" height="17" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img31.png" alt="$\mathbb{C}^n$">, 
+  the p-norm is defined as
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf x}||_p=\left(\sum_{i=1}^n |x_i|^p\right)^{1/p},
+  \;\;\;\;\;\;  1\le p \le \infty
+\end{displaymath}
+ -->
+
+<img width="301" height="61" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img671.png" alt="\begin{displaymath}
+\vert\vert{\bf x}\vert\vert _p=\left(\sum_{i=1}^n \vert x_i\vert^p\right)^{1/p},
+\;\;\;\;\;\; 1\le p \le \infty
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+The p-norm so defined satisfies the three requirements in the definition
+  of the vector norm. The first two are trivially obvious, while the third 
+  one happens to be Minkowski's inequality (see appendix):
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf x}+{\bf y}||_p\le ||{\bf x}||_p+||{\bf y}||_p
+\end{displaymath}
+ -->
+
+<img width="201" height="34" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img672.png" alt="\begin{displaymath}
+\vert\vert{\bf x}+{\bf y}\vert\vert _p\le \vert\vert{\bf x}\vert\vert _p+\vert\vert{\bf y}\vert\vert _p
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li>If <img width="74" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img673.png" alt="${\bf x}=f(t)$"> is a function, its p-norm is defined as
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf x}||_p=\left( \int \big|f(u)\big|^p\; dt \right)^{1/p},
+  \;\;\;\;\;\;  1\le p \le \infty
+\end{displaymath}
+ -->
+
+<img width="334" height="49" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img674.png" alt="\begin{displaymath}
+\vert\vert{\bf x}\vert\vert _p=\left( \int \big\vert f(u)\big\vert^p\; dt \right)^{1/p},
+\;\;\;\;\;\; 1\le p \le \infty
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+</ul>
+
+<p>
+The commonly used p-norms are for <img width="48" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img675.png" alt="$p=1$">, <img width="48" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img676.png" alt="$p=2$">, and <img width="58" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img677.png" alt="$p=\infty$">:
+
+<ul>
+<li><img width="48" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img675.png" alt="$p=1$">, the absolute sum of all <img width="16" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img29.png" alt="$n$"> elements:
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf x}||_1=\sum_{i=1}^n |x_i|
+\end{displaymath}
+ -->
+
+<img width="113" height="55" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img678.png" alt="\begin{displaymath}
+\vert\vert{\bf x}\vert\vert _1=\sum_{i=1}^n \vert x_i\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li><img width="48" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img676.png" alt="$p=2$">, the Euclidean norm:
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf x}||_2=\sqrt{{\bf x}^T{\bf x}}=\sqrt{\sum_{i=1}^n |x_i|^2}
+\end{displaymath}
+ -->
+
+<img width="215" height="65" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img679.png" alt="\begin{displaymath}
+\vert\vert{\bf x}\vert\vert _2=\sqrt{{\bf x}^T{\bf x}}=\sqrt{\sum_{i=1}^n \vert x_i\vert^2}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li><img width="58" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img677.png" alt="$p=\infty$">, the maximum absolute value of all <img width="16" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img29.png" alt="$n$"> elements:
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf x}||_\infty=\left(\sum_{i=1}^n |x_i|^\infty\right)^{1/\infty}
+=\max\{ |x_1|,\cdots, |x_n| \}
+\end{displaymath}
+ -->
+
+<img width="369" height="61" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img680.png" alt="\begin{displaymath}
+\vert\vert{\bf x}\vert\vert _\infty=\left(\sum_{i=1}^n \vert...
+...t)^{1/\infty}
+=\max\{ \vert x_1\vert,\cdots, \vert x_n\vert \}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+</ul>
+
+<p>
+<br>
+<div align="CENTER">
+
+<!-- MATH
+ \begin{eqnarray}
+&&||{\bf x}||_\infty\le||{\bf x}||_1\le n ||{\bf x}||_\infty
+\nonumber \\
+&&||{\bf x}||_\infty\le||{\bf x}||_2\le \sqrt{n} ||{\bf x}||_\infty
+\nonumber \\
+&&||{\bf x}||_2\le||{\bf x}||_1\le \sqrt{n} ||{\bf x}||_2
+\nonumber
+\end{eqnarray}
+ -->
+<table align="CENTER" cellpadding="0" width="100%">
+<tr valign="MIDDLE"><td nowrap align="RIGHT">&nbsp;</td>
+<td>&nbsp;</td>
+<td align="LEFT" nowrap><img width="200" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img681.png" alt="$\displaystyle \vert\vert{\bf x}\vert\vert _\infty\le\vert\vert{\bf x}\vert\vert _1\le n \vert\vert{\bf x}\vert\vert _\infty$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+<tr valign="MIDDLE"><td nowrap align="RIGHT">&nbsp;</td>
+<td>&nbsp;</td>
+<td align="LEFT" nowrap><img width="216" height="41" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img682.png" alt="$\displaystyle \vert\vert{\bf x}\vert\vert _\infty\le\vert\vert{\bf x}\vert\vert _2\le \sqrt{n} \vert\vert{\bf x}\vert\vert _\infty$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+<tr valign="MIDDLE"><td nowrap align="RIGHT">&nbsp;</td>
+<td>&nbsp;</td>
+<td align="LEFT" nowrap><img width="203" height="41" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img683.png" alt="$\displaystyle \vert\vert{\bf x}\vert\vert _2\le\vert\vert{\bf x}\vert\vert _1\le \sqrt{n} \vert\vert{\bf x}\vert\vert _2$"></td>
+<td width="10" align="RIGHT">
+&nbsp;</td></tr>
+</table></div>
+<br clear="ALL"><p></p>
+
+<p>
+Out of the three vector norms, the Euclidean 2-norm represents the
+geometric length of a vector in 2 or 3-D space, which is conserved, or 
+invariant, under rotation, a unitary transform <!-- MATH
+ ${\bf y}={\bf R}{\bf x}$
+ -->
+<img width="69" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img684.png" alt="${\bf y}={\bf R}{\bf x}$"> 
+by a unitary (orthogonal if in real field) matrix satisfying 
+<!-- MATH
+ ${\bf R}^*={\bf R}^{-1}$
+ -->
+<img width="87" height="22" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img685.png" alt="${\bf R}^*={\bf R}^{-1}$"> or <!-- MATH
+ ${\bf R}^*{\bf R}={\bf R}^{-1}{\bf R}={\bf I}$
+ -->
+<img width="153" height="22" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img686.png" alt="${\bf R}^*{\bf R}={\bf R}^{-1}{\bf R}={\bf I}$">:
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf y}||_2^2={\bf y}^*{\bf y}=({\bf R}{\bf x})^*({\bf R}{\bf x})
+={\bf x}^*\,({\bf R}^*{\bf R})\,{\bf x}={\bf x}^*{\bf x}=||{\bf x}||_2^2
+\end{displaymath}
+ -->
+
+<img width="446" height="33" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img687.png" alt="\begin{displaymath}
+\vert\vert{\bf y}\vert\vert _2^2={\bf y}^*{\bf y}=({\bf R}{\...
+...R}) {\bf x}={\bf x}^*{\bf x}=\vert\vert{\bf x}\vert\vert _2^2
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+i.e., <!-- MATH
+ $||{\bf y}||=||{\bf x}||$
+ -->
+<img width="95" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img688.png" alt="$\vert\vert{\bf y}\vert\vert=\vert\vert{\bf x}\vert\vert$">, rotation does not change the length
+of a vector.
+
+<p>
+<b>Definition:</b> The <em>distance</em> between two vectors 
+<!-- MATH
+ ${\bf x},{\bf y}\in V$
+ -->
+<img width="74" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img3.png" alt="${\bf x}, {\bf y}\in V$"> is defined as the norm of the difference vector 
+<!-- MATH
+ ${\bf x}-{\bf y}$
+ -->
+<img width="51" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img689.png" alt="${\bf x}-{\bf y}$">.
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+d_p({\bf x},{\bf y})=||{\bf x}-{\bf y}||_p
+=\left(\sum_{i=1}^n |x_i-y_i|^p\right)^{1/p},\;\;\;\;(1\le p\le \infty)
+\end{displaymath}
+ -->
+
+<img width="468" height="61" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img690.png" alt="\begin{displaymath}
+d_p({\bf x},{\bf y})=\vert\vert{\bf x}-{\bf y}\vert\vert _p
+...
+...n \vert x_i-y_i\vert^p\right)^{1/p},\;\;\;\;(1\le p\le \infty)
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+
+<ul>
+<li><img width="48" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img675.png" alt="$p=1$"> (city block or Manhattan distance):
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+d_1({\bf x},{\bf y})=||{\bf x}-{\bf y}||_1=\sum_{i=1}^n |x_i-y_i|
+\end{displaymath}
+ -->
+
+<img width="277" height="55" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img691.png" alt="\begin{displaymath}
+d_1({\bf x},{\bf y})=\vert\vert{\bf x}-{\bf y}\vert\vert _1=\sum_{i=1}^n \vert x_i-y_i\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li><img width="48" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img676.png" alt="$p=2$"> (Euclidean distance):
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+d_2({\bf x},{\bf y})=||{\bf x}-{\bf y}||_2=\sqrt{\sum_{i=1}^n |x_i-y_i|^2}
+\end{displaymath}
+ -->
+
+<img width="304" height="65" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img692.png" alt="\begin{displaymath}
+d_2({\bf x},{\bf y})=\vert\vert{\bf x}-{\bf y}\vert\vert _2=\sqrt{\sum_{i=1}^n \vert x_i-y_i\vert^2}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+<li><img width="58" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img677.png" alt="$p=\infty$"> (Chebyshev distance):
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+d_\infty({\bf x},{\bf y})=||{\bf x}-{\bf y}||_\infty=\max_i |x_i-y_i|
+\end{displaymath}
+ -->
+
+<img width="303" height="41" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img693.png" alt="\begin{displaymath}
+d_\infty({\bf x},{\bf y})=\vert\vert{\bf x}-{\bf y}\vert\vert _\infty=\max_i \vert x_i-y_i\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+</li>
+</ul>
+
+<p>
+<img width="590" height="262" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/figures/pdist.png" alt="pdist.png">
+
+<p>
+The three unit ``circles'' or ``spheres'', are formed by all points 
+<img width="16" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.png" alt="${\bf x}$"> of unity norm <!-- MATH
+ $||{\bf x}||_p=1$
+ -->
+<img width="79" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img694.png" alt="$\vert\vert{\bf x}\vert\vert _p=1$"> with unity distance to the 
+origin (blue, black, and red for <img width="29" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img695.png" alt="$d_\infty$">, <img width="22" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img696.png" alt="$d_2$">, and <img width="22" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img697.png" alt="$d_1$">, respectively).
+
+<p>
+<b>Definition:</b> Two norms <img width="45" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img698.png" alt="$\vert\vert{\bf x}\vert\vert _a$"> and <img width="44" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img699.png" alt="$\vert\vert{\bf x}\vert\vert _b$"> are 
+equivalent if there exist two positive real constants <img width="13" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img398.png" alt="$c$"> and <img width="19" height="17" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img700.png" alt="$C$"> so 
+that 
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+c\,||{\bf x}||_b\le ||{\bf x}||_a\le C\,||{\bf x}||_b
+\end{displaymath}
+ -->
+
+<img width="199" height="33" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img701.png" alt="\begin{displaymath}
+c \vert\vert{\bf x}\vert\vert _b\le \vert\vert{\bf x}\vert\vert _a\le C \vert\vert{\bf x}\vert\vert _b
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+Note that this relationship can also be written as
+<br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\frac{1}{C}\,||{\bf x}||_a\le ||{\bf x}||_b\le \frac{1}{c}\,||{\bf x}||_a
+\end{displaymath}
+ -->
+
+<img width="206" height="45" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img702.png" alt="\begin{displaymath}
+\frac{1}{C} \vert\vert{\bf x}\vert\vert _a\le \vert\vert{\bf x}\vert\vert _b\le \frac{1}{c} \vert\vert{\bf x}\vert\vert _a
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+
+<p>
+<b>Theorem: </b> All different norms <img width="16" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.png" alt="${\bf x}$"> are equivalent.
+
+<p>
+<b>Proof</b>
+
+<ul>
+<li>We first show that equivalence is transitive, i.e., if both
+  <img width="45" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img698.png" alt="$\vert\vert{\bf x}\vert\vert _a$"> and <img width="44" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img699.png" alt="$\vert\vert{\bf x}\vert\vert _b$"> are equivalent to <img width="45" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img703.png" alt="$\vert\vert{\bf x}\vert\vert _1$">:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+c\,||{\bf x}||_1\le ||{\bf x}||_a\le C\,||{\bf x}||_1,
+  \;\;\;\;\mbox{and}\;\;\;\;\;
+  d\,||{\bf x}||_1\le ||{\bf x}||_b\le D\,||{\bf x}||_1,
+\end{displaymath}
+ -->
+
+<img width="494" height="33" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img704.png" alt="\begin{displaymath}
+c \vert\vert{\bf x}\vert\vert _1\le \vert\vert{\bf x}\vert...
+...ert{\bf x}\vert\vert _b\le D \vert\vert{\bf x}\vert\vert _1,
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+then they are equivalent to each other. 
+
+<p>
+From the first equation we get <!-- MATH
+ $||{\bf x}||_1\le ||{\bf x}||_a/c$
+ -->
+<img width="128" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img705.png" alt="$\vert\vert{\bf x}\vert\vert _1\le \vert\vert{\bf x}\vert\vert _a/c$"> and
+  <!-- MATH
+ $||{\bf x}||_1\ge ||{\bf x}||_a/C$
+ -->
+<img width="135" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img706.png" alt="$\vert\vert{\bf x}\vert\vert _1\ge \vert\vert{\bf x}\vert\vert _a/C$">. Substituting these into the right
+  and left hand sides of the second equation respectively yields:  
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\frac{d}{C}\,||{\bf x}||_a\le ||{\bf x}||_b\le \frac{D}{c}\,||{\bf x}||_a,
+\end{displaymath}
+ -->
+
+<img width="218" height="46" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img707.png" alt="\begin{displaymath}
+\frac{d}{C} \vert\vert{\bf x}\vert\vert _a\le \vert\vert{\...
+...\vert\vert _b\le \frac{D}{c} \vert\vert{\bf x}\vert\vert _a,
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+i.e., <img width="45" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img698.png" alt="$\vert\vert{\bf x}\vert\vert _a$"> and <img width="44" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img699.png" alt="$\vert\vert{\bf x}\vert\vert _b$"> are equivalent. 
+
+<p>
+</li>
+<li>If we can further show that an arbitrary norm <img width="37" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img99.png" alt="$\vert\vert{\bf x}\vert\vert$"> is
+  equivalent to <img width="45" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img703.png" alt="$\vert\vert{\bf x}\vert\vert _1$">, i.e., 
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+c\,||{\bf x}||_1\le ||{\bf x}||\le C\,||{\bf x}||_1
+\end{displaymath}
+ -->
+
+<img width="192" height="33" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img708.png" alt="\begin{displaymath}
+c \vert\vert{\bf x}\vert\vert _1\le \vert\vert{\bf x}\vert\vert\le C \vert\vert{\bf x}\vert\vert _1
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+then according to the transitivity property shown above, all norms
+  are equivalent.
+
+<p>
+If <!-- MATH
+ ${\bf x}={\bf0}$
+ -->
+<img width="52" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img100.png" alt="${\bf x}={\bf0}$">, it is obvious that the equalities above hold
+  <!-- MATH
+ $||{\bf x}||=||{\bf x}||_1=0$
+ -->
+<img width="137" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img709.png" alt="$\vert\vert{\bf x}\vert\vert=\vert\vert{\bf x}\vert\vert _1=0$">. If <!-- MATH
+ ${\bf x}\ne {\bf0}$
+ -->
+<img width="52" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img710.png" alt="${\bf x}\ne {\bf0}$">, <!-- MATH
+ $||{\bf x}||_1>0$
+ -->
+<img width="79" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img711.png" alt="$\vert\vert{\bf x}\vert\vert _1>0$">, 
+  we can define a normalized vector <!-- MATH
+ ${\bf u}={\bf x}/||{\bf x}||_1$
+ -->
+<img width="102" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img712.png" alt="${\bf u}={\bf x}/\vert\vert{\bf x}\vert\vert _1$"> with 
+  <!-- MATH
+ $||{\bf u}||_1=1$
+ -->
+<img width="80" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img713.png" alt="$\vert\vert{\bf u}\vert\vert _1=1$">, so that the relationship for the equivalence above
+  can be written in terms of <img width="16" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img200.png" alt="${\bf u}$"> as
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+c=c||{\bf u}||_1\le ||{\bf u}||\le C||{\bf u}||_1=C
+\end{displaymath}
+ -->
+
+<img width="262" height="33" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img714.png" alt="\begin{displaymath}
+c=c\vert\vert{\bf u}\vert\vert _1\le \vert\vert{\bf u}\vert\vert\le C\vert\vert{\bf u}\vert\vert _1=C
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+i.e., to prove that all norms are equivalent all we need to show is that 
+  <img width="38" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img715.png" alt="$\vert\vert{\bf u}\vert\vert$"> is bounded both from above and below, as we will do below.
+
+<p>
+</li>
+<li>We now prove that an arbitrary norm <!-- MATH
+ $f({\bf x})=||{\bf x}||$
+ -->
+<img width="99" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img716.png" alt="$f({\bf x})=\vert\vert{\bf x}\vert\vert$"> is a
+  continuous function over <img width="45" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img703.png" alt="$\vert\vert{\bf x}\vert\vert _1$">, i.e., for any <img width="47" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img143.png" alt="$\epsilon>0$">, 
+  there exists a <img width="48" height="35" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img717.png" alt="$\delta>0$"> so that
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+\mbox{if}\;\;\;||{\bf x}-{\bf x}'||_1<\delta,
+  \;\;\;\;\;\mbox{then}\;\;\;\;\;
+  ||{\bf x}||-||{\bf x}'||\le\epsilon
+\end{displaymath}
+ -->
+
+<img width="363" height="33" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img718.png" alt="\begin{displaymath}
+\mbox{if}\;\;\;\vert\vert{\bf x}-{\bf x}'\vert\vert _1<\del...
+...vert{\bf x}\vert\vert-\vert\vert{\bf x}'\vert\vert\le\epsilon
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+Both <img width="16" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.png" alt="${\bf x}$"> and <img width="20" height="17" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img719.png" alt="${\bf x}'$"> can be expressed in terms of a basis 
+  <!-- MATH
+ $\{{\bf b}_1,\cdots,{\bf b}_n\}$
+ -->
+<img width="106" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img720.png" alt="$\{{\bf b}_1,\cdots,{\bf b}_n\}$"> that spans the space:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+{\bf x}=\sum_{i=1}^n a_i{\bf b}_i,\;\;\;\;\;\;{\bf x}'=\sum_{i=1}^n a'_i{\bf b}_i
+\end{displaymath}
+ -->
+
+<img width="234" height="55" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img721.png" alt="\begin{displaymath}
+{\bf x}=\sum_{i=1}^n a_i{\bf b}_i,\;\;\;\;\;\;{\bf x}'=\sum_{i=1}^n a'_i{\bf b}_i
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+then we have
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf x}-{\bf x}'||=||\sum_{i=1}^n(a_i-a'_i){\bf b}_i||
+  \le\sum_{i=1}^n|a_i-a'_i|\;||{\bf b}_i||
+  \le\sum_{i=1}^n|a_i-a'_i|\;\max_i||{\bf b}_i||
+  =||{\bf x}-{\bf x}'||_1\;\max_i||{\bf b}_i||
+\end{displaymath}
+ -->
+
+<img width="733" height="55" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img722.png" alt="\begin{displaymath}
+\vert\vert{\bf x}-{\bf x}'\vert\vert=\vert\vert\sum_{i=1}^n...
+...x}-{\bf x}'\vert\vert _1\;\max_i\vert\vert{\bf b}_i\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+Now consider the alternative form of the triangle inequality of <img width="37" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img99.png" alt="$\vert\vert{\bf x}\vert\vert$">:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf x}||-||{\bf x}'|| \le ||{\bf x}-{\bf x}'||
+  \le||{\bf x}-{\bf x}'||_1\;\max_i||{\bf b}_i||
+\end{displaymath}
+ -->
+
+<img width="375" height="41" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img723.png" alt="\begin{displaymath}
+\vert\vert{\bf x}\vert\vert-\vert\vert{\bf x}'\vert\vert \l...
+...x}-{\bf x}'\vert\vert _1\;\max_i\vert\vert{\bf b}_i\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+If we let <!-- MATH
+ $\max_i||{\bf b}_i||=\epsilon/\delta$
+ -->
+<img width="137" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img724.png" alt="$\max_i\vert\vert{\bf b}_i\vert\vert=\epsilon/\delta$">, the above becomes
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+||{\bf x}||-||{\bf x}'|| \le||{\bf x}-{\bf x}'||_1\;\frac{\epsilon}{\delta}
+\end{displaymath}
+ -->
+
+<img width="212" height="41" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img725.png" alt="\begin{displaymath}
+\vert\vert{\bf x}\vert\vert-\vert\vert{\bf x}'\vert\vert \l...
+...rt\vert{\bf x}-{\bf x}'\vert\vert _1\;\frac{\epsilon}{\delta}
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+indicating that for any given <img width="12" height="19" align="BOTTOM" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img726.png" alt="$\epsilon$">, we can choose
+  <!-- MATH
+ $\delta=\epsilon/\max_i||{\bf b}_i||$
+ -->
+<img width="141" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img727.png" alt="$\delta=\epsilon/\max_i\vert\vert{\bf b}_i\vert\vert$"> so that if <!-- MATH
+ $||{\bf x}-{\bf x}'||_1\le\delta$
+ -->
+<img width="118" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img728.png" alt="$\vert\vert{\bf x}-{\bf x}'\vert\vert _1\le\delta$">, 
+  then <!-- MATH
+ $||{\bf x}||-||{\bf x}'|| \le \epsilon$
+ -->
+<img width="130" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img729.png" alt="$\vert\vert{\bf x}\vert\vert-\vert\vert{\bf x}'\vert\vert \le \epsilon$">, i.e., the norm <img width="37" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img99.png" alt="$\vert\vert{\bf x}\vert\vert$"> 
+  is indeed continuous over <img width="45" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img703.png" alt="$\vert\vert{\bf x}\vert\vert _1$">.
+
+<p>
+</li>
+<li>Finally, according to the
+  <a name="tex2html9" href="https://web.archive.org/web/20171119064852/http://en.wikipedia.org/wiki/Extreme_value_theorem"><em>extreme value theorem</em></a>,
+  a continuous function, such as <!-- MATH
+ $f({\bf x})=||{\bf x}||$
+ -->
+<img width="99" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img716.png" alt="$f({\bf x})=\vert\vert{\bf x}\vert\vert$">, defined over a 
+  compact (closed and bounded) set, such as the unit sphere <!-- MATH
+ $||{\bf u}||_1=1$
+ -->
+<img width="80" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img713.png" alt="$\vert\vert{\bf u}\vert\vert _1=1$">
+  in the n-D space, must have its maximum and minimum values:
+  <br><p></p>
+<div align="CENTER">
+<!-- MATH
+ \begin{displaymath}
+c=\min_{||{\bf u}||_1=1}||{\bf u}||,\;\;\;\;C=\max_{||{\bf u}||_1=1}||{\bf u}||
+\end{displaymath}
+ -->
+
+<img width="269" height="45" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img730.png" alt="\begin{displaymath}
+c=\min_{\vert\vert{\bf u}\vert\vert _1=1}\vert\vert{\bf u}\...
+...{\vert\vert{\bf u}\vert\vert _1=1}\vert\vert{\bf u}\vert\vert
+\end{displaymath}">
+</div>
+<br clear="ALL">
+<p></p>
+i.e., <!-- MATH
+ $c\le ||{\bf u}||\le C$
+ -->
+<img width="111" height="39" align="MIDDLE" border="0" src="/web/20171119064852im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img731.png" alt="$c\le \vert\vert{\bf u}\vert\vert\le C$">, which is what we need to prove.
+</li>
+</ul>
+Q.E.D.
+
+<p>
+<hr>
+<!--Navigation Panel-->
+<a name="tex2html173" href="node15.html">
+<img width="37" height="24" align="BOTTOM" border="0" alt="next" src="https://web.archive.org/web/20171119064852im_/file:/opt/local/share/lib/latex2html/icons/next.png"></a> 
+<a name="tex2html171" href="algebra.html">
+<img width="26" height="24" align="BOTTOM" border="0" alt="up" src="https://web.archive.org/web/20171119064852im_/file:/opt/local/share/lib/latex2html/icons/up.png"></a> 
+<a name="tex2html165" href="node13.html">
+<img width="63" height="24" align="BOTTOM" border="0" alt="previous" src="https://web.archive.org/web/20171119064852im_/file:/opt/local/share/lib/latex2html/icons/prev.png"></a>   
+<br>
+<b> Next:</b> <a name="tex2html174" href="node15.html">Matrix norms</a>
+<b> Up:</b> <a name="tex2html172" href="algebra.html">algebra</a>
+<b> Previous:</b> <a name="tex2html166" href="node13.html">Pseudo-inverse</a>
+<!--End of Navigation Panel-->
+<address>
+Ruye Wang
+2017-08-25
+</address>
+</body>
+</html>
+<!--
+     FILE ARCHIVED ON 06:48:52 Nov 19, 2017 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 22:19:11 Nov 07, 2022.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->
+<!--
+playback timings (ms):
+  captures_list: 503.705
+  exclusion.robots: 0.175
+  exclusion.robots.policy: 0.163
+  cdx.remote: 0.098
+  esindex: 0.013
+  LoadShardBlock: 228.637 (3)
+  PetaboxLoader3.datanode: 169.077 (4)
+  CDXLines.iter: 21.081 (3)
+  load_resource: 96.875
+  PetaboxLoader3.resolve: 64.767
+-->

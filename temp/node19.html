@@ -1,0 +1,2235 @@
+<!DOCTYPE HTML>
+
+<!--Converted with LaTeX2HTML 2019 (Released January 1, 2019) -->
+<html lang="EN">
+<head><script src="//archive.org/includes/analytics.js?v=cf34f82" type="text/javascript"></script>
+<script type="text/javascript">window.addEventListener('DOMContentLoaded',function(){var v=archive_analytics.values;v.service='wb';v.server_name='wwwb-app228.us.archive.org';v.server_ms=657;archive_analytics.send_pageview({});});</script>
+<script type="text/javascript" src="/_static/js/bundle-playback.js?v=MzYkZ0TU" charset="utf-8"></script>
+<script type="text/javascript" src="/_static/js/wombat.js?v=UHAOicsW" charset="utf-8"></script>
+<script type="text/javascript">
+  __wm.init("https://web.archive.org/web");
+  __wm.wombat("http://fourier.eng.hmc.edu/e176/lectures/algebra/node19.html","20210423173616","https://web.archive.org/","web","/_static/",
+	      "1619199376");
+</script>
+<link rel="stylesheet" type="text/css" href="/_static/css/banner-styles.css?v=S1zqJCYt" />
+<link rel="stylesheet" type="text/css" href="/_static/css/iconochive.css?v=qtvMKcIJ" />
+<!-- End Wayback Rewrite JS Include -->
+
+<title>The Fundamental Theorem of Linear Algebra</title>
+<meta name="description" content="The Fundamental Theorem of Linear Algebra">
+<meta name="keywords" content="algebra">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="Generator" content="LaTeX2HTML v2019">
+
+<link rel="STYLESHEET" href="/web/20210423173616cs_/http://fourier.eng.hmc.edu/e176/lectures/algebra/algebra.css">
+
+<link rel="next" href="node20.html">
+<link rel="previous" href="node18.html">
+<link rel="next" href="node20.html">
+</head>
+
+<body><!-- BEGIN WAYBACK TOOLBAR INSERT -->
+<style type="text/css">
+body {
+  margin-top:0 !important;
+  padding-top:0 !important;
+  /*min-width:800px !important;*/
+}
+</style>
+<script>__wm.rw(0);</script>
+<div id="wm-ipp-base" lang="en" style="display:none;direction:ltr;">
+<div id="wm-ipp" style="position:fixed;left:0;top:0;right:0;">
+<div id="donato" style="position:relative;width:100%;">
+  <div id="donato-base">
+    <iframe id="donato-if" src="https://archive.org/includes/donate.php?as_page=1&amp;platform=wb&amp;referer=https%3A//web.archive.org/web/20210423173616/http%3A//fourier.eng.hmc.edu/e176/lectures/algebra/node19.html"
+	    scrolling="no" frameborder="0" style="width:100%; height:100%">
+    </iframe>
+  </div>
+</div><div id="wm-ipp-inside">
+  <div id="wm-toolbar" style="position:relative;display:flex;flex-flow:row nowrap;justify-content:space-between;">
+    <div id="wm-logo" style="/*width:110px;*/padding-top:12px;">
+      <a href="/web/" title="Wayback Machine home page"><img src="/_static/images/toolbar/wayback-toolbar-logo-200.png" srcset="/_static/images/toolbar/wayback-toolbar-logo-100.png, /_static/images/toolbar/wayback-toolbar-logo-150.png 1.5x, /_static/images/toolbar/wayback-toolbar-logo-200.png 2x" alt="Wayback Machine" style="width:100px" border="0" /></a>
+    </div>
+    <div class="c" style="display:flex;flex-flow:column nowrap;justify-content:space-between;flex:1;">
+      <form class="u" style="display:flex;flex-direction:row;flex-wrap:nowrap;" target="_top" method="get" action="/web/submit" name="wmtb" id="wmtb"><input type="text" name="url" id="wmtbURL" value="http://fourier.eng.hmc.edu/e176/lectures/algebra/node19.html" onfocus="this.focus();this.select();" style="flex:1;"/><input type="hidden" name="type" value="replay" /><input type="hidden" name="date" value="20210423173616" /><input type="submit" value="Go" />
+      </form>
+      <div style="display:flex;flex-flow:row nowrap;align-items:flex-end;">
+		<div class="s" id="wm-nav-captures" style="flex:1;">
+	  	  <a class="t" href="/web/20210423173616*/http://fourier.eng.hmc.edu/e176/lectures/algebra/node19.html" title="See a list of every capture for this URL">1 capture</a>
+	  <div class="r" title="Timespan for captures of this URL">23 Apr 2021</div>
+	  </div>
+	<div class="k">
+	  <a href="" id="wm-graph-anchor">
+	    <div id="wm-ipp-sparkline" title="Explore captures for this URL" style="position: relative">
+	      <canvas id="wm-sparkline-canvas" width="675" height="27" border="0"></canvas>
+	    </div>
+	  </a>
+	</div>
+      </div>
+    </div>
+    <div class="n">
+      <table>
+	<tbody>
+	  <!-- NEXT/PREV MONTH NAV AND MONTH INDICATOR -->
+	  <tr class="m">
+	    <td class="b" nowrap="nowrap">Mar</td>
+	    <td class="c" id="displayMonthEl" title="You are here: 17:36:16 Apr 23, 2021">APR</td>
+	    <td class="f" nowrap="nowrap">May</td>
+	  </tr>
+	  <!-- NEXT/PREV CAPTURE NAV AND DAY OF MONTH INDICATOR -->
+	  <tr class="d">
+	    <td class="b" nowrap="nowrap"><img src="/_static/images/toolbar/wm_tb_prv_off.png" alt="Previous capture" width="14" height="16" border="0" /></td>
+	    <td class="c" id="displayDayEl" style="width:34px;font-size:22px;white-space:nowrap;" title="You are here: 17:36:16 Apr 23, 2021">23</td>
+	    <td class="f" nowrap="nowrap"><img src="/_static/images/toolbar/wm_tb_nxt_off.png" alt="Next capture" width="14" height="16" border="0" /></td>
+	  </tr>
+	  <!-- NEXT/PREV YEAR NAV AND YEAR INDICATOR -->
+	  <tr class="y">
+	    <td class="b" nowrap="nowrap">2020</td>
+	    <td class="c" id="displayYearEl" title="You are here: 17:36:16 Apr 23, 2021">2021</td>
+	    <td class="f" nowrap="nowrap">2022</td>
+	  </tr>
+	</tbody>
+      </table>
+    </div>
+    <div class="r" style="display:flex;flex-flow:column nowrap;align-items:flex-end;justify-content:space-between;">
+      <div id="wm-btns" style="text-align:right;height:23px;">
+        	<span class="xxs">
+          <div id="wm-save-snapshot-success">success</div>
+          <div id="wm-save-snapshot-fail">fail</div>
+          <a id="wm-save-snapshot-open" href="#"
+	     title="Share via My Web Archive" >
+            <span class="iconochive-web"></span>
+          </a>
+          <a href="https://archive.org/account/login.php" title="Sign In" id="wm-sign-in">
+            <span class="iconochive-person"></span>
+          </a>
+          <span id="wm-save-snapshot-in-progress" class="iconochive-web"></span>
+	</span>
+        	<a class="xxs" href="http://faq.web.archive.org/" title="Get some help using the Wayback Machine" style="top:-6px;"><span class="iconochive-question" style="color:rgb(87,186,244);font-size:160%;"></span></a>
+	<a id="wm-tb-close" href="#close" style="top:-2px;" title="Close the toolbar"><span class="iconochive-remove-circle" style="color:#888888;font-size:240%;"></span></a>
+      </div>
+      <div id="wm-share" class="xxs">
+        <a href="/web/20210423173616/http://web.archive.org/screenshot/http://fourier.eng.hmc.edu/e176/lectures/algebra/node19.html"
+           id="wm-screenshot"
+           title="screenshot">
+          <span class="wm-icon-screen-shot"></span>
+        </a>
+        <a href="#" id="wm-video" title="video">
+          <span class="iconochive-movies"></span>
+        </a>
+	<a id="wm-share-facebook" href="#" data-url="https://web.archive.org/web/20210423173616/http://fourier.eng.hmc.edu/e176/lectures/algebra/node19.html" title="Share on Facebook" style="margin-right:5px;" target="_blank"><span class="iconochive-facebook" style="color:#3b5998;font-size:160%;"></span></a>
+	<a id="wm-share-twitter" href="#" data-url="https://web.archive.org/web/20210423173616/http://fourier.eng.hmc.edu/e176/lectures/algebra/node19.html" title="Share on Twitter" style="margin-right:5px;" target="_blank"><span class="iconochive-twitter" style="color:#1dcaff;font-size:160%;"></span></a>
+      </div>
+      <div style="padding-right:2px;text-align:right;white-space:nowrap;">
+	<a id="wm-expand" class="wm-btn wm-closed" href="#expand" onclick="__wm.ex(event);return false;"><span id="wm-expand-icon" class="iconochive-down-solid"></span> <span class="xxs" style="font-size:80%;">About this capture</span></a>
+      </div>
+    </div>
+  </div>
+    <div id="wm-capinfo" style="border-top:1px solid #777;display:none; overflow: hidden">
+                    <div id="wm-capinfo-collected-by">
+    <div style="background-color:#666;color:#fff;font-weight:bold;text-align:center">COLLECTED BY</div>
+    <div style="padding:3px;position:relative" id="wm-collected-by-content">
+      <div style="display:inline-block;vertical-align:top;width:49%;">
+			<span class="c-logo" style="background-image:url(https://archive.org/services/img/commoncrawl)"></span>
+		<div>Collection: <a style="color:#33f;" href="https://archive.org/details/commoncrawl" target="_new"><span class="wm-title">Common Crawl</span></a></div>
+		<div style="max-height:75px;overflow:hidden;position:relative;">
+	  <div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+	  Web crawl data from Common Crawl.
+	</div>
+	      </div>
+    </div>
+    </div>
+    <div id="wm-capinfo-timestamps">
+    <div style="background-color:#666;color:#fff;font-weight:bold;text-align:center" title="Timestamps for the elements of this page">TIMESTAMPS</div>
+    <div>
+      <div id="wm-capresources" style="margin:0 5px 5px 5px;max-height:250px;overflow-y:scroll !important"></div>
+      <div id="wm-capresources-loading" style="text-align:left;margin:0 20px 5px 5px;display:none"><img src="/_static/images/loading.gif" alt="loading" /></div>
+    </div>
+    </div>
+  </div></div></div></div><div id="wm-ipp-print">The Wayback Machine - https://web.archive.org/web/20210423173616/http://fourier.eng.hmc.edu/e176/lectures/algebra/node19.html</div>
+<script type="text/javascript">//<![CDATA[
+__wm.bt(675,27,25,2,"web","http://fourier.eng.hmc.edu/e176/lectures/algebra/node19.html","20210423173616",1996,"/_static/",["/_static/css/banner-styles.css?v=S1zqJCYt","/_static/css/iconochive.css?v=qtvMKcIJ"], false);
+  __wm.rw(1);
+//]]></script>
+<!-- END WAYBACK TOOLBAR INSERT -->
+
+<div class="navigation"><!--Navigation Panel-->
+<a href="node20.html">
+<img width="37" height="24" alt="next" src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/next.png"></a> 
+<a href="algebra.html">
+<img width="26" height="24" alt="up" src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/up.png"></a> 
+<a href="node18.html">
+<img width="63" height="24" alt="previous" src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/prev.png"></a>   
+<br>
+<b> Next:</b> <a href="node20.html">Pseudo-Inverse Solutions Based on</a>
+<b> Up:</b> <a href="algebra.html">algebra</a>
+<b> Previous:</b> <a href="node18.html">Vector and Matrix Differentiation</a>
+<br>
+<br></div>
+<!--End of Navigation Panel-->
+
+<h1><a id="SECTION000190000000000000000">
+The Fundamental Theorem of Linear Algebra</a>
+</h1>
+
+<p>
+When solving a linear equation system <!-- MATH
+ ${\bf Ax}={\bf b}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img276.svg" alt="${\bf Ax}={\bf b}$"></span>, with an 
+<span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img996.svg" alt="$M\times N$"></span> coefficient matrix <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span>, we need to answer some 
+questions such as the following:
+
+<ul>
+<li>Does the solution exist, i.e., can we find an <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img997.svg" alt="${\bf x}^*$"></span> so that 
+  <!-- MATH
+ ${\bf Ax}^*={\bf b}$
+ -->
+<span class="MATH"><img style="height: 2.09ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img998.svg" alt="${\bf Ax}^*={\bf b}$"></span> holds? 
+</li>
+<li>If a solution exists, is it unique? If it is not unique, how can 
+  we find all of the solutions?
+</li>
+<li>If no solution exists, can we still find the optimal approximate 
+  solution <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img999.svg" alt="$\hat{\bf x}$"></span> so that the error 
+  <!-- MATH
+ $||{\bf e}||=||{\bf A}\hat{\bf x}-{\bf b}||$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1000.svg" alt="$\vert\vert{\bf e}\vert\vert=\vert\vert{\bf A}\hat{\bf x}-{\bf b}\vert\vert$"></span> is minimized?
+</li>
+<li>If the system has fewer equations than unknowns (<span class="MATH"><img style="height: 2.09ex; vertical-align: -0.21ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1001.svg" alt="$M<N$"></span>), are there
+  infinite solutions?
+</li>
+<li>If the system has more equations than unknowns (<span class="MATH"><img style="height: 2.09ex; vertical-align: -0.21ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1002.svg" alt="$M>N$"></span>), is there
+  no solution?
+</li>
+</ul>
+The <em>fundamental theorem of linear algebra</em> can reveal the structure 
+of the solutions of a given linear system <!-- MATH
+ ${\bf Ax}={\bf b}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img276.svg" alt="${\bf Ax}={\bf b}$"></span>, and thereby 
+answer all such questions.
+
+<p>
+The <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img996.svg" alt="$M\times N$"></span> coefficient matrix <!-- MATH
+ ${\bf A}\in R^{M\times N}$
+ -->
+<span class="MATH"><img style="height: 2.32ex; vertical-align: -0.21ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1003.svg" alt="${\bf A}\in R^{M\times N}$"></span> can be expressed
+in terms of either its <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1004.svg" alt="$N$"></span> M-D column vectors <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1005.svg" alt="${\bf c}_j$"></span> or its <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1006.svg" alt="$M$"></span> N-D row
+vectors <span class="MATH"><img style="height: 2.79ex; vertical-align: -0.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1007.svg" alt="${\bf r}_i^T$"></span>:
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf A}=\left[\begin{array}{ccc}a_{11}&\cdots&a_{1N}\\
+      \vdots&\ddots&\vdots\\a_{M1}&\cdots&a_{MN}\end{array}\right]
+  =[{\bf c_1},\cdots,{\bf c}_N]
+  =\left[\begin{array}{c}{\bf r}^T_1\\\vdots\\{\bf r}^T_M\end{array}\right],
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 10.22ex; vertical-align: -4.49ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1008.svg" alt="$\displaystyle {\bf A}=\left[\begin{array}{ccc}a_{11}&amp;\cdots&amp;a_{1N}\\
+\vdots&amp;\...
+...
+=\left[\begin{array}{c}{\bf r}^T_1\\ \vdots\\ {\bf r}^T_M\end{array}\right],
+$"> 
+
+(<span class="arabic">303</span>)
+</div>
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf A}^T=\left[\begin{array}{ccc}a_{11}&\cdots&a_{M1}\\
+      \vdots&\ddots&\vdots\\a_{1N}&\cdots&a_{MN}\end{array}\right]
+  =[{\bf r_1},\cdots,{\bf r}_M]
+  =\left[\begin{array}{c}{\bf c}^T_1\\\vdots\\{\bf c}^T_N\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 10.22ex; vertical-align: -4.49ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1009.svg" alt="$\displaystyle {\bf A}^T=\left[\begin{array}{ccc}a_{11}&amp;\cdots&amp;a_{M1}\\
+\vdots...
+...
+=\left[\begin{array}{c}{\bf c}^T_1\\ \vdots\\ {\bf c}^T_N\end{array}\right]
+$"> 
+
+(<span class="arabic">304</span>)
+</div>
+where <!-- MATH
+ ${\bf r}_i,\;(i=1,\cdots,M)$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1010.svg" alt="${\bf r}_i,\;(i=1,\cdots,M)$"></span> and <!-- MATH
+ ${\bf c}_j,\;(j=1,\cdots,N)$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1011.svg" alt="${\bf c}_j,\;(j=1,\cdots,N)$"></span> 
+are respectively the ith row vector and jth column vector (all vectors 
+are assumed to be vertical):
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf c}_j=\left[\begin{array}{c}a_{1j}\\\vdots\\a_{Mj}\end{array}\right],
+  \;\;\;\;\;\;\;\;\;
+  {\bf r}_i=\left[\begin{array}{c}a_{i1}\\\vdots\\a_{iN}\end{array}\right]
+  \;\;\;\;\;\mbox{i.e.}\;\;\;  {\bf r}_i^T=[a_{i1},\cdots,a_{iN}]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 10.22ex; vertical-align: -4.49ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1012.svg" alt="$\displaystyle {\bf c}_j=\left[\begin{array}{c}a_{1j}\\ \vdots\\ a_{Mj}\end{arra...
+...{array}\right]
+\;\;\;\;\;\mbox{i.e.}\;\;\; {\bf r}_i^T=[a_{i1},\cdots,a_{iN}]
+$"> 
+
+(<span class="arabic">305</span>)
+</div>
+
+<p>
+In general a function <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1013.svg" alt="$y=f(x)$"></span> can be represented by 
+<!-- MATH
+ $f:\;X\rightarrow Y$
+ -->
+<span class="MATH"><img style="height: 2.32ex; vertical-align: -0.57ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1014.svg" alt="$f:\;X\rightarrow Y$"></span>, where
+
+<ul>
+<li><span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1015.svg" alt="$X$"></span> is the
+  <a id="tex2html13" href="https://web.archive.org/web/20210423173616/http://en.wikipedia.org/wiki/Domain_(mathematics)"><em>domain</em></a>
+of the function, the set of all input or argument values;
+</li>
+<li><span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1016.svg" alt="$Y$"></span> the <a id="tex2html14" href="https://web.archive.org/web/20210423173616/http://en.wikipedia.org/wiki/Codomain"><em>codomain</em></a>
+of the function, the set into which all outputs of the function 
+  are constrained to fall;
+</li>
+<li>the function value <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img771.svg" alt="$f(x)$"></span> of any <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.21ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1017.svg" alt="$x\in X$"></span> is called the 
+  <a id="tex2html15" href="https://web.archive.org/web/20210423173616/https://en.wikipedia.org/wiki/Image_(mathematics)"><em>image</em></a>
+of <span class="MATH"><img style="height: 1.39ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img96.svg" alt="$x$"></span>;
+</li>
+<li>the set of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img771.svg" alt="$f(x)$"></span> for all <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.21ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1017.svg" alt="$x\in X$"></span> is the image of the function,
+  a subset of the codomain.
+</li>
+</ul>
+
+<p>
+<img style="" src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/figures/DomainCodomain.png" alt="DomainCodomain.png">
+
+<p>
+The matrix <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> can be considered as a function, a linear 
+transformation <!-- MATH
+ ${\bf f}({\bf x})={\bf Ax}$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1018.svg" alt="${\bf f}({\bf x})={\bf Ax}$"></span>, which maps an N-D 
+vector <!-- MATH
+ ${\bf x}\in \mathbb{R}^N$
+ -->
+<span class="MATH"><img style="height: 2.32ex; vertical-align: -0.21ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1019.svg" alt="${\bf x}\in \mathbb{R}^N$"></span> in the domain of the function 
+into an M-D vector <!-- MATH
+ ${\bf Ax}\in R^M$
+ -->
+<span class="MATH"><img style="height: 2.32ex; vertical-align: -0.21ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1020.svg" alt="${\bf Ax}\in R^M$"></span> in the codomain of the function.
+The <a id="tex2html16" href="https://web.archive.org/web/20210423173616/http://en.wikipedia.org/wiki/Fundamental_theorem_of_linear_algebra"><em>fundamental theorem of linear algebra</em></a>
+concerns the following four subspaces associated with any <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img996.svg" alt="$M\times N$"></span>
+matrix <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> with rank <!-- MATH
+ $R=rank({\bf A})\le \min(M,\,N)$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1021.svg" alt="$R=rank({\bf A})\le \min(M,\,N)$"></span> (i.e., 
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> has <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img714.svg" alt="$R$"></span> independent columns and rows).
+
+<p>
+
+<ul>
+<li>The <a id="tex2html17" href="https://web.archive.org/web/20210423173616/http://en.wikipedia.org/wiki/Column_space"><em>column space</em></a>
+of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> is a space spanned by its <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1004.svg" alt="$N$"></span> M-D column vectors (of 
+  which <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.43ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1022.svg" alt="$R\le N$"></span> are independent):
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+C({\bf A})=span({\bf c}_1,\cdots,{\bf c}_N) \subseteq R^M
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 3.02ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1023.svg" alt="$\displaystyle C({\bf A})=span({\bf c}_1,\cdots,{\bf c}_N) \subseteq R^M
+$"> 
+
+(<span class="arabic">306</span>)
+</div>
+which is an R-D subspace of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1024.svg" alt="$R^M$"></span> composed of all possible linear 
+  combinations of its <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1004.svg" alt="$N$"></span> column vectors:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+x_1{\bf c}_1+\cdots+x_N{\bf c}_N=[{\bf c_1},\cdots,{\bf c}_N]
+    \left[\begin{array}{c}x_1\\\vdots\\x_N\end{array}\right]
+    ={\bf A}{\bf x}\;\;\;\;\;\;\mbox{(for any ${\bf x}\in\mathbb{R}^N$)}
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 10.22ex; vertical-align: -4.49ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1025.svg" alt="$\displaystyle x_1{\bf c}_1+\cdots+x_N{\bf c}_N=[{\bf c_1},\cdots,{\bf c}_N]
+\l...
+...\right]
+={\bf A}{\bf x}\;\;\;\;\;\;\mbox{(for any ${\bf x}\in\mathbb{R}^N$)}
+$"> 
+
+(<span class="arabic">307</span>)
+</div>
+The column space <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span> is the <em>image</em> of the linear 
+  transformation <!-- MATH
+ ${\bf f}({\bf x})={\bf Ax}$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1018.svg" alt="${\bf f}({\bf x})={\bf Ax}$"></span>, and the equation 
+  <!-- MATH
+ ${\bf Ax}={\bf b}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img276.svg" alt="${\bf Ax}={\bf b}$"></span> is solvable if and only if <!-- MATH
+ ${\bf b}\in C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1027.svg" alt="${\bf b}\in C({\bf A})$"></span>.
+  The dimension of the column space is the rank of 
+  <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span>, <!-- MATH
+ $dim\,C({\bf A})=rank({\bf A})=R$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1028.svg" alt="$dim\,C({\bf A})=rank({\bf A})=R$"></span>.
+
+<p>
+</li>
+<li>The <a id="tex2html18" href="https://web.archive.org/web/20210423173616/http://en.wikipedia.org/wiki/row_space"><em>row space</em></a>
+of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> is a space spanned by its <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1006.svg" alt="$M$"></span> N-D row vectors 
+  (of which <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.43ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1029.svg" alt="$R\le M$"></span> are independent):
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+R({\bf A})=span({\bf r}_1,\cdots,{\bf r}_M) \subseteq \mathbb{R}^N
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 3.02ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1030.svg" alt="$\displaystyle R({\bf A})=span({\bf r}_1,\cdots,{\bf r}_M) \subseteq \mathbb{R}^N
+$"> 
+
+(<span class="arabic">308</span>)
+</div>
+which is an R-D subspace of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1031.svg" alt="$\mathbb{R}^N$"></span> composed of all possible 
+  linear combinations of its <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1006.svg" alt="$M$"></span> row vectors:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+y_1{\bf r}_1+\cdots+y_M{\bf r}_N=[{\bf r_1},\cdots,{\bf r}_M]
+    \left[\begin{array}{c}y_1\\\vdots\\y_M\end{array}\right]
+    ={\bf A}^T{\bf y}\;\;\;\;\;\;\mbox{(for any ${\bf y}\in \mathbb{R}^M)$}
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 10.22ex; vertical-align: -4.49ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1032.svg" alt="$\displaystyle y_1{\bf r}_1+\cdots+y_M{\bf r}_N=[{\bf r_1},\cdots,{\bf r}_M]
+\l...
+...ht]
+={\bf A}^T{\bf y}\;\;\;\;\;\;\mbox{(for any ${\bf y}\in \mathbb{R}^M)$}
+$"> 
+
+(<span class="arabic">309</span>)
+</div>
+The row space <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span> is the <em>image</em> of the linear 
+  transformation <!-- MATH
+ ${\bf f}({\bf y})={\bf A}^T{\bf y}$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1033.svg" alt="${\bf f}({\bf y})={\bf A}^T{\bf y}$"></span>, and the 
+  equation <!-- MATH
+ ${\bf A}^T{\bf y}={\bf c}$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.57ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1034.svg" alt="${\bf A}^T{\bf y}={\bf c}$"></span> is solvable if and only if 
+  <!-- MATH
+ ${\bf c}\in R({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1035.svg" alt="${\bf c}\in R({\bf A})$"></span>. 
+  As the rows and columns in <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> are respectively the columns 
+  and rows in <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img226.svg" alt="${\bf A}^T$"></span>, the row space of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> is the column 
+  space of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img226.svg" alt="${\bf A}^T$"></span>, and the column space of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> is the row 
+  space of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img226.svg" alt="${\bf A}^T$"></span>:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+R({\bf A})=C({\bf A}^T),\;\;\;\;\;\;\;\;\;\;C({\bf A})=R({\bf A}^T)
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 3.02ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1036.svg" alt="$\displaystyle R({\bf A})=C({\bf A}^T),\;\;\;\;\;\;\;\;\;\;C({\bf A})=R({\bf A}^T)
+$"> 
+
+(<span class="arabic">310</span>)
+</div>
+The rank <!-- MATH
+ $R=rank({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1037.svg" alt="$R=rank({\bf A})$"></span> is the number of linearly independent 
+  rows and columns of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span>, i.e., the row space and the column 
+  space have the same dimension, both equal to the rank of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span>:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+dim\,C({\bf A})=dim\,R({\bf A})=rank({\bf A})=R
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1038.svg" alt="$\displaystyle dim\,C({\bf A})=dim\,R({\bf A})=rank({\bf A})=R
+$"> 
+
+(<span class="arabic">311</span>)
+</div>
+
+<p>
+</li>
+<li>The <a id="tex2html19" href="https://web.archive.org/web/20210423173616/http://en.wikipedia.org/wiki/Null_space"><em>null space (kernel)</em></a>
+of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span>, denoted by <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span>, is the set of all N-D 
+  vectors <span class="MATH"><img style="height: 1.39ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.svg" alt="${\bf x}$"></span> that satisfy the homogeneous equation
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf A}{\bf x}=\left[\begin{array}{c}{\bf r}^T_1\\\vdots\\{\bf r}^T_M\end{array}\right]
+    {\bf x}={\bf0},\;\;\;\;\;\;\mbox{or}\;\;\;\;\;\;
+    {\bf r}^T_i{\bf x}=0\;\;\;(i=1,\cdots,M)
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 10.22ex; vertical-align: -4.49ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1040.svg" alt="$\displaystyle {\bf A}{\bf x}=\left[\begin{array}{c}{\bf r}^T_1\\ \vdots\\ {\bf ...
+...,\;\;\;\;\;\;\mbox{or}\;\;\;\;\;\;
+{\bf r}^T_i{\bf x}=0\;\;\;(i=1,\cdots,M)
+$"> 
+
+(<span class="arabic">312</span>)
+</div>
+i.e.,
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+N({\bf A})=\{ {\bf x}\in\mathbb{R}^N | {\bf A}{\bf x}
+    ={\bf0} \}\subseteq \mathbb{R}^N
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 3.02ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1041.svg" alt="$\displaystyle N({\bf A})=\{ {\bf x}\in\mathbb{R}^N \vert {\bf A}{\bf x}
+={\bf0} \}\subseteq \mathbb{R}^N
+$"> 
+
+(<span class="arabic">313</span>)
+</div>
+In particular, when <!-- MATH
+ ${\bf x}={\bf0}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img103.svg" alt="${\bf x}={\bf0}$"></span>, we get <!-- MATH
+ ${\bf A}{\bf x}={\bf0}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1042.svg" alt="${\bf A}{\bf x}={\bf0}$"></span>, 
+  i.e., the origin <!-- MATH
+ ${\bf0}\in N({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1043.svg" alt="${\bf0}\in N({\bf A})$"></span> is in the null space. 
+
+<p>
+As <!-- MATH
+ ${\bf r}^T_i{\bf x}=0$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1044.svg" alt="${\bf r}^T_i{\bf x}=0$"></span> for any <!-- MATH
+ ${\bf x}\in N({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1045.svg" alt="${\bf x}\in N({\bf A})$"></span> and
+  <!-- MATH
+ ${\bf r}_i\in R({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1046.svg" alt="${\bf r}_i\in R({\bf A})$"></span>, we see that the null space <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span>
+  and the row space <!-- MATH
+ $R({\bf A})=C({\bf A}^T)$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1047.svg" alt="$R({\bf A})=C({\bf A}^T)$"></span> are orthogonal to each
+  other, <!-- MATH
+ $N({\bf A}) \perp R({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1048.svg" alt="$N({\bf A}) \perp R({\bf A})$"></span>. 
+
+<p>
+The dimension of the null space is called the <em>nullity</em> of 
+  <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span>:  <!-- MATH
+ $dim\;N({\bf A})=nullity({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1049.svg" alt="$dim\;N({\bf A})=nullity({\bf A})$"></span>. The 
+  <a id="tex2html20" href="/web/20210423173616/http://fourier.eng.hmc.edu/e176/lectures/algebra/node18.html">rank-nullity theorem</a>
+states the sum of the rank and the nullity of an <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img996.svg" alt="$M\times N$"></span> matrix
+  <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> is equal to <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1004.svg" alt="$N$"></span>:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+\mbox{rank}({\bf A})+nullity({\bf A})=dim\;R({\bf A})+dim\;N({\bf A})=N
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1050.svg" alt="$\displaystyle \mbox{rank}({\bf A})+nullity({\bf A})=dim\;R({\bf A})+dim\;N({\bf A})=N
+$"> 
+
+(<span class="arabic">314</span>)
+</div>
+We therefore see that <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span> and <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span> are two mutually 
+  exclusive and complementary subspaces of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1031.svg" alt="$\mathbb{R}^N$"></span>:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+R({\bf A}) \perp N({\bf A}),\;\;\;\;
+    R({\bf A}) \cap N({\bf A})=\emptyset,\;\;\;\;\;
+    R({\bf A}) \oplus N({\bf A})=\mathbb{R}^N
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 3.02ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1051.svg" alt="$\displaystyle R({\bf A}) \perp N({\bf A}),\;\;\;\;
+R({\bf A}) \cap N({\bf A})=\emptyset,\;\;\;\;\;
+R({\bf A}) \oplus N({\bf A})=\mathbb{R}^N
+$"> 
+
+(<span class="arabic">315</span>)
+</div>
+i.e., they are 
+  <a id="tex2html21" href="https://web.archive.org/web/20210423173616/http://en.wikipedia.org/wiki/Orthogonal_complement"><em>orthogonal complement</em></a>
+of each other, denoted by
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+N({\bf A})=R({\bf A})^\perp,\;\;\;\;R({\bf A})=N({\bf A})^\perp
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 3.02ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1052.svg" alt="$\displaystyle N({\bf A})=R({\bf A})^\perp,\;\;\;\;R({\bf A})=N({\bf A})^\perp
+$"> 
+
+(<span class="arabic">316</span>)
+</div>
+Any N-D vector <!-- MATH
+ ${\bf x}\in \mathbb{R}^N$
+ -->
+<span class="MATH"><img style="height: 2.32ex; vertical-align: -0.21ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1019.svg" alt="${\bf x}\in \mathbb{R}^N$"></span> is in either of the two 
+  subspaces <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span> and <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span>.
+
+<p>
+</li>
+<li>The null space of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img226.svg" alt="${\bf A}^T$"></span> (left null space of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1053.svg" alt="${\bf A})$"></span>,
+  denoted by <span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1054.svg" alt="$N({\bf A}^T)$"></span>, is the set of all M-D vectors <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.57ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img89.svg" alt="${\bf y}$"></span> 
+  that satisfy the homogeneous equation
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf A}^T{\bf y}=[{\bf c}_1,\cdots,{\bf c}_N]^T{\bf y}
+    =\left[\begin{array}{c}{\bf c}^T_1\\\vdots\\{\bf c}^T_N\end{array}\right]
+    {\bf y}={\bf0},\;\;\;\;\;\;\mbox{or}\;\;\;\;\;\;
+    {\bf c}^T_j{\bf y}=0,\;\;\;(j=1,\cdots,N)
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 10.22ex; vertical-align: -4.49ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1055.svg" alt="$\displaystyle {\bf A}^T{\bf y}=[{\bf c}_1,\cdots,{\bf c}_N]^T{\bf y}
+=\left[\b...
+...\;\;\;\;\;\;\mbox{or}\;\;\;\;\;\;
+{\bf c}^T_j{\bf y}=0,\;\;\;(j=1,\cdots,N)
+$"> 
+
+(<span class="arabic">317</span>)
+</div>
+i.e., 
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+N({\bf A}^T)=\{ {\bf y}\in\mathbb{R}^M | {\bf A}^T{\bf y}
+  ={\bf0} \}\subseteq \mathbb{R}^M
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 3.02ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1056.svg" alt="$\displaystyle N({\bf A}^T)=\{ {\bf y}\in\mathbb{R}^M \vert {\bf A}^T{\bf y}
+={\bf0} \}\subseteq \mathbb{R}^M
+$"> 
+
+(<span class="arabic">318</span>)
+</div>
+As all <!-- MATH
+ ${\bf y}\in N({\bf A}^T)$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1057.svg" alt="${\bf y}\in N({\bf A}^T)$"></span> are orthogonal to <!-- MATH
+ ${\bf c}_i\in C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1058.svg" alt="${\bf c}_i\in C({\bf A})$"></span>,
+  <span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1054.svg" alt="$N({\bf A}^T)$"></span> is orthogonal to the column space <!-- MATH
+ $C({\bf A})=R({\bf A}^T)$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1059.svg" alt="$C({\bf A})=R({\bf A}^T)$"></span>: 
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+N({\bf A}^T) \perp C({\bf A}),\;\;\;\;\;\;\;N({\bf A}^T) \perp R({\bf A}^T)
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 3.02ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1060.svg" alt="$\displaystyle N({\bf A}^T) \perp C({\bf A}),\;\;\;\;\;\;\;N({\bf A}^T) \perp R({\bf A}^T)
+$"> 
+
+(<span class="arabic">319</span>)
+</div>
+We see that <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span> and <span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1054.svg" alt="$N({\bf A}^T)$"></span> are two mutually exclusive and 
+  complementary subspaces of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1061.svg" alt="$\mathbb{R}^M$"></span>: 
+  <br>
+<div align="CENTER">
+
+<!-- MATH
+ \begin{eqnarray}
+&&C({\bf A}) \perp N({\bf A}^T),\;\;\;\;\;
+    C({\bf A}) \cap N({\bf A}^T)=\emptyset,\;\;\;\;\;
+    C({\bf A}) \oplus N({\bf A}^T)=R^M,
+    \nonumber\\
+    &\mbox{i.e.}&N({\bf A}^T)=C({\bf A})^\perp,\;\;\;\;C({\bf A})=N({\bf A}^T)^\perp
+\end{eqnarray}
+ -->
+<table cellpadding="0" align="CENTER" width="100%">
+<tr valign="MIDDLE"><td nowrap align="RIGHT">&nbsp;</td>
+<td>&nbsp;</td>
+<td align="LEFT" nowrap><img style="height: 3.02ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1062.svg" alt="$\displaystyle C({\bf A}) \perp N({\bf A}^T),\;\;\;\;\;
+C({\bf A}) \cap N({\bf A}^T)=\emptyset,\;\;\;\;\;
+C({\bf A}) \oplus N({\bf A}^T)=R^M,$"></td>
+<td class="eqno" width="10" align="RIGHT">
+&nbsp;</td></tr>
+<tr valign="MIDDLE"><td nowrap align="RIGHT">&nbsp;</td>
+<td align="CENTER" nowrap><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1063.svg" alt="$\textstyle \mbox{i.e.}$"></td>
+<td align="LEFT" nowrap><img style="height: 3.02ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1064.svg" alt="$\displaystyle N({\bf A}^T)=C({\bf A})^\perp,\;\;\;\;C({\bf A})=N({\bf A}^T)^\perp$"></td>
+<td class="eqno" width="10" align="RIGHT">
+(<span class="arabic">320</span>)</td></tr>
+</table></div>
+<br clear="ALL"><p></p>
+Any M-D vector <!-- MATH
+ ${\bf y}\in \mathbb{R}^M$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.57ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1065.svg" alt="${\bf y}\in \mathbb{R}^M$"></span> is in either of the two subspaces
+  <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span> and <span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1054.svg" alt="$N({\bf A}^T)$"></span>.
+
+<p>
+</li>
+</ul>
+
+<p>
+The four subspaces are summarized in the figure below, showing the 
+domain <!-- MATH
+ $\mathbb{R}^N=R({\bf A})\oplus N({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1066.svg" alt="$\mathbb{R}^N=R({\bf A})\oplus N({\bf A})$"></span> (left) and the 
+codomain <!-- MATH
+ $\mathbb{R}^M=C({\bf A})\oplus N({\bf A}^T)$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1067.svg" alt="$\mathbb{R}^M=C({\bf A})\oplus N({\bf A}^T)$"></span> (right) of 
+the linear mapping <!-- MATH
+ ${\bf Ax}={\bf b}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img276.svg" alt="${\bf Ax}={\bf b}$"></span>, where
+
+<ul>
+<li><!-- MATH
+ ${\bf x}_p\in R({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1068.svg" alt="${\bf x}_p\in R({\bf A})$"></span> is the particular solution that is
+  mapped to <!-- MATH
+ ${\bf Ax}_p={\bf b}\in C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1069.svg" alt="${\bf Ax}_p={\bf b}\in C({\bf A})$"></span>, the image of 
+  <!-- MATH
+ $f({\bf x})={\bf Ax}$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1070.svg" alt="$f({\bf x})={\bf Ax}$"></span>;
+</li>
+<li><!-- MATH
+ ${\bf x}_h\in N({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1071.svg" alt="${\bf x}_h\in N({\bf A})$"></span> is a homogeneous solution that is 
+  mapped to <!-- MATH
+ ${\bf Ax}_h={\bf0}\in \mathbb{R}^M$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1072.svg" alt="${\bf Ax}_h={\bf0}\in \mathbb{R}^M$"></span>;
+</li>
+<li><!-- MATH
+ ${\bf x}_c={\bf x}_p+{\bf x}_h$
+ -->
+<span class="MATH"><img style="height: 2.32ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1073.svg" alt="${\bf x}_c={\bf x}_p+{\bf x}_h$"></span> is the complete solution that is
+  mapped to <!-- MATH
+ ${\bf Ax}_c={\bf b}\in C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1074.svg" alt="${\bf Ax}_c={\bf b}\in C({\bf A})$"></span>.
+</li>
+</ul>
+On the other hand, <!-- MATH
+ ${\bf y}_p\in C({\bf A})=R({\bf A}^T)$
+ -->
+<span class="MATH"><img style="height: 3.02ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1075.svg" alt="${\bf y}_p\in C({\bf A})=R({\bf A}^T)$"></span>,  
+<!-- MATH
+ ${\bf y}_h\in N({\bf A}^T)$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1076.svg" alt="${\bf y}_h\in N({\bf A}^T)$"></span>, and <!-- MATH
+ ${\bf y}_c={\bf y}_p+{\bf y}_h$
+ -->
+<span class="MATH"><img style="height: 2.32ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1077.svg" alt="${\bf y}_c={\bf y}_p+{\bf y}_h$"></span> are
+respectively the particular, homogeneous and complete solutions of
+<!-- MATH
+ ${\bf A}^T{\bf y}={\bf c}$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.57ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1034.svg" alt="${\bf A}^T{\bf y}={\bf c}$"></span>.
+Here we have assumed <!-- MATH
+ ${\bf b}\in C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1027.svg" alt="${\bf b}\in C({\bf A})$"></span> and 
+<!-- MATH
+ ${\bf c}\in R({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1035.svg" alt="${\bf c}\in R({\bf A})$"></span>, i.e., both <!-- MATH
+ ${\bf Ax}={\bf b}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img276.svg" alt="${\bf Ax}={\bf b}$"></span> and 
+<!-- MATH
+ ${\bf A}^T{\bf y}={\bf c}$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.57ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1034.svg" alt="${\bf A}^T{\bf y}={\bf c}$"></span> are solvable. We will also consider 
+the case where <!-- MATH
+ ${\bf b}\notin C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1078.svg" alt="${\bf b}\notin C({\bf A})$"></span> later.
+
+<p>
+<img style="" src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/figures/FourSpaces.png" alt="FourSpaces.png">
+
+<p>
+We now consider specifically how to find the solutions of the system 
+<!-- MATH
+ ${\bf Ax}={\bf b}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img276.svg" alt="${\bf Ax}={\bf b}$"></span> in light of the four subspaces of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> defined
+above, through the examples below.
+
+<p>
+<b>Example 1:</b>
+
+<p>
+Solve the homogeneous equation system:
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf A}{\bf x}=\left[\begin{array}{ccc}1&2&5\\2&3&8\\3&1&5\end{array}\right]
+  \left[\begin{array}{c}x_1\\x_2\\x_3\end{array}\right]
+  =\left[\begin{array}{c}0\\0\\0\end{array}\right] 
+  ={\bf0} 
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1079.svg" alt="$\displaystyle {\bf A}{\bf x}=\left[\begin{array}{ccc}1&amp;2&amp;5\\ 2&amp;3&amp;8\\ 3&amp;1&amp;5\end{...
+...{array}\right]
+=\left[\begin{array}{c}0\\ 0\\ 0\end{array}\right]
+={\bf0}
+$"> 
+
+(<span class="arabic">321</span>)
+</div>
+We first convert <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> into the rref:
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+\left[\begin{array}{ccc}1&2&5\\2&3&8\\3&1&5\end{array}\right]
+\left[\begin{array}{c}x_1\\x_2\\x_3\end{array}\right]
+\rightarrow 
+\left[\begin{array}{ccc}1&2&5\\0&-1&-2\\0&-5&-10\end{array}\right]
+\left[\begin{array}{c}x_1\\x_2\\x_3\end{array}\right] 
+\rightarrow 
+\left[\begin{array}{ccc}1&2&5\\0&1&2\\0&0&0\end{array}\right] 
+\left[\begin{array}{c}x_1\\x_2\\x_3\end{array}\right] 
+\rightarrow 
+\left[\begin{array}{ccc}1&0&1\\0&1&2\\0&0&0\end{array}\right] 
+\left[\begin{array}{c}x_1\\x_2\\x_3\end{array}\right] 
+=\left[\begin{array}{c}0\\0\\0\end{array}\right] 
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1080.svg" alt="$\displaystyle \left[\begin{array}{ccc}1&amp;2&amp;5\\ 2&amp;3&amp;8\\ 3&amp;1&amp;5\end{array}\right]
+\...
+...2\\ x_3\end{array}\right]
+=\left[\begin{array}{c}0\\ 0\\ 0\end{array}\right]
+$"> 
+
+(<span class="arabic">322</span>)
+</div>
+The <!-- MATH
+ $R=rank({\bf A})=2$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1081.svg" alt="$R=rank({\bf A})=2$"></span> columns in the rref containing a single 1,
+called a <em>pivot</em>, are called the <em>pivot columns</em>, and the
+rows containing a pivot are called the <em>pivot rows</em>. Here,
+<span class="MATH"><img style="height: 2.09ex; vertical-align: -0.21ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1082.svg" alt="$R=2<M=N=3$"></span>, i.e., <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> is a singular matrix. The two pivot 
+rows <!-- MATH
+ ${\bf r}_1^T=[1,\;0,\;1]$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1083.svg" alt="${\bf r}_1^T=[1,\;0,\;1]$"></span> and <!-- MATH
+ ${\bf r}_2^T=[0,\;1,\;2]$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1084.svg" alt="${\bf r}_2^T=[0,\;1,\;2]$"></span> can
+be used as the basis vectors that span the row space <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span>:
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+R({\bf A})=c_1{\bf r}_1+c_2{\bf r}_2
+=c_1\left[\begin{array}{r}1\\0\\1\end{array}\right]
++c_2\left[\begin{array}{r}0\\1\\2\end{array}\right] 
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1085.svg" alt="$\displaystyle R({\bf A})=c_1{\bf r}_1+c_2{\bf r}_2
+=c_1\left[\begin{array}{r}1\\ 0\\ 1\end{array}\right]
++c_2\left[\begin{array}{r}0\\ 1\\ 2\end{array}\right]
+$"> 
+
+(<span class="arabic">323</span>)
+</div>
+Note that the pivot columns of the rref do not span the column space 
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span>, as the row reduction operations do not reserve the 
+columns of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span>. But they indicate the corresponding columns 
+<!-- MATH
+ ${\bf c}_1=[1\;2\;3]^T$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1086.svg" alt="${\bf c}_1=[1\;2\;3]^T$"></span> and <!-- MATH
+ ${\bf c}_2=[2\;3\;1]^T$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1087.svg" alt="${\bf c}_2=[2\;3\;1]^T$"></span> in the original
+matrix <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> can be used as the basis that spans <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span>.
+In general the bases of the row and column spaces so obtained are
+not orthogonal.
+
+<p>
+The <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img714.svg" alt="$R$"></span> pivot rows are the independent equations in the system of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1006.svg" alt="$M$"></span> 
+equations, and the variables corresponding to the pivot columns 
+(here <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1088.svg" alt="$x_1$"></span> and <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1089.svg" alt="$x_2$"></span>) are the <em>pivot variables</em>. The remaining
+<span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1090.svg" alt="$M-R$"></span> non-pivot rows containing all zeros are not independent, and the
+variables corresponding to the non-pivot rows are <em>free variables</em> 
+(here <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1091.svg" alt="$x_3$"></span>), which can take any values. 
+
+<p>
+From the rref form of the equation, we get
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+x_1+x_3=0,\;\;\;x_2+2x_3=0
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 2.32ex; vertical-align: -0.57ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1092.svg" alt="$\displaystyle x_1+x_3=0,\;\;\;x_2+2x_3=0
+$"> 
+
+(<span class="arabic">324</span>)
+</div>
+If we let the free variable <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1091.svg" alt="$x_3$"></span> take the value 1, then we can get
+the two pivot variables <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1093.svg" alt="$x_1=-1$"></span> and <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1094.svg" alt="$x_2=-2$"></span>, and a special homogeneous 
+solution <!-- MATH
+ ${\bf x}_h=[-1\;-2\;1]^T$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1095.svg" alt="${\bf x}_h=[-1\;-2\;1]^T$"></span> as a basis vector that spans the 1-D 
+null space <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span>. However, as the free variable <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1091.svg" alt="$x_3$"></span> can take 
+any value <span class="MATH"><img style="height: 1.39ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img450.svg" alt="$c$"></span>, the complete solution is the entire 1-D null space:
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+N({\bf A})=c {\bf x}_h=c\left[\begin{array}{r}-1\\-2\\1\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1096.svg" alt="$\displaystyle N({\bf A})=c {\bf x}_h=c\left[\begin{array}{r}-1\\ -2\\ 1\end{array}\right]
+$"> 
+
+(<span class="arabic">325</span>)
+</div>
+
+<p>
+<b>Example 2:</b>  
+
+<p>
+Solve the non-homogeneous equation with the same coefficient
+matrix <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> used in the previous example:
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf A}{\bf x}=
+  \left[\begin{array}{ccc}1&2&5\\2&3&8\\3&1&5\end{array}\right]
+  \left[\begin{array}{c}x_1\\x_2\\x_3\end{array}\right]
+  =\left[\begin{array}{c}19\\31\\22\end{array}\right]={\bf b}
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1097.svg" alt="$\displaystyle {\bf A}{\bf x}=
+\left[\begin{array}{ccc}1&amp;2&amp;5\\ 2&amp;3&amp;8\\ 3&amp;1&amp;5\en...
+...d{array}\right]
+=\left[\begin{array}{c}19\\ 31\\ 22\end{array}\right]={\bf b}
+$"> 
+
+(<span class="arabic">326</span>)
+</div>
+We use Gauss-Jordan elimination to solve this system:
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+[\begin{array}{cc}{\bf A}&{\bf b}\end{array}]
+  =\left[\begin{array}{rrr|r}1&2&5&19\\2&3&8&31\\3&1&5&22\end{array}\right]
+  \rightarrow
+  \left[\begin{array}{rrr|r}1&2&5&19\\0&-1&-2&-7\\0&-5&-10&-35\end{array}\right]
+  \rightarrow 
+  \left[\begin{array}{rrr|r}1&2&5&19\\0&1&2&7\\0&0&0&0\end{array}\right]
+  \rightarrow 
+  \left[\begin{array}{rrr|r}1&0&1&5\\0&1&2&7\\0&0&0&0\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1098.svg" alt="$\displaystyle [\begin{array}{cc}{\bf A}&amp;{\bf b}\end{array}]
+=\left[\begin{arra...
+...
+\left[\begin{array}{rrr\vert r}1&amp;0&amp;1&amp;5\\ 0&amp;1&amp;2&amp;7\\ 0&amp;0&amp;0&amp;0\end{array}\right]
+$"> 
+
+(<span class="arabic">327</span>)
+</div>
+The <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1099.svg" alt="$R=2$"></span> pivot rows correspond to the independent equations in the 
+system, i.e., <!-- MATH
+ $rand({\bf A})=2$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1100.svg" alt="$rand({\bf A})=2$"></span>, while the remaining <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1101.svg" alt="$M-R=1$"></span> non-pivot
+row does not play any role as they map any <span class="MATH"><img style="height: 1.39ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img52.svg" alt="${\bf x}$"></span> to <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img22.svg" alt="${\bf0}$"></span>. As 
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> is singular, <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img269.svg" alt="${\bf A}^{-1}$"></span> does not exist. However, we can 
+find the solution based on the rref of the system, which can also be 
+expressed in block matrix form:
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+\left[\begin{array}{rrr}1&0&1\\0&1&2\\0&0&0\end{array}\right]
+\left[\begin{array}{c}x_1\\x_2\\x_3\end{array}\right]=
+\left[\begin{array}{c}5\\7\\0\end{array}\right]
+\;\;\;\;\;\;\;\;\mbox{or}\;\;\;\;\;\;\;\;
+\left[\begin{array}{rr}{\bf I}&{\bf F}\\{\bf0}&{\bf0}\end{array}\right]
+\left[\begin{array}{r}{\bf x}_{pivot}\\{\bf x}_{free}\end{array}\right]
+=\left[\begin{array}{c}{\bf b}_1\\{\bf0}\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1102.svg" alt="$\displaystyle \left[\begin{array}{rrr}1&amp;0&amp;1\\ 0&amp;1&amp;2\\ 0&amp;0&amp;0\end{array}\right]
+\...
+...\end{array}\right]
+=\left[\begin{array}{c}{\bf b}_1\\ {\bf0}\end{array}\right]
+$"> 
+
+(<span class="arabic">328</span>)
+</div>
+where
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf I}=\left[\begin{array}{cc}1&0\\0&1\end{array}\right],\;\;\;\;\;\;
+  {\bf F}=\left[\begin{array}{c}1\\2\end{array}\right],\;\;\;\;\;\;
+  {\bf x}_{pivot}=\left[\begin{array}{c}x_1\\x_2\end{array}\right],\;\;\;\;\;\;
+  {\bf x}_{free}=x_3,\;\;\;\;\;\;
+  {\bf b}_1=\left[\begin{array}{c}5\\7\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 5.81ex; vertical-align: -2.32ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1103.svg" alt="$\displaystyle {\bf I}=\left[\begin{array}{cc}1&amp;0\\ 0&amp;1\end{array}\right],\;\;\;...
+...ree}=x_3,\;\;\;\;\;\;
+{\bf b}_1=\left[\begin{array}{c}5\\ 7\end{array}\right]
+$"> 
+
+(<span class="arabic">329</span>)
+</div>
+Solving the matrix equation above for <!-- MATH
+ ${\bf x}_{pivot}$
+ -->
+<span class="MATH"><img style="height: 2.09ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1104.svg" alt="${\bf x}_{pivot}$"></span>, we get
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf I}{\bf x}_{pivot}+{\bf F}{\bf x}_{free}={\bf b}_1,\;\;\;\;\;\;\;\;\;
+  {\bf x}_{pivot}=\left[\begin{array}{c}x_1\\x_2\end{array}\right]
+  ={\bf b}_1-{\bf F}{\bf x}_{free}
+  =\left[\begin{array}{c}5\\7\end{array}\right]
+  +x_3\left[\begin{array}{c}-1\\-2\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 5.81ex; vertical-align: -2.32ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1105.svg" alt="$\displaystyle {\bf I}{\bf x}_{pivot}+{\bf F}{\bf x}_{free}={\bf b}_1,\;\;\;\;\;...
+...c}5\\ 7\end{array}\right]
++x_3\left[\begin{array}{c}-1\\ -2\end{array}\right]
+$"> 
+
+(<span class="arabic">330</span>)
+</div>
+If we let <!-- MATH
+ ${\bf x}_{free}=x_3=0$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1106.svg" alt="${\bf x}_{free}=x_3=0$"></span>, we get a particular solution
+<!-- MATH
+ ${\bf x}_p=[5\;7\;0]^T$
+ -->
+<span class="MATH"><img style="height: 3.02ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1107.svg" alt="${\bf x}_p=[5\;7\;0]^T$"></span>, which can be expressed as a linear
+combination of <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1108.svg" alt="${\bf r}_1$"></span> and <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1109.svg" alt="${\bf r}_2$"></span> that span <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span>,
+and <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1110.svg" alt="${\bf x}_h$"></span> that span <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span>:
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf x}_p=\left[\begin{array}{c}5\\7\\0\end{array}\right]
+  =\frac{11}{6}{\bf r}_1+\frac{2}{3}{\bf r}_2-\frac{19}{6}{\bf x}_h
+  =\frac{11}{6}\left[\begin{array}{c}1\\0\\1\end{array}\right]
+  +\frac{2}{3}\left[\begin{array}{c}0\\1\\2\end{array}\right]
+  -\frac{19}{6}\left[\begin{array}{r}-1\\-2\\1\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1111.svg" alt="$\displaystyle {\bf x}_p=\left[\begin{array}{c}5\\ 7\\ 0\end{array}\right]
+=\fr...
+...rray}\right]
+-\frac{19}{6}\left[\begin{array}{r}-1\\ -2\\ 1\end{array}\right]
+$"> 
+
+(<span class="arabic">331</span>)
+</div>
+We see that this solution is not entirely in the row space <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span>.
+In general, this is the case for all particular solutions so obtained.
+
+<p>
+Having found both the particular solution <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1112.svg" alt="${\bf x}_p$"></span> and the 
+homogeneous solution <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1110.svg" alt="${\bf x}_h$"></span>, we can further find the complete
+solution <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1113.svg" alt="${\bf x}_c$"></span> as the sum of <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1112.svg" alt="${\bf x}_p$"></span> and the entire 
+null space spanned by <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1110.svg" alt="${\bf x}_h$"></span>:
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf x}_c=\left[\begin{array}{c}5\\7\\0\end{array}\right]
+  +c \left[\begin{array}{r}-1\\-2\\1\end{array}\right]
+  ={\bf x}_p+c {\bf x}_h={\bf x}_p+N({\bf A})
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1114.svg" alt="$\displaystyle {\bf x}_c=\left[\begin{array}{c}5\\ 7\\ 0\end{array}\right]
++c \...
+...}{r}-1\\ -2\\ 1\end{array}\right]
+={\bf x}_p+c {\bf x}_h={\bf x}_p+N({\bf A})
+$"> 
+
+(<span class="arabic">332</span>)
+</div>
+Based on different constant <span class="MATH"><img style="height: 1.39ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img450.svg" alt="$c$"></span>, we get a set of equally valid 
+solutions. For example, if <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.57ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1115.svg" alt="$c=0,1,2$"></span>, then we get
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf x}_0=\left[\begin{array}{c}5\\7\\0\end{array}\right],\;\;\;\;
+  {\bf x}_1=\left[\begin{array}{c}4\\5\\1\end{array}\right],\;\;\;\;
+  {\bf x}_2=\left[\begin{array}{c}3\\3\\2\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1116.svg" alt="$\displaystyle {\bf x}_0=\left[\begin{array}{c}5\\ 7\\ 0\end{array}\right],\;\;\...
+...}\right],\;\;\;\;
+{\bf x}_2=\left[\begin{array}{c}3\\ 3\\ 2\end{array}\right]
+$"> 
+
+(<span class="arabic">333</span>)
+</div>
+These solutions have the same projection onto the row space
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span>, i.e., they have the same projections onto the two 
+basis vectors <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1108.svg" alt="${\bf r}_1$"></span> and <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1109.svg" alt="${\bf r}_2$"></span> that span <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span>:
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf x}_0^T{\bf r}_1={\bf x}_1^T{\bf r}_1={\bf x}_2^T{\bf r}_1=5,
+\;\;\;\;\;\;\;\;
+{\bf x}_0^T{\bf r}_2={\bf x}_1^T{\bf r}_2={\bf x}_2^T{\bf r}_2=7
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 3.02ex; vertical-align: -0.69ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1117.svg" alt="$\displaystyle {\bf x}_0^T{\bf r}_1={\bf x}_1^T{\bf r}_1={\bf x}_2^T{\bf r}_1=5,...
+...;\;\;\;\;\;\;
+{\bf x}_0^T{\bf r}_2={\bf x}_1^T{\bf r}_2={\bf x}_2^T{\bf r}_2=7
+$"> 
+
+(<span class="arabic">334</span>)
+</div>
+
+<p>
+The figure below shows how the complete solution <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1113.svg" alt="${\bf x}_c$"></span> can 
+be obtained as the sum of a particular solution <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1112.svg" alt="${\bf x}_p$"></span> in 
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span> and the entire null space <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span>. Here <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1118.svg" alt="$N=3$"></span> 
+and space <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1119.svg" alt="$\mathbb{R}^3$"></span> is composed of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span> and <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span>,
+respectively 2-D and 1-D on the left, but 1-D and 2-D on the right.
+In either case, the complete solution is any particular solution
+plus the entire null space, the vertical dashed line on the left,
+the top dashed plane on the right. All points on the vertical line
+or top satisfy the equation system, as they are have the same 
+projection onto the row space <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span>.
+
+<p>
+<img style="" src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/figures/CompleteSolutionExa.png" alt="CompleteSolutionExa.png">
+
+<p>
+If the right hand side is <!-- MATH
+ ${\bf b}'=[19,\,31,\,20]^T$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1120.svg" alt="${\bf b}'=[19,\,31,\,20]^T$"></span>, then the
+rref of the equation becomes:
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+\left[\begin{array}{rrr}1&0&1\\0&1&2\\0&0&0\end{array}\right]
+\left[\begin{array}{c}x_1\\x_2\\x_3\end{array}\right]=
+\left[\begin{array}{c}5\\7\\2\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1121.svg" alt="$\displaystyle \left[\begin{array}{rrr}1&amp;0&amp;1\\ 0&amp;1&amp;2\\ 0&amp;0&amp;0\end{array}\right]
+\...
+...x_2\\ x_3\end{array}\right]=
+\left[\begin{array}{c}5\\ 7\\ 2\end{array}\right]
+$"> 
+
+(<span class="arabic">335</span>)
+</div>
+The non-pivot row is an impossible equation <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1122.svg" alt="$0=2$"></span>, indicating that 
+no solution exists, as <!-- MATH
+ ${\bf b}'\notin C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1123.svg" alt="${\bf b}'\notin C({\bf A})$"></span> is not in the 
+column space spanned by <!-- MATH
+ ${\bf r}_1=[1\;0\;1]^T$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1124.svg" alt="${\bf r}_1=[1\;0\;1]^T$"></span> and 
+<!-- MATH
+ ${\bf r}_2=[0\;1\;2]^T$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1125.svg" alt="${\bf r}_2=[0\;1\;2]^T$"></span>.
+
+<p>
+<b>Example 3:</b> 
+Find the complete solution of the following linear equation system: 
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf A}{\bf x}=\left[\begin{array}{rccc}1&2&3&4\\4&3&2&1\\-2&1&4&7\end{array}\right]
+  \left[\begin{array}{c}x_1\\x_2\\x_3\\x_4\end{array}\right]
+  =\left[\begin{array}{r}3\\2\\4\end{array}\right] ={\bf b}
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 11.38ex; vertical-align: -5.11ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1126.svg" alt="$\displaystyle {\bf A}{\bf x}=\left[\begin{array}{rccc}1&amp;2&amp;3&amp;4\\ 4&amp;3&amp;2&amp;1\\ -2&amp;1&amp;...
+...end{array}\right]
+=\left[\begin{array}{r}3\\ 2\\ 4\end{array}\right] ={\bf b}
+$"> 
+
+(<span class="arabic">336</span>)
+</div>
+This equation can be solved in the following steps:
+
+<ul>
+<li>Construct the augmented matrix and then convert it to the 
+  rref form:
+  <br>
+<div align="CENTER">
+
+<!-- MATH
+ \begin{eqnarray}
+\left[\begin{array}{rrrr|r}1&2&3&4&3\\4&3&2&1&2\\-2&1&4&7&4\end{array}\right]
+    &\rightarrow&
+    \left[\begin{array}{rrrr|r}1&2&3&4&3\\0&-5&-10&-15&-10\\0&5&10&15&10\end{array}\right]
+    \rightarrow
+    \left[\begin{array}{rrrr|r}1&2&3&4&3\\0&1&2&3&2\\0&0&0&0&0\end{array}\right]
+    \nonumber \\
+    &\rightarrow&
+    \left[\begin{array}{rrrr|r}1&0&-1&-2&-1\\0&1&2&3&2\\0&0&0&0&0\end{array}\right]
+    =\left[\begin{array}{rr|r}{\bf I}&{\bf F}&{\bf b_1}\\{\bf0}&{\bf0}&{\bf0}\end{array}\right]
+    \nonumber
+\end{eqnarray}
+ -->
+<table cellpadding="0" align="CENTER" width="100%">
+<tr valign="MIDDLE"><td nowrap align="RIGHT"><img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1127.svg" alt="$\displaystyle \left[\begin{array}{rrrr\vert r}1&amp;2&amp;3&amp;4&amp;3\\  4&amp;3&amp;2&amp;1&amp;2\\  -2&amp;1&amp;4&amp;7&amp;4\end{array}\right]$"></td>
+<td align="CENTER" nowrap><img style="height: 1.16ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1128.svg" alt="$\textstyle \rightarrow$"></td>
+<td align="LEFT" nowrap><img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1129.svg" alt="$\displaystyle \left[\begin{array}{rrrr\vert r}1&amp;2&amp;3&amp;4&amp;3\\  0&amp;-5&amp;-10&amp;-15&amp;-10\\  ...
+...\begin{array}{rrrr\vert r}1&amp;2&amp;3&amp;4&amp;3\\  0&amp;1&amp;2&amp;3&amp;2\\  0&amp;0&amp;0&amp;0&amp;0\end{array}\right]$"></td>
+<td class="eqno" width="10" align="RIGHT">
+&nbsp;</td></tr>
+<tr valign="MIDDLE"><td nowrap align="RIGHT">&nbsp;</td>
+<td align="CENTER" nowrap><img style="height: 1.16ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1128.svg" alt="$\textstyle \rightarrow$"></td>
+<td align="LEFT" nowrap><img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1130.svg" alt="$\displaystyle \left[\begin{array}{rrrr\vert r}1&amp;0&amp;-1&amp;-2&amp;-1\\  0&amp;1&amp;2&amp;3&amp;2\\  0&amp;0&amp;...
+...}{rr\vert r}{\bf I}&amp;{\bf F}&amp;{\bf b_1}\\  {\bf0}&amp;{\bf0}&amp;{\bf0}\end{array}\right]$"></td>
+<td class="eqno" width="10" align="RIGHT">
+&nbsp;</td></tr>
+</table></div>
+<br clear="ALL"><p></p>
+The two pivot rows <!-- MATH
+ ${\bf r}_1^T=[1\;0\;-1\;-2]$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1131.svg" alt="${\bf r}_1^T=[1\;0\;-1\;-2]$"></span> and 
+  <!-- MATH
+ ${\bf r}_2^T=[0\;1\;2\;3]$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1132.svg" alt="${\bf r}_2^T=[0\;1\;2\;3]$"></span> in the rref span <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span>, and the
+  two columns in the <em>original</em> matrix <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> corresponding to 
+  the pivot columns in the rref, <span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1133.svg" alt="$[1\;4\;-2]^T$"></span> and <span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1134.svg" alt="$[2\;3\;1]^T$"></span> could 
+  be used as the basis vectors that span <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span>.
+
+<p>
+The equation system can be represented in block matrix form:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+\left[\begin{array}{rr}{\bf I}&{\bf F}\\{\bf0}&{\bf0}\end{array}\right]
+  \left[\begin{array}{c}{\bf x}_p\\{\bf x}_f\end{array}\right]=
+  \left[\begin{array}{c}{\bf b_1}\\{\bf0}\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 5.81ex; vertical-align: -2.32ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1135.svg" alt="$\displaystyle \left[\begin{array}{rr}{\bf I}&amp;{\bf F}\\ {\bf0}&amp;{\bf0}\end{array}...
+...nd{array}\right]=
+\left[\begin{array}{c}{\bf b_1}\\ {\bf0}\end{array}\right]
+$"> 
+
+(<span class="arabic">337</span>)
+</div>
+where 
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf I}=\left[\begin{array}{cc}1&0\\0&1\end{array}\right],\;\;\;\;\;
+    {\bf F}=\left[\begin{array}{rr}-1&-2\\2&3\end{array}\right],\;\;\;\;\;
+    {\bf x}_p=\left[\begin{array}{c}x_1\\x_2\end{array}\right],\;\;\;\;\;
+    {\bf x}_f=\left[\begin{array}{c}x_3\\x_4\end{array}\right],\;\;\;\;\;
+    {\bf b}_1=\left[\begin{array}{r}-1\\2\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 5.81ex; vertical-align: -2.32ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1136.svg" alt="$\displaystyle {\bf I}=\left[\begin{array}{cc}1&amp;0\\ 0&amp;1\end{array}\right],\;\;\;...
+...}\right],\;\;\;\;\;
+{\bf b}_1=\left[\begin{array}{r}-1\\ 2\end{array}\right]
+$"> 
+
+(<span class="arabic">338</span>)
+</div>
+Multiplying out we get
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf x}_p+{\bf F}{\bf x}_f={\bf b}_1
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 2.55ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1137.svg" alt="$\displaystyle {\bf x}_p+{\bf F}{\bf x}_f={\bf b}_1
+$"> 
+
+(<span class="arabic">339</span>)
+</div>
+</li>
+<li>Find the homogeneous solution for equation <!-- MATH
+ ${\bf A}{\bf x}={\bf0}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1042.svg" alt="${\bf A}{\bf x}={\bf0}$"></span>
+  by setting <!-- MATH
+ ${\bf b}_1={\bf0}$
+ -->
+<span class="MATH"><img style="height: 2.32ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1138.svg" alt="${\bf b}_1={\bf0}$"></span>:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf I}{\bf x}_p+{\bf F}{\bf x}_f={\bf0},
+    \;\;\;\;\mbox{i.e.}\;\;\;\;\;
+    {\bf x}_p=\left[\begin{array}{c}x_1\\x_2\end{array}\right]
+    =-{\bf F}{\bf x}_f
+    =\left[\begin{array}{rr}1&2\\-2&-3\end{array}\right]
+    \left[\begin{array}{r}x_3\\x_4\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 5.81ex; vertical-align: -2.32ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1139.svg" alt="$\displaystyle {\bf I}{\bf x}_p+{\bf F}{\bf x}_f={\bf0},
+\;\;\;\;\mbox{i.e.}\;\...
+...\\ -2&amp;-3\end{array}\right]
+\left[\begin{array}{r}x_3\\ x_4\end{array}\right]
+$"> 
+
+(<span class="arabic">340</span>)
+</div>
+We let <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1140.svg" alt="${\bf x}_f$"></span> be either of the two standard basis vectors
+  <!-- MATH
+ ${\bf x}_f=[x_3,\;x_4]^T=[1\;0]^T$
+ -->
+<span class="MATH"><img style="height: 3.02ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1141.svg" alt="${\bf x}_f=[x_3,\;x_4]^T=[1\;0]^T$"></span> and <!-- MATH
+ ${\bf x}_f=[x_3,\;x_4]^T=[0\;1]^T$
+ -->
+<span class="MATH"><img style="height: 3.02ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1142.svg" alt="${\bf x}_f=[x_3,\;x_4]^T=[0\;1]^T$"></span>
+  of the null space <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span>, and get 
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf x}_p=\left[\begin{array}{c}x_1\\x_2\end{array}\right]
+    =\left[\begin{array}{r}1\\-2\end{array}\right]
+    \;\;\;\;\;\mbox{or}\;\;\;\;\;
+    \left[\begin{array}{r}2\\-3\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 5.81ex; vertical-align: -2.32ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1143.svg" alt="$\displaystyle {\bf x}_p=\left[\begin{array}{c}x_1\\ x_2\end{array}\right]
+=\le...
+...\;\;\;\;\;\mbox{or}\;\;\;\;\;
+\left[\begin{array}{r}2\\ -3\end{array}\right]
+$"> 
+
+(<span class="arabic">341</span>)
+</div>
+and the two corresponding homogeneous solutions:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf x}_{h1}=\left[\begin{array}{c}x_1\\x_2\\x_3\\x_4\end{array}\right]
+    =\left[\begin{array}{r}1\\-2\\1\\0\end{array}\right],
+    \;\;\;\;\;\;\;\;\;\;
+    {\bf x}_{h2}=\left[\begin{array}{c}x_1\\x_2\\x_3\\x_4\end{array}\right]
+    =\left[\begin{array}{r}2\\-3\\0\\1\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 11.38ex; vertical-align: -5.11ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1144.svg" alt="$\displaystyle {\bf x}_{h1}=\left[\begin{array}{c}x_1\\ x_2\\ x_3\\ x_4\end{arra...
+..._4\end{array}\right]
+=\left[\begin{array}{r}2\\ -3\\ 0\\ 1\end{array}\right]
+$"> 
+
+(<span class="arabic">342</span>)
+</div>
+</li>
+<li>Find the particular solution of the non-homogeneous equation 
+  <!-- MATH
+ ${\bf A}{\bf x}={\bf b}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1145.svg" alt="${\bf A}{\bf x}={\bf b}$"></span> by setting <!-- MATH
+ ${\bf x}_f={\bf0}$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1146.svg" alt="${\bf x}_f={\bf0}$"></span>
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf I}{\bf x}_p+{\bf F}{\bf x}_f={\bf x}_p={\bf b}_1,
+    \;\;\;\;\mbox{i.e.}\;\;\;\;\;
+    \left[\begin{array}{c}x_1\\x_2\end{array}\right]
+    =\left[\begin{array}{r}-1\\2\end{array}\right]
+    \;\;\;\;\;\mbox{i.e.}\;\;\;\;\;\;\;
+    {\bf x}_p=\left[\begin{array}{r}-1\\2\\0\\0\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 11.38ex; vertical-align: -5.11ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1147.svg" alt="$\displaystyle {\bf I}{\bf x}_p+{\bf F}{\bf x}_f={\bf x}_p={\bf b}_1,
+\;\;\;\;\...
+...;\;\;\;\;\;
+{\bf x}_p=\left[\begin{array}{r}-1\\ 2\\ 0\\ 0\end{array}\right]
+$"> 
+
+(<span class="arabic">343</span>)
+</div>
+</li>
+<li>Find the complete solution:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf x}_c={\bf x}_p+N({\bf A})
+    ={\bf x}_p+c_1{\bf x}_{h1}+c_2{\bf x}_{h2}
+    =\left[\begin{array}{r}-1\\2\\0\\0\end{array}\right]
+    +c_1\left[\begin{array}{r}1\\-2\\1\\0\end{array}\right]
+    +c_2\left[\begin{array}{r}2\\-3\\0\\1\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 11.38ex; vertical-align: -5.11ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1148.svg" alt="$\displaystyle {\bf x}_c={\bf x}_p+N({\bf A})
+={\bf x}_p+c_1{\bf x}_{h1}+c_2{\b...
+...end{array}\right]
++c_2\left[\begin{array}{r}2\\ -3\\ 0\\ 1\end{array}\right]
+$"> 
+
+(<span class="arabic">344</span>)
+</div>
+</li>
+</ul>
+
+<p>
+If the right-hand side is <!-- MATH
+ ${\bf b}'=[1,\;3,\;5]^T$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1149.svg" alt="${\bf b}'=[1,\;3,\;5]^T$"></span>, then the row reduction
+of the augmented matrix yields: 
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+\left[\begin{array}{rrrr|r}1&2&3&4&1\\4&3&2&1&3\\-2&1&4&7&5\end{array}\right]
+\rightarrow
+\left[\begin{array}{rrrr|r}1&2&3&4&3\\0&-5&-10&-15&-1\\0&5&10&15&7\end{array}\right]
+\rightarrow
+\left[\begin{array}{rrrr|r}1&2&3&4&1\\0&1&2&3&0.2\\0&0&0&0&1.2\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1150.svg" alt="$\displaystyle \left[\begin{array}{rrrr\vert r}1&amp;2&amp;3&amp;4&amp;1\\ 4&amp;3&amp;2&amp;1&amp;3\\ -2&amp;1&amp;4&amp;7&amp;...
+...gin{array}{rrrr\vert r}1&amp;2&amp;3&amp;4&amp;1\\ 0&amp;1&amp;2&amp;3&amp;0.2\\ 0&amp;0&amp;0&amp;0&amp;1.2\end{array}\right]
+$"> 
+
+(<span class="arabic">345</span>)
+</div>
+The equation corresponding to the last non-pivot row is <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1151.svg" alt="$0=1.2$"></span>, indicating 
+the system is not solvable (even though the coefficient matrix does not 
+have full rank), because <!-- MATH
+ ${\bf b}'\notin C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1123.svg" alt="${\bf b}'\notin C({\bf A})$"></span> is not in the column 
+space.
+
+<p>
+<b>Example 4:</b> Consider the linear equation system with a
+coefficient matrix <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img226.svg" alt="${\bf A}^T$"></span>, the transpose of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> used in the 
+previous example:
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf A}^T{\bf y}=\left[\begin{array}{rrr}1&4&-2\\2&3&1\\3&2&4\\4&1&7\end{array}\right]
+  \left[\begin{array}{c}y_1\\y_2\\y_3\end{array}\right]
+  =\left[\begin{array}{c}3\\11\\19\\27\end{array}\right]={\bf c}
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 11.38ex; vertical-align: -5.11ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1152.svg" alt="$\displaystyle {\bf A}^T{\bf y}=\left[\begin{array}{rrr}1&amp;4&amp;-2\\ 2&amp;3&amp;1\\ 3&amp;2&amp;4\\...
+...ray}\right]
+=\left[\begin{array}{c}3\\ 11\\ 19\\ 27\end{array}\right]={\bf c}
+$"> 
+
+(<span class="arabic">346</span>)
+</div>
+
+<ul>
+<li>Convert the augmented matrix into the rref form:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+\left[\begin{array}{rrr|r}1&4&-2&3\\2&3&1&11\\3&2&4&19\\4&1&7&27\end{array}\right]
+  \rightarrow
+  \left[\begin{array}{rrr|r}1&4&-2&3\\0&-5&5&5\\0&-10&10&10\\0&-15&15&15\end{array}\right]
+  \rightarrow
+  \left[\begin{array}{rrr|r}1&4&-2&3\\0&1&-1&-1\\0&0&0&0\\0&0&0&0\end{array}\right]
+  \rightarrow
+  \left[\begin{array}{rrr|r}1&0&2&7\\0&1&-1&-1\\0&0&0&0\\0&0&0&0\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 11.38ex; vertical-align: -5.11ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1153.svg" alt="$\displaystyle \left[\begin{array}{rrr\vert r}1&amp;4&amp;-2&amp;3\\ 2&amp;3&amp;1&amp;11\\ 3&amp;2&amp;4&amp;19\\ 4...
+...n{array}{rrr\vert r}1&amp;0&amp;2&amp;7\\ 0&amp;1&amp;-1&amp;-1\\ 0&amp;0&amp;0&amp;0\\ 0&amp;0&amp;0&amp;0\end{array}\right]
+$"> 
+
+(<span class="arabic">347</span>)
+</div>
+The two pivot rows <!-- MATH
+ ${\bf r}^T_1=[1\;0\;2]$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1154.svg" alt="${\bf r}^T_1=[1\;0\;2]$"></span> and <!-- MATH
+ ${\bf r}^T_2=[0\;1\;-1]$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1155.svg" alt="${\bf r}^T_2=[0\;1\;-1]$"></span>
+  are the basis vectors that span <!-- MATH
+ $R({\bf A}^T)=C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1156.svg" alt="$R({\bf A}^T)=C({\bf A})$"></span>. The two
+  vectors that span <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span> found in Example 3 can be expressed as
+  linear combinations of <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1108.svg" alt="${\bf r}_1$"></span> and <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1109.svg" alt="${\bf r}_2$"></span>, 
+  <!-- MATH
+ $[1\;4\;-2]^T={\bf r}_1+4{\bf r}_2$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1157.svg" alt="$[1\;4\;-2]^T={\bf r}_1+4{\bf r}_2$"></span> and 
+  <!-- MATH
+ $[2\;3\;1]^T=2{\bf r}_1+3{\bf r}_2$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1158.svg" alt="$[2\;3\;1]^T=2{\bf r}_1+3{\bf r}_2$"></span>, i.e., either of the two pairs can 
+  be used as the basis that span <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span>.
+
+<p>
+Based on the rref above, the equation system can now be written as
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+\left[\begin{array}{cc}{\bf I}&{\bf F}\\{\bf0}&{\bf0}\end{array}\right]
+  \left[\begin{array}{c}{\bf y}_p\\{\bf y}_f\end{array}\right]=
+  \left[\begin{array}{r}{\bf c}_1\\{\bf0}\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 5.81ex; vertical-align: -2.32ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1159.svg" alt="$\displaystyle \left[\begin{array}{cc}{\bf I}&amp;{\bf F}\\ {\bf0}&amp;{\bf0}\end{array}...
+...nd{array}\right]=
+\left[\begin{array}{r}{\bf c}_1\\ {\bf0}\end{array}\right]
+$"> 
+
+(<span class="arabic">348</span>)
+</div>
+where
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf I}=\left[\begin{array}{cc}1&0\\0&1\end{array}\right],\;\;\;\;\;
+    {\bf F}=\left[\begin{array}{r}2\\-1\end{array}\right],\;\;\;\;\;
+    {\bf y}_p=\left[\begin{array}{c}y_1\\y_2\end{array}\right],\;\;\;\;\;
+    {\bf y}_f=y_3,\;\;\;\;\;
+    {\bf c}_1=\left[\begin{array}{r}7\\-1\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 5.81ex; vertical-align: -2.32ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1160.svg" alt="$\displaystyle {\bf I}=\left[\begin{array}{cc}1&amp;0\\ 0&amp;1\end{array}\right],\;\;\;...
+...y}_f=y_3,\;\;\;\;\;
+{\bf c}_1=\left[\begin{array}{r}7\\ -1\end{array}\right]
+$"> 
+
+(<span class="arabic">349</span>)
+</div>
+Multiplying out we get
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf I}{\bf y}_p+{\bf F}{\bf y}_f={\bf c}_1
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 2.55ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1161.svg" alt="$\displaystyle {\bf I}{\bf y}_p+{\bf F}{\bf y}_f={\bf c}_1
+$"> 
+
+(<span class="arabic">350</span>)
+</div>
+</li>
+<li>Find the homogeneous solution for <!-- MATH
+ ${\bf A}^T{\bf y}={\bf c}={\bf0}$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.57ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1162.svg" alt="${\bf A}^T{\bf y}={\bf c}={\bf0}$"></span> 
+  by setting <!-- MATH
+ ${\bf c}={\bf0}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img58.svg" alt="${\bf c}={\bf0}$"></span> and thereby <!-- MATH
+ ${\bf c}_1={\bf0}$
+ -->
+<span class="MATH"><img style="height: 2.09ex; vertical-align: -0.46ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1163.svg" alt="${\bf c}_1={\bf0}$"></span>. We let
+  the free variable <!-- MATH
+ ${\bf y}_f=y_3=1$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1164.svg" alt="${\bf y}_f=y_3=1$"></span> and get
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf I}{\bf y}_p+{\bf F}{\bf y}_f={\bf0},
+    \;\;\;\;\;\mbox{i.e.}\;\;\;\;\;
+    {\bf y}_p=-{\bf F}{\bf y}_f
+    =\left[\begin{array}{c}y_1\\y_2\end{array}\right]
+    =-\left[\begin{array}{r}2\\-1\end{array}\right]y_3
+    =\left[\begin{array}{r}-2\\1\end{array}\right],
+    \;\;\;\;\;\mbox{i.e.}\;\;\;\;\;
+    {\bf y}_h=\left[\begin{array}{r}-2\\1\\1\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1165.svg" alt="$\displaystyle {\bf I}{\bf y}_p+{\bf F}{\bf y}_f={\bf0},
+\;\;\;\;\;\mbox{i.e.}\...
+...i.e.}\;\;\;\;\;
+{\bf y}_h=\left[\begin{array}{r}-2\\ 1\\ 1\end{array}\right]
+$"> 
+
+(<span class="arabic">351</span>)
+</div>
+</li>
+<li>Find the particular solution of the non-homogeneous equation
+  <!-- MATH
+ ${\bf A}^T{\bf y}={\bf c}\ne {\bf0}$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.57ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1166.svg" alt="${\bf A}^T{\bf y}={\bf c}\ne {\bf0}$"></span> by setting <!-- MATH
+ ${\bf y}_f=y_3=0$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1167.svg" alt="${\bf y}_f=y_3=0$"></span>:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf I}{\bf y}_p+{\bf F}{\bf y}_f={\bf y}_p
+    ={\bf c}_1=\left[\begin{array}{r}7\\-1\end{array}\right],
+    \;\;\;\;\;\mbox{i.e.}\;\;\;\;\;
+    {\bf y}_p=\left[\begin{array}{r}7\\-1\\0\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1168.svg" alt="$\displaystyle {\bf I}{\bf y}_p+{\bf F}{\bf y}_f={\bf y}_p
+={\bf c}_1=\left[\be...
+...i.e.}\;\;\;\;\;
+{\bf y}_p=\left[\begin{array}{r}7\\ -1\\ 0\end{array}\right]
+$"> 
+
+(<span class="arabic">352</span>)
+</div>
+</li>
+<li>Find the complete solution:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf y}_c={\bf y}_p+N({\bf A}^T)={\bf y}_p+c y_3
+    =\left[\begin{array}{r}7\\-1\\0\end{array}\right]+c
+    \left[\begin{array}{r}-2\\1\\1\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1169.svg" alt="$\displaystyle {\bf y}_c={\bf y}_p+N({\bf A}^T)={\bf y}_p+c y_3
+=\left[\begin{a...
+...1\\ 0\end{array}\right]+c
+\left[\begin{array}{r}-2\\ 1\\ 1\end{array}\right]
+$"> 
+
+(<span class="arabic">353</span>)
+</div>
+</li>
+</ul>
+
+<p>
+If the right-hand side is <!-- MATH
+ ${\bf c}'=[1,\;1,\;2,\;3]^T$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1170.svg" alt="${\bf c}'=[1,\;1,\;2,\;3]^T$"></span>, 
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+\left[\begin{array}{rrr|r}1&4&-2&1\\2&3&1&1\\3&2&4&2\\4&1&7&3\end{array}\right]
+  \rightarrow
+  \left[\begin{array}{rrr|r}1&4&-2&1\\0&-5&5&-1\\0&-10&10&-1\\0&-15&15&-1\end{array}\right]
+  \rightarrow
+  \left[\begin{array}{rrr|r}1&4&-2&1\\0&1&-1&1/5\\0&0&0&1\\0&0&0&2\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 11.38ex; vertical-align: -5.11ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1171.svg" alt="$\displaystyle \left[\begin{array}{rrr\vert r}1&amp;4&amp;-2&amp;1\\ 2&amp;3&amp;1&amp;1\\ 3&amp;2&amp;4&amp;2\\ 4&amp;1...
+...{array}{rrr\vert r}1&amp;4&amp;-2&amp;1\\ 0&amp;1&amp;-1&amp;1/5\\ 0&amp;0&amp;0&amp;1\\ 0&amp;0&amp;0&amp;2\end{array}\right]
+$"> 
+
+(<span class="arabic">354</span>)
+</div>
+indicating the system is not solvable, as this 
+<!-- MATH
+ ${\bf c}'\notin C({\bf A}^T)=R({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1172.svg" alt="${\bf c}'\notin C({\bf A}^T)=R({\bf A})$"></span>, i.e., it is not in the column
+space of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img226.svg" alt="${\bf A}^T$"></span> or row space of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span>.
+
+<p>
+In the two examples above, we have obtained all four subspaces associated
+with this matrix <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> with <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1173.svg" alt="$M=3$"></span>, <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1174.svg" alt="$N=4$"></span>, and <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1099.svg" alt="$R=2$"></span>, in terms of the
+bases that span the subspaces:
+
+<p>
+
+<ol>
+<li>The row space <!-- MATH
+ $R({\bf A})=C({\bf A}^T)$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1047.svg" alt="$R({\bf A})=C({\bf A}^T)$"></span> is an R-D subspace of 
+  <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1175.svg" alt="$\mathbb{R}^4$"></span>, spanned by the <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1099.svg" alt="$R=2$"></span> pivot rows of the rref of 
+  <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span>:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+R({\bf A})=C({\bf A}^T)=
+  span\left(\left[\begin{array}{r}1\\0\\-1\\-2\end{array}\right],
+  \left[\begin{array}{c}0\\1\\2\\3\end{array}\right]\right) 
+  
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 11.38ex; vertical-align: -5.11ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1176.svg" alt="$\displaystyle R({\bf A})=C({\bf A}^T)=
+span\left(\left[\begin{array}{r}1\\ 0\\...
+...rray}\right],
+\left[\begin{array}{c}0\\ 1\\ 2\\ 3\end{array}\right]\right)
+$"> 
+
+(<span class="arabic">355</span>)
+</div>
+</li>
+<li>The null space <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span> is an (N-R)-D subspace of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1175.svg" alt="$\mathbb{R}^4$"></span> 
+  spanned by the <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1177.svg" alt="$N-R$"></span> independent homogeneous solutions:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+N({\bf A})=span\left(\left[\begin{array}{r}1\\-2\\1\\0\end{array}\right],
+  \left[\begin{array}{r}2\\-3\\0\\1\end{array}\right] \right)
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 11.38ex; vertical-align: -5.11ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1178.svg" alt="$\displaystyle N({\bf A})=span\left(\left[\begin{array}{r}1\\ -2\\ 1\\ 0\end{array}\right],
+\left[\begin{array}{r}2\\ -3\\ 0\\ 1\end{array}\right] \right)
+$"> 
+
+(<span class="arabic">356</span>)
+</div>
+Note that the basis vectors of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span> are indeed orthogonal to those
+  of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span>.
+</li>
+<li>The column space of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> is the same as the row space of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img226.svg" alt="${\bf A}^T$"></span>,
+  which is the R-D subspace of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1179.svg" alt="$R^3$"></span> spanned by the two pivot rows of the 
+  rref of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img226.svg" alt="${\bf A}^T$"></span>. 
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+C({\bf A})=R({\bf A}^T)=span\left(\left[\begin{array}{c}1\\0\\2\end{array}\right],
+  \left[\begin{array}{r}0\\1\\-1\end{array}\right]\right) 
+  
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1180.svg" alt="$\displaystyle C({\bf A})=R({\bf A}^T)=span\left(\left[\begin{array}{c}1\\ 0\\ 2\end{array}\right],
+\left[\begin{array}{r}0\\ 1\\ -1\end{array}\right]\right)
+$"> 
+
+(<span class="arabic">357</span>)
+</div>
+</li>
+<li>The left null space <span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1054.svg" alt="$N({\bf A}^T)$"></span> is a (M-R)-D subspace of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1119.svg" alt="$\mathbb{R}^3$"></span>
+  spanned by the homogeneous solutions (here one <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1181.svg" alt="$3-2=1$"></span> solution):
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+N({\bf A}^T)=span\left(\left[\begin{array}{r}-2\\1\\1\end{array}\right] \right)
+  =c\;\left[\begin{array}{r}-2\\1\\1\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1182.svg" alt="$\displaystyle N({\bf A}^T)=span\left(\left[\begin{array}{r}-2\\ 1\\ 1\end{array}\right] \right)
+=c\;\left[\begin{array}{r}-2\\ 1\\ 1\end{array}\right]
+$"> 
+
+(<span class="arabic">358</span>)
+</div>
+Again note that the basis vectors of <span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1054.svg" alt="$N({\bf A}^T)$"></span> are orthogonal to those
+  of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span>.
+</li>
+</ol>
+
+<p>
+In general, here are the ways to find the bases of the four subspaces:
+
+<ul>
+<li>The basis vectors of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span> are the pivot rows of the rref 
+  of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span>.
+</li>
+<li>The basis vectors of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span> are the pivot rows of the rref 
+  of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img226.svg" alt="${\bf A}^T$"></span>.
+</li>
+<li>The basis vectors of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span> are the independent homogeneous
+  solutions of <!-- MATH
+ ${\bf Ax}={\bf0}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1183.svg" alt="${\bf Ax}={\bf0}$"></span>. To find them, reduce <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> to the
+  rref, identify all free variables <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1140.svg" alt="${\bf x}_f$"></span> corresponding to non-pivot 
+  columns, set one of them to 1 and the rest to 0, solve homogeneous 
+  system <!-- MATH
+ ${\bf A}{\bf x}={\bf0}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1042.svg" alt="${\bf A}{\bf x}={\bf0}$"></span> to find the pivot variables <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1112.svg" alt="${\bf x}_p$"></span> 
+  to get one basis vector. Repeat the process for each of the free 
+  variables to get all basis vectors.
+</li>
+<li>The basis vectors of <span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1184.svg" alt="$R({\bf A}^T)$"></span> can be obtained by doing the
+  same as above for <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img226.svg" alt="${\bf A}^T$"></span>.
+</li>
+</ul>
+
+<p>
+Note that while the basis of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span> are the pivot rows of the 
+rref of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span>, as its rows are equivalent to those of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span>, 
+the pivot columns of the rref basis of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span> are not the basis
+of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span>, as the columns of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> have been changed by the
+row deduction operations and are therefore not equivalent to the 
+columns of the resulting rref. The columns in <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> corresponding
+to the pivot columns in the rref could be used as the basis of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span>.
+Alternatively, the basis of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span> can be obtained from the rref 
+of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img226.svg" alt="${\bf A}^T$"></span>, as its rows are equivalent to those of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img226.svg" alt="${\bf A}^T$"></span>, which 
+are the columns of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span>.
+
+<p>
+We further make the following observations:
+
+<ul>
+<li>The basis vectors of each of the four subspaces are independent, 
+  the basis vectors of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span> and <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span> are orthogonal, 
+  and <!-- MATH
+ $dim\;R({\bf A})+dim\;N({\bf A})=M$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1185.svg" alt="$dim\;R({\bf A})+dim\;N({\bf A})=M$"></span>. Similarly, the basis vectors 
+  of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span> and <span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1054.svg" alt="$N({\bf A}^T)$"></span> are orthogonal, and 
+  <!-- MATH
+ $dim\;C({\bf A})+dim\;N({\bf A}^T)=N$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1186.svg" alt="$dim\;C({\bf A})+dim\;N({\bf A}^T)=N$"></span>.
+  In other words, the four subspaces indeed satisfy the following orthogonal 
+  and complementary properties:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+C({\bf A})\perp N({\bf A}^T),\;\;\;\;R({\bf A})\perp N({\bf A}),
+  \;\;\;\;\;C({\bf A})\oplus N({\bf A}^T)=R^3,\;\;\;\;R({\bf A})\oplus N({\bf A})=R^4
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 3.02ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1187.svg" alt="$\displaystyle C({\bf A})\perp N({\bf A}^T),\;\;\;\;R({\bf A})\perp N({\bf A}),
+...
+...\;\;C({\bf A})\oplus N({\bf A}^T)=R^3,\;\;\;\;R({\bf A})\oplus N({\bf A})=R^4
+$"> 
+
+(<span class="arabic">359</span>)
+</div>
+i.e., they are orthogonal complements:
+  <!-- MATH
+ $C({\bf A})=N({\bf A})^\perp,\;\;\;\;R({\bf A})=N({\bf A})^\perp$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1188.svg" alt="$C({\bf A})=N({\bf A})^\perp,\;\;\;\;R({\bf A})=N({\bf A})^\perp$"></span>.
+
+<p>
+</li>
+<li>For <!-- MATH
+ ${\bf Ax}={\bf b}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img276.svg" alt="${\bf Ax}={\bf b}$"></span> to be solvable, the constant vector 
+  <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1189.svg" alt="${\bf b}$"></span> on the right-hand side must be in the column space, 
+  <!-- MATH
+ ${\bf b}\in C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1027.svg" alt="${\bf b}\in C({\bf A})$"></span>. Otherwise the equation is not solvable, 
+  even if <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.21ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1190.svg" alt="$R<M<N$"></span>. Similarly, for <!-- MATH
+ ${\bf A}^T{\bf x}={\bf c}$
+ -->
+<span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1191.svg" alt="${\bf A}^T{\bf x}={\bf c}$"></span> to be 
+  solvable, <span class="MATH"><img style="height: 1.39ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img67.svg" alt="${\bf c}$"></span> must be in the row space <!-- MATH
+ ${\bf c}\in R({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1035.svg" alt="${\bf c}\in R({\bf A})$"></span>.
+  In the examples above, both <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1189.svg" alt="${\bf b}$"></span> and <span class="MATH"><img style="height: 1.39ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img67.svg" alt="${\bf c}$"></span> are indeed in 
+  their corresponding column spaces:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf b}=\left[\begin{array}{r}3\\2\\4\end{array}\right]
+    =3\left[\begin{array}{r}1\\0\\2\end{array}\right]
+    +2\left[\begin{array}{r}0\\1\\-1\end{array}\right]
+    \in C({\bf A}),\;\;\;\;\;\;\;
+    {\bf c}=\left[\begin{array}{r}3\\11\\19\\27\end{array}\right]
+    =3\left[\begin{array}{r}1\\0\\-1\\-2\end{array}\right]
+    +11\left[\begin{array}{r}0\\1\\2\\3\end{array}\right]\in R({\bf A})
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 11.38ex; vertical-align: -5.11ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1192.svg" alt="$\displaystyle {\bf b}=\left[\begin{array}{r}3\\ 2\\ 4\end{array}\right]
+=3\lef...
+...ight]
++11\left[\begin{array}{r}0\\ 1\\ 2\\ 3\end{array}\right]\in R({\bf A})
+$"> 
+
+(<span class="arabic">360</span>)
+</div>
+But as <!-- MATH
+ ${\bf b}=[1,\;3,\;5]^T\notin C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1193.svg" alt="${\bf b}=[1,\;3,\;5]^T\notin C({\bf A})$"></span> and
+  <!-- MATH
+ ${\bf c}=[1,\;1,\;2,\;3]^T\notin R({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1194.svg" alt="${\bf c}=[1,\;1,\;2,\;3]^T\notin R({\bf A})$"></span>, the corresponding 
+  systems have no solutions.
+
+<p>
+</li>
+<li>All homogeneous solutions of <!-- MATH
+ ${\bf A}{\bf x}={\bf0}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1042.svg" alt="${\bf A}{\bf x}={\bf0}$"></span> are in 
+  the null space <!-- MATH
+ ${\bf x}_h\in N({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1071.svg" alt="${\bf x}_h\in N({\bf A})$"></span>, but in general the 
+  particular solutions <!-- MATH
+ ${\bf x}_p\in R^N=R({\bf A)}\oplus N({\bf A})$
+ -->
+<span class="MATH"><img style="height: 3.02ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1195.svg" alt="${\bf x}_p\in R^N=R({\bf A)}\oplus N({\bf A})$"></span>
+  are not necessarily in the row space <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span>. In the example 
+  above, <!-- MATH
+ ${\bf x}_p\in R^N$
+ -->
+<span class="MATH"><img style="height: 3.02ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1196.svg" alt="${\bf x}_p\in R^N$"></span> is a linear combination of the <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1099.svg" alt="$R=2$"></span> 
+  basis vectors of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span> and <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1197.svg" alt="$N-R=2$"></span> basis vectors of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span>:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf x}_p=\left[\begin{array}{r}-1\\2\\0\\0\end{array}\right]
+    =\left(0.1\left[\begin{array}{r}1\\0\\-1\\-2\end{array}\right]
+    +0.2\left[\begin{array}{r}0\\1\\2\\3\end{array}\right]\right)
+    +\left(-0.3\left[\begin{array}{r}1\\-2\\1\\0\end{array}\right]
+    -0.4\left[\begin{array}{r}2\\-3\\0\\1\end{array}\right]\right)
+    ={\bf x}'_p+{\bf x}''_p
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 11.38ex; vertical-align: -5.11ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1198.svg" alt="$\displaystyle {\bf x}_p=\left[\begin{array}{r}-1\\ 2\\ 0\\ 0\end{array}\right]
+...
+...gin{array}{r}2\\ -3\\ 0\\ 1\end{array}\right]\right)
+={\bf x}'_p+{\bf x}''_p
+$"> 
+
+(<span class="arabic">361</span>)
+</div>
+where
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf x}'_p=\left[\begin{array}{c}0.1\\0.2\\0.3\\0.4\end{array}\right]
+  \in R({\bf A}),\;\;\;\;\;\;
+  {\bf x}''_p=\left[\begin{array}{c}-1.1\\1.8\\-0.3\\-0.4\end{array}\right]
+  \in N({\bf A})
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 11.38ex; vertical-align: -5.11ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1199.svg" alt="$\displaystyle {\bf x}'_p=\left[\begin{array}{c}0.1\\ 0.2\\ 0.3\\ 0.4\end{array}...
+...ft[\begin{array}{c}-1.1\\ 1.8\\ -0.3\\ -0.4\end{array}\right]
+\in N({\bf A})
+$"> 
+
+(<span class="arabic">362</span>)
+</div>
+are the projections of <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1112.svg" alt="${\bf x}_p$"></span> onto <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span> and <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span>, 
+  respectively, and <span class="MATH"><img style="height: 3.02ex; vertical-align: -1.01ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1200.svg" alt="${\bf x}'_p$"></span> is another particular solution without
+  any homogeneous component that satisfies <!-- MATH
+ ${\bf Ax}={\bf b}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img276.svg" alt="${\bf Ax}={\bf b}$"></span>, while 
+  <span class="MATH"><img style="height: 3.02ex; vertical-align: -1.01ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1201.svg" alt="${\bf x}''_p$"></span> is a homogeneous solution satisfying <!-- MATH
+ ${\bf Ax}={\bf0}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1183.svg" alt="${\bf Ax}={\bf0}$"></span>.
+
+<p>
+</li>
+<li>All homogeneous solutions of <!-- MATH
+ ${\bf A}^T{\bf y}={\bf c}$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.57ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1034.svg" alt="${\bf A}^T{\bf y}={\bf c}$"></span> are in 
+  the left null space <!-- MATH
+ ${\bf y}_h\in N({\bf A}^T)$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1076.svg" alt="${\bf y}_h\in N({\bf A}^T)$"></span>, but in general the
+  particular solutions <!-- MATH
+ ${\bf y}_p\in C({\bf A})\oplus N({\bf A}^T)=R^M$
+ -->
+<span class="MATH"><img style="height: 3.02ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1202.svg" alt="${\bf y}_p\in C({\bf A})\oplus N({\bf A}^T)=R^M$"></span>
+  are not necessarily in the column space. In the example above, 
+  <!-- MATH
+ ${\bf y}_p\in R^M$
+ -->
+<span class="MATH"><img style="height: 3.02ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1203.svg" alt="${\bf y}_p\in R^M$"></span> is a linear combination of the <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1099.svg" alt="$R=2$"></span> basis vectors 
+  of <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span> and <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1101.svg" alt="$M-R=1$"></span> basis vector of <span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1054.svg" alt="$N({\bf A}^T)$"></span>:
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf y}_p=\left[\begin{array}{r}7\\-1\\0\end{array}\right]
+    =\left(2\left[\begin{array}{r}1\\0\\2\end{array}\right]
+    +1.5\left[\begin{array}{r}0\\1\\-1\end{array}\right]\right)
+    -2.5\left[\begin{array}{r}-2\\1\\1\end{array}\right]
+    =\left[\begin{array}{r}2\\1.5\\2.5\end{array}\right]
+    -2.5\left[\begin{array}{r}-2\\1\\1\end{array}\right]
+    ={\bf y}'_p+{\bf y}''_p
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1204.svg" alt="$\displaystyle {\bf y}_p=\left[\begin{array}{r}7\\ -1\\ 0\end{array}\right]
+=\l...
+....5\left[\begin{array}{r}-2\\ 1\\ 1\end{array}\right]
+={\bf y}'_p+{\bf y}''_p
+$"> 
+
+(<span class="arabic">363</span>)
+</div>
+where <!-- MATH
+ ${\bf y}'_p=[2,\;1.5,\;2.5]^T\in C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 3.25ex; vertical-align: -1.01ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1205.svg" alt="${\bf y}'_p=[2,\;1.5,\;2.5]^T\in C({\bf A})$"></span> is a particular
+  solution (without any homogeneous component) that satisfies
+  <!-- MATH
+ ${\bf A}^T{\bf y}={\bf c}$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.57ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1034.svg" alt="${\bf A}^T{\bf y}={\bf c}$"></span>.
+</li>
+</ul>
+
+<p>
+Here is a summary of the four subspaces associated with an <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1006.svg" alt="$M$"></span> by <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1004.svg" alt="$N$"></span> matrix 
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img90.svg" alt="${\bf A}$"></span> of rank <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img714.svg" alt="$R$"></span>.
+
+<p>
+<table class="PAD  BORDER" style="">
+<tr><td class="LEFT"><span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1006.svg" alt="$M$"></span>, <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1004.svg" alt="$N$"></span>, <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img714.svg" alt="$R$"></span></td>
+<td class="CENTER">dim <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img582.svg" alt="$R({\bf A})$"></span></td>
+<td class="CENTER">dim <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1039.svg" alt="$N({\bf A})$"></span></td>
+<td class="CENTER">dim <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span></td>
+<td class="CENTER">dim <span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1184.svg" alt="$R({\bf A}^T)$"></span></td>
+<td class="LEFT">solvability of <!-- MATH
+ ${\bf A}{\bf x}={\bf b}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1145.svg" alt="${\bf A}{\bf x}={\bf b}$"></span></td>
+</tr>
+<tr><td class="LEFT"><span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1206.svg" alt="$M=N=R$"></span></td>
+<td class="CENTER"><span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img714.svg" alt="$R$"></span></td>
+<td class="CENTER">0</td>
+<td class="CENTER"><span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img714.svg" alt="$R$"></span></td>
+<td class="CENTER">0</td>
+<td class="LEFT">solvable, <!-- MATH
+ ${\bf x}={\bf A}^{-1}{\bf b}$
+ -->
+<span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img278.svg" alt="${\bf x}={\bf A}^{-1}{\bf b}$"></span>
+  is unique solution</td>
+</tr>
+<tr><td class="LEFT"><span class="MATH"><img style="height: 2.09ex; vertical-align: -0.21ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1207.svg" alt="$M>N=R$"></span></td>
+<td class="CENTER"><span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img714.svg" alt="$R$"></span></td>
+<td class="CENTER">0</td>
+<td class="CENTER"><span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img714.svg" alt="$R$"></span></td>
+<td class="CENTER"><span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1090.svg" alt="$M-R$"></span></td>
+<td class="LEFT">over-constrained, solvable if 
+  <!-- MATH
+ ${\bf b}\in C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1027.svg" alt="${\bf b}\in C({\bf A})$"></span></td>
+</tr>
+<tr><td class="LEFT"><span class="MATH"><img style="height: 2.09ex; vertical-align: -0.21ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1208.svg" alt="$N>M=R$"></span></td>
+<td class="CENTER"><span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img714.svg" alt="$R$"></span></td>
+<td class="CENTER"><span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1177.svg" alt="$N-R$"></span></td>
+<td class="CENTER"><span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img714.svg" alt="$R$"></span></td>
+<td class="CENTER">0</td>
+<td class="LEFT">under-constrained, solvable, 
+  infinite solutions <!-- MATH
+ ${\bf x}={\bf x}_p+N({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1209.svg" alt="${\bf x}={\bf x}_p+N({\bf A})$"></span></td>
+</tr>
+<tr><td class="LEFT"><span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1210.svg" alt="$R<min(M,N)$"></span></td>
+<td class="CENTER"><span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img714.svg" alt="$R$"></span></td>
+<td class="CENTER"><span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1177.svg" alt="$N-R$"></span></td>
+<td class="CENTER"><span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img714.svg" alt="$R$"></span></td>
+<td class="CENTER"><span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1090.svg" alt="$M-R$"></span></td>
+<td class="LEFT">solvable only if 
+  <!-- MATH
+ ${\bf b}\in C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1027.svg" alt="${\bf b}\in C({\bf A})$"></span>, infinite solutions</td>
+</tr>
+</table>
+
+<p>
+The figure below illustrates a specific case with <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1211.svg" alt="$M=N=3$"></span> and <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1099.svg" alt="$R=2$"></span>. 
+As <!-- MATH
+ ${\bf b}\notin C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1078.svg" alt="${\bf b}\notin C({\bf A})$"></span>, the system can only be approximately 
+solved to find <!-- MATH
+ ${\bf Ax}={\bf p}\in C({\bf A})$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1212.svg" alt="${\bf Ax}={\bf p}\in C({\bf A})$"></span>, which is the projection 
+of <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1189.svg" alt="${\bf b}$"></span> onto the column space <span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1026.svg" alt="$C({\bf A})$"></span>. The error 
+<!-- MATH
+ $||{\bf e}||=||{\bf p}-{\bf b}||=||{\bf Ax}_p-{\bf b}||$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1213.svg" alt="$\vert\vert{\bf e}\vert\vert=\vert\vert{\bf p}-{\bf b}\vert\vert=\vert\vert{\bf Ax}_p-{\bf b}\vert\vert$"></span> is minimized, 
+<span class="MATH"><img style="height: 2.09ex; vertical-align: -0.78ex; " src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img1112.svg" alt="${\bf x}_p$"></span> is the optimal approximation. We will consider ways to obtain
+this optimal approximation in the following sections.
+
+<p>
+<img style="" src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/figures/FourSpaces1.png" alt="FourSpaces1.png">
+
+<p>
+
+<div class="navigation"><hr>
+<!--Navigation Panel-->
+<a href="node20.html">
+<img width="37" height="24" alt="next" src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/next.png"></a> 
+<a href="algebra.html">
+<img width="26" height="24" alt="up" src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/up.png"></a> 
+<a href="node18.html">
+<img width="63" height="24" alt="previous" src="/web/20210423173616im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/prev.png"></a>   
+<br>
+<b> Next:</b> <a href="node20.html">Pseudo-Inverse Solutions Based on</a>
+<b> Up:</b> <a href="algebra.html">algebra</a>
+<b> Previous:</b> <a href="node18.html">Vector and Matrix Differentiation</a></div>
+<!--End of Navigation Panel-->
+
+</body>
+</html>
+<!--
+     FILE ARCHIVED ON 17:36:16 Apr 23, 2021 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 22:25:37 Nov 07, 2022.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->
+<!--
+playback timings (ms):
+  captures_list: 86.037
+  exclusion.robots: 0.236
+  exclusion.robots.policy: 0.228
+  RedisCDXSource: 0.608
+  esindex: 0.009
+  LoadShardBlock: 60.149 (3)
+  PetaboxLoader3.datanode: 521.431 (4)
+  CDXLines.iter: 21.715 (3)
+  load_resource: 558.518
+  PetaboxLoader3.resolve: 92.329
+-->

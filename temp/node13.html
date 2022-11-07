@@ -1,0 +1,455 @@
+<!DOCTYPE HTML>
+
+<!--Converted with LaTeX2HTML 2019 (Released January 1, 2019) -->
+<html lang="EN">
+<head><script src="//archive.org/includes/analytics.js?v=cf34f82" type="text/javascript"></script>
+<script type="text/javascript">window.addEventListener('DOMContentLoaded',function(){var v=archive_analytics.values;v.service='wb';v.server_name='wwwb-app221.us.archive.org';v.server_ms=675;archive_analytics.send_pageview({});});</script>
+<script type="text/javascript" src="/_static/js/bundle-playback.js?v=MzYkZ0TU" charset="utf-8"></script>
+<script type="text/javascript" src="/_static/js/wombat.js?v=UHAOicsW" charset="utf-8"></script>
+<script type="text/javascript">
+  __wm.init("https://web.archive.org/web");
+  __wm.wombat("http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node13.html","20190917104227","https://web.archive.org/","web","/_static/",
+	      "1568716947");
+</script>
+<link rel="stylesheet" type="text/css" href="/_static/css/banner-styles.css?v=S1zqJCYt" />
+<link rel="stylesheet" type="text/css" href="/_static/css/iconochive.css?v=qtvMKcIJ" />
+<!-- End Wayback Rewrite JS Include -->
+
+<title>Centering Matrix</title>
+<meta name="description" content="Centering Matrix">
+<meta name="keywords" content="algebra">
+<meta name="resource-type" content="document">
+<meta name="distribution" content="global">
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="Generator" content="LaTeX2HTML v2019">
+
+<link rel="STYLESHEET" href="/web/20190917104227cs_/http://fourier.eng.hmc.edu/e176/lectures/algebra/algebra.css">
+
+<link rel="next" href="node14.html">
+<link rel="previous" href="node12.html">
+<link rel="next" href="node14.html">
+</head>
+
+<body><!-- BEGIN WAYBACK TOOLBAR INSERT -->
+<style type="text/css">
+body {
+  margin-top:0 !important;
+  padding-top:0 !important;
+  /*min-width:800px !important;*/
+}
+</style>
+<script>__wm.rw(0);</script>
+<div id="wm-ipp-base" lang="en" style="display:none;direction:ltr;">
+<div id="wm-ipp" style="position:fixed;left:0;top:0;right:0;">
+<div id="donato" style="position:relative;width:100%;">
+  <div id="donato-base">
+    <iframe id="donato-if" src="https://archive.org/includes/donate.php?as_page=1&amp;platform=wb&amp;referer=https%3A//web.archive.org/web/20190917104227/http%3A//fourier.eng.hmc.edu/e176/lectures/algebra/node13.html"
+	    scrolling="no" frameborder="0" style="width:100%; height:100%">
+    </iframe>
+  </div>
+</div><div id="wm-ipp-inside">
+  <div id="wm-toolbar" style="position:relative;display:flex;flex-flow:row nowrap;justify-content:space-between;">
+    <div id="wm-logo" style="/*width:110px;*/padding-top:12px;">
+      <a href="/web/" title="Wayback Machine home page"><img src="/_static/images/toolbar/wayback-toolbar-logo-200.png" srcset="/_static/images/toolbar/wayback-toolbar-logo-100.png, /_static/images/toolbar/wayback-toolbar-logo-150.png 1.5x, /_static/images/toolbar/wayback-toolbar-logo-200.png 2x" alt="Wayback Machine" style="width:100px" border="0" /></a>
+    </div>
+    <div class="c" style="display:flex;flex-flow:column nowrap;justify-content:space-between;flex:1;">
+      <form class="u" style="display:flex;flex-direction:row;flex-wrap:nowrap;" target="_top" method="get" action="/web/submit" name="wmtb" id="wmtb"><input type="text" name="url" id="wmtbURL" value="http://fourier.eng.hmc.edu/e176/lectures/algebra/node13.html" onfocus="this.focus();this.select();" style="flex:1;"/><input type="hidden" name="type" value="replay" /><input type="hidden" name="date" value="20190917104227" /><input type="submit" value="Go" />
+      </form>
+      <div style="display:flex;flex-flow:row nowrap;align-items:flex-end;">
+		<div class="s" id="wm-nav-captures" style="flex:1;">
+	  	  <a class="t" href="/web/20190917104227*/http://fourier.eng.hmc.edu/e176/lectures/algebra/node13.html" title="See a list of every capture for this URL">21 captures</a>
+	  <div class="r" title="Timespan for captures of this URL">05 Jun 2016 - 17 Sep 2019</div>
+	  </div>
+	<div class="k">
+	  <a href="" id="wm-graph-anchor">
+	    <div id="wm-ipp-sparkline" title="Explore captures for this URL" style="position: relative">
+	      <canvas id="wm-sparkline-canvas" width="675" height="27" border="0"></canvas>
+	    </div>
+	  </a>
+	</div>
+      </div>
+    </div>
+    <div class="n">
+      <table>
+	<tbody>
+	  <!-- NEXT/PREV MONTH NAV AND MONTH INDICATOR -->
+	  <tr class="m">
+	    <td class="b" nowrap="nowrap"><a href="https://web.archive.org/web/20190817092644/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node13.html" title="17 Aug 2019"><strong>Aug</strong></a></td>
+	    <td class="c" id="displayMonthEl" title="You are here: 10:42:27 Sep 17, 2019">SEP</td>
+	    <td class="f" nowrap="nowrap">Oct</td>
+	  </tr>
+	  <!-- NEXT/PREV CAPTURE NAV AND DAY OF MONTH INDICATOR -->
+	  <tr class="d">
+	    <td class="b" nowrap="nowrap"><a href="https://web.archive.org/web/20190817092644/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node13.html" title="09:26:44 Aug 17, 2019"><img src="/_static/images/toolbar/wm_tb_prv_on.png" alt="Previous capture" width="14" height="16" border="0" /></a></td>
+	    <td class="c" id="displayDayEl" style="width:34px;font-size:22px;white-space:nowrap;" title="You are here: 10:42:27 Sep 17, 2019">17</td>
+	    <td class="f" nowrap="nowrap"><img src="/_static/images/toolbar/wm_tb_nxt_off.png" alt="Next capture" width="14" height="16" border="0" /></td>
+	  </tr>
+	  <!-- NEXT/PREV YEAR NAV AND YEAR INDICATOR -->
+	  <tr class="y">
+	    <td class="b" nowrap="nowrap"><a href="https://web.archive.org/web/20180826043903/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node13.html" title="26 Aug 2018"><strong>2018</strong></a></td>
+	    <td class="c" id="displayYearEl" title="You are here: 10:42:27 Sep 17, 2019">2019</td>
+	    <td class="f" nowrap="nowrap">2020</td>
+	  </tr>
+	</tbody>
+      </table>
+    </div>
+    <div class="r" style="display:flex;flex-flow:column nowrap;align-items:flex-end;justify-content:space-between;">
+      <div id="wm-btns" style="text-align:right;height:23px;">
+        	<span class="xxs">
+          <div id="wm-save-snapshot-success">success</div>
+          <div id="wm-save-snapshot-fail">fail</div>
+          <a id="wm-save-snapshot-open" href="#"
+	     title="Share via My Web Archive" >
+            <span class="iconochive-web"></span>
+          </a>
+          <a href="https://archive.org/account/login.php" title="Sign In" id="wm-sign-in">
+            <span class="iconochive-person"></span>
+          </a>
+          <span id="wm-save-snapshot-in-progress" class="iconochive-web"></span>
+	</span>
+        	<a class="xxs" href="http://faq.web.archive.org/" title="Get some help using the Wayback Machine" style="top:-6px;"><span class="iconochive-question" style="color:rgb(87,186,244);font-size:160%;"></span></a>
+	<a id="wm-tb-close" href="#close" style="top:-2px;" title="Close the toolbar"><span class="iconochive-remove-circle" style="color:#888888;font-size:240%;"></span></a>
+      </div>
+      <div id="wm-share" class="xxs">
+        <a href="/web/20190917104227/http://web.archive.org/screenshot/http://fourier.eng.hmc.edu/e176/lectures/algebra/node13.html"
+           id="wm-screenshot"
+           title="screenshot">
+          <span class="wm-icon-screen-shot"></span>
+        </a>
+        <a href="#" id="wm-video" title="video">
+          <span class="iconochive-movies"></span>
+        </a>
+	<a id="wm-share-facebook" href="#" data-url="https://web.archive.org/web/20190917104227/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node13.html" title="Share on Facebook" style="margin-right:5px;" target="_blank"><span class="iconochive-facebook" style="color:#3b5998;font-size:160%;"></span></a>
+	<a id="wm-share-twitter" href="#" data-url="https://web.archive.org/web/20190917104227/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node13.html" title="Share on Twitter" style="margin-right:5px;" target="_blank"><span class="iconochive-twitter" style="color:#1dcaff;font-size:160%;"></span></a>
+      </div>
+      <div style="padding-right:2px;text-align:right;white-space:nowrap;">
+	<a id="wm-expand" class="wm-btn wm-closed" href="#expand" onclick="__wm.ex(event);return false;"><span id="wm-expand-icon" class="iconochive-down-solid"></span> <span class="xxs" style="font-size:80%;">About this capture</span></a>
+      </div>
+    </div>
+  </div>
+    <div id="wm-capinfo" style="border-top:1px solid #777;display:none; overflow: hidden">
+                    <div id="wm-capinfo-collected-by">
+    <div style="background-color:#666;color:#fff;font-weight:bold;text-align:center">COLLECTED BY</div>
+    <div style="padding:3px;position:relative" id="wm-collected-by-content">
+            <div style="display:inline-block;vertical-align:top;width:50%;">
+			<span class="c-logo" style="background-image:url(https://archive.org/services/img/alexacrawls);"></span>
+		Organization: <a style="color:#33f;" href="https://archive.org/details/alexacrawls" target="_new"><span class="wm-title">Alexa Crawls</span></a>
+		<div style="max-height:75px;overflow:hidden;position:relative;">
+	  <div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+	  Starting in 1996, <a href="http://www.alexa.com/">Alexa Internet</a> has been donating their crawl data to the Internet Archive.  Flowing in every day, these data are added to the <a href="http://web.archive.org/">Wayback Machine</a> after an embargo period.
+	</div>
+	      </div>
+      <div style="display:inline-block;vertical-align:top;width:49%;">
+			<span class="c-logo" style="background-image:url(https://archive.org/services/img/alexacrawls)"></span>
+		<div>Collection: <a style="color:#33f;" href="https://archive.org/details/alexacrawls" target="_new"><span class="wm-title">Alexa Crawls</span></a></div>
+		<div style="max-height:75px;overflow:hidden;position:relative;">
+	  <div style="position:absolute;top:0;left:0;width:100%;height:75px;background:linear-gradient(to bottom,rgba(255,255,255,0) 0%,rgba(255,255,255,0) 90%,rgba(255,255,255,255) 100%);"></div>
+	  Starting in 1996, <a href="http://www.alexa.com/">Alexa Internet</a> has been donating their crawl data to the Internet Archive.  Flowing in every day, these data are added to the <a href="http://web.archive.org/">Wayback Machine</a> after an embargo period.
+	</div>
+	      </div>
+    </div>
+    </div>
+    <div id="wm-capinfo-timestamps">
+    <div style="background-color:#666;color:#fff;font-weight:bold;text-align:center" title="Timestamps for the elements of this page">TIMESTAMPS</div>
+    <div>
+      <div id="wm-capresources" style="margin:0 5px 5px 5px;max-height:250px;overflow-y:scroll !important"></div>
+      <div id="wm-capresources-loading" style="text-align:left;margin:0 20px 5px 5px;display:none"><img src="/_static/images/loading.gif" alt="loading" /></div>
+    </div>
+    </div>
+  </div></div></div></div><div id="wm-ipp-print">The Wayback Machine - https://web.archive.org/web/20190917104227/http://fourier.eng.hmc.edu:80/e176/lectures/algebra/node13.html</div>
+<script type="text/javascript">//<![CDATA[
+__wm.bt(675,27,25,2,"web","http://fourier.eng.hmc.edu/e176/lectures/algebra/node13.html","20190917104227",1996,"/_static/",["/_static/css/banner-styles.css?v=S1zqJCYt","/_static/css/iconochive.css?v=qtvMKcIJ"], false);
+  __wm.rw(1);
+//]]></script>
+<!-- END WAYBACK TOOLBAR INSERT -->
+
+<div class="navigation"><!--Navigation Panel-->
+<a href="node14.html">
+<img width="37" height="24" alt="next" src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/next.png"></a> 
+<a href="algebra.html">
+<img width="26" height="24" alt="up" src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/up.png"></a> 
+<a href="node12.html">
+<img width="63" height="24" alt="previous" src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/prev.png"></a>   
+<br>
+<b> Next:</b> <a href="node14.html">Singular Value Decomposition</a>
+<b> Up:</b> <a href="algebra.html">algebra</a>
+<b> Previous:</b> <a href="node12.html">Normal Matrices and Diagonalizability</a>
+<br>
+<br></div>
+<!--End of Navigation Panel-->
+
+<h1><a id="SECTION000130000000000000000">
+Centering Matrix</a>
+</h1>
+
+<p>
+The centering matrix is defined as
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf C}_n={\bf I}_n-\frac{1}{n}{\bf 11}^T
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 4.88ex; vertical-align: -1.71ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img592.svg" alt="$\displaystyle {\bf C}_n={\bf I}_n-\frac{1}{n}{\bf 11}^T
+$"> 
+
+(<span class="arabic">164</span>)
+</div>
+where <!-- MATH
+ ${\bf 1}=[1,\cdots, 1]^T$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img19.svg" alt="${\bf 1}=[1,\cdots,1]^T$"></span> and <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img593.svg" alt="${\bf 11}^T$"></span> is an <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.31ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img153.svg" alt="$n\times n$"></span>
+matrix of all 1's. For example,
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf C}_1=0;\;\;\;\;\;\;\;\;\;
+{\bf C}_2=\left[\begin{array}{cc}1&0\\0&1\end{array}\right]
+-\frac{1}{2}\left[\begin{array}{cc}1&1\\1&1\end{array}\right]
+=\frac{1}{2}\left[\begin{array}{rr}1&-1\\-1&1\end{array}\right];
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 5.81ex; vertical-align: -2.32ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img594.svg" alt="$\displaystyle {\bf C}_1=0;\;\;\;\;\;\;\;\;\;
+{\bf C}_2=\left[\begin{array}{cc}1...
+...rray}\right]
+=\frac{1}{2}\left[\begin{array}{rr}1&amp;-1\\ -1&amp;1\end{array}\right];
+$"> 
+
+(<span class="arabic">165</span>)
+</div>
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf C}_3=\left[\begin{array}{ccc}1&0&0\\0&1&0\\0&0&1\end{array}\right]
+-\frac{1}{3}\left[\begin{array}{ccc}1&1&1\\1&1&1\\1&1&1\end{array}\right]
+=\frac{1}{3}\left[\begin{array}{rrr}2&-1&-1\\-1&2&-1\\-1&-1&2\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img595.svg" alt="$\displaystyle {\bf C}_3=\left[\begin{array}{ccc}1&amp;0&amp;0\\ 0&amp;1&amp;0\\ 0&amp;0&amp;1\end{array...
+...rac{1}{3}\left[\begin{array}{rrr}2&amp;-1&amp;-1\\ -1&amp;2&amp;-1\\ -1&amp;-1&amp;2\end{array}\right]
+$"> 
+
+(<span class="arabic">166</span>)
+</div>
+When <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.46ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img596.svg" alt="${\bf C}_n$"></span> is applied to an n-D vector <!-- MATH
+ ${\bf v}=[v_1,\cdots,v_n]^T$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img597.svg" alt="${\bf v}=[v_1,\cdots,v_n]^T$"></span>, 
+we get
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf C}_n{\bf v}={\bf v}-\frac{1}{n}\left({\bf 11}^T\right){\bf v}
+={\bf v}-\frac{1}{n}\sum_{i=1}^nv_i {\bf 1}
+={\bf v}-\bar{v}{\bf 1}
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 7.20ex; vertical-align: -3.09ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img598.svg" alt="$\displaystyle {\bf C}_n{\bf v}={\bf v}-\frac{1}{n}\left({\bf 11}^T\right){\bf v}
+={\bf v}-\frac{1}{n}\sum_{i=1}^nv_i {\bf 1}
+={\bf v}-\bar{v}{\bf 1}
+$"> 
+
+(<span class="arabic">167</span>)
+</div>
+where <span class="MATH"><img style="height: 1.63ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img599.svg" alt="$\bar{v}$"></span> is the mean of all components of <span class="MATH"><img style="height: 1.39ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img199.svg" alt="${\bf v}$"></span>:
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+\bar{v}=\frac{1}{n}{\bf 1}^T{\bf v}=\frac{1}{n}\sum_{i=1}^nv_i
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 7.20ex; vertical-align: -3.09ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img600.svg" alt="$\displaystyle \bar{v}=\frac{1}{n}{\bf 1}^T{\bf v}=\frac{1}{n}\sum_{i=1}^nv_i
+$"> 
+
+(<span class="arabic">168</span>)
+</div>
+We see that the mean of <span class="MATH"><img style="height: 1.39ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img199.svg" alt="${\bf v}$"></span> is removed from the resulting vector 
+<!-- MATH
+ ${\bf C}_n{\bf v}$
+ -->
+<span class="MATH"><img style="height: 2.32ex; vertical-align: -0.46ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img601.svg" alt="${\bf C}_n{\bf v}$"></span>. 
+
+<p>
+<b>Example:</b> <!-- MATH
+ ${\bf v}=[3,\;-2,\;5]^T$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.70ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img602.svg" alt="${\bf v}=[3,\;-2,\;5]^T$"></span>, with mean <!-- MATH
+ $\bar{v}=(3-2+5)/3=2$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img603.svg" alt="$\bar{v}=(3-2+5)/3=2$"></span>,
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf u}={\bf C}_3{\bf v}=\frac{1}{3}\left[\begin{array}{rrr}2&-1&-1\\-1&2&-1\\-1&-1&2\end{array}\right]\left[\begin{array}{r}3\\-2\\5\end{array}\right]
+=\left[\begin{array}{r}3\\-2\\5\end{array}\right]
+-\left[\begin{array}{c}2\\2\\2\end{array}\right]
+=\left[\begin{array}{r}1\\-4\\3\end{array}\right]
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 8.59ex; vertical-align: -3.72ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img604.svg" alt="$\displaystyle {\bf u}={\bf C}_3{\bf v}=\frac{1}{3}\left[\begin{array}{rrr}2&amp;-1&amp;...
+...\\ 2\\ 2\end{array}\right]
+=\left[\begin{array}{r}1\\ -4\\ 3\end{array}\right]
+$"> 
+
+(<span class="arabic">169</span>)
+</div>
+The mean of the resulting vector <span class="MATH"><img style="height: 1.39ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img200.svg" alt="${\bf u}$"></span> is <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img605.svg" alt="$\bar{u}=0$"></span>.
+In particular, if <!-- MATH
+ ${\bf v}={\bf 1}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img606.svg" alt="${\bf v}={\bf 1}$"></span>, then
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf C}_n{\bf v}={\bf C}_n{\bf 1}
+=\left[{\bf I}-\frac{1}{n}{\bf 11}^T\right]{\bf 1}
+={\bf 1}-\frac{1}{n}{\bf 11}^T{\bf 1}
+={\bf 1}-\frac{1}{n}{\bf 1}n={\bf0}
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 5.81ex; vertical-align: -2.32ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img607.svg" alt="$\displaystyle {\bf C}_n{\bf v}={\bf C}_n{\bf 1}
+=\left[{\bf I}-\frac{1}{n}{\bf ...
+...f 1}
+={\bf 1}-\frac{1}{n}{\bf 11}^T{\bf 1}
+={\bf 1}-\frac{1}{n}{\bf 1}n={\bf0}
+$"> 
+
+(<span class="arabic">170</span>)
+</div>
+i.e., <!-- MATH
+ ${\bf C}_n{\bf 1}=0\,{\bf 1}$
+ -->
+<span class="MATH"><img style="height: 2.32ex; vertical-align: -0.46ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img608.svg" alt="${\bf C}_n{\bf 1}=0\,{\bf 1}$"></span>. We therefore see that 
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img609.svg" alt="$\lambda=0$"></span> and <!-- MATH
+ ${\bf v}={\bf 1}$
+ -->
+<span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img606.svg" alt="${\bf v}={\bf 1}$"></span> are the eigenvalue and corresponding
+eigenvector of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.46ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img596.svg" alt="${\bf C}_n$"></span>.
+Also, consider any zero-mean vector <!-- MATH
+ ${\bf v}=[v_1,\cdots,v_n]$
+ -->
+<span class="MATH"><img style="height: 2.55ex; vertical-align: -0.70ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img610.svg" alt="${\bf v}=[v_1,\cdots,v_n]$"></span> 
+satisfying <!-- MATH
+ $\sum_{i=1}^n v_i={\bf 1}^T{\bf v}=0$
+ -->
+<span class="MATH"><img style="height: 3.02ex; vertical-align: -0.81ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img611.svg" alt="$\sum_{i=1}^n v_i={\bf 1}^T{\bf v}=0$"></span> with <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img62.svg" alt="$n-1$"></span> degrees
+of freedom, we have
+
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf C}_n{\bf v}=\left[{\bf I}-\frac{1}{n}{\bf 11}^T\right]{\bf v}
+={\bf v}-\frac{1}{n}{\bf 1}{\bf 1}^T{\bf v}={\bf v}
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 5.81ex; vertical-align: -2.32ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img612.svg" alt="$\displaystyle {\bf C}_n{\bf v}=\left[{\bf I}-\frac{1}{n}{\bf 11}^T\right]{\bf v}
+={\bf v}-\frac{1}{n}{\bf 1}{\bf 1}^T{\bf v}={\bf v}
+$"> 
+
+(<span class="arabic">171</span>)
+</div>
+i.e., <!-- MATH
+ ${\bf C}_n{\bf v}=1\,{\bf v}$
+ -->
+<span class="MATH"><img style="height: 2.32ex; vertical-align: -0.46ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img613.svg" alt="${\bf C}_n{\bf v}=1\,{\bf v}$"></span>. We therefore see that <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img614.svg" alt="$\lambda=1$"></span> 
+and any <span class="MATH"><img style="height: 1.39ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img199.svg" alt="${\bf v}$"></span> satisfying <!-- MATH
+ ${\bf 1}^T{\bf v}=0$
+ -->
+<span class="MATH"><img style="height: 2.32ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img615.svg" alt="${\bf 1}^T{\bf v}=0$"></span> are the eigenvalue 
+of multiplicity <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img62.svg" alt="$n-1$"></span> and the corresponding eigenvector of <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.46ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img596.svg" alt="${\bf C}_n$"></span>. 
+
+<p>
+The certering matrix <span class="MATH"><img style="height: 2.32ex; vertical-align: -0.46ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img596.svg" alt="${\bf C}_n$"></span> has the following properties:
+
+<ul>
+<li>Idempotence: <!-- MATH
+ ${\bf C}_n^k={\bf C}_n$
+ -->
+<span class="MATH"><img style="height: 2.79ex; vertical-align: -0.69ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img616.svg" alt="${\bf C}_n^k={\bf C}_n$"></span>
+  
+<div class="equation">
+
+<!-- MATH
+ \begin{equation}
+{\bf C}_n^2={\bf C}_n{\bf C}_n=
+  \left({\bf I}_n-\frac{1}{n}{\bf 11}^T\right)
+  \left({\bf I}_n-\frac{1}{n}{\bf 11}^T\right)
+  ={\bf I}_n-\frac{2}{n}{\bf 1}{\bf 1}^T+\frac{n}{n^2}{\bf 11}^T={\bf C}_n
+\end{equation}
+ -->
+ &nbsp;  <img style="height: 5.81ex; vertical-align: -2.32ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img617.svg" alt="$\displaystyle {\bf C}_n^2={\bf C}_n{\bf C}_n=
+\left({\bf I}_n-\frac{1}{n}{\bf ...
+...t)
+={\bf I}_n-\frac{2}{n}{\bf 1}{\bf 1}^T+\frac{n}{n^2}{\bf 11}^T={\bf C}_n
+$"> 
+
+(<span class="arabic">172</span>)
+</div>
+Once the mean of vector <span class="MATH"><img style="height: 1.39ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img199.svg" alt="${\bf v}$"></span> is removed, its mean is zero and
+  subsequent removal of mean has not effect.
+</li>
+<li><span class="MATH"><img style="height: 2.32ex; vertical-align: -0.46ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img596.svg" alt="${\bf C}_n$"></span> has eigenvalue <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img614.svg" alt="$\lambda=1$"></span> of multiplicity 
+  <span class="MATH"><img style="height: 2.09ex; vertical-align: -0.31ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img62.svg" alt="$n-1$"></span> and eigenvalue <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img609.svg" alt="$\lambda=0$"></span> of multiplicity <span class="MATH"><img style="height: 1.86ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img618.svg" alt="$1$"></span>.
+</li>
+<li><span class="MATH"><img style="height: 2.32ex; vertical-align: -0.46ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img596.svg" alt="${\bf C}_n$"></span> is singular, its inverse does not exist. Once the
+  mean of vector <span class="MATH"><img style="height: 1.39ex; vertical-align: -0.12ex; " src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/img199.svg" alt="${\bf v}$"></span> is removed, it cannot be reconstructed by 
+  an inverse process.
+</li>
+</ul>
+
+<p>
+
+<div class="navigation"><hr>
+<!--Navigation Panel-->
+<a href="node14.html">
+<img width="37" height="24" alt="next" src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/next.png"></a> 
+<a href="algebra.html">
+<img width="26" height="24" alt="up" src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/up.png"></a> 
+<a href="node12.html">
+<img width="63" height="24" alt="previous" src="/web/20190917104227im_/http://fourier.eng.hmc.edu/e176/lectures/algebra/prev.png"></a>   
+<br>
+<b> Next:</b> <a href="node14.html">Singular Value Decomposition</a>
+<b> Up:</b> <a href="algebra.html">algebra</a>
+<b> Previous:</b> <a href="node12.html">Normal Matrices and Diagonalizability</a></div>
+<!--End of Navigation Panel-->
+
+</body>
+</html>
+<!--
+     FILE ARCHIVED ON 10:42:27 Sep 17, 2019 AND RETRIEVED FROM THE
+     INTERNET ARCHIVE ON 21:16:47 Nov 07, 2022.
+     JAVASCRIPT APPENDED BY WAYBACK MACHINE, COPYRIGHT INTERNET ARCHIVE.
+
+     ALL OTHER CONTENT MAY ALSO BE PROTECTED BY COPYRIGHT (17 U.S.C.
+     SECTION 108(a)(3)).
+-->
+<!--
+playback timings (ms):
+  captures_list: 173.25
+  exclusion.robots: 0.254
+  exclusion.robots.policy: 0.244
+  RedisCDXSource: 0.75
+  esindex: 0.009
+  LoadShardBlock: 150.402 (3)
+  PetaboxLoader3.datanode: 168.665 (4)
+  CDXLines.iter: 18.975 (3)
+  load_resource: 494.674
+  PetaboxLoader3.resolve: 423.197
+-->
