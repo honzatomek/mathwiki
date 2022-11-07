@@ -42,6 +42,9 @@
 \newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
 \newcommand*{\Resize}[2]{\resizebox{#1}{!}{$#2$}}%
 
+\newcommand{\closure}[2][3]{%
+{}\mkern#1mu\overline{\mkern-#1mu#2}}
+
 % equal by definition
 \newcommand*\eqd{\stackrel{\triangle}{=}}
 
@@ -112,36 +115,90 @@ defined assemblage DOFs and transform the finite equilibrium equations to
 correspond to the prescribed BCs. Thus we write:
 
 \begin{equation}\label{skew-bcs}
-    \mathbf{u} = \mathbf{T} \overline{\mathbf{u}}
+    \mathbf{u} = \mathbf{T} \closure{\mathbf{u}}
 \end{equation}
 
-where $ \overline{\mathbf{u}} $ is the vector of nodal point DOFs in the required
+where $ \closure{\mathbf{u}} $ is the vector of nodal point DOFs in the required
 directions. The transformation matrix $ \mathbf{T} $ is an identity matrix
 that has been altered by the directional sines and cosines of the components
-$ \overline{\mathbf{u}} $ measured in the original displacement directions.
-Using (\eqref{skew-bcs}), we obtain:
+$ \closure{\mathbf{u}} $ measured in the original displacement directions.
+Using \eqref{skew-bcs}, we obtain:
 
 \begin{equation}
-    \overline{\mathbf{M}} \overline{\ddot{\mathbf{u}}}
-    + \overline{\mathbf{C}} \overline{\dot{\mathbf{u}}}
-    + \overline{\mathbf{K}} \overline{\mathbf{u}}
-    = \overline{\mathbf{f}}
+    \closure{\mathbf{M}} \closure{\ddot{\mathbf{u}}}
+    + \closure{\mathbf{C}} \closure{\dot{\mathbf{u}}}
+    + \closure{\mathbf{K}} \closure{\mathbf{u}}
+    = \closure{\mathbf{f}}
 \end{equation}
 
 where:
 
 \begin{eqarray}\label{skew-eq-of-motion}
-    \overline{\mathbf{M}} & = \mathbf{T}^T \mathbf{M} \mathbf{T} \\
-    \overline{\mathbf{C}} & = \mathbf{T}^T \mathbf{C} \mathbf{T} \\
-    \overline{\mathbf{K}} & = \mathbf{T}^T \mathbf{K} \mathbf{T} \\
-    \overline{\mathbf{f}} & = \mathbf{T}^T \mathbf{f}
+    \closure{\mathbf{M}} & = \mathbf{T}^T \mathbf{M} \mathbf{T} \\
+    \closure{\mathbf{C}} & = \mathbf{T}^T \mathbf{C} \mathbf{T} \\
+    \closure{\mathbf{K}} & = \mathbf{T}^T \mathbf{K} \mathbf{T} \\
+    \closure{\mathbf{f}} & = \mathbf{T}^T \mathbf{f}
 \end{eqarray}
 
-We should note that the matrix multiplications in (\eqref{skew-eq-of-motion})
+We should note that the matrix multiplications in \eqref{skew-eq-of-motion}
 involve changes only in those columns and rows of $ \mathbf{M} $, $ \mathbf{C} $,
 $ \mathbf{K} $ and $ \mathbf{f} $ that are actually affected. In practice,
 the transformation is carried out effectively on the element level just prior
 to adding the element matrices to the global matrices.
+
+
+\newpage
+\chapter{Multifreedom Constraints}
+
+The \textit{multifreedom equality constraints}, or \textit{multifreedom constraints}
+for short (\textbf{MFC}s) are functional equations that connect
+\textit{two or more} displacement components:
+
+\begin{bbox}
+    \begin{equation}\label{canonical-constraint-form}
+        F(nodal\ displacement\ components) = prescribed\ value \quad
+    \end{equation}
+\end{bbox}
+
+where function $ F $ vanishes id all its nodal displacement arguments do.
+Equation \eqref{canonical-constraint-form} is called the
+\textit{canonical form} of the constraint.
+
+An \textbf{MFC} of this form is called a \textit{multipoint} or \textit{multinode}
+if it involves displacement components at different nodes. The constraint is
+called \textit{linear} if all displacement components appear linearly on the
+\textbf{LHS}, and \textit{nonlinear} otherwise.
+
+The constraint is called \textit{homogeneous} if, upon transfering all terms
+that depend on displacement components to the \textbf{LHS}, the \textbf{RHS} -
+the "prescribed value" in \eqref{canonical-constraint-form} is \textbf{zero}.
+It is called \textit{nonhomogeneous} otherwise.
+
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.70\textwidth]{img/mfc_schematic.png}
+    \caption{Schematics of MFC application.}
+    \label{fig:MFC-schematic}
+\end{figure}
+
+
+\section{Methods for Imposing MFCs}
+
+Accounting for MFCs is done, at least conceptually, by changing the assembled master
+stiffness equations to produce a \textit{modified} system of equations:
+
+\begin{equation}\label{mfc-modification}
+    \mathbf{K} \mathbf{u} = \mathbf{f} \overset{MFC}{\implies}
+    \hat{\mathbf{K}} \hat{\mathbf{u}} = \hat{\mathbf{f}}
+\end{equation}
+
+The modification process \eqref{mfc-modification} is also called  \textit{constraint}
+\textit{application} or \textit{constraint imposition}. The modified system
+is that submitted to the equation solver, which returns $ \hat{\mathbf{u}} $.
+
+
+
 
 
 \newpage
@@ -2026,10 +2083,24 @@ $ \mathbf{N}_0^{t + \Delta t} = \mathbf{N}^t $, and
 $ \mathbf{u}_0^{t + \Delta t} = \mathbf{u}^t $.
 The iteration is continued \textbf{until appropriate convergence criteria are satisfied.}
 
+A characteristic of this iteration is that a new tangent stiffness matrix is
+calculated in \textbf{each} iteration, which is why this method is also referred
+to as the \textbf{full Newton-Raphson method}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.60\textwidth]{img/full_newton_raphson.png}
+    \caption{Newton-Raphson iteration in solution of SDOF system.
+    $ \mathbf{R} $ is load increment, $ \mathbf{F} $ are internal forces,
+    $ \mathbf{u} $ are displacements.}
+    \label{fig:full-newton-raphson-png}
+\end{figure}
+
+
+
 % TODO: Bathe FEP_2nd_Edidtion_4th_prinitng.pdf
 %       Page 756 (773)
-
-
+%       Modified Newton-Raphson
 
 
 
