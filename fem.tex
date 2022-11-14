@@ -45,6 +45,9 @@
 \newcommand{\closure}[2][3]{%
 {}\mkern#1mu\overline{\mkern-#1mu#2}}
 
+% maximum number of entries in matrix
+\setcounter{MaxMatrixCols}{20}
+
 % equal by definition
 \newcommand*\eqd{\stackrel{\triangle}{=}}
 
@@ -196,6 +199,595 @@ stiffness equations to produce a \textit{modified} system of equations:
 The modification process \eqref{mfc-modification} is also called  \textit{constraint}
 \textit{application} or \textit{constraint imposition}. The modified system
 is that submitted to the equation solver, which returns $ \hat{\mathbf{u}} $.
+
+Three methods for applying \textbf{MFCs} are written below:
+
+\begin{enumerate}
+    \item \textit{Master-Slave Elimination}
+
+        The DOFs involved in each MFC are separated into master and slave freedoms.
+        The slave freedoms are then explicitely eliminated. The modified equations
+        do not contain the slave freedoms.
+
+    \item \textit{Penalty Augmentation}
+
+        Also called the \textit{penalty function method}. Each \textbf{MFC}
+        is viewed as the presence of a fictious elastic structural element called
+        the \textit{penalty element} that enforces it approximately. This element
+        is parametrized by a numerical \textit{weight}. The exact constraint is
+        recovered if the weight goes to \textbf{infinity}. The MFCs are imposed
+        by augmenting the finite element model with the penalty elements.
+
+    \item \textit{Lagrange Multiplier Adjunction}
+
+        For each MFC an additional unknown is adjoined to the master stiffness
+        equations. Physically this set of unknowns represent
+        \textit{constraint forces} that would enforce the constraints exactly
+        should they be applied to the unconstrained system.
+\end{enumerate}
+
+The master stiffness equations are assembled ignoring all constraints. Then the MFCs
+are imposed by appropriate modification of those equations. There are, however,
+two important practical differences:
+
+\begin{enumerate}
+    \item The modification process is not unique because there are alternative
+        constraint imposition methods. These methods offer tradeofss in generality,
+        programming implementation complexity, computational effort, numerical
+        accuracy and stability.
+
+    \item In the implementation of some of these methods - notably penalty augmentation
+        - constraint imposition and assembly are carried out simultaneously. In that
+        case the framework "first assemble, then modify", is not strictly respected
+        in the actual implementation.
+\end{enumerate}
+
+
+\subsection{MFC Matrix Forms}
+
+Matrix forms of \textit{linear} \textbf{MFCs} are often convenient for compact
+notation. An individual constraint may be written:
+
+\begin{equation}\label{mfc-matrix}
+    \begin{bmatrix}
+        1 & -2 & 1
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_{x2} \\
+        u_{x4} \\
+        u_{x6}
+    \end{bmatrix}
+    = 0.25
+\end{equation}
+
+In direct matrix notation:
+
+\begin{equation}\label{mfc-direct}
+    \closure{\mathbf{a}}_i \closure{\mathbf{u}}_i = g_i, \quad (no\ sum\ on\ i)
+\end{equation}
+
+in which index $ i\ (i = 1, 2,\dots) $ identifies constraint, $ \closure{\mathbf{a}}_i $
+is a row vector, $ \closure{\mathbf{u}}_i $ collects the set of \textbf{DOFs}
+that participate in the constraint, and $ g_i $ is the \textbf{RHS} scalar.
+The bars over $ \mathbf{a} $ and $ \mathbf{u} $ distinguishes
+\eqref{mfc-direct} from the expanded form below.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.70\textwidth]{img/1D_mfc_bar.png}
+    \caption{1D problem discretized with six bar finite elements.}
+    \label{fig:1D-MFC-bar-png}
+\end{figure}
+
+For method description and general proof it is often convenient to \textit{expand}
+matrix forms so that they embody \textit{all} DOFs. For example, if
+\eqref{mfc-matrix} is a part of a two-dimensional FE model with 12 DOFs:
+
+$ u_{x1}, u_{y1}, \dots, u_{y6} $, the LHS row vector may be expanded with
+9 zeros as follows:
+
+\begin{equation}
+    \begin{bmatrix}
+        0 & 0 & 1 & 0 & 0 & 0 & -2 & 0 & 0 & 0 & 1 & 0
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_{x1} \\
+        u_{y1} \\
+        u_{x2} \\
+        \vdots \\
+        u_{y6}
+    \end{bmatrix}
+    = 0.25
+\end{equation}
+
+In which case the matrix notation:
+
+\begin{equation}\label{mfc-expanded}
+    \mathbf{a}_i \mathbf{u}_i = g_i
+\end{equation}
+
+is used. Finally, all \textbf{MFCs} expressed as \eqref{mfc-expanded} may be collected
+into a single matrix relation:
+
+\begin{equation}\label{mfc-expanded-matrix}
+    \mathbf{A} \mathbf{u} = \mathbf{g}
+\end{equation}
+
+in which the rectangular matrix $ \mathbf{A} $ is formed by stacking the
+$ \mathbf{a}_i $'s as rows and column vector $ \mathbf{g} $ is formed by stacking
+the $ g_i $s as entries. If there are 12 DOFs in $ \mathbf{u} $ and \textbf{5 MFCs},
+then $ \mathbf{A} $ will be $ 5 \times 12 $.
+
+
+\subsection{The Example Structure}
+
+The one-dimensional FE discretization shown in Figure \ref{fig:1D-MFC-bar-png}
+will be used to illustrate the three \textbf{MFC} application methods. The
+strucuture consists of six bar elements connected by seven nodes that can only
+displace in the \textit{x} direction.
+
+Before imposing various \textbf{multifreedom} constraints discussed below, the master
+stiffness equations for this problem are assumed to be:
+
+\begin{equation}\label{master-stiffness-6-bar}
+    \begin{bmatrix}
+        K_{11} & K_{12} & 0 & 0 & 0 & 0 & 0 \\
+        K_{12} & K_{22} & K_{23} & 0 & 0 & 0 & 0 \\
+        0 & K_{23} & K_{33} & K_{34} & 0 & 0 & 0 \\
+        0 & 0 & K_{34} & K_{44} & K_{45} & 0 & 0 \\
+        0 & 0 & 0 & K_{45} & K_{55} & K_{56} & 0 \\
+        0 & 0 & 0 & 0 & K_{56} & K_{66} & K_{67} \\
+        0 & 0 & 0 & 0 & 0 & K_{67} & K_{77}
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_6 \\
+        u_7
+    \end{bmatrix}
+    = \begin{bmatrix}
+        f_1 \\
+        f_2 \\
+        f_3 \\
+        f_4 \\
+        f_5 \\
+        f_6 \\
+        f_7
+    \end{bmatrix}
+\end{equation}
+
+or
+
+\begin{equation}\label{mfc-ms-master-equation}
+    \mathbf{K} \mathbf{u} = \mathbf{f}
+\end{equation}
+
+The nonzero stifness coefficients $ K_{ij} $ in \eqref{master-stiffness-6-bar}
+depend on the bar rigidity properties. For example, if
+$ E^e A^e / L^e = 100 $ for each element $ e = 1, \dots , 6 $, then
+$ K_{11} = K_{77} = 100 $, $ K_{22} = \dots = K_{66} = 200 $,
+$ K_{12} = K_{23} = \dots = K_{67} = -100 $. However, for the purposes of the
+following treatment the coefficient may be kept arbitrary. The component index
+$ x $ in the nodal displacements $ u $ and nodal forces $ f $ has been omitted
+for brevity.
+
+Now let us specify a \textbf{MFC} that states that nodes \textbf{2} and \textbf{6}
+must move by the same amount:
+
+\begin{equation}\label{mfc-2-6}
+    u_2 = u_6
+\end{equation}
+
+Passing all node displacements to the RHS gives the canonical form:
+
+\begin{equation}\label{mcf-canonical-2-6}
+    u_2 - u_6 = 0
+\end{equation}
+
+Constraint conditions of this type are sometimes called \textbf{rigid links}
+because they can be mechanically interpreted as forcing node points 2 and 6
+to move together as if they were tied tohether by a rigid member.
+
+We now study the imposition of constraint \eqref{mcf-canonical-2-6} on the master equations
+\eqref{master-stiffness-6-bar} by the methods mentioned above. First the master-slabe
+method is treated
+
+\section{The Master-Slave Method}
+
+To apply this method by \textit{hand}, the MFCs are taken one at a time. For each
+constraint a \textbf{slave} DOF is chosen. The freedoms remaining in that constraint
+are labeled \textbf{master}. A new set of DOFs $ \mathbf{\hat{u}} $ is established
+by removing all slave freedoms from $ \mathbf{u} $. This new vector contains
+master freedoms as well as thise that do not appear in the MFCs. A matrix transformation
+equation that relates $ \mathbf{u} $ to $ \mathbf{\hat{u}} $ is generated. This
+equation is used ot apply a congruent transformation to the master stiffness equations.
+This procedure yields a set of modified stiffness equations that are expressed in terms
+of the new freedo set $ \mathbf{\hat{u}} $. Because the modified system does not contain
+the slave freedoms, these habe been effectively eliminated.
+
+\subsection{A One-Constraint Example}
+
+The mechanics if the process is best seen by going through an example. To impose
+\eqref{mcf-canonical-2-6} pick $ u_6 $ as slave and $ u_2 $ as master. Relate the
+original unknowns $ u_1, \dots, u_7 $ to the new set in which $ u_6 $ is missing:
+
+\begin{equation}\label{mfc-ms-transformation}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_6 \\
+        u_7
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 1 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 1 & 0 & 0 \\
+        0 & 1 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 1
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_7
+    \end{bmatrix}
+\end{equation}
+
+This is the reqired transformation relation. In compact form:
+
+\begin{equation}
+    \mathbf{u} = \mathbf{T} \mathbf{\hat{u}}
+\end{equation}
+
+
+Replacing \eqref{mfc-ms-transformation} into \eqref{mfc-ms-master-equation} and
+premultiplying by $ \mathbf{T}^T $ yields the modified system:
+
+\begin{equation}\label{mfc-ms-modified-system}
+    \mathbf{\hat{K}} \mathbf{\hat{u}} = \mathbf{\hat{f}}, \quad
+    in\ which \quad \mathbf{\hat{K}} = \mathbf{T}^T \mathbf{K} \mathbf{T}, \quad
+    \mathbf{\hat{f}} = \mathbf{T}^T \mathbf{f}.
+\end{equation}
+
+\begin{bbox}
+    The form of modified system \eqref{mfc-ms-modified-system} can be remembered
+    by a simple mnemonic rule: premultiply both sides of $
+    \mathbf{T} \mathbf{\hat{u}} = \mathbf{u} $
+    by $ \mathbf{T}^T \mathbf{K} $ and replace $ \mathbf{K} \mathbf{u} $ by
+    $ \mathbf{f} $ on the right hand side.
+\end{bbox}
+
+Carrying out the indicated matrix multiplication yields:
+
+\begin{equation}\label{mfc-ms-modified-master}
+    \begin{bmatrix}
+        K_{11} & K_{12} & 0 & 0 & 0 & 0 \\
+        K_{12} & K_{22} + K_{66} & K_{23} & 0 & K_{56} & K_{67} \\
+        0 & K_{23} & K_{33} & K_{34} & 0 & 0 \\
+        0 & 0 & K_{34} & K_{44} & K_{45} & 0 \\
+        0 & K_{56} & 0 & K_{45} & K_{55} & 0 \\
+        0 & K_{67} & 0 & 0 & 0 & K_{77}
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_7
+    \end{bmatrix}
+    = \begin{bmatrix}
+        f_1 \\
+        f_2 + f_6 \\
+        f_3 \\
+        f_4 \\
+        f_5 \\
+        f_7
+    \end{bmatrix}
+\end{equation}
+
+Equation \eqref{mfc-ms-modified-master} is a new linear system containing 6 equations
+in the remaining 6 unknowns $ u_1, u_2, u_3, u_4, u_5\ and\ u_7 $. Upon
+solving it, $ u_6 $ is recovered from the constraint \eqref{mfc-2-6}.
+
+\begin{bbox}
+    For a simple freedom constraint such as $ u_4 = 0 $ the only possible choice of slave
+    is of course $ u_4 $ and there is no master. The congruent transformation is then
+    nothing more than the elimination of $ u_4 $ by striking out rows and columns from
+    the master stiffness equations.
+\end{bbox}
+
+
+\subsection{Multiple Homogeneous MFCs}
+
+The matrix equation \eqref{mfc-ms-modified-system} in fact holds for the general
+case of multiple homogeneous linear constraints. Direct establishment of the transformation
+equation, however, is more complicated if slave freedoms in one constraint appear as masters
+in another. To illustrate this point, suppose that for the example system we have three
+homogeneous MFCs:
+
+\begin{eqarray}\label{mfc-ms-3-constraints}
+    u_2 - u_6 &= 0 \\
+    u_1 + 4 u_4 &= 0 \\
+    2 u_3 + u_4 + u_5 &= 0
+\end{eqarray}
+
+Picking as slave freedoms $ u_6 $, $ u_4 $ and $ u_3 $ from the first, second and third
+constraint, respectively, we can solve for them as:
+
+\begin{eqarray}
+    u_6 &= u_2 \\
+    u_4 &= -\frac{1}{4} u_1 \\
+    u_3 &= -\frac{1}{2} \left( u_4 + u_5 \right) = \frac{1}{8} u_1 - \frac{1}{2} u_5
+\end{eqarray}
+
+Observe that solving for $ u_3 $ from the third constraint brings $ u_4 $ to the RHS.
+But because $ u_4 $ is also slave freedom (it was chosen as such for the second constraint)
+it is replaced in favor of $ u_1 $ using $ u_4 = -\frac{1}{4} u_1 $. The matrix form
+transformation is:
+
+\begin{equation}\label{mfc-ms-multiple-freedoms}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_6 \\
+        u_7
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 \\
+        \frac{1}{8} & 0 & -\frac{1}{2} & 0 \\
+        -\frac{1}{4} & 0 & 0 & 0 \\
+        0 & 0 & 1 & 0 \\
+        0 & 1 & 0 & 0 \\
+        0 & 0 & 0 & 1
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_5 \\
+        u_7
+    \end{bmatrix}
+\end{equation}
+
+The modified master system is now formed through the congruent
+transformation \eqref{mfc-ms-modified-system}.
+Note that the slave freedoms selected from each
+constraint must be distinct. For example the choice $ u_6 $, $ u_4 $ and $ u_4 $
+would be inadmissible as long the constraints are independent. This rule is easy
+to enforce when slave freedoms are chosen by hand, but can lead to implementation
+and numerical difficulties when it is programmed as an automated procedure, as
+further discussed later.
+
+\begin{bbox}
+    The 3 MFCs \eqref{mfc-ms-3-constraints} with $ U_6 $, $ u_4 $ and $ u_2 $ chosen
+    as slaves and $ u_1 $, $ u_2 $ and $ u_5 $ chosen as masters, may be presented
+    in the partitioned matrix form:
+
+    \begin{equation}
+        \begin{bmatrix}
+            0 & 0 & 1 \\
+            0 & 4 & 0 \\
+            2 & 1 & 0
+        \end{bmatrix}
+        \begin{bmatrix}
+            u_3 \\
+            u_4 \\
+            u_6
+        \end{bmatrix}
+        = \begin{bmatrix}
+            0 & 1 & 0 \\
+            -1 & 0 & 0 \\
+            0 & 0 & -1
+        \end{bmatrix}
+        \begin{bmatrix}
+            u_1 \\
+            u_2 \\
+            u_5
+        \end{bmatrix}
+    \end{equation}
+
+     This may be compactly written as:
+
+     \begin{equation}
+         \mathbf{A}_s \mathbf{u}_s + \mathbf{A}_m \mathbf{u}_m = \mathbf{0}
+     \end{equation}
+
+     Solving for the slave freedoms gives
+
+     \begin{equation}
+         \mathbf{u}_s = -\mathbf{A}_s^{-1} \mathbf{A}_m \mathbf{u}_m
+     \end{equation}
+
+     Expanding with zeros to fill out $ \mathbf{u} $ and $ \mathbf{\hat{u}} $
+     produces \eqref{mfc-ms-multiple-freedoms}. Note that non-singularity of
+     $ \mathbf{A}_s $ is essential for this method to work.
+\end{bbox}
+
+
+\subsection{Nonhomoheneous MFCs}
+
+Extension to nonhomogeneous constraints is immediate. In this case the transformation
+equation becomes nonhomogeneous. For example suppose that \eqref{mcf-canonical-2-6}
+has non-zero prescribed value:
+
+\begin{equation}\label{mcf-canonical-2-6-nonhomogeneous}
+    u_2 - u_6 = 0.2
+\end{equation}
+
+Nonzero RHS values such as $ 0.2 $ in \eqref{mcf-canonical-2-6-nonhomogeneous}
+may often be interpreted physically as "gaps" (thus the use of the symbol
+$ \mathbf{g} $ in the matrix form). Chose $ u_6 $ again as slave: $ u_6 = u_2 - 0.2 $
+and build the transformation:
+
+\begin{equation}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_6 \\
+        u_7
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 1 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 1 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 1 & 0 \\
+        0 & 1 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 1
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_7
+    \end{bmatrix}
+    \begin{bmatrix}
+        0 \\
+        0 \\
+        0 \\
+        0 \\
+        0 \\
+        -0.2 \\
+        0
+    \end{bmatrix}
+\end{equation}
+
+In the compact matrix form:
+
+\begin{equation}\label{mfc-ms-gap}
+    \mathbf{u} = \mathbf{T} \mathbf{\hat{u}} + \mathbf{g}
+\end{equation}
+
+Here the constraint gap vector $ \mathbf{g} $ is nonzero and $ \mathbf{T} $ is the same
+as before. To get the modified system applying the shortcut rule, premultiply
+both sides of \eqref{mfc-ms-gap} by $ \mathbf{T}^T \mathbf{K} $, replace
+$ \mathbf{K} \mathbf{u} $ by $ \mathbf{f} $ and pass the data to the RHS:
+
+\begin{equation}\label{mfc-ms-modified-system-gap}
+    \mathbf{\hat{K}} \mathbf{\hat{u}} = \mathbf{\hat{f}}, \quad
+    in\ which \quad \mathbf{\hat{K}} = \mathbf{T}^T \mathbf{K} \mathbf{T}, \quad
+    \mathbf{\hat{f}} = \mathbf{T}^T \left( \mathbf{f} -\mathbf{K} \mathbf{g} \right).
+\end{equation}
+
+Upon solving \eqref{mfc-ms-modified-system-gap} for $ \mathbf{\hat{u}} $, the
+complete displacement vector is recovered from \eqref{mfc-ms-gap}. For the MFC
+\eqref{mcf-canonical-2-6-nonhomogeneous} this technique gives the system:
+
+\begin{equation}
+    \begin{bmatrix}
+        K_{11} & K_{12} & 0 & 0 & 0 & 0 \\
+        K_{12} & K_{22} + K_{66} & K_{23} & 0 & K_{56} & K_{67} \\
+        0 & K_{23} & K_{33} & K_{34} & 0 & 0 \\
+        0 & 0 & K_{34} & K_{44} & K_{45} & 0 \\
+        0 & K_{56} & 0 & K_{45} & K_{55} & 0 \\
+        0 & K_{67} & 0 & 0 & 0 & K_{77}
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_7
+    \end{bmatrix}
+    = \begin{bmatrix}
+        f_1 \\
+        f_2 + f_6 - 0.2 K_{66} \\
+        f_3 \\
+        f_4 \\
+        f_5 - 0.2 K_{56} \\
+        f_7 - 0.2 K_{67}
+    \end{bmatrix}
+\end{equation}
+
+
+\subsection{The General Case}
+
+For implementation in general-purpose programs the \textbf{master-slave method}
+can be described as follows. The \textbf{DOFs} in $ \mathbf{u} $ are classified
+into three types: \textbf{independent} or unconstrained, \textbf{masters} and
+\textbf{slaves}. The unconstrained DOFs are those that do not appear in any MFC.
+Label these sets as $ \mathbf{u}_u $, $ \mathbf{u}_m $ and $ \mathbf{u}_s $,
+respectively, and partition the stiffness equations accordingly:
+
+\begin{equation}\label{mfc-ms-partitioned}
+    \begin{bmatrix}
+        \mathbf{K}_{uu} & \mathbf{K}_{um} & \mathbf{K}_{us} \\
+        \mathbf{K}_{um}^T & \mathbf{K}_{mm} & \mathbf{K}_{ms} \\
+        \mathbf{K}_{us}^T & \mathbf{K}_{ms}^T & \mathbf{K}_{ss}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \mathbf{u}_u \\
+        \mathbf{u}_m \\
+        \mathbf{u}_s
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \mathbf{f}_u \\
+        \mathbf{f}_m \\
+        \mathbf{f}_s \\
+    \end{bmatrix}
+\end{equation}
+
+The MFCs may be written in matrix form as:
+
+\begin{equation}
+    \mathbf{A}_m \mathbf{u}_m + \mathbf{A}_s \mathbf{u}_s = \mathbf{g}_A
+\end{equation}
+
+where $ \mathbf{A}_s $ is assumed square and nonsingular. If so we can solve for
+the slave freedoms:
+
+\begin{equation}
+    \mathbf{u}_s = \mathbf{A}_s^{-1} \mathbf{A}_m \mathbf{u}_m
+    + \mathbf{A}_s^{-1} \mathbf{g}_A
+    \eqd \mathbf{T} \mathbf{u}_m + \mathbf{g}
+\end{equation}
+
+where $ \eqd $ means \textit{equal by definition}. Inserting into the partitioned
+sitffness equation \eqref{mfc-ms-partitioned} and symmetrizing yields:
+
+\begin{equation}
+    \begin{bmatrix}
+        \mathbf{K}_{uu} & \mathbf{\hat{K}}_{um} \\
+        \mathbf{\hat{K}}_{um}^T &
+        \mathbf{\hat{K}}_{mm}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \mathbf{u}_u \\
+        \mathbf{u}_m
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \mathbf{f}_u - \mathbf{K}_{us} \mathbf{g} \\
+        \mathbf{f}_m - \mathbf{K}_{ms} \mathbf{g}
+    \end{bmatrix}
+\end{equation}
+
+where $ \mathbf{\hat{K}}_{um} = \left( \mathbf{K}_{um} + \mathbf{K}_{us} \mathbf{T} \right)^T $ \\
+and $ \mathbf{\hat{K}}_{mm} = \mathbf{K}_{mm} + \mathbf{T}^T \mathbf{K}_{ms}^T
++ \mathbf{K}_{ms} \mathbf{T} + \mathbf{T}^T \mathbf{K}_{ss} \mathbf{T} $.
+
+It is seen that the misleading simplicity of the handworked example is gone.
+
+
+\subsection{Retatining the Original Freedoms}
 
 
 
@@ -388,6 +980,7 @@ systems and are shown in the figure.
     \caption{SDOF system with a linear spring and dashpot}
     \label{fig:SDOF-plot-png}
 \end{figure}
+
 
 \subsection{Equation of Motion for SDOF Systems}
 
