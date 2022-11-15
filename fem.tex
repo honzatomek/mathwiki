@@ -1070,6 +1070,97 @@ Felippa - IFEM (Chapter 8)
 Zienkiewicz and Taylor - The Finite Element Method \textit{4th ed.} 1988
 
 
+\section{The Penalty Method}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.70\textwidth]{img/1D_mfc_bar.png}
+    \caption{1D problem discretized with six bar finite elements.}
+    \label{fig:1D-MFC-bar-png-2}
+\end{figure}
+
+The penalty method will be first presented using a physical interpretation,
+leaving the mathematical formulation to a subsequent section. Constider again
+the bar example structure. To impose $ u_2 = u_6 $ imagine that nodes 2 and 6
+are connected with a "fat" bar of axial stiffness $ w $, labeled with element
+number 7, as shown in Figure \ref{fig:1D-MFC-bar-penalty-png}. This bar is called \textbf{penalty element} and
+$ w $ is its \textbf{penalty weight}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.70\textwidth]{img/1D_mfc_bar_penalty.png}
+    \caption{Adjusnction of a fictious penalty bar of axial stiffness $ w $,
+    identified as element 7, to enforce $ u_2 = u_6 $.}
+    \label{fig:1D-MFC-bar-penalty-png}
+\end{figure}
+
+Such an element, albeit fictious, can be treated exactly like another bar element
+insofar as continuing the assembly of the master stiffness equations. The penalty
+element stiffness equations $ \mathbf{K}^{(7)} \mathbf{u}^{(7)} = \mathbf{f}^{(7)} $,
+are:
+
+\begin{equation}
+    w \begin{bmatrix}
+        \phantom{-}1 & -1 \\
+        -1 & \phantom{-}1
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_2 \\
+        u_6
+    \end{bmatrix}
+    = \begin{bmatrix}
+        f_2^{(7)} \\
+        f_6^{(7)}
+    \end{bmatrix}
+\end{equation}
+
+Because there is one freedom per node, the two local element freedoms map into global
+freedoms 2 and 6, respectively. Using the assembly rules we obtain the following
+modified master stiffness equations: $ \mathbf{\hat{K}} \mathbf{\hat{u}} = \mathbf{\hat{f}} $,
+which shown in detail are:
+
+\begin{equation}\label{mfc-penalty-master-stiffnes}
+    \begin{bmatrix}
+        K_{11} & K_{12} & 0 & 0 & 0 & 0 & 0 \\
+        K_{12} & K_{22} + w & K_{23} & 0 & 0 & -w & 0 \\
+        0 & K_{23} & K_{33} & K_{34} & 0 & 0 & 0 \\
+        0 & 0 & K_{34} & K_{44} & K_{45} & 0 & 0 \\
+        0 & 0 & 0 & K_{45} & K_{55} & K_{56} & 0 \\
+        0 & -w & 0 & 0 & K_{56} & K_{66} + w & K_{67} \\
+        0 & 0 & 0 & 0 & 0 & K_{67} & K_{77}
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_6 \\
+        u_7
+    \end{bmatrix}
+    = \begin{bmatrix}
+        f_1 \\
+        f_2 \\
+        f_3 \\
+        f_4 \\
+        f_5 \\
+        f_6 \\
+        f_7
+    \end{bmatrix}
+\end{equation}
+
+This system can now be submitted to the equation solver. Note that
+$ \mathbf{\hat{u}} \equiv \mathbf{u} $ and only $ \mathbf{K} $ has changed.
+
+\subsection{Choosing the Penalty Weight}
+
+What happens when \eqref{mfc-penalty-master-stiffnes} is solved numerically?
+If a \textit{finite} weight $ w $ is chosen the constraint $ u_2 = u_6 $ is
+approximately satisfied in the sense that one gets $ u_2 - u_6 = e_g $, where
+$ e_g \neq 0 $. The "gap"
+
+% /media/honza/Windows-SSD/HONZA/Documents/Technical/FEM/Felippa_C/Colorado_IFEM/IFEM.Ch09 - Multifreedom Constraints II.pdf page 4
+
 
 
 
