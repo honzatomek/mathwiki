@@ -789,6 +789,286 @@ It is seen that the misleading simplicity of the handworked example is gone.
 
 \subsection{Retatining the Original Freedoms}
 
+A potential disadvantage of the master-slave methid in computer work is that it
+requires a rearrangement of the original stiffness equations because
+$ \mathbf{\hat{u}} $ is a subset of $ \mathbf{u} $. The disadvantage can be
+annoying when sparse matrxi storage schemes are used for the stiffness matrix,
+and becomes intolerable if secondary storage is used for that purpose.
+
+With a bit of trickery it is possible to maintain the original freedom ordering.
+Let us display it for the example problem under \eqref{mcf-canonical-2-6}.
+Instead of \eqref{mfc-ms-transformation}, use the \textit{square} transformation:
+
+\begin{equation}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_6 \\
+        u_7
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 1 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 1 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 1 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 1 & 0 & 0 \\
+        0 & 1 & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & 0 & 0 & 0 & 1
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        \overline{u}_6 \\
+        u_7
+    \end{bmatrix}
+\end{equation}
+
+in which $ \overline{u}_6 $ is a \textit{placeholder} for the slave freedom $ u_6 $.
+The modified equations are:
+
+\begin{equation}
+    \begin{bmatrix}
+        K_{11} & K_{12} & 0 & 0 & 0 & 0 & 0 & 0 \\
+        K_{12} & K_{22} + K_{66} & K_{23} & 0 & 0 & K_{56} & 0 & K_{67} \\
+        0 & K_{23} & K_{33} & K_{34} & 0 & 0 & 0 & 0 \\
+        0 & 0 & K_{34} & K_{44} & K_{45} & 0 & 0 & 0 \\
+        0 & K_{56} & 0 & K_{45} & K_{55} & 0 & 0 & 0 \\
+        0 & K_{67} & 0 & 0 & 0 & 0 & 0 & K_{77}
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        \overline{u}_6 \\
+        u_7
+    \end{bmatrix}
+    = \begin{bmatrix}
+        f_1 \\
+        f_2 + f_6 \\
+        f_3 \\
+        f_4 \\
+        f_5 \\
+        0 \\
+        f_7
+    \end{bmatrix}
+\end{equation}
+
+which are submitted to the equation solver. If the solver is not trained to skip
+zero rows and columns, a one should be placed in the diagonal entry for the
+$ \overline{u}_6 $ equation. The solver will return $ \overline{u}_6 = 0 $,
+and this placeholder value is replaced by $ u_2 $.
+
+
+\subsection{Model Reduction by Kinematic Constraints}
+
+The congruent transformation equations \eqref{mfc-ms-modified-system}
+and \eqref{mfc-ms-modified-system-gap} have additional applications beyond the
+master-slave method. An important one is \textit{model reduction by kinematic constraints}.
+Trough this procedure the number of \textbf{DOFs} of a static or dynamic FEM model
+is reduced by a significant number, typycally to $ 1 \% - 10 \% $ of the original number.
+This is done by taking a lot of slaves and a few masters. Only the masters are left
+after the transformation. The reduced model is commonly used in subsequent calculations
+as a component of a larger system, particularly during design or in parameter
+identification.
+
+
+\textbf{Example:}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.90\textwidth]{img/mfc_model_reduction_end.png}
+    \caption{Model reduction of the example structure to the end freedoms}
+    \label{fig:mfc-model-reduction-end-png}
+\end{figure}
+
+Consider the bar assembly of Figure \ref{fig:mfc-model-reduction-end-png}.
+Assume that the only masters are the end motions $ u_1 $ and $ u_7 $, as
+illustrated in Figure \ref{fig:mfc-model-reduction-end-png}, and interpolate
+all freedoms linearly:
+
+\begin{equation}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_6 \\
+        u_7
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 & 0 \\
+        \frac{5}{6} & \frac{1}{6} \\
+        \frac{4}{6} & \frac{2}{6} \\
+        \frac{3}{6} & \frac{3}{6} \\
+        \frac{2}{6} & \frac{4}{6} \\
+        \frac{1}{6} & \frac{5}{6} \\
+        0 & 1 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_7
+    \end{bmatrix}, \quad or \quad
+    \mathbf{u} = \mathbf{T} \mathbf{\hat{u}}
+\end{equation}
+
+The reduced-order-model (\textbf{ROM}) equations are:
+
+\begin{equation}
+    \mathbf{\hat{k}} \mathbf{\hat{u}}
+    = \mathbf{T}^T \mathbf{K} \mathbf{T} \mathbf{\hat{u}}
+    = \mathbf{T}^T \mathbf{f}
+    = \mathbf{\hat{f}}
+\end{equation}
+
+or in detail
+
+\begin{equation}
+    \begin{bmatrix}
+        \hat{K}_{11} & \hat{K}_{17} \\
+        \hat{K}_{17}^T & \hat{K}_{77}
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_7
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \hat{f}_1 \\
+        \hat{f}_7
+    \end{bmatrix}
+\end{equation}
+
+in which:
+
+\begin{eqarray}
+    \hat{K}_{11} &= \frac{1}{36}
+    \left( 36 K_{11} + 60 K_{12} + 25 K_{22} + 40 K_{23} + 16 K_{33} + 24 K_{34} \right. \\
+                 &+  \left. 9 K_{44} + 12 K_{45} + 4 K_{55} + 4 K_{56} + K_{66} \right) \\
+    \hat{K}_{17} &= \frac{1}{36}
+    \left( 6 K_{12} + 5 K_{22} + 14 K_{23} + 8 K_{33} + 18 K_{34} + 9 K_{44} \right. \\
+                 &+ \left. 18 K_{45} + 8 K_{55} + 14 K_{56} + 5 K_{66} + 6 K_{67} \right) \\
+    \hat{K}_{77} &= \frac{1}{36}
+    \left( K_{22} + 4 K_{23} + 4 K_{33} + 12 K_{34} + 9 K_{44} + 24 K_{45} \right. \\
+                 &+ \left. 16 K_{55} + 40 K_{56} + 25 K_{66} + 60 K_{67} + 36 K_{77} \right) \\
+    \hat{f}_1 & = \frac{1}{6}
+    \left(
+        6 f_1 + 5 f_2 + 4 f_3 + 3 f_4 + 2 f_5 + f_6
+    \right) \\
+    \hat{f}_7 & = \frac{1}{6}
+    \left(
+        f_2 + 2 f_3 + 3 f_4 + 4 f_5 + 5 f_6 + 6 f_7
+    \right) \\
+\end{eqarray}
+
+This reduces the order of the FEM model from 7 to 2. The \textbf{key feature} is that
+the masters are picked \textbf{a priori}, as the freedoms to be retained in the
+model for further use.
+
+\begin{bbox}
+    Model reduction can be also done by the \textbf{static condensation} (Guyan)
+    method. As its name indicates, condensation is restricted to static analysis.
+    On the other hand, for such problems it is exact whereas model reduction by
+    kinematic constraints generally introduces approximations.
+\end{bbox}
+
+
+\subsection{Assesment of the Master-Slave Method}
+
+The \textbf{Master-Slave Method} enjoys the advantage of being \textbf{exact}
+(except for inevitable solution errors from finite number precision) and of
+reducing the nuber of unknowns. The concept is also easy to explain and learn.
+The main implementation drawback is the complexity of the general case.
+The complexity is due to three factors:
+
+\begin{enumerate}
+    \item The equations may have to be rearranged because of the disappearance
+        of the slave freedoms. This drawback can be alleviated, however,
+        by the \textbf{placeholder} trick.
+
+    \item An auxiliary linear system has to be assembled and solved to produce
+        the transformation matrix $ \mathbf{T} $ and vector $ \mathbf{g} $.
+
+    \item The transformation process may generate many additional matrix terms.
+        If a sparse matrix storage scheme is used for $ \mathbf{K} $, the logic
+        for allocating memory and storing these entries can be difficult
+        and expensive.
+\end{enumerate}
+
+The level of complexity depends on the generality allowed as well as on programming
+decisions. If $ \mathbf{K} $  is stored as full matrix and slave freedom coupling in
+the MFCs is disallowed the logic is simple (this is the case in model reduction,
+since each slave freedom appears in one and only one MFC). On the other hand,
+if arbitrary couplings are permitted and $ \mathbf{K} $ is placed in secondary
+(disk) storage according to some sparse scheme, the complexity can become
+overwhelming.
+
+Another, more subtle, drawback of this method is that it requires decisions as to
+which DOFs are to be treated as slaves. This can lead to implementation and numerical
+stability problems. Although for disjointed constraints the process can be programmed
+in reliable form, in more general cases of coupled constraint equations it can
+lead to incorrect decisions. For example, suppose that in the example problem
+you have the following two MFCs:
+
+\begin{eqarray}
+    \frac{1}{6} u_2 + \frac{1}{2} u_4 &= u_6 \\
+    u_3 + 6 u_6 &= u_7
+\end{eqarray}
+
+For numerical stability reasons it is usually better to pick as slaves the freedoms
+with largest coefficients. If this is done, the program would select $ u_6 $ as
+slave freedoms from both constraints. This leads to a contradiction because
+having two constraints we must eliminate two slave DOFs, not just one. The resulting
+modified system would in fact be inconsistent. Although this defect can be easily fixed
+by the program logic in this case, one can imagine the complexity burden if faced
+with hundreds of thousands of MFCs.
+
+Serious numerical problems can arise if the MFCs are not independent. For example:
+
+\begin{eqarray}
+    \frac{1}{6} u_2 &= u_6 \\
+    \frac{1}{3} u_3 + 6 u_6 &= u_7 \\
+    u_2 + u_3 - u_7 &= 0
+\end{eqarray}
+
+The last constraint is an exact linear combination of the first two. If the program
+blindly choses $ u_2 $, $ u_3 $ and $ u_7 $ as slaves, the modified system is
+incorrect because we eliminate three equations when in fact there are only two
+independent constraints. Exact linear dependence, as before, can be recognised by
+a rank analysis of the $ \mathbf{A}_s $ matrix defined. In the floating-point
+arithmetic, however, such detection may fail because that kind of computation is
+inexact bt nature (The safest technique to identify dependencies is to do
+a singular value decomposition (SVD) of $ \mathbf{A}_s $. This can be, however,
+prohibitively expensive if one is dealing with hundreds of thousands of constraints.).
+
+The complexithy of slave selection is in fact equivalent to that of automatically
+selecting kinematic redundancies in the Force Method of structural analysis.
+\textbf{It has led implementators of programs that use this method to require masters}
+\textbf{and slaves to be prescribed in the input data, thus transfering the burden}
+\textbf{to users}.
+
+The method is not generally extensible to nonlinear constraints without case
+by case programming.
+
+In conclusion, the master-slave method is useful when a few simple linear constraints
+are imposed by hand. As a general purpose technique for FEM it suffers from
+complexity and lack of robustness. It is worth learning, however, because of the
+great importance of congruent transformations in
+\textit{model reduction} for static and dynamic problems.
+
+\subsubsection{Bibliograpy}
+
+Felippa - IFEM (Chapter 8)
+
+Zienkiewicz and Taylor - The Finite Element Method \textit{4th ed.} 1988
+
 
 
 
