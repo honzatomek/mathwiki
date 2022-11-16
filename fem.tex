@@ -42,6 +42,15 @@
 \newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
 \newcommand*{\Resize}[2]{\resizebox{#1}{!}{$#2$}}%
 
+% Lagrangian symbol
+\newcommand{\lagr}{\mathop{\mathcal{L}}}
+\DeclareMathOperator{\Lagr}{\mathcal{L}}
+
+% matrix notation
+\newcommand{\m}{\mathbf}
+% matrix notation greek letters
+\newcommand{\M}{\pmb}
+
 \newcommand{\closure}[2][3]{%
 {}\mkern#1mu\overline{\mkern-#1mu#2}}
 
@@ -1192,6 +1201,704 @@ becomes:
         \phantom{-}0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}0 & -1 & \phantom{-}1
     \end{bmatrix}
 \end{equation}
+
+Clearly as $ w \rightarrow \infty $ rows 2 and 6, as well as columns 2 and 6, tend
+to become linearly dependent, in fact the negative of each other. But
+\textbf{linear dependency means singularity!} Thus $ \mathbf{\hat{K}} $
+approaches singularity as $ w \rightarrow \infty $. In fact, if $ w $ exceeds
+$ 1 / \epsilon_f = 10^16 $ the computer will not be able to distinguish
+$ \mathbf{\hat{K}} $ from an exactly singular matrix. If $ w << 10^16 $, the
+effect will be seen in increasing solution errors affecting the computed
+displacements $ \mathbf{\hat{u}} $ returned by the equation solver.
+These errors, however, tend to be more random in nature than the constraint
+violation error.
+
+\subsection{The Square Root Rule}
+
+Obviously we have two effects at odds with each other. Making $ w $ larger
+reduces the constraint violation error but increases the solution error. The
+best $ w $ is that which makes both errors roughly equal in absolute value.
+This tradeoff value is difficult to find aside of systematicelly running
+numerical experiments. In practice \textit{square root rule} is often followed.
+
+This rule can be stated as follows:
+
+Suppose that the largest stiffness coefficient, before adding penalty elements,
+is of the order of $ 10^k $ and that the working machine precision is $ p $
+digits (such order-of magnitude estimates can be easily found by scanning just
+the diagonal of $ \mathbf{K} $). Then choose penalty weights to be of order
+$ 10^{k+p/2} $ with the proviso that such a choice would not cause aritmetic
+overflow (if overflow occurs, the master stiffness matrix should be scaled
+throughout or a better choice of physical units made).
+
+For the above example in which $ k \approx 0 $ and $ p \approx 16 $, the
+optimal $ w $ given by this rule would be $ w \approx 10^8 $.
+This $ w $ would yield a constraint violation and a solution error of order
+$ 10^{-8} $. Note that there is no simple way to do better than this accuracy
+aside from using \textbf{extended floating-point precision}. This is not
+easy to do when using standard low-level programming languages.
+
+The name "square root@ arises because the recommended $ w $ is in fact
+$ 10^k \sqrt{10^p} $. It is seen that picking the weight by this rule requires
+knowledge of both stiffness magnitudes and floating-point hardware properties
+of the computer used, as well as the precision selected by the program.
+
+
+\subsection{Penalty Elements for General MFCs}
+
+For the constraint $ u_2 = u_6 $ the physical interpretation of the penalty
+element is clear. Points 2 and 6 must move in lockstep along $ x $, which
+can be approximately enforced by the heavy bar device. But how about
+$ 3 u_3 + u_5 - 4 u_6 = 1 $ or just $ u_2 = -u_6 $?
+
+The treatment of more general constraints is linked to the theory of
+\textit{Courant penalty functions} from the \textit{variational calculus}.
+Consider the homogenenous constraint:
+
+\begin{equation}
+    4 u_3 + u_5 - 4 u_6 = 0
+\end{equation}
+
+Rewrite this equation in matrix form:
+
+\begin{equation}
+    \begin{bmatrix}
+        3 & 1 & -4
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_3 \\
+        u_5 \\
+        u_6
+    \end{bmatrix}
+    = 0
+\end{equation}
+
+and premultiply both sides by the transpose of the coefficient matrix:
+
+\begin{equation}
+    \begin{bmatrix}
+        3 \\
+        1 \\
+        -4
+    \end{bmatrix}
+    \begin{bmatrix}
+        3 & 1 & -4
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_3 \\
+        u_5 \\
+        u_6
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        9 & 3 & -12 \\
+        3 & 1 & -4 \\
+        -12 & -4 & 16
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_3 \\
+        u_5 \\
+        u_6
+    \end{bmatrix}
+    = \mathbf{\closure{K}}^e \mathbf{u} = 0
+\end{equation}
+
+Here $ \mathbf{\closure{K}}^e $ is the \textit{unscaleed} stiffness matrix of
+the penalty element. This is now multiplied by the penalty weight $ w $ and
+assembled into the master stiffness matrix following the usual rules. For the
+example problem, augmentint the master stiffness matrix with the $ w $-scaled
+penalty element yields:
+
+\begin{equation}
+    \begin{bmatrix}
+        K_{11} & K_{12} & 0 & 0 & 0 & 0 & 0 \\
+        K_{12} & K_{22} & K_{23} & 0 & 0 & 0 & 0 \\
+        0 & K_{23} & K_{33} + 9 w & K_{34} & 3w & -12w & 0 \\
+        0 & 0 & K_{34} & K_{44} & K_{45} & 0 & 0 \\
+        0 & 0 & 3w & K_{45} & K_{55} + w & K_{56} - 4w & 0 \\
+        0 & 0 & -12w & 0 & K_{56} - 4w & K_{66} + 16w & K_{67} \\
+        0 & 0 & 0 & 0 & 0 & K_{67} & K_{77}
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_6 \\
+        u_7
+    \end{bmatrix}
+    = \begin{bmatrix}
+        f_1 \\
+        f_2 \\
+        f_3 \\
+        f_4 \\
+        f_5 \\
+        f_6 \\
+        f_7
+    \end{bmatrix}
+\end{equation}
+
+If the constraint is nonhomogeneous the force vector is also modified. To illustrate this
+effect, consider the MFC: $ 3 u_3 + u_5 - 4 u_6 = 1 $. Rewrite this in matrix form as:
+
+\begin{equation}
+    \begin{bmatrix}
+        3 & 1 & -4
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_3 \\
+        u_5 \\
+        u_6
+    \end{bmatrix}
+    = 1
+\end{equation}
+
+Premultiply both sides by the transpose of the coefficient matrix:
+
+\begin{equation}
+    \begin{bmatrix}
+        9 & 3 & -12 \\
+        3 & 1 & -4 \\
+        -12 & -4 & 16
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_3 \\
+        u_5 \\
+        u_6
+    \end{bmatrix}
+    = \begin{bmatrix}
+        3 \\
+        1 \\
+        -4
+    \end{bmatrix}
+\end{equation}
+
+Scaling by $ w $ and assembling yields:
+
+\begin{equation}
+    \resizebox{0.85\hsize}{!}{%
+        $\begin{bmatrix}
+            K_{11} & K_{12} & 0 & 0 & 0 & 0 & 0 \\
+            K_{12} & K_{22} & K_{23} & 0 & 0 & 0 & 0 \\
+            0 & K_{23} & K_{33} + 9 w & K_{34} & 3w & -12w & 0 \\
+            0 & 0 & K_{34} & K_{44} & K_{45} & 0 & 0 \\
+            0 & 0 & 3w & K_{45} & K_{55} + w & K_{56} - 4w & 0 \\
+            0 & 0 & -12w & 0 & K_{56} - 4w & K_{66} + 16w & K_{67} \\
+            0 & 0 & 0 & 0 & 0 & K_{67} & K_{77}
+        \end{bmatrix}
+        \begin{bmatrix}
+            u_1 \\
+            u_2 \\
+            u_3 \\
+            u_4 \\
+            u_5 \\
+            u_6 \\
+            u_7
+        \end{bmatrix}
+        = \begin{bmatrix}
+            f_1 \\
+            f_2 \\
+            f_3 + 3 w \\
+            f_4 \\
+            f_5 + w \\
+            f_6 - 4 w \\
+            f_7
+        \end{bmatrix}$
+    }
+\end{equation}
+
+
+\subsection{The Theory Behind the Penalty Method Coefficient Matrix}
+
+The rule of \textit{Courant penalty functions} comes from the following
+mathematical theory. Suppose we have a set of $ m $ linear MFCs. Using
+the matrix notation introduced, these will be stated as:
+
+\begin{equation}
+    \mathbf{a}_p \mathbf{u} = b_p, \quad p = 1, \dots, m
+\end{equation}
+
+where $ \mathbf{u} $ contains all DOFs and each $ \mathbf{a}_p $ is a row vector
+with the same length as $ \mathbf{u} $. To incorporate the MFCs into the FEM
+model one selects a weight $ w_p > 0 $ for each constraint and constructs the
+so-called \textbf{Courant quadratic penalty function} or "penalty energy":
+
+\begin{equation}
+    P = \sum_{p=1}^m P_p,\ with\ 
+    P_p = \mathbf{u}^T \left(
+        \frac{1}{2} \mathbf{a}_p^T \mathbf{a}_p \mathbf{u}
+        - w_p \mathbf{a}_p^T b_p
+        \right)
+        = \frac{1}{2} \mathbf{u}^T \mathbf{K}^{(p)} \mathbf{u}
+        - \mathbf{u}^T \mathbf{f}^{(p)}
+\end{equation}
+
+where we have called $ \mathbf{K}^{(p)} = w_p \mathbf{a}_p^T \mathbf{a}_p $
+and $ \mathbf{f}^{(p)} = w_p \mathbf{a}^T b_p $. $ P $ is added to the potential
+energy function
+$ \prod = \frac{1}{2} \mathbf{u}^T \mathbf{K} \mathbf{u} - \mathbf{u}^T \mathbf{f} $
+to form the \textit{augmented potential energy} $ \prod_a = \prod + P $.
+Minimization of $ \prod_a $ with respect to $ \mathbf{u} $ yields:
+
+\begin{equation}\label{mfc-augmented-potential-energy}
+    \left( \mathbf{K} \mathbf{u} + \sum_{p=1}^m \mathbf{K}^{(p)} \right) \mathbf{u}
+    = \mathbf{f} + \sum_{p=1}^m \mathbf{f}^{(p)}
+\end{equation}
+
+Each term of the sum on $ p $, which derives from term $ P_p $ may be viewed as
+contributed by a penalty element with globalised stiffness matrix
+$ \mathbf{K}^{(p)} = w_p \mathbf{a}_p^T \mathbf{a}_p $ and globalised added
+force term $ \mathbf{f}^{(p)} = w_p \mathbf{a}_p^T b_p $.
+
+To use a even more compact form we may write the set of MFCs as
+$ \mathbf{A} \mathbf{u} = \mathbf{b} $. Then the penalty augmented system can
+be written compactly as:
+
+\begin{equation}
+    \left( \mathbf{K} + \mathbf{A}^T \mathbf{W} \mathbf{A} \right) \mathbf{u}
+    = \mathbf{f} + \mathbf{W} \mathbf{A}^T \mathbf{b}
+\end{equation}
+
+where $ \mathbf{W} $ is a diagonal matrix of penalty weights. This compact form,
+however, conceals the configuration of the penalty elements.
+
+
+\subsection{Assesment of the Penalty Method}
+
+The main advantage of the penalty function method is its straightforward computer
+implementation. Looking at the modified systems it is obvious that master equations
+need not be rearranged. That is, $ \mathbf{u} $ and $ \mathbf{\hat{u}} $ are the same.
+Constraints may be programmed as "penalty elements", and stiffness and force
+contributions fo these elements merged through the standard assembler. In fact
+using this method there is no need to distinguish between unconstrained and
+constrained equations! Once all elements - regular and penalty - are assembled,
+the system can be passed to the equation solver. \textbf{Single Freedom Constraints},
+are usually processed separately for efficiency.
+
+An important advantage with respect to the master-slave (elimination) method
+is its lack of sensitivity with respect to whether constraints are linearly
+dependent. To give a simplistic example, suppose that the constraint
+$ u_2 = u_6 $ appears twice. Then two penalty elements connecting 2 and 6 will
+be inserted, doubling the intended weight but not otherwise causing undue harm.
+
+An advantage with respect to the Lagrange multiplier method is that positive
+definiteness is not lost. Such loss can affect the performance of certain numerical
+processes (for example solving the master stiffness equations by Cholesky
+factorisation or conjugate-gradients). Finally, it is worth noting that the
+penalty method is easily extensible to nonlinear constraints.
+
+The main disadvantage, however, is a serious one: the choice of weight values
+that balance solution accuracy with the violation of constraint conditions.
+For simple cases the square root rule previously described often works, although
+its effective use calls for knowledge og the magnitude of stiffness coefficients.
+Such knowledge may be difficult to extract from general purpose "black box" program.
+For difficult cases selection of appropriate weights may require extensive
+numerical experimentation, wasting the user time with numerical games that have
+no bearing on the actual objective, which is getting a solution.
+
+The deterioration of the condition number fo the penalty-augmented stiffness
+matrix can have serious side effects in some solution procedures such as
+eigenvalue extraction or iterative solver.
+
+Finally, even if optimal weights are selected, the combined solution error cannot
+be lowered beyond a treshold value.
+
+From this assessment it is evident that penalty augmentation, although superior
+to the master-slave method from the standpoint of generality and ease of
+implementation, is no panacea.
+
+
+\section{Lagrange Multiplier Adjuction}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.70\textwidth]{img/1D_mfc_lagrange_multiplier.png}
+    \caption{Physical interpretation of Lagrange multiplier adjuction to enforce
+    the MFC $ u_2 = u_6 $}
+    \label{fig:1D-MFC-lagrange-multiplier-png}
+\end{figure}
+
+
+\subsection{Physical Interpretation}
+
+As in the case of the penalty function method, the method Lagrange multiplier
+can be given a rigorous justification within the framework of variational
+calculus. But in the same spirit it will be introduced for the example structure
+from a physical standpoint that is particularly illuminating.
+
+Consider again the constraint $ u_2 = u_6 $. Borrowing some ideas from the
+penalty method, imagine that nodes 2 and 6 are connected now by
+a \textit{rigis} link rather than a flexible one. Thus the constraint is imposed
+exactly. But of course the penalty method with an infinite weight would "blow up".
+
+We may remove the link if it is replaced by an appropriate reaction force pair
+$ ( -\lambda, +\lambda ) $, as illustrated in Figure
+\ref{fig:1D-MFC-lagrange-multiplier-png}. These are called the
+\textit{constraint forces}. Incorporating these forces into the original stiffness
+equations we get:
+
+\begin{equation}\label{master-stiffness-6-bar-lagrange}
+    \begin{bmatrix}
+        K_{11} & K_{12} & 0 & 0 & 0 & 0 & 0 \\
+        K_{12} & K_{22} & K_{23} & 0 & 0 & 0 & 0 \\
+        0 & K_{23} & K_{33} & K_{34} & 0 & 0 & 0 \\
+        0 & 0 & K_{34} & K_{44} & K_{45} & 0 & 0 \\
+        0 & 0 & 0 & K_{45} & K_{55} & K_{56} & 0 \\
+        0 & 0 & 0 & 0 & K_{56} & K_{66} & K_{67} \\
+        0 & 0 & 0 & 0 & 0 & K_{67} & K_{77}
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_6 \\
+        u_7
+    \end{bmatrix}
+    = \begin{bmatrix}
+        f_1 \\
+        f_2 - \lambda \\
+        f_3 \\
+        f_4 \\
+        f_5 \\
+        f_6 + \lambda \\
+        f_7
+    \end{bmatrix}
+\end{equation}
+
+This $ \lambda $ is called \textbf{Lagrange multiplier}. Because $ \lambda $
+is an unknown, let us transfer it to the \textbf{LHS} by \textbf{appending} it
+to the vector of unknowns:
+
+\begin{equation}
+    \begin{bmatrix}
+        K_{11} & K_{12} & 0 & 0 & 0 & 0 & 0 & 0 \\
+        K_{12} & K_{22} & K_{23} & 0 & 0 & 0 & 0 & 1 \\
+        0 & K_{23} & K_{33} & K_{34} & 0 & 0 & 0 & 0 \\
+        0 & 0 & K_{34} & K_{44} & K_{45} & 0 & 0 & 0 \\
+        0 & 0 & 0 & K_{45} & K_{55} & K_{56} & 0 & 0 \\
+        0 & 0 & 0 & 0 & K_{56} & K_{66} & K_{67} & -1 \\
+        0 & 0 & 0 & 0 & 0 & K_{67} & K_{77} & 0
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_6 \\
+        u_7 \\
+        \lambda
+    \end{bmatrix}
+    = \begin{bmatrix}
+        f_1 \\
+        f_2 \\
+        f_3 \\
+        f_4 \\
+        f_5 \\
+        f_6 \\
+        f_7
+    \end{bmatrix}
+\end{equation}
+
+But now we have 7 equations for 8 unknowns. To render the system determinate, the
+constraint condition $ u_2 - u_6 = 0 $ is appended as eight equation:
+
+\begin{equation}
+    \begin{bmatrix}
+        K_{11} & K_{12} & 0 & 0 & 0 & 0 & 0 & 0 \\
+        K_{12} & K_{22} & K_{23} & 0 & 0 & 0 & 0 & 1 \\
+        0 & K_{23} & K_{33} & K_{34} & 0 & 0 & 0 & 0 \\
+        0 & 0 & K_{34} & K_{44} & K_{45} & 0 & 0 & 0 \\
+        0 & 0 & 0 & K_{45} & K_{55} & K_{56} & 0 & 0 \\
+        0 & 0 & 0 & 0 & K_{56} & K_{66} & K_{67} & -1 \\
+        0 & 0 & 0 & 0 & 0 & K_{67} & K_{77} & 0 \\
+        0 & 1 & 0 & 0 & 0 -1 & 0 & 0
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_6 \\
+        u_7 \\
+        \lambda
+    \end{bmatrix}
+    = \begin{bmatrix}
+        f_1 \\
+        f_2 \\
+        f_3 \\
+        f_4 \\
+        f_5 \\
+        f_6 \\
+        f_7 \\
+        0
+    \end{bmatrix}
+\end{equation}
+
+This is called the \textbf{multiplier-augmented} system. Its coefficient matrix,
+which is symmetric, is called the \textbf{bordered stiffness matrix}. The
+process by which $ \lambda $ is appended to the vector of original unknowns
+is called \textbf{adjucation}. Solving this system provides the desired solution
+for the DOFs while also characterising the constraint forces through
+$ \lambda $.
+
+
+\subsection{Lagrange Multipliers fro General MFCs}
+
+The general procedure will be stated first as a recipe. Suppose that we want
+to solve the example structure subjected to three MFCs:
+
+\begin{equation}
+    u_2 - u_6 = 0, \quad 5 u_2 - 8 u_7 = 3, \quad 3 u_3 + u_5 - 4 u_6 = 1
+\end{equation}
+
+Adjoin these MFCs as the eighth, nineth, and tenth equations:
+
+\begin{equation}
+    \begin{bmatrix}
+        K_{11} & K_{12} & 0 & 0 & 0 & 0 & 0 \\
+        K_{12} & K_{22} & K_{23} & 0 & 0 & 0 & 0 \\
+        0 & K_{23} & K_{33} & K_{34} & 0 & 0 & 0 \\
+        0 & 0 & K_{34} & K_{44} & K_{45} & 0 & 0 \\
+        0 & 0 & 0 & K_{45} & K_{55} & K_{56} & 0 \\
+        0 & 0 & 0 & 0 & K_{56} & K_{66} & K_{67} \\
+        0 & 0 & 0 & 0 & 0 & K_{67} & K_{77} \\
+        0 & 1 & 0 & 0 & 0 & -1 & 0 \\
+        0 & 5 & 0 & 0 & 0 & 0 & -8 \\
+        0 & 0 & 3 & 0 & 1 & -4 & 0
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_6 \\
+        u_7
+    \end{bmatrix}
+    = \begin{bmatrix}
+        f_1 \\
+        f_2 \\
+        f_3 \\
+        f_4 \\
+        f_5 \\
+        f_6 \\
+        f_7 \\
+        0 \\
+        3 \\
+        1
+    \end{bmatrix}
+\end{equation}
+
+Three Lagrange multipliers: $ \lambda_1, \lambda_2 $ and $ \lambda_3 $ are
+required to care of three MFCs. Adjoin those unknowns to the nodal displacement
+vector. Symmetrize the coefficient matrix by appending 3 columns that are the
+transpose of the 3 last rows and filling the bottom righ-hand corner with
+a $ 3 \times 3 $ zero matrix:
+
+\begin{equation}
+    \begin{bmatrix}
+        K_{11} & K_{12} & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+        K_{12} & K_{22} & K_{23} & 0 & 0 & 0 & 0 & 1 & 5 & 0 \\
+        0 & K_{23} & K_{33} & K_{34} & 0 & 0 & 0 & 0 & 0 & 3 \\
+        0 & 0 & K_{34} & K_{44} & K_{45} & 0 & 0 & 0 & 0 & 0 \\
+        0 & 0 & 0 & K_{45} & K_{55} & K_{56} & 0 & 0 & 0 & 1 \\
+        0 & 0 & 0 & 0 & K_{56} & K_{66} & K_{67} & -1 & 0 & -4 \\
+        0 & 0 & 0 & 0 & 0 & K_{67} & K_{77} & 0 & -8 & 0 \\
+        0 & 1 & 0 & 0 & 0 & -1 & 0 & 0 & 0 & 0 \\
+        0 & 5 & 0 & 0 & 0 & 0 & -8 & 0 & 0 & 0 \\
+        0 & 0 & 3 & 0 & 1 & -4 & 0 & 0 & 0 & 0
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+        u_3 \\
+        u_4 \\
+        u_5 \\
+        u_6 \\
+        u_7 \\
+        \lambda_1 \\
+        \lambda_2 \\
+        \lambda_3
+    \end{bmatrix}
+    = \begin{bmatrix}
+        f_1 \\
+        f_2 \\
+        f_3 \\
+        f_4 \\
+        f_5 \\
+        f_6 \\
+        f_7 \\
+        0 \\
+        3 \\
+        1
+    \end{bmatrix}
+\end{equation}
+
+
+\subsection{The Theory Behind}
+
+The recipe illustrated above comes from a well known technique of variational
+calculus. Using the matrix notation introduced, compactly denote the set of
+$ m $ MFCs by $ \mathbf{A} \mathbf{u} = \mathbf{b} $, where $ \mathbf{A} $ is
+$ m \times n $. The potential energy of the unconstrained finite element model is
+$ \prod = \frac{1}{2} \mathbf{u}^T \mathbf{K} \mathbf{u} - \mathbf{u}^T \mathbf{f} $.
+To impose the constraint, adjoin $ m $ Lagrange multipliers collected in vector
+$ \lambda $ and form the Lagrangian
+
+\begin{equation}
+    \lagr(\m{u}, \M{\lambda}) = \prod + \M{\lambda}
+    \left( \m{A} \m{u} - \m{b}\right)
+    = \frac{1}{2} \m{u}^T \m{K} \m{u} - \m{u}^T \m{f} + \M{\lambda}^T
+    \left( \m{A} \m{u} - \m{b}\right)
+\end{equation}mathbf
+
+Extremizing $ \lagr $ with respect to $ \m{u} $ and $ \M{\lambda} $ yields
+the multiplier-augmented form
+
+\begin{equation}\label{mfc-multiplier-augmented-form}
+    \begin{bmatrix}
+        \m{K} & \m{A}^T \\
+        \m{A} & \m{0}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u} \\
+        \M{\lambda}
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{f} \\
+        \m{b}
+    \end{bmatrix}
+\end{equation}
+
+The master stiffness matrix $ \m{K} $ is said to be \textbf{bordered} with
+$ \m{A} $ and $ \m{A}^T $. Solving this system provides $ \m{u} $ and $ \M{\lambda} $.
+The latter can be interpreted as forces of constraint in the following sense:
+a removed constraint can be replaced by a system of forces characterised by
+$ \M{\lambda} $ multiplied by the constraint coefficients. More precisely,
+the constraint forces are $ -\m{A}^T \M{\lambda} $.
+
+
+\subsection{Assesment of the Lagrange Multiplier Method}
+
+In contrast to the penalty method, the method of Lagrange multipliers has the
+advantage of being exact (aside from computational errors due to finite
+precision arithmetic). It provides directly the constraint forces, which are of
+interest in many applications. It does not require guesses as regards to weights.
+As the penalty method, it can be extended without difficulty to nonlinear constraints.
+
+It is not free of disadvantages. It introduces additional unknowns, requiring
+expansion of the original stiffness method, and more complicated storage allocation
+procedures. It renders the augmented stiffness matrix indefinite, na effect that
+may cause grief with some linear equation solving methods that rely on positive
+definiteness. Finally, as the master-slave method, it is sensitive to the degree
+of linear independence of the constraints: if the constraint $ u_2 = u_6 $ is
+specified twice, the bordered stiffness is obviously singular.
+
+On the whole this method appears to be the most elegant one for a general-purpose
+finite element program that is supposed to work as a "black box" by minimizing
+guesses and choices from its users. Its implementation, however, is not simple.
+Special care must be excercised to detect singularities due to constraint
+dependency and to account for the effect of loss of positive definiteness of the
+bordered stiffness on equation solver.
+
+
+\subsection{The Augmented Lagrangian Method}
+
+The general matrix of the penalty function and Lagrangian multiplier methods are
+given by expressions \eqref{mfc-augmented-potential-energy} and
+\eqref{mfc-multiplier-augmented-form}, respectively. A useful connection
+between these methods can be established as follows.
+
+Because the lowe diagonal block of the bordered stiffness matrix in
+\eqref{mfc-multiplier-augmented-form} is null, it is not possible to directly
+eliminate $ \M{\lambda} $. To make this possible, replace this block by
+$ \epsilon \m{S}^{-1} $, where $ \m{S} $ is a constraint-scaling diagonal matrix
+of appropriate order and $ \epsilon $ is a small number. The reciprocal of
+$ \epsilon $ is a large number called $ w = 1 / \epsilon $. To maintain
+exactness of the second equation, $ \epsilon \m{S}^{-1} \M{\lambda} $ is added
+to the RHS:
+
+\begin{equation}\label{mfc-lagrangian}
+    \begin{bmatrix}
+        \m{K} & \m{A}^T \\
+        \m{A} & \epsilon \m{S}^{-1}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u} \\
+        \M{\lambda}
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{f} \\
+        \epsilon \m{S}^{-1} \M{\lambda}^P
+    \end{bmatrix}
+\end{equation}
+
+Here superscript $ P $ (for "predicted" value) is attached to the $ \M{\lambda} $
+on the RHS as a "tracer". We can now formally solve for $ \M{\lambda} $
+and subsequently for $ \m{u} $. The results may be presented as:
+
+\begin{eqarray}\label{mfc-lagrange-augmented-decomposed}
+    \left( \m{K} + w \m{A}^T \m{S} \m{A} \right) \m{u}
+    &= \m{f} + w \m{A}^T \m{S} \m{b} - \m{A}^T \M{\lambda}^P \\
+    \M{\lambda} &= \M{\lambda}^P + w \m{S} \left(\m{b} - \m{A} \m{u} \right)
+\end{eqarray}
+
+Setting $ \M{\lambda}^P  = \m{0} $ in the first matrix equation yields:
+
+\begin{equation}
+    \left( \m{K} + w \m{A}^T \m{S} \m{A} \right) \m{u}
+    = \m{f} + w \m{A}^T \m{S} \m{b}
+\end{equation}
+
+on taking $ \m{W} = w \m{S} $, the general matrix equation
+\eqref{mfc-augmented-potential-energy} of the penalty method is recovered.
+
+This relation suggests the construction of \textit{iterative procedures}
+in which one tries to \textit{improve the accuracy of the penalty function}
+\textit{while} $ w $ \textit{is kept constant}. This strategy circumvents the
+aforementioned ill-conditioning problems when the weight $ w $ is gradually
+increased. One such method is easily constructed by inspecting
+\eqref{mfc-lagrange-augmented-decomposed}. Using superscript $ k $ as an
+iteration index and keeping $ w $ fixed, solve equations
+\eqref{mfc-lagrange-augmented-decomposed} in tandem as follows:
+
+\begin{eqarray}\label{mfc-lagrange-augmented-iteration}
+    \left( \m{K} + \m{A}^T \m{W} \m{A} \right) \m{u}^k
+    &= \m{f} + \m{A}^T \m{W} \m{b} - \m{A}^T \M{\lambda}^k \\
+    \M{\lambda}^{k+1} &= \M{\lambda}^k + \m{W} \left(\m{b} - \m{A} \m{u}^k \right)
+\end{eqarray}
+
+for $ k = 0, 1, \dots $, beginning with $ \M{\lambda}^0 = 0 $. Then $ \m{u}^0 $
+is the penalty solution. If the process converges one recovers the exact Lagrangian
+solution without having to solve the Lagrangian system \eqref{mfc-lagrangian}
+directly.
+
+The family of iterative procedures that may be precipitated from
+\eqref{mfc-lagrange-augmented-decomposed} collectively pertains to the class of
+\textit{augmented Lagrangian methods}.
+
+
+\section{Summary}
+
+The treatment of linear MFCs in finite element systems can be carried out by
+several methods. Three of these: \textbf{master-slave elimination},
+\textbf{penalty augmentation} and \textbf{Lagrange multiplier} adjunction
+have been discussed.
+
+It is emphasised that no method is uniformly satisfactory in terms of generality,
+robustness, numerical behavior and simplicity of implementation.
+
+For a general purpose program that tries to attain "black box" behavior
+(that is minimal decisions on the part of users) the Lagrange multipliers has
+the edge. This edge is unfortunately blunted by a fairly complex computer
+implementation and by the loss of positive definiteness in the bordered stiffness
+matrix.
+
 
 
 
