@@ -1157,10 +1157,41 @@ $ \mathbf{\hat{u}} \equiv \mathbf{u} $ and only $ \mathbf{K} $ has changed.
 What happens when \eqref{mfc-penalty-master-stiffnes} is solved numerically?
 If a \textit{finite} weight $ w $ is chosen the constraint $ u_2 = u_6 $ is
 approximately satisfied in the sense that one gets $ u_2 - u_6 = e_g $, where
-$ e_g \neq 0 $. The "gap"
+$ e_g \neq 0 $. The "gap error" $ e_g $ is called the \textit{constraint violation}.
+The magnitude $ \left| e_g \right| $ of this violation depends on the wight:
+the larger $ w $, the smaller the violation. More precisely, it can be shown
+that $ | e_g | $ becomes ptoportional to $ \frac{1}{w} $ as $ w $ gets to be
+sufficiently large. For example, raising $ w $ from, say, $ 10^6 $ to $ 10^7 $
+can be expected to cut the constraint violation roughly by $ 10 $ if the physical
+stiffnesses are smalle compared to $ w $.
 
-% /media/honza/Windows-SSD/HONZA/Documents/Technical/FEM/Felippa_C/Colorado_IFEM/IFEM.Ch09 - Multifreedom Constraints II.pdf page 4
+Therefore it seems as if the proper strategy should be: try to make $ w $ as large
+as possible while respecting the computer overflow limits. However, this is misleading.
+As the penalty weight $ w $ tends to $ \infty $ the modified stiffness matrix becomes
+more and more \textit{ill-conditioned with respect to inversion}.
 
+To make this point clear, suppose for definiteness that rigidites
+$ E^e A^e / L^e $ of the actual bars $ e = 1, \dots, 6 $ are unity, that
+$ w >> 1 $, and that the computer solving the stiffness equations has a
+floating-point precision of 16 decimal places. Numerical analusts characterize such
+precision by sayinf that $ \epsilon_f = \mathcal{O}(10^{-16}) $, where
+$ | \epsilon_f | $ is the smallest power of 10 that perceptibly adds to 1 in
+floating-point arithmetic (this is usually done not for decimal numbers but
+base-2 binary numbers). The modified stiffness matrix of \eqref{mfc-penalty-master-stiffnes}
+becomes:
+
+\begin{equation}
+    \mathbf{\hat{K}} =
+    \begin{bmatrix}
+        \phantom{-}1 & -1 & \phantom{-}0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}0 \\
+        -1 & 2+w & -1 & \phantom{-}0 & \phantom{-}0 & -w & \phantom{-}0 \\
+        \phantom{-}0 & -1 & \phantom{-}2 & -1 & \phantom{-}0 & \phantom{-}0 & \phantom{-}0 \\
+        \phantom{-}0 & \phantom{-}0 & -1 & \phantom{-}2 & -1 & \phantom{-}0 & \phantom{-}0 \\
+        \phantom{-}0 & \phantom{-}0 & \phantom{-}0 & -1 & \phantom{-}2 & -1 & \phantom{-}0 \\
+        \phantom{-}0 & -w & \phantom{-}0 & \phantom{-}0 & -1 & 2+w & -1 \\
+        \phantom{-}0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}0 & -1 & \phantom{-}1
+    \end{bmatrix}
+\end{equation}
 
 
 
