@@ -113,13 +113,13 @@
 
 \section{Skew boundary conditions}
 \textit{Skew boundary conditions}, also known as \textbf{Rotated BCs} are implemented
-after assembling the global stiffness matrix $ \mathbf{K} $.
+after assembling the global stiffness matrix $ \m{K} $.
 
 Basic equation:
 
 \begin{equation}
-    \mathbf{M} \ddot{\mathbf{u}} + \mathbf{C} \dot{\mathbf{u}} + \mathbf{K} \mathbf{u}
-    = \mathbf{f}
+    \m{M} \ddot{\m{u}} + \m{C} \dot{\m{u}} + \m{K} \m{u}
+    = \m{f}
 \end{equation}
 
 First we need to identify all prescribed BCs that do not correspond to the
@@ -127,34 +127,34 @@ defined assemblage DOFs and transform the finite equilibrium equations to
 correspond to the prescribed BCs. Thus we write:
 
 \begin{equation}\label{skew-bcs}
-    \mathbf{u} = \mathbf{T} \closure{\mathbf{u}}
+    \m{u} = \m{T} \closure{\m{u}}
 \end{equation}
 
-where $ \closure{\mathbf{u}} $ is the vector of nodal point DOFs in the required
-directions. The transformation matrix $ \mathbf{T} $ is an identity matrix
+where $ \closure{\m{u}} $ is the vector of nodal point DOFs in the required
+directions. The transformation matrix $ \m{T} $ is an identity matrix
 that has been altered by the directional sines and cosines of the components
-$ \closure{\mathbf{u}} $ measured in the original displacement directions.
+$ \closure{\m{u}} $ measured in the original displacement directions.
 Using \eqref{skew-bcs}, we obtain:
 
 \begin{equation}
-    \closure{\mathbf{M}} \closure{\ddot{\mathbf{u}}}
-    + \closure{\mathbf{C}} \closure{\dot{\mathbf{u}}}
-    + \closure{\mathbf{K}} \closure{\mathbf{u}}
-    = \closure{\mathbf{f}}
+    \closure{\m{M}} \closure{\ddot{\m{u}}}
+    + \closure{\m{C}} \closure{\dot{\m{u}}}
+    + \closure{\m{K}} \closure{\m{u}}
+    = \closure{\m{f}}
 \end{equation}
 
 where:
 
 \begin{eqarray}\label{skew-eq-of-motion}
-    \closure{\mathbf{M}} & = \mathbf{T}^T \mathbf{M} \mathbf{T} \\
-    \closure{\mathbf{C}} & = \mathbf{T}^T \mathbf{C} \mathbf{T} \\
-    \closure{\mathbf{K}} & = \mathbf{T}^T \mathbf{K} \mathbf{T} \\
-    \closure{\mathbf{f}} & = \mathbf{T}^T \mathbf{f}
+    \closure{\m{M}} & = \m{T}^T \m{M} \m{T} \\
+    \closure{\m{C}} & = \m{T}^T \m{C} \m{T} \\
+    \closure{\m{K}} & = \m{T}^T \m{K} \m{T} \\
+    \closure{\m{f}} & = \m{T}^T \m{f}
 \end{eqarray}
 
 We should note that the matrix multiplications in \eqref{skew-eq-of-motion}
-involve changes only in those columns and rows of $ \mathbf{M} $, $ \mathbf{C} $,
-$ \mathbf{K} $ and $ \mathbf{f} $ that are actually affected. In practice,
+involve changes only in those columns and rows of $ \m{M} $, $ \m{C} $,
+$ \m{K} $ and $ \m{f} $ that are actually affected. In practice,
 the transformation is carried out effectively on the element level just prior
 to adding the element matrices to the global matrices.
 
@@ -201,13 +201,13 @@ Accounting for MFCs is done, at least conceptually, by changing the assembled ma
 stiffness equations to produce a \textit{modified} system of equations:
 
 \begin{equation}\label{mfc-modification}
-    \mathbf{K} \mathbf{u} = \mathbf{f} \overset{MFC}{\implies}
-    \hat{\mathbf{K}} \hat{\mathbf{u}} = \hat{\mathbf{f}}
+    \m{K} \m{u} = \m{f} \overset{MFC}{\implies}
+    \hat{\m{K}} \hat{\m{u}} = \hat{\m{f}}
 \end{equation}
 
 The modification process \eqref{mfc-modification} is also called  \textit{constraint}
 \textit{application} or \textit{constraint imposition}. The modified system
-is that submitted to the equation solver, which returns $ \hat{\mathbf{u}} $.
+is that submitted to the equation solver, which returns $ \hat{\m{u}} $.
 
 Three methods for applying \textbf{MFCs} are written below:
 
@@ -272,13 +272,13 @@ notation. An individual constraint may be written:
 In direct matrix notation:
 
 \begin{equation}\label{mfc-direct}
-    \closure{\mathbf{a}}_i \closure{\mathbf{u}}_i = g_i, \quad (no\ sum\ on\ i)
+    \closure{\m{a}}_i \closure{\m{u}}_i = g_i, \quad (no\ sum\ on\ i)
 \end{equation}
 
-in which index $ i\ (i = 1, 2,\dots) $ identifies constraint, $ \closure{\mathbf{a}}_i $
-is a row vector, $ \closure{\mathbf{u}}_i $ collects the set of \textbf{DOFs}
+in which index $ i\ (i = 1, 2,\dots) $ identifies constraint, $ \closure{\m{a}}_i $
+is a row vector, $ \closure{\m{u}}_i $ collects the set of \textbf{DOFs}
 that participate in the constraint, and $ g_i $ is the \textbf{RHS} scalar.
-The bars over $ \mathbf{a} $ and $ \mathbf{u} $ distinguishes
+The bars over $ \m{a} $ and $ \m{u} $ distinguishes
 \eqref{mfc-direct} from the expanded form below.
 
 \begin{figure}[ht]
@@ -312,20 +312,20 @@ $ u_{x1}, u_{y1}, \dots, u_{y6} $, the LHS row vector may be expanded with
 In which case the matrix notation:
 
 \begin{equation}\label{mfc-expanded}
-    \mathbf{a}_i \mathbf{u}_i = g_i
+    \m{a}_i \m{u}_i = g_i
 \end{equation}
 
 is used. Finally, all \textbf{MFCs} expressed as \eqref{mfc-expanded} may be collected
 into a single matrix relation:
 
 \begin{equation}\label{mfc-expanded-matrix}
-    \mathbf{A} \mathbf{u} = \mathbf{g}
+    \m{A} \m{u} = \m{g}
 \end{equation}
 
-in which the rectangular matrix $ \mathbf{A} $ is formed by stacking the
-$ \mathbf{a}_i $'s as rows and column vector $ \mathbf{g} $ is formed by stacking
-the $ g_i $s as entries. If there are 12 DOFs in $ \mathbf{u} $ and \textbf{5 MFCs},
-then $ \mathbf{A} $ will be $ 5 \times 12 $.
+in which the rectangular matrix $ \m{A} $ is formed by stacking the
+$ \m{a}_i $'s as rows and column vector $ \m{g} $ is formed by stacking
+the $ g_i $s as entries. If there are 12 DOFs in $ \m{u} $ and \textbf{5 MFCs},
+then $ \m{A} $ will be $ 5 \times 12 $.
 
 
 \subsection{The Example Structure}
@@ -371,7 +371,7 @@ stiffness equations for this problem are assumed to be:
 or
 
 \begin{equation}\label{mfc-ms-master-equation}
-    \mathbf{K} \mathbf{u} = \mathbf{f}
+    \m{K} \m{u} = \m{f}
 \end{equation}
 
 The nonzero stifness coefficients $ K_{ij} $ in \eqref{master-stiffness-6-bar}
@@ -408,13 +408,13 @@ method is treated
 
 To apply this method by \textit{hand}, the MFCs are taken one at a time. For each
 constraint a \textbf{slave} DOF is chosen. The freedoms remaining in that constraint
-are labeled \textbf{master}. A new set of DOFs $ \mathbf{\hat{u}} $ is established
-by removing all slave freedoms from $ \mathbf{u} $. This new vector contains
+are labeled \textbf{master}. A new set of DOFs $ \m{\hat{u}} $ is established
+by removing all slave freedoms from $ \m{u} $. This new vector contains
 master freedoms as well as thise that do not appear in the MFCs. A matrix transformation
-equation that relates $ \mathbf{u} $ to $ \mathbf{\hat{u}} $ is generated. This
+equation that relates $ \m{u} $ to $ \m{\hat{u}} $ is generated. This
 equation is used ot apply a congruent transformation to the master stiffness equations.
 This procedure yields a set of modified stiffness equations that are expressed in terms
-of the new freedo set $ \mathbf{\hat{u}} $. Because the modified system does not contain
+of the new freedo set $ \m{\hat{u}} $. Because the modified system does not contain
 the slave freedoms, these habe been effectively eliminated.
 
 \subsection{A One-Constraint Example}
@@ -454,25 +454,25 @@ original unknowns $ u_1, \dots, u_7 $ to the new set in which $ u_6 $ is missing
 This is the reqired transformation relation. In compact form:
 
 \begin{equation}
-    \mathbf{u} = \mathbf{T} \mathbf{\hat{u}}
+    \m{u} = \m{T} \m{\hat{u}}
 \end{equation}
 
 
 Replacing \eqref{mfc-ms-transformation} into \eqref{mfc-ms-master-equation} and
-premultiplying by $ \mathbf{T}^T $ yields the modified system:
+premultiplying by $ \m{T}^T $ yields the modified system:
 
 \begin{equation}\label{mfc-ms-modified-system}
-    \mathbf{\hat{K}} \mathbf{\hat{u}} = \mathbf{\hat{f}}, \quad
-    in\ which \quad \mathbf{\hat{K}} = \mathbf{T}^T \mathbf{K} \mathbf{T}, \quad
-    \mathbf{\hat{f}} = \mathbf{T}^T \mathbf{f}.
+    \m{\hat{K}} \m{\hat{u}} = \m{\hat{f}}, \quad
+    in\ which \quad \m{\hat{K}} = \m{T}^T \m{K} \m{T}, \quad
+    \m{\hat{f}} = \m{T}^T \m{f}.
 \end{equation}
 
 \begin{bbox}
     The form of modified system \eqref{mfc-ms-modified-system} can be remembered
     by a simple mnemonic rule: premultiply both sides of $
-    \mathbf{T} \mathbf{\hat{u}} = \mathbf{u} $
-    by $ \mathbf{T}^T \mathbf{K} $ and replace $ \mathbf{K} \mathbf{u} $ by
-    $ \mathbf{f} $ on the right hand side.
+    \m{T} \m{\hat{u}} = \m{u} $
+    by $ \m{T}^T \m{K} $ and replace $ \m{K} \m{u} $ by
+    $ \m{f} $ on the right hand side.
 \end{bbox}
 
 Carrying out the indicated matrix multiplication yields:
@@ -611,18 +611,18 @@ further discussed later.
      This may be compactly written as:
 
      \begin{equation}
-         \mathbf{A}_s \mathbf{u}_s + \mathbf{A}_m \mathbf{u}_m = \mathbf{0}
+         \m{A}_s \m{u}_s + \m{A}_m \m{u}_m = \m{0}
      \end{equation}
 
      Solving for the slave freedoms gives
 
      \begin{equation}
-         \mathbf{u}_s = -\mathbf{A}_s^{-1} \mathbf{A}_m \mathbf{u}_m
+         \m{u}_s = -\m{A}_s^{-1} \m{A}_m \m{u}_m
      \end{equation}
 
-     Expanding with zeros to fill out $ \mathbf{u} $ and $ \mathbf{\hat{u}} $
+     Expanding with zeros to fill out $ \m{u} $ and $ \m{\hat{u}} $
      produces \eqref{mfc-ms-multiple-freedoms}. Note that non-singularity of
-     $ \mathbf{A}_s $ is essential for this method to work.
+     $ \m{A}_s $ is essential for this method to work.
 \end{bbox}
 
 
@@ -638,7 +638,7 @@ has non-zero prescribed value:
 
 Nonzero RHS values such as $ 0.2 $ in \eqref{mcf-canonical-2-6-nonhomogeneous}
 may often be interpreted physically as "gaps" (thus the use of the symbol
-$ \mathbf{g} $ in the matrix form). Chose $ u_6 $ again as slave: $ u_6 = u_2 - 0.2 $
+$ \m{g} $ in the matrix form). Chose $ u_6 $ again as slave: $ u_6 = u_2 - 0.2 $
 and build the transformation:
 
 \begin{equation}
@@ -682,21 +682,21 @@ and build the transformation:
 In the compact matrix form:
 
 \begin{equation}\label{mfc-ms-gap}
-    \mathbf{u} = \mathbf{T} \mathbf{\hat{u}} + \mathbf{g}
+    \m{u} = \m{T} \m{\hat{u}} + \m{g}
 \end{equation}
 
-Here the constraint gap vector $ \mathbf{g} $ is nonzero and $ \mathbf{T} $ is the same
+Here the constraint gap vector $ \m{g} $ is nonzero and $ \m{T} $ is the same
 as before. To get the modified system applying the shortcut rule, premultiply
-both sides of \eqref{mfc-ms-gap} by $ \mathbf{T}^T \mathbf{K} $, replace
-$ \mathbf{K} \mathbf{u} $ by $ \mathbf{f} $ and pass the data to the RHS:
+both sides of \eqref{mfc-ms-gap} by $ \m{T}^T \m{K} $, replace
+$ \m{K} \m{u} $ by $ \m{f} $ and pass the data to the RHS:
 
 \begin{equation}\label{mfc-ms-modified-system-gap}
-    \mathbf{\hat{K}} \mathbf{\hat{u}} = \mathbf{\hat{f}}, \quad
-    in\ which \quad \mathbf{\hat{K}} = \mathbf{T}^T \mathbf{K} \mathbf{T}, \quad
-    \mathbf{\hat{f}} = \mathbf{T}^T \left( \mathbf{f} -\mathbf{K} \mathbf{g} \right).
+    \m{\hat{K}} \m{\hat{u}} = \m{\hat{f}}, \quad
+    in\ which \quad \m{\hat{K}} = \m{T}^T \m{K} \m{T}, \quad
+    \m{\hat{f}} = \m{T}^T \left( \m{f} -\m{K} \m{g} \right).
 \end{equation}
 
-Upon solving \eqref{mfc-ms-modified-system-gap} for $ \mathbf{\hat{u}} $, the
+Upon solving \eqref{mfc-ms-modified-system-gap} for $ \m{\hat{u}} $, the
 complete displacement vector is recovered from \eqref{mfc-ms-gap}. For the MFC
 \eqref{mcf-canonical-2-6-nonhomogeneous} this technique gives the system:
 
@@ -731,43 +731,43 @@ complete displacement vector is recovered from \eqref{mfc-ms-gap}. For the MFC
 \subsection{The General Case}
 
 For implementation in general-purpose programs the \textbf{master-slave method}
-can be described as follows. The \textbf{DOFs} in $ \mathbf{u} $ are classified
+can be described as follows. The \textbf{DOFs} in $ \m{u} $ are classified
 into three types: \textbf{independent} or unconstrained, \textbf{masters} and
 \textbf{slaves}. The unconstrained DOFs are those that do not appear in any MFC.
-Label these sets as $ \mathbf{u}_u $, $ \mathbf{u}_m $ and $ \mathbf{u}_s $,
+Label these sets as $ \m{u}_u $, $ \m{u}_m $ and $ \m{u}_s $,
 respectively, and partition the stiffness equations accordingly:
 
 \begin{equation}\label{mfc-ms-partitioned}
     \begin{bmatrix}
-        \mathbf{K}_{uu} & \mathbf{K}_{um} & \mathbf{K}_{us} \\
-        \mathbf{K}_{um}^T & \mathbf{K}_{mm} & \mathbf{K}_{ms} \\
-        \mathbf{K}_{us}^T & \mathbf{K}_{ms}^T & \mathbf{K}_{ss}
+        \m{K}_{uu} & \m{K}_{um} & \m{K}_{us} \\
+        \m{K}_{um}^T & \m{K}_{mm} & \m{K}_{ms} \\
+        \m{K}_{us}^T & \m{K}_{ms}^T & \m{K}_{ss}
     \end{bmatrix}
     \begin{bmatrix}
-        \mathbf{u}_u \\
-        \mathbf{u}_m \\
-        \mathbf{u}_s
+        \m{u}_u \\
+        \m{u}_m \\
+        \m{u}_s
     \end{bmatrix}
     = \begin{bmatrix}
-        \mathbf{f}_u \\
-        \mathbf{f}_m \\
-        \mathbf{f}_s \\
+        \m{f}_u \\
+        \m{f}_m \\
+        \m{f}_s \\
     \end{bmatrix}
 \end{equation}
 
 The MFCs may be written in matrix form as:
 
 \begin{equation}
-    \mathbf{A}_m \mathbf{u}_m + \mathbf{A}_s \mathbf{u}_s = \mathbf{g}_A
+    \m{A}_m \m{u}_m + \m{A}_s \m{u}_s = \m{g}_A
 \end{equation}
 
-where $ \mathbf{A}_s $ is assumed square and nonsingular. If so we can solve for
+where $ \m{A}_s $ is assumed square and nonsingular. If so we can solve for
 the slave freedoms:
 
 \begin{equation}
-    \mathbf{u}_s = \mathbf{A}_s^{-1} \mathbf{A}_m \mathbf{u}_m
-    + \mathbf{A}_s^{-1} \mathbf{g}_A
-    \eqd \mathbf{T} \mathbf{u}_m + \mathbf{g}
+    \m{u}_s = \m{A}_s^{-1} \m{A}_m \m{u}_m
+    + \m{A}_s^{-1} \m{g}_A
+    \eqd \m{T} \m{u}_m + \m{g}
 \end{equation}
 
 where $ \eqd $ means \textit{equal by definition}. Inserting into the partitioned
@@ -775,32 +775,32 @@ sitffness equation \eqref{mfc-ms-partitioned} and symmetrizing yields:
 
 \begin{equation}
     \begin{bmatrix}
-        \mathbf{K}_{uu} & \mathbf{\hat{K}}_{um} \\
-        \mathbf{\hat{K}}_{um}^T &
-        \mathbf{\hat{K}}_{mm}
+        \m{K}_{uu} & \m{\hat{K}}_{um} \\
+        \m{\hat{K}}_{um}^T &
+        \m{\hat{K}}_{mm}
     \end{bmatrix}
     \begin{bmatrix}
-        \mathbf{u}_u \\
-        \mathbf{u}_m
+        \m{u}_u \\
+        \m{u}_m
     \end{bmatrix}
     = \begin{bmatrix}
-        \mathbf{f}_u - \mathbf{K}_{us} \mathbf{g} \\
-        \mathbf{f}_m - \mathbf{K}_{ms} \mathbf{g}
+        \m{f}_u - \m{K}_{us} \m{g} \\
+        \m{f}_m - \m{K}_{ms} \m{g}
     \end{bmatrix}
 \end{equation}
 
-where $ \mathbf{\hat{K}}_{um} = \left( \mathbf{K}_{um} + \mathbf{K}_{us} \mathbf{T} \right)^T $ \\
-and $ \mathbf{\hat{K}}_{mm} = \mathbf{K}_{mm} + \mathbf{T}^T \mathbf{K}_{ms}^T
-+ \mathbf{K}_{ms} \mathbf{T} + \mathbf{T}^T \mathbf{K}_{ss} \mathbf{T} $.
+where $ \m{\hat{K}}_{um} = \left( \m{K}_{um} + \m{K}_{us} \m{T} \right)^T $ \\
+and $ \m{\hat{K}}_{mm} = \m{K}_{mm} + \m{T}^T \m{K}_{ms}^T
++ \m{K}_{ms} \m{T} + \m{T}^T \m{K}_{ss} \m{T} $.
 
 It is seen that the misleading simplicity of the handworked example is gone.
 
 
-\subsection{Retatining the Original Freedoms}
+\subsection{Retaining the Original Freedoms}
 
 A potential disadvantage of the master-slave methid in computer work is that it
 requires a rearrangement of the original stiffness equations because
-$ \mathbf{\hat{u}} $ is a subset of $ \mathbf{u} $. The disadvantage can be
+$ \m{\hat{u}} $ is a subset of $ \m{u} $. The disadvantage can be
 annoying when sparse matrxi storage schemes are used for the stiffness matrix,
 and becomes intolerable if secondary storage is used for that purpose.
 
@@ -926,16 +926,16 @@ all freedoms linearly:
         u_1 \\
         u_7
     \end{bmatrix}, \quad or \quad
-    \mathbf{u} = \mathbf{T} \mathbf{\hat{u}}
+    \m{u} = \m{T} \m{\hat{u}}
 \end{equation}
 
 The reduced-order-model (\textbf{ROM}) equations are:
 
 \begin{equation}
-    \mathbf{\hat{k}} \mathbf{\hat{u}}
-    = \mathbf{T}^T \mathbf{K} \mathbf{T} \mathbf{\hat{u}}
-    = \mathbf{T}^T \mathbf{f}
-    = \mathbf{\hat{f}}
+    \m{\hat{k}} \m{\hat{u}}
+    = \m{T}^T \m{K} \m{T} \m{\hat{u}}
+    = \m{T}^T \m{f}
+    = \m{\hat{f}}
 \end{equation}
 
 or in detail
@@ -1003,19 +1003,19 @@ The complexity is due to three factors:
         by the \textbf{placeholder} trick.
 
     \item An auxiliary linear system has to be assembled and solved to produce
-        the transformation matrix $ \mathbf{T} $ and vector $ \mathbf{g} $.
+        the transformation matrix $ \m{T} $ and vector $ \m{g} $.
 
     \item The transformation process may generate many additional matrix terms.
-        If a sparse matrix storage scheme is used for $ \mathbf{K} $, the logic
+        If a sparse matrix storage scheme is used for $ \m{K} $, the logic
         for allocating memory and storing these entries can be difficult
         and expensive.
 \end{enumerate}
 
 The level of complexity depends on the generality allowed as well as on programming
-decisions. If $ \mathbf{K} $  is stored as full matrix and slave freedom coupling in
+decisions. If $ \m{K} $  is stored as full matrix and slave freedom coupling in
 the MFCs is disallowed the logic is simple (this is the case in model reduction,
 since each slave freedom appears in one and only one MFC). On the other hand,
-if arbitrary couplings are permitted and $ \mathbf{K} $ is placed in secondary
+if arbitrary couplings are permitted and $ \m{K} $ is placed in secondary
 (disk) storage according to some sparse scheme, the complexity can become
 overwhelming.
 
@@ -1051,10 +1051,10 @@ The last constraint is an exact linear combination of the first two. If the prog
 blindly choses $ u_2 $, $ u_3 $ and $ u_7 $ as slaves, the modified system is
 incorrect because we eliminate three equations when in fact there are only two
 independent constraints. Exact linear dependence, as before, can be recognised by
-a rank analysis of the $ \mathbf{A}_s $ matrix defined. In the floating-point
+a rank analysis of the $ \m{A}_s $ matrix defined. In the floating-point
 arithmetic, however, such detection may fail because that kind of computation is
 inexact bt nature (The safest technique to identify dependencies is to do
-a singular value decomposition (SVD) of $ \mathbf{A}_s $. This can be, however,
+a singular value decomposition (SVD) of $ \m{A}_s $. This can be, however,
 prohibitively expensive if one is dealing with hundreds of thousands of constraints.).
 
 The complexithy of slave selection is in fact equivalent to that of automatically
@@ -1105,7 +1105,7 @@ $ w $ is its \textbf{penalty weight}.
 
 Such an element, albeit fictious, can be treated exactly like another bar element
 insofar as continuing the assembly of the master stiffness equations. The penalty
-element stiffness equations $ \mathbf{K}^{(7)} \mathbf{u}^{(7)} = \mathbf{f}^{(7)} $,
+element stiffness equations $ \m{K}^{(7)} \m{u}^{(7)} = \m{f}^{(7)} $,
 are:
 
 \begin{equation}
@@ -1125,7 +1125,7 @@ are:
 
 Because there is one freedom per node, the two local element freedoms map into global
 freedoms 2 and 6, respectively. Using the assembly rules we obtain the following
-modified master stiffness equations: $ \mathbf{\hat{K}} \mathbf{\hat{u}} = \mathbf{\hat{f}} $,
+modified master stiffness equations: $ \m{\hat{K}} \m{\hat{u}} = \m{\hat{f}} $,
 which shown in detail are:
 
 \begin{equation}\label{mfc-penalty-master-stiffnes}
@@ -1159,7 +1159,7 @@ which shown in detail are:
 \end{equation}
 
 This system can now be submitted to the equation solver. Note that
-$ \mathbf{\hat{u}} \equiv \mathbf{u} $ and only $ \mathbf{K} $ has changed.
+$ \m{\hat{u}} \equiv \m{u} $ and only $ \m{K} $ has changed.
 
 \subsection{Choosing the Penalty Weight}
 
@@ -1190,7 +1190,7 @@ base-2 binary numbers). The modified stiffness matrix of \eqref{mfc-penalty-mast
 becomes:
 
 \begin{equation}
-    \mathbf{\hat{K}} =
+    \m{\hat{K}} =
     \begin{bmatrix}
         \phantom{-}1 & -1 & \phantom{-}0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}0 \\
         -1 & 2+w & -1 & \phantom{-}0 & \phantom{-}0 & -w & \phantom{-}0 \\
@@ -1204,12 +1204,12 @@ becomes:
 
 Clearly as $ w \rightarrow \infty $ rows 2 and 6, as well as columns 2 and 6, tend
 to become linearly dependent, in fact the negative of each other. But
-\textbf{linear dependency means singularity!} Thus $ \mathbf{\hat{K}} $
+\textbf{linear dependency means singularity!} Thus $ \m{\hat{K}} $
 approaches singularity as $ w \rightarrow \infty $. In fact, if $ w $ exceeds
 $ 1 / \epsilon_f = 10^16 $ the computer will not be able to distinguish
-$ \mathbf{\hat{K}} $ from an exactly singular matrix. If $ w << 10^16 $, the
+$ \m{\hat{K}} $ from an exactly singular matrix. If $ w << 10^16 $, the
 effect will be seen in increasing solution errors affecting the computed
-displacements $ \mathbf{\hat{u}} $ returned by the equation solver.
+displacements $ \m{\hat{u}} $ returned by the equation solver.
 These errors, however, tend to be more random in nature than the constraint
 violation error.
 
@@ -1226,7 +1226,7 @@ This rule can be stated as follows:
 Suppose that the largest stiffness coefficient, before adding penalty elements,
 is of the order of $ 10^k $ and that the working machine precision is $ p $
 digits (such order-of magnitude estimates can be easily found by scanning just
-the diagonal of $ \mathbf{K} $). Then choose penalty weights to be of order
+the diagonal of $ \m{K} $). Then choose penalty weights to be of order
 $ 10^{k+p/2} $ with the proviso that such a choice would not cause aritmetic
 overflow (if overflow occurs, the master stiffness matrix should be scaled
 throughout or a better choice of physical units made).
@@ -1300,10 +1300,10 @@ and premultiply both sides by the transpose of the coefficient matrix:
         u_5 \\
         u_6
     \end{bmatrix}
-    = \mathbf{\closure{K}}^e \mathbf{u} = 0
+    = \m{\closure{K}}^e \m{u} = 0
 \end{equation}
 
-Here $ \mathbf{\closure{K}}^e $ is the \textit{unscaleed} stiffness matrix of
+Here $ \m{\closure{K}}^e $ is the \textit{unscaleed} stiffness matrix of
 the penalty element. This is now multiplied by the penalty weight $ w $ and
 assembled into the master stiffness matrix following the usual rules. For the
 example problem, augmentint the master stiffness matrix with the $ w $-scaled
@@ -1416,51 +1416,51 @@ mathematical theory. Suppose we have a set of $ m $ linear MFCs. Using
 the matrix notation introduced, these will be stated as:
 
 \begin{equation}
-    \mathbf{a}_p \mathbf{u} = b_p, \quad p = 1, \dots, m
+    \m{a}_p \m{u} = b_p, \quad p = 1, \dots, m
 \end{equation}
 
-where $ \mathbf{u} $ contains all DOFs and each $ \mathbf{a}_p $ is a row vector
-with the same length as $ \mathbf{u} $. To incorporate the MFCs into the FEM
+where $ \m{u} $ contains all DOFs and each $ \m{a}_p $ is a row vector
+with the same length as $ \m{u} $. To incorporate the MFCs into the FEM
 model one selects a weight $ w_p > 0 $ for each constraint and constructs the
 so-called \textbf{Courant quadratic penalty function} or "penalty energy":
 
 \begin{equation}
     P = \sum_{p=1}^m P_p,\ with\ 
-    P_p = \mathbf{u}^T \left(
-        \frac{1}{2} \mathbf{a}_p^T \mathbf{a}_p \mathbf{u}
-        - w_p \mathbf{a}_p^T b_p
+    P_p = \m{u}^T \left(
+        \frac{1}{2} \m{a}_p^T \m{a}_p \m{u}
+        - w_p \m{a}_p^T b_p
         \right)
-        = \frac{1}{2} \mathbf{u}^T \mathbf{K}^{(p)} \mathbf{u}
-        - \mathbf{u}^T \mathbf{f}^{(p)}
+        = \frac{1}{2} \m{u}^T \m{K}^{(p)} \m{u}
+        - \m{u}^T \m{f}^{(p)}
 \end{equation}
 
-where we have called $ \mathbf{K}^{(p)} = w_p \mathbf{a}_p^T \mathbf{a}_p $
-and $ \mathbf{f}^{(p)} = w_p \mathbf{a}^T b_p $. $ P $ is added to the potential
+where we have called $ \m{K}^{(p)} = w_p \m{a}_p^T \m{a}_p $
+and $ \m{f}^{(p)} = w_p \m{a}^T b_p $. $ P $ is added to the potential
 energy function
-$ \prod = \frac{1}{2} \mathbf{u}^T \mathbf{K} \mathbf{u} - \mathbf{u}^T \mathbf{f} $
+$ \prod = \frac{1}{2} \m{u}^T \m{K} \m{u} - \m{u}^T \m{f} $
 to form the \textit{augmented potential energy} $ \prod_a = \prod + P $.
-Minimization of $ \prod_a $ with respect to $ \mathbf{u} $ yields:
+Minimization of $ \prod_a $ with respect to $ \m{u} $ yields:
 
 \begin{equation}\label{mfc-augmented-potential-energy}
-    \left( \mathbf{K} \mathbf{u} + \sum_{p=1}^m \mathbf{K}^{(p)} \right) \mathbf{u}
-    = \mathbf{f} + \sum_{p=1}^m \mathbf{f}^{(p)}
+    \left( \m{K} \m{u} + \sum_{p=1}^m \m{K}^{(p)} \right) \m{u}
+    = \m{f} + \sum_{p=1}^m \m{f}^{(p)}
 \end{equation}
 
 Each term of the sum on $ p $, which derives from term $ P_p $ may be viewed as
 contributed by a penalty element with globalised stiffness matrix
-$ \mathbf{K}^{(p)} = w_p \mathbf{a}_p^T \mathbf{a}_p $ and globalised added
-force term $ \mathbf{f}^{(p)} = w_p \mathbf{a}_p^T b_p $.
+$ \m{K}^{(p)} = w_p \m{a}_p^T \m{a}_p $ and globalised added
+force term $ \m{f}^{(p)} = w_p \m{a}_p^T b_p $.
 
 To use a even more compact form we may write the set of MFCs as
-$ \mathbf{A} \mathbf{u} = \mathbf{b} $. Then the penalty augmented system can
+$ \m{A} \m{u} = \m{b} $. Then the penalty augmented system can
 be written compactly as:
 
 \begin{equation}
-    \left( \mathbf{K} + \mathbf{A}^T \mathbf{W} \mathbf{A} \right) \mathbf{u}
-    = \mathbf{f} + \mathbf{W} \mathbf{A}^T \mathbf{b}
+    \left( \m{K} + \m{A}^T \m{W} \m{A} \right) \m{u}
+    = \m{f} + \m{W} \m{A}^T \m{b}
 \end{equation}
 
-where $ \mathbf{W} $ is a diagonal matrix of penalty weights. This compact form,
+where $ \m{W} $ is a diagonal matrix of penalty weights. This compact form,
 however, conceals the configuration of the penalty elements.
 
 
@@ -1468,7 +1468,7 @@ however, conceals the configuration of the penalty elements.
 
 The main advantage of the penalty function method is its straightforward computer
 implementation. Looking at the modified systems it is obvious that master equations
-need not be rearranged. That is, $ \mathbf{u} $ and $ \mathbf{\hat{u}} $ are the same.
+need not be rearranged. That is, $ \m{u} $ and $ \m{\hat{u}} $ are the same.
 Constraints may be programmed as "penalty elements", and stiffness and force
 contributions fo these elements merged through the standard assembler. In fact
 using this method there is no need to distinguish between unconstrained and
@@ -1744,9 +1744,9 @@ a $ 3 \times 3 $ zero matrix:
 
 The recipe illustrated above comes from a well known technique of variational
 calculus. Using the matrix notation introduced, compactly denote the set of
-$ m $ MFCs by $ \mathbf{A} \mathbf{u} = \mathbf{b} $, where $ \mathbf{A} $ is
+$ m $ MFCs by $ \m{A} \m{u} = \m{b} $, where $ \m{A} $ is
 $ m \times n $. The potential energy of the unconstrained finite element model is
-$ \prod = \frac{1}{2} \mathbf{u}^T \mathbf{K} \mathbf{u} - \mathbf{u}^T \mathbf{f} $.
+$ \prod = \frac{1}{2} \m{u}^T \m{K} \m{u} - \m{u}^T \m{f} $.
 To impose the constraint, adjoin $ m $ Lagrange multipliers collected in vector
 $ \lambda $ and form the Lagrangian
 
@@ -1755,7 +1755,7 @@ $ \lambda $ and form the Lagrangian
     \left( \m{A} \m{u} - \m{b}\right)
     = \frac{1}{2} \m{u}^T \m{K} \m{u} - \m{u}^T \m{f} + \M{\lambda}^T
     \left( \m{A} \m{u} - \m{b}\right)
-\end{equation}mathbf
+\end{equation}
 
 Extremizing $ \lagr $ with respect to $ \m{u} $ and $ \M{\lambda} $ yields
 the multiplier-augmented form
@@ -1915,7 +1915,7 @@ matrix.
         \hline
         \hline
         Problem & \begin{tabular}{c}Displacement\\components\\ \end{tabular} &
-        Strain vector $ \mathbf{\epsilon}^T $ & Stress vector $ \mathbf{\tau}^T $ \\
+        Strain vector $ \M{\epsilon}^T $ & Stress vector $ \M{\tau}^T $ \\
         \hline
         Bar & $u$ & $ \left[ \epsilon_{xx} \right] $ & $ \left[ \tau_{xx} \right] $ \\
         Beam & $w$ & $ \left[ \kappa_{xx} \right] $ & $ \left[ m_{xx} \right] $ \\
@@ -2785,16 +2785,16 @@ more than two frequency points.
 Let:
 
 \begin{equation}
-    \mathbf{M}\ddot{\mathbf{u}} + \mathbf{C}\dot{\mathbf{u}} +  \mathbf{K}\mathbf{u} = \mathbf{F}\left( t \right)
+    \m{M}\ddot{\m{u}} + \m{C}\dot{\m{u}} +  \m{K}\m{u} = \m{F}\left( t \right)
 \end{equation}
 
 be the \textbf{equation of motion}, then:\\
-$ \mathbf{\Lambda} $ is a \textbf{spectral} matrix\\
-$ \mathbf{\Psi} $ is a \textbf{mode shape} matrix,
+$ \M{\Lambda} $ is a \textbf{spectral} matrix\\
+$ \M{\Psi} $ is a \textbf{mode shape} matrix,
 
 such that:
 \begin{equation}
-    \mathbf{\Lambda} =
+    \M{\Lambda} =
     \begin{bmatrix}
         \lambda_1^2 & \dots & 0\\
         \vdots & \ddots & \vdots \\
@@ -2803,32 +2803,32 @@ such that:
 \end{equation}
 
 where $ \lambda_n^2 $ is the n-th eigenvalue of the problem
-$ (\mathbf{K}-\lambda^2\mathbf{M})\mathbf{X} = 0 $
+$ (\m{K}-\lambda^2\m{M})\m{X} = 0 $
 
 and:
 \begin{equation}
-    \mathbf{\Psi} =
+    \M{\Psi} =
     \begin{bmatrix}
-        \mathbf{\psi}_1 & \dots & \mathbf{\psi}_n
+        \M{\psi}_1 & \dots & \M{\psi}_n
     \end{bmatrix}
 \end{equation}
 
-where $ \mathbf{\psi}_n = \{\psi_{n,1}, \dots, \psi_{n,m}\}^T $ is the eigenvector
+where $ \M{\psi}_n = \{\psi_{n,1}, \dots, \psi_{n,m}\}^T $ is the eigenvector
 of the n-th eigenvalue $ \lambda_n^2 $.
 
-The \textbf{displacement} $ \mathbf{u} $ can be expressed as a linear combination
+The \textbf{displacement} $ \m{u} $ can be expressed as a linear combination
 of eigenvectors such that:
 
 \begin{eqarray}
-    \mathbf{u}(t)
-    &= \mathbf{\Psi} \mathbf{q}(t) \\
+    \m{u}(t)
+    &= \M{\Psi} \m{q}(t) \\
     &= \begin{bmatrix}
-        \mathbf{\psi}_1 & \dots & \mathbf{\psi}_n
-    \end{bmatrix} \mathbf{q}(t) \\
+        \M{\psi}_1 & \dots & \M{\psi}_n
+    \end{bmatrix} \m{q}(t) \\
     &= \begin{bmatrix}
-        \mathbf{\psi}_{1,1} & \dots & \mathbf{\psi}_{n,1} \\
+        \M{\psi}_{1,1} & \dots & \M{\psi}_{n,1} \\
         \vdots & \vdots & \vdots \\
-        \mathbf{\psi}_{1,m} & \dots & \mathbf{\psi}_{n,m}
+        \M{\psi}_{1,m} & \dots & \M{\psi}_{n,m}
     \end{bmatrix}
     \begin{bmatrix}
         q_1(t) \\
@@ -2837,61 +2837,61 @@ of eigenvectors such that:
     \end{bmatrix}
 \end{eqarray}
 
-where $ \mathbf{q}(t) $ is a vector of modal coefficients.
+where $ \m{q}(t) $ is a vector of modal coefficients.
 
 Then:
 
 \begin{eqarray}
-    \dot{\mathbf{u}}(t) &= \mathbf{\Psi} \dot{\mathbf{q}}(t) \\
-    \ddot{\mathbf{u}}(t) &= \mathbf{\Psi} \ddot{\mathbf{q}}(t)
+    \dot{\m{u}}(t) &= \M{\Psi} \dot{\m{q}}(t) \\
+    \ddot{\m{u}}(t) &= \M{\Psi} \ddot{\m{q}}(t)
 \end{eqarray}
 
-First we substitute $ \mathbf{u} = \mathbf{\Psi}\mathbf{q} $ to the
+First we substitute $ \m{u} = \M{\Psi}\m{q} $ to the
 \textbf{equation of motion}:
 
 \begin{equation}
-    \mathbf{M} \mathbf{\Psi} \ddot{q} +
-    \mathbf{C} \mathbf{\Psi} \dot{q} +
-    \mathbf{K}\mathbf{\Psi}\mathbf{q}
-    = \mathbf{F}(t)
+    \m{M} \M{\Psi} \ddot{q} +
+    \m{C} \M{\Psi} \dot{q} +
+    \m{K}\M{\Psi}\m{q}
+    = \m{F}(t)
 \end{equation}
 
-By \textbf{premultiplying} with $ \mathbf{\Psi}^T $ we get:
+By \textbf{premultiplying} with $ \M{\Psi}^T $ we get:
 
 \begin{equation}
-    \mathbf{\Psi}^T \mathbf{M} \mathbf{\Psi} \ddot{\mathbf{q}} +
-    \mathbf{\Psi}^T \mathbf{C} \mathbf{\Psi} \dot{\mathbf{q}} +
-    \mathbf{\Psi}^T \mathbf{K} \mathbf{\Psi} \mathbf{q} =
-    \mathbf{\Psi}\mathbf{F}(t) = \mathbf{Q}(t)
+    \M{\Psi}^T \m{M} \M{\Psi} \ddot{\m{q}} +
+    \M{\Psi}^T \m{C} \M{\Psi} \dot{\m{q}} +
+    \M{\Psi}^T \m{K} \M{\Psi} \m{q} =
+    \M{\Psi}\m{F}(t) = \m{Q}(t)
 \end{equation}
 
-where $ \mathbf{Q}(t) = \mathbf{\Psi} \mathbf{F}(t) $ is called a \textbf{modal load}.
+where $ \m{Q}(t) = \M{\Psi} \m{F}(t) $ is called a \textbf{modal load}.
 
 \subsection{Orthonormalised Modal Base}
 
 Then one can exploit the properties of \textbf{orthonormalised eigenvectors}, where:
 
 \begin{equation}
-    \mathbf{\psi}_r^T \mathbf{\psi}_s = 0 \Leftrightarrow r \neq s
+    \M{\psi}_r^T \M{\psi}_s = 0 \Leftrightarrow r \neq s
 \end{equation}
 
 The \textbf{mass}, \textbf{damping} and \textbf{stiffness} matrices are therefore
 reduced to:
 
 \begin{eqarray}
-    \mathbf{\Psi}^T \mathbf{M} \mathbf{\Psi}
+    \M{\Psi}^T \m{M} \M{\Psi}
     &= \begin{bmatrix}
         m_1 & \dots & 0 \\
         \vdots & \ddots & \vdots \\
         0 & \dots & m_n
     \end{bmatrix} \\
-    \mathbf{\Psi}^T \mathbf{C} \mathbf{\Psi}
+    \M{\Psi}^T \m{C} \M{\Psi}
     &= \begin{bmatrix}
         c_1 & \dots & 0 \\
         \vdots & \ddots & \vdots \\
         0 & \dots & c_n
     \end{bmatrix} \\
-    \mathbf{\Psi}^T \mathbf{K} \mathbf{\Psi}
+    \M{\Psi}^T \m{K} \M{\Psi}
     &= \begin{bmatrix}
         k_1 & \dots & 0 \\
         \vdots & \ddots & \vdots \\
@@ -2911,35 +2911,35 @@ $ k_i $ is the \textbf{modal stiffness} of the i-th shape
     equations reduce to:
 
     \begin{eqarray}
-        \mathbf{\Psi}^T \mathbf{M} \mathbf{\Psi}
+        \M{\Psi}^T \m{M} \M{\Psi}
         &= \begin{bmatrix}
             1.0 & \dots & 0 \\
             \vdots & \ddots & \vdots \\
             0 & \dots & 1.0
-        \end{bmatrix} = \mathbf{I} \\
-        \mathbf{\Psi}^T \mathbf{C} \mathbf{\Psi}
+        \end{bmatrix} = \m{I} \\
+        \M{\Psi}^T \m{C} \M{\Psi}
         &= \begin{bmatrix}
             c_1 & \dots & 0 \\
             \vdots & \ddots & \vdots \\
             0 & \dots & c_n
         \end{bmatrix} \\
-        \mathbf{\Psi}^T \mathbf{K} \mathbf{\Psi}
+        \M{\Psi}^T \m{K} \M{\Psi}
         &= \begin{bmatrix}
             \lambda_1^2 & \dots & 0 \\
             \vdots & \ddots & \vdots \\
             0 & \dots & \lambda_n^2
-        \end{bmatrix} = \mathbf{\Lambda}^2
+        \end{bmatrix} = \M{\Lambda}^2
     \end{eqarray}
 
     \textbf{Mass normalisation}:
 
     \begin{equation}
-        \mathbf{\psi}_{i,mass} = \frac{\mathbf{\psi}_i}{\mathbf{\psi}_i^T \mathbf{m}_i \mathbf{\psi}_i}
+        \M{\psi}_{i,mass} = \frac{\M{\psi}_i}{\M{\psi}_i^T \m{m}_i \M{\psi}_i}
     \end{equation}
 
     where:
 
-    $ \mathbf{m}_i $ is the i-th row of the \textbf{mass} matrix $ \mathbf{M} $.
+    $ \m{m}_i $ is the i-th row of the \textbf{mass} matrix $ \m{M} $.
 
 \end{bbox}
 
@@ -2950,13 +2950,13 @@ The MDOF \textbf{equation of motion} can be then rewritten as a set of \textbf{S
 equations:
 
 \begin{eqarray}
-    \mathbf{\Psi}^T \mathbf{M} \mathbf{\Psi} \ddot{\mathbf{q}}(t) +
-    \mathbf{\Psi}^T \mathbf{C} \mathbf{\Psi} \dot{\mathbf{q}}(t) +
-    \mathbf{\Psi}^T \mathbf{K} \mathbf{\Psi} \mathbf{q}(t) &=
-    \mathbf{\Psi}^T \mathbf{F}(t) \\
-    \mathbf{M}_{\Psi} \ddot{\mathbf{q}}(t) +
-    \mathbf{C}_{\Psi} \dot{\mathbf{q}}(t) +
-    \mathbf{K}_{\Psi} \mathbf{q}(t) &= \mathbf{Q}(t)
+    \M{\Psi}^T \m{M} \M{\Psi} \ddot{\m{q}}(t) +
+    \M{\Psi}^T \m{C} \M{\Psi} \dot{\m{q}}(t) +
+    \M{\Psi}^T \m{K} \M{\Psi} \m{q}(t) &=
+    \M{\Psi}^T \m{F}(t) \\
+    \m{M}_{\Psi} \ddot{\m{q}}(t) +
+    \m{C}_{\Psi} \dot{\m{q}}(t) +
+    \m{K}_{\Psi} \m{q}(t) &= \m{Q}(t)
 \end{eqarray}
 
 Written explicitely:
@@ -3013,29 +3013,29 @@ of \textbf{SDOF} problems:
 which are solved separately and the results are \textbf{linearly} combined:
 
 \begin{eqarray}
-    \mathbf{u} = \sum_{i=1}^n \mathbf{\psi}_i q_i \\
-    \mathbf{\dot{u}} = \sum_{i=1}^n \mathbf{\psi}_i \dot{q}_i \\
-    \mathbf{\ddot{u}} = \sum_{i=1}^n \mathbf{\psi}_i \ddot{q}_i
+    \m{u} = \sum_{i=1}^n \M{\psi}_i q_i \\
+    \m{\dot{u}} = \sum_{i=1}^n \M{\psi}_i \dot{q}_i \\
+    \m{\ddot{u}} = \sum_{i=1}^n \M{\psi}_i \ddot{q}_i
 \end{eqarray}
 
 \begin{bbox}[0.96]
     \textbf{Note:} Above equation can be also written as:
 
     \begin{eqarray}
-        \mathbf{u} = \sum_{i=1}^n \mathbf{\psi}_i q_{u,i} \\
-        \mathbf{v} = \sum_{i=1}^n \mathbf{\psi}_i q_{v,i} \\
-        \mathbf{a} = \sum_{i=1}^n \mathbf{\psi}_i q_{a,i}
+        \m{u} = \sum_{i=1}^n \M{\psi}_i q_{u,i} \\
+        \m{v} = \sum_{i=1}^n \M{\psi}_i q_{v,i} \\
+        \m{a} = \sum_{i=1}^n \M{\psi}_i q_{a,i}
     \end{eqarray}
 
     where:\\
-    $ \mathbf{u} $ is displacement \\
-    $ \mathbf{v} $ is velocity \\
-    $ \mathbf{a} $ is acceleration
+    $ \m{u} $ is displacement \\
+    $ \m{v} $ is velocity \\
+    $ \m{a} $ is acceleration
 
     and\\
-    $ \mathbf{q}_{u} $ is modal displacement \\
-    $ \mathbf{q}_v $ is modal velocity \\
-    $ \mathbf{q}_a $ is modal acceleration
+    $ \m{q}_{u} $ is modal displacement \\
+    $ \m{q}_v $ is modal velocity \\
+    $ \m{q}_a $ is modal acceleration
 
 \end{bbox}
 
@@ -3045,37 +3045,37 @@ which are solved separately and the results are \textbf{linearly} combined:
 To get the initial modal conditions, one simply:
 
 \begin{eqarray}
-    \mathbf{q}_0 &= \mathbf{\Psi}^{-1} \mathbf{u}_0 \\
-    \mathbf{\dot{q}}_0 &= \mathbf{\Psi}^{-1} \mathbf{\dot{u}}_0 \\
-    \mathbf{\ddot{q}}_0 &= \mathbf{\Psi}^{-1} \mathbf{\ddot{u}}_0
+    \m{q}_0 &= \M{\Psi}^{-1} \m{u}_0 \\
+    \m{\dot{q}}_0 &= \M{\Psi}^{-1} \m{\dot{u}}_0 \\
+    \m{\ddot{q}}_0 &= \M{\Psi}^{-1} \m{\ddot{u}}_0
 \end{eqarray}
 
 where:\\
-$ \mathbf{\Psi}^{-1} $ is an inverse of eigenshape matrix $ \Leftrightarrow $ all eigenvalues
+$ \M{\Psi}^{-1} $ is an inverse of eigenshape matrix $ \Leftrightarrow $ all eigenvalues
 and eigenshapes are used.
 
 \begin{bbox}[0.96]
     \textbf{Note}: This is not usually so. Normally one would use
     \textbf{reduced modal base}, where only the first \textbf{n} eigenmodes are used. Then
-    $ \mathbf{\Psi}^{-1} $ is written as $ \mathbf{\Psi}^{+} $ and called the
+    $ \M{\Psi}^{-1} $ is written as $ \M{\Psi}^{+} $ and called the
     \textbf{pseudoinverse of mode shape matrix} defined (at least in \textbf{numpy}
     - \textit{numpy.linal.pinv()}) as:\\
 
     \smallskip
-    The pseudo-inverse of a matrix $ \mathbf{A} $, denoted $ \mathbf{A}^{+} $,
+    The pseudo-inverse of a matrix $ \m{A} $, denoted $ \m{A}^{+} $,
     is defined as: “the matrix that ‘solves’ [the least-squares problem]
-    $ \mathbf{A} \mathbf{x} = \mathbf{b} $ ,” i.e., if $ \overline{\mathbf{x}} $
-    is said solution, then $ \mathbf{A}^{+} $ is that matrix such that
-    $ \overline{\mathbf{x}} = \mathbf{A}^{+} \mathbf{b} $.\\
+    $ \m{A} \m{x} = \m{b} $ ,” i.e., if $ \overline{\m{x}} $
+    is said solution, then $ \m{A}^{+} $ is that matrix such that
+    $ \overline{\m{x}} = \m{A}^{+} \m{b} $.\\
 
     \smallskip
-    It can be shown that if $ \mathbf{Q}_1 \mathbf{\Sigma} \mathbf{Q}_2^T = \mathbf{A} $
-    is the singular value decomposition of $ \mathbf{A} $, then
-    $ \mathbf{A}^{+} = \mathbf{Q}_2 \mathbf{\Sigma}^{+} \mathbf{Q}_1^T $, where $ \mathbf{Q}_{1,2} $
-    are orthogonal matrices, $ \mathbf{\Sigma} $  is a diagonal matrix consisting of
-    $ \mathbf{A} $’s so-called singular values, (followed, typically, by zeros),
-    and then $ \mathbf{\Sigma}^{+} $ is simply the diagonal matrix consisting
-    of the reciprocals of $ \mathbf{A} $’s singular values (again, followed
+    It can be shown that if $ \m{Q}_1 \M{\Sigma} \m{Q}_2^T = \m{A} $
+    is the singular value decomposition of $ \m{A} $, then
+    $ \m{A}^{+} = \m{Q}_2 \M{\Sigma}^{+} \m{Q}_1^T $, where $ \m{Q}_{1,2} $
+    are orthogonal matrices, $ \M{\Sigma} $  is a diagonal matrix consisting of
+    $ \m{A} $’s so-called singular values, (followed, typically, by zeros),
+    and then $ \M{\Sigma}^{+} $ is simply the diagonal matrix consisting
+    of the reciprocals of $ \m{A} $’s singular values (again, followed
     by zeros).
 \end{bbox}
 
@@ -3088,18 +3088,18 @@ A rigid freebody relation between \textbf{slave} (dependent) and \textbf{master}
 (independent) DOFs is calculated following the equation:
 
 \begin{eqarray}\label{freebody-master-slave}
-    \mathbf{T}_s &= \mathbf{T}_m + \mathbf{R}_s \times \mathbf{x}\\
-    \mathbf{R}_s &= \mathbf{R}_m
+    \m{T}_s &= \m{T}_m + \m{R}_s \times \m{x}\\
+    \m{R}_s &= \m{R}_m
 \end{eqarray}
 
 where
-$ \mathbf{T} $ is a translations vector
-$ = \left\{ \mathbf{T}_1, \mathbf{T}_2,  \mathbf{T}_3 \right\} $,
-$ \mathbf{R} $ is a rotations vector
-$ = \left\{ \mathbf{R}_1, \mathbf{R}_2,  \mathbf{R}_3 \right\} $,
-$ \mathbf{x} $ is a vector from slave (base) to the master node (tip)
-$ = \left\{ \mathbf{x}_s - \mathbf{x}_m,  \mathbf{y}_s - \mathbf{y}_m,
-\mathbf{z}_s - \mathbf{z}_m \right\} $ and
+$ \m{T} $ is a translations vector
+$ = \left\{ \m{T}_1, \m{T}_2,  \m{T}_3 \right\} $,
+$ \m{R} $ is a rotations vector
+$ = \left\{ \m{R}_1, \m{R}_2,  \m{R}_3 \right\} $,
+$ \m{x} $ is a vector from slave (base) to the master node (tip)
+$ = \left\{ \m{x}_s - \m{x}_m,  \m{y}_s - \m{y}_m,
+\m{z}_s - \m{z}_m \right\} $ and
 $ \times $ is a vector (cross) product.
 
 
@@ -3586,55 +3586,55 @@ the discrete time $ t + \Delta t $ is required, where $ \Delta t $ is
 a suitably chosen time increment. Hence, considering time $ t + \Delta t $:
 
 \begin{equation}\label{implicit-equation}
-    \mathbf{F}^{t + \Delta t} - \mathbf{N}^{t + \Delta t} = \mathbf{0}
+    \m{F}^{t + \Delta t} - \m{N}^{t + \Delta t} = \m{0}
 \end{equation}
 
-Where $ \mathbf{F} $ is the vector of external forces (loads) and $ \mathbf{N} $
+Where $ \m{F} $ is the vector of external forces (loads) and $ \m{N} $
 is the vector of inner forces.
 
-Assume that $ \mathbf{F}^{t + \Delta t} $ is independent of the deformations.
+Assume that $ \m{F}^{t + \Delta t} $ is independent of the deformations.
 Since the solution is known at time $ t $, we can write:
 
 \begin{equation}
-    \mathbf{N}^{t+\Delta t} = \mathbf{N}^t + \Delta \mathbf{N}
+    \m{N}^{t+\Delta t} = \m{N}^t + \Delta \m{N}
 \end{equation}
 
-where $ \Delta \mathbf{N} $ is the increment in nodal point forces corresponding
+where $ \Delta \m{N} $ is the increment in nodal point forces corresponding
 to the increment in element displacements and stresses from time $ t $ to time
 $ t + \Delta t $. This vector can be approximated using a \textbf{tangent stiffness matrix}
-$ \mathbf{K}^t $ which corresponds to the geometric and material conditions
+$ \m{K}^t $ which corresponds to the geometric and material conditions
 at time $ t $,
 
 \begin{equation}\label{internal-forces-approximation}
-    \Delta \mathbf{N} \doteq \mathbf{K}^{t} \Delta \mathbf{u}
+    \Delta \m{N} \doteq \m{K}^{t} \Delta \m{u}
 \end{equation}
 
-where $ \Delta \mathbf{u} $ is a vector of incremental nodal point displacements and
+where $ \Delta \m{u} $ is a vector of incremental nodal point displacements and
 
 \begin{equation}\label{tangent-stiffness-matrix}
-    \mathbf{K}^{t} = \frac{\partial \mathbf{N}^{t}}{\partial \mathbf{u}^{t}}
+    \m{K}^{t} = \frac{\partial \m{N}^{t}}{\partial \m{u}^{t}}
 \end{equation}
 
 Hence, the \textbf{tangent stiffness matrix} corresponds to the derivative of the
-internal element nodal point forces $ \mathbf{N}^{t} $ with respect to the
-nodal point displacements $ \mathbf{u}^{t} $.
+internal element nodal point forces $ \m{N}^{t} $ with respect to the
+nodal point displacements $ \m{u}^{t} $.
 
 Substituting \eqref{internal-forces-approximation} and
 \eqref{tangent-stiffness-matrix} into \eqref{implicit-equation}, we obtain
 
 \begin{equation}\label{iteration-equation}
-    \mathbf{K}^{t} \Delta \mathbf{u} = \mathbf{F}^{t + \Delta t} - \mathbf{N}^{t}
+    \m{K}^{t} \Delta \m{u} = \m{F}^{t + \Delta t} - \m{N}^{t}
 \end{equation}
 
-and solving for $ \mathbf{u}^{\Delta t} $, we can calculate and approximation
+and solving for $ \m{u}^{\Delta t} $, we can calculate and approximation
 to the displacements at time $ t + \Delta t $,
 
 \begin{equation}\label{iteration-displacements}
-    \mathbf{u}^{t + \Delta t} \doteq \mathbf{u}^{t} + \Delta \mathbf{u}
+    \m{u}^{t + \Delta t} \doteq \m{u}^{t} + \Delta \m{u}
 \end{equation}
 
 The exact displacements at time $ t + \Delta t $ are those that correspond to the
-applied loads $ \mathbf{F}^{t + \Delta t} $. We calculate in \eqref{iteration-displacements}
+applied loads $ \m{F}^{t + \Delta t} $. We calculate in \eqref{iteration-displacements}
 only an approximation to these displacements because \eqref{internal-forces-approximation}
 was used.
 
@@ -3657,40 +3657,40 @@ The equations used in \textbf{Newton-Raphson} iteration are, $ for\ i = 1, 2, 3,
 
 \begin{bbox}
     \begin{eqarray}\label{newton-raphson}
-        \mathbf{K}_{i-1}^{t + \Delta t} \Delta \mathbf{u}_i &=
-        \mathbf{F}^{t + \Delta t} - \mathbf{N}_{i - 1}^{t + \Delta t} \\
-        \mathbf{u}_{i}^{t+\Delta t} &=  \mathbf{u}_{i}^{t + \Delta t} +
-        \mathbf{u}_{i-1}^{t+\Delta t} + \Delta \mathbf{u}_i
+        \m{K}_{i-1}^{t + \Delta t} \Delta \m{u}_i &=
+        \m{F}^{t + \Delta t} - \m{N}_{i - 1}^{t + \Delta t} \\
+        \m{u}_{i}^{t+\Delta t} &=  \m{u}_{i}^{t + \Delta t} +
+        \m{u}_{i-1}^{t+\Delta t} + \Delta \m{u}_i
     \end{eqarray}
 \end{bbox}
 
 with the initial conditions:
 
 \begin{eqarray}
-    \mathbf{u}_{0}^{t + \Delta t} &= \mathbf{u}^t \\
-    \mathbf{K}_{0}^{t + \Delta t} &= \mathbf{K}^t \\
-    \mathbf{N}_{0}^{t + \Delta t} &= \mathbf{N}^t \\
+    \m{u}_{0}^{t + \Delta t} &= \m{u}^t \\
+    \m{K}_{0}^{t + \Delta t} &= \m{K}^t \\
+    \m{N}_{0}^{t + \Delta t} &= \m{N}^t \\
 \end{eqarray}
 
 Note that in the first iteration, the relations in \eqref{newton-raphson}
 reduce to the equations \eqref{iteration-equation} and \eqref{iteration-displacements}.
 Then, in subsequent iterations, the latest estimates for the nodal point
 displacements are used to evaluate the corresponding element stresses and
-nodal point forces $ \mathbf{N}_{i-1}^{t + \Delta t} $ and
-\textbf{tangent stiffness matrix} $ \mathbf{K}_{i-1}^{t + \Delta t} $.
+nodal point forces $ \m{N}_{i-1}^{t + \Delta t} $ and
+\textbf{tangent stiffness matrix} $ \m{K}_{i-1}^{t + \Delta t} $.
 
-The out-of-balance load vector $ \mathbf{F}^{t + \Delta t} - \mathbf{N}_{i-1}^{t + \Delta t} $
+The out-of-balance load vector $ \m{F}^{t + \Delta t} - \m{N}_{i-1}^{t + \Delta t} $
 corresponds to a load vector that is not yet balanced by element stress, and
 hence an increment in the nodal point displacement is required. This updating of the
 nodal point displacement in the iteration is continued until out-of-balance loads
 and incremental displacements are small enough.
 
-An important point is that the calculation of $ \mathbf{N}_{i-1}^{t + \Delta t} $
-from $ \mathbf{u}_{i-1}^{t + \Delta t} $ is \textbf{crucial}. Any errors in this
+An important point is that the calculation of $ \m{N}_{i-1}^{t + \Delta t} $
+from $ \m{u}_{i-1}^{t + \Delta t} $ is \textbf{crucial}. Any errors in this
 calculation will, in general, result in an incorrect response prediction.
 
 The correct evaluation of the \textbf{tangent stiffness matrix}
-$ \mathbf{K}_{i-1}^{t + \Delta t} $ is also important. The use of proper
+$ \m{K}_{i-1}^{t + \Delta t} $ is also important. The use of proper
 \textbf{tangent stiffness matrix} may be necessary for convergence and, in general,
 will result in fewer iterations until convergence is reached.
 
@@ -3714,28 +3714,28 @@ The finite element equilibrium requirements amount to finding the solution
 of the equations:
 
 \begin{equation}\label{nr-error}
-    f( \mathbf{u}^* ) = 0
+    f( \m{u}^* ) = 0
 \end{equation}
 
 Where:
 
 \begin{equation}\label{nr-error-expanded}
-    f( \mathbf{u}^* ) = \mathbf{F}^{t + \Delta t} ( \mathbf{u}^* )
-    - \mathbf{N}^{t + \Delta t} ( \mathbf{u}^* )
+    f( \m{u}^* ) = \m{F}^{t + \Delta t} ( \m{u}^* )
+    - \m{N}^{t + \Delta t} ( \m{u}^* )
 \end{equation}
 
 We denote here and in the following the complete array of the solution as
-$ \mathbf{u}^* $ but realize that this vector may also contain variables other
+$ \m{u}^* $ but realize that this vector may also contain variables other
 than displacements, for example, pressure variables and rotations.
 
-Assume that in the iterative solution we have evaluated $ \mathbf{u}_{i-1}^{t + \Delta t} $;
+Assume that in the iterative solution we have evaluated $ \m{u}_{i-1}^{t + \Delta t} $;
 then a Taylor series expansion gives:
 
 \begin{eqarray}\label{newton-raphson-taylor-expansion}
-    f(\mathbf{u}^*) &= f(\mathbf{u}_{i-1}^{t + \Delta t})
-    + \left. \left[\frac{\partial N}{\partial \mathbf{u}} \right]
-        \right|_{\mathbf{u}_{i-1}^{t + \Delta t}}
-        \left( \mathbf{u}^* - \mathbf{u}_{i-1}^{t + \Delta t} \right) \\
+    f(\m{u}^*) &= f(\m{u}_{i-1}^{t + \Delta t})
+    + \left. \left[\frac{\partial N}{\partial \m{u}} \right]
+        \right|_{\m{u}_{i-1}^{t + \Delta t}}
+        \left( \m{u}^* - \m{u}_{i-1}^{t + \Delta t} \right) \\
                     &+ higher\ order\ terms
 \end{eqarray}
 
@@ -3743,11 +3743,11 @@ Substituting from \eqref{nr-error-expanded} into \eqref{newton-raphson-taylor-ex
 and using \eqref{nr-error}, we obtain:
 
 \begin{eqarray}\label{nr-taylor}
-    & \left. \left[ \frac{\partial \mathbf{N}}{\partial \mathbf{u}} \right]
-        \right|_{\mathbf{u}_{i-1}^{t + \Delta t}}
-    \left(\mathbf{u}^* - \mathbf{u}_{i-1}^{t + \Delta t} \right)
+    & \left. \left[ \frac{\partial \m{N}}{\partial \m{u}} \right]
+        \right|_{\m{u}_{i-1}^{t + \Delta t}}
+    \left(\m{u}^* - \m{u}_{i-1}^{t + \Delta t} \right)
     + higher\ order\ terms\\
-    & = \mathbf{F}^{t + \Delta t} - \mathbf{N}_{i-1}^{t + \Delta t}
+    & = \m{F}^{t + \Delta t} - \m{N}_{i-1}^{t + \Delta t}
 \end{eqarray}
 
 where we assumed that the externally applied loads are deformation independent.
@@ -3756,33 +3756,33 @@ Neglecting the higher-order terms in \eqref{nr-taylor}, we can calculate an incr
 in the displacements,
 
 \begin{equation}\label{nr-displacement-increment}
-    \mathbf{K}_{i-1}^{t + \Delta t} \Delta \mathbf{u}_i =
-    \mathbf{F}^{t + \Delta t} - \mathbf{N}_{i-1}^{t + \Delta t}
+    \m{K}_{i-1}^{t + \Delta t} \Delta \m{u}_i =
+    \m{F}^{t + \Delta t} - \m{N}_{i-1}^{t + \Delta t}
 \end{equation}
 
-where $ \mathbf{K}_{i-1}^{t + \Delta t} $ is the current \textbf{tangent stiffness matrix}
+where $ \m{K}_{i-1}^{t + \Delta t} $ is the current \textbf{tangent stiffness matrix}
 
 \begin{equation}
-     \mathbf{K}_{i-1}^{t + \Delta t} =
-     \left. \left[ \frac{\partial \mathbf{N}}{\partial \mathbf{u}} \right]
-        \right|_{\mathbf{u}_{i-1}^{t + \Delta t}}
+     \m{K}_{i-1}^{t + \Delta t} =
+     \left. \left[ \frac{\partial \m{N}}{\partial \m{u}} \right]
+        \right|_{\m{u}_{i-1}^{t + \Delta t}}
 \end{equation}
 
 and the improved displacement solution is:
 
 \begin{equation}\label{nr-displacement}
-    \mathbf{u}_i^{t + \Delta t} =
-    \mathbf{u}_{i-1}^{t + \Delta t} +
-    \Delta \mathbf{u}_{i}
+    \m{u}_i^{t + \Delta t} =
+    \m{u}_{i-1}^{t + \Delta t} +
+    \Delta \m{u}_{i}
 \end{equation}
 
 \textit{The relations in} \eqref{nr-displacement-increment} \textit{and} \eqref{nr-displacement}
 \textit{costitute the Newton-Raphson solution of} \eqref{implicit-equation}.
 Since an incremental analysis is performed with time (or load) steps of size
 $ \Delta t $, the initial conditions in this iteration are
-$ \mathbf{K}_0^{t + \Delta t} = \mathbf{K}^t $,
-$ \mathbf{N}_0^{t + \Delta t} = \mathbf{N}^t $, and
-$ \mathbf{u}_0^{t + \Delta t} = \mathbf{u}^t $.
+$ \m{K}_0^{t + \Delta t} = \m{K}^t $,
+$ \m{N}_0^{t + \Delta t} = \m{N}^t $, and
+$ \m{u}_0^{t + \Delta t} = \m{u}^t $.
 The iteration is continued \textbf{until appropriate convergence criteria are satisfied.}
 
 A characteristic of this iteration is that a new tangent stiffness matrix is
@@ -3793,8 +3793,8 @@ to as the \textbf{full Newton-Raphson method}.
     \centering
     \includegraphics[width=0.60\textwidth]{img/full_newton_raphson.png}
     \caption{Newton-Raphson iteration in solution of SDOF system.
-    $ \mathbf{R} $ is load increment, $ \mathbf{F} $ are internal forces,
-    $ \mathbf{u} $ are displacements.}
+    $ \m{R} $ is load increment, $ \m{F} $ are internal forces,
+    $ \m{u} $ are displacements.}
     \label{fig:full-newton-raphson-png}
 \end{figure}
 
@@ -3820,35 +3820,35 @@ The static equilibrium equation:
 
 \begin{eqarray}
     \begin{bmatrix}
-        \mathbf{K}_{mm} & \mathbf{K}_{ms} \\
-        \mathbf{K}_{sm} & \mathbf{K}_{ss}
+        \m{K}_{mm} & \m{K}_{ms} \\
+        \m{K}_{sm} & \m{K}_{ss}
     \end{bmatrix}
     \begin{bmatrix}
-        \mathbf{u}_m \\
-        \mathbf{u}_s
+        \m{u}_m \\
+        \m{u}_s
     \end{bmatrix} &=
     \begin{bmatrix}
-        \mathbf{f}_m \\
-        \mathbf{f}_s
+        \m{f}_m \\
+        \m{f}_s
     \end{bmatrix} \\
-    \mathbf{K}_{mm} \mathbf{u}_m + \mathbf{K}_{ms} \mathbf{u}_s &= \mathbf{f}_m \\
-    \mathbf{K}_{sm} \mathbf{u}_m + \mathbf{K}_{ss} \mathbf{u}_s &= \mathbf{f}_s
+    \m{K}_{mm} \m{u}_m + \m{K}_{ms} \m{u}_s &= \m{f}_m \\
+    \m{K}_{sm} \m{u}_m + \m{K}_{ss} \m{u}_s &= \m{f}_s
 \end{eqarray}
 
 Where $ m $ denotes the \textbf{master} DOFs and $ s $ the \textbf{slave} DOFs.
 Stating that $ s $ section of the problem DOFs is unloaded, we can
-write that $ \mathbf{f}_s = \mathbf{0} $. Then the slave DOFs are expressed
+write that $ \m{f}_s = \m{0} $. Then the slave DOFs are expressed
 by the following equation:
 
 \begin{equation}
-    \mathbf{K}_{sm} \mathbf{u}_m + \mathbf{K}_{ss} \mathbf{u}_s = \mathbf{0}
+    \m{K}_{sm} \m{u}_m + \m{K}_{ss} \m{u}_s = \m{0}
 \end{equation}
 
-Solving the above equation in termos of the independent (master) DOFs leads to
+Solving the above equation in terms of the independent (master) DOFs leads to
 the following dependency relations:
 
 \begin{equation}
-    \mathbf{u}_s = -\mathbf{K}_{ss}^{-1} \mathbf{K}_{sm} \mathbf{u}_m
+    \m{u}_s = -\m{K}_{ss}^{-1} \m{K}_{sm} \m{u}_m
 \end{equation}
 
 Substituting the dependency relations to the upper (master) partition of the static
@@ -3856,8 +3856,8 @@ equilibrium problem condenses away the slave DOFs, leading to the following redu
 system of linear equations:
 
 \begin{equation}
-    \left(\mathbf{K}_{mm} - \mathbf{K}_{ms} \mathbf{K}_{ss}^{-1} \mathbf{K}_{sm} \right)
-    \mathbf{u}_m = \mathbf{f}_m
+    \left(\m{K}_{mm} - \m{K}_{ms} \m{K}_{ss}^{-1} \m{K}_{sm} \right)
+    \m{u}_m = \m{f}_m
 \end{equation}
 
 The above system of linear equations is equivalent to the original problem, but expressed
@@ -3871,32 +3871,32 @@ the full space is expressed as:
 
 \begin{equation}
     \begin{bmatrix}
-        \mathbf{u}_m \\
-        \mathbf{u}_s
+        \m{u}_m \\
+        \m{u}_s
     \end{bmatrix} =
     \begin{bmatrix}
-        \mathbf{I} \\
-        -\mathbf{K}_{ss}^{-1} \mathbf{K}_{sm}
+        \m{I} \\
+        -\m{K}_{ss}^{-1} \m{K}_{sm}
     \end{bmatrix}
-    \mathbf{u}_m = \mathbf{T}_G \mathbf{u}_m
+    \m{u}_m = \m{T}_G \m{u}_m
 \end{equation}
 
-where $ \mathbf{T}_G $ represents the \textbf{Guyan} reduction \textit{transformation matrix}.
+where $ \m{T}_G $ represents the \textbf{Guyan} reduction \textit{transformation matrix}.
 Thus, the reduced problem is represented as:
 
 \begin{equation}
-    \mathbf{K}_G \mathbf{u}_m = \mathbf{f}_m
+    \m{K}_G \m{u}_m = \m{f}_m
 \end{equation}
 
-In the above equation, $ \mathbf{K}_G $ represents the reduced system of linear equations
+In the above equation, $ \m{K}_G $ represents the reduced system of linear equations
 that's obtained by applying the \textbf{Guyan reduction} transformation on the
 full system, which is expressed as:
 
 \begin{equation}
-    \mathbf{K}_G = \mathbf{T}_G^T \mathbf{K} \mathbf{T}_G
+    \m{K}_G = \m{T}_G^T \m{K} \m{T}_G
 \end{equation}
 
-where $ \mathbf{T}_G $ has the dimension of $ n_{DOF} \times n_m $.
+where $ \m{T}_G $ has the dimension of $ n_{DOF} \times n_m $.
 
 
 
@@ -3909,13 +3909,13 @@ where $ \mathbf{T}_G $ has the dimension of $ n_{DOF} \times n_m $.
 \textbf{The inversion formula for 3x3 matrix:}
 
 \begin{eqarray}
-    \mathbf{A} &=
+    \m{A} &=
     \begin{bmatrix}
         a_{11} & a_{12} & a_{13}\\
         a_{21} & a_{22} & a_{23}\\
         a_{31} & a_{32} & a_{33}
     \end{bmatrix}\\
-    \mathbf{A}^{-1} &= \frac{1}{\vert \mathbf{A} \vert}
+    \m{A}^{-1} &= \frac{1}{\vert \m{A} \vert}
     \begin{bmatrix}
         A_{11} & A_{12} & A_{13}\\
         A_{21} & A_{22} & A_{23}\\
@@ -4407,10 +4407,10 @@ import numpy as np
 gp, gw = np.polynomial.legendre.leggauss(3)
         \end{python}
 
-    \item Generate the shape functions $ \mathbf{N}_n^e $ in natural coordinates
+    \item Generate the shape functions $ \m{N}_n^e $ in natural coordinates
         based on the number of Gauss points, dimension of the element and its domain.
 
-        The $ \mathbf{N}_n^e $ matrix has the dimensions of:
+        The $ \m{N}_n^e $ matrix has the dimensions of:
         \begin{itemize}
             \item number of integration points = number of rows
             \item number of shape functions = number of columns
@@ -4419,7 +4419,7 @@ gp, gw = np.polynomial.legendre.leggauss(3)
         Therefore:
 
         \begin{equation}
-            \mathbf{N}_n^e = \begin{bmatrix}
+            \m{N}_n^e = \begin{bmatrix}
                 N_{1,1}^e & \dots & N_{n,1}^e\\
                 \vdots & \vdots & \vdots\\
                 N_{1,m}^e & \dots & N_{n,m}^e
@@ -4430,8 +4430,8 @@ gp, gw = np.polynomial.legendre.leggauss(3)
 
     \item Transform the shape functions from natural coordinates to global coordinates
         \begin{eqarray}
-            \mathbf{N}_g^e &= \mathbf{N}_n^e \mathbf{x}^e\\
-            \mathbf{N}_g^e &= \begin{bmatrix}
+            \m{N}_g^e &= \m{N}_n^e \m{x}^e\\
+            \m{N}_g^e &= \begin{bmatrix}
                 N_{1,1}^e(\xi) & \dots & N_{n,1}^e(\xi)\\
                 \vdots & \vdots & \vdots\\
                 N_{1,m}^e(\xi) & \dots & N_{n,m}^e(\xi)
@@ -4443,7 +4443,7 @@ gp, gw = np.polynomial.legendre.leggauss(3)
             \end{bmatrix}
         \end{eqarray}
 
-        The $ \mathbf{x}^e $ matrix is a matrix of global coordinates of the element nodes.
+        The $ \m{x}^e $ matrix is a matrix of global coordinates of the element nodes.
 
         The resulting matrix has the dimension of:
         \begin{itemize}
@@ -4451,7 +4451,7 @@ gp, gw = np.polynomial.legendre.leggauss(3)
             \item number of coordinates = number of columns (3D = 3, 2D = 2)
         \end{itemize}
 
-    \item Generate the shape functions derivatives $ \mathbf{B}_n^e $
+    \item Generate the shape functions derivatives $ \m{B}_n^e $
         in natural coordinates
 
         The shape functions derivatives matrix has 3 dimensions being
@@ -4460,7 +4460,7 @@ gp, gw = np.polynomial.legendre.leggauss(3)
 
     \item Create the Matrix of Jacobians from the shape functions derivatives:
         \begin{equation}
-            \mathbf{J} = \mathbf{B}_n^e \mathbf{x}^e
+            \m{J} = \m{B}_n^e \m{x}^e
         \end{equation}
 
         The Matrix of Jacobians has the dimension of \textit{number of integration points}
@@ -4470,8 +4470,8 @@ gp, gw = np.polynomial.legendre.leggauss(3)
 
     \item Get the Matrix of Jacobian determinants and an inverse Jacobian:
         \begin{equation}
-            \mathbf{J}^{-1}\\
-            \mathbf{J}_d = det \mathbf{J}
+            \m{J}^{-1}\\
+            \m{J}_d = det \m{J}
         \end{equation}
 
         Example:
@@ -4488,68 +4488,68 @@ i_jacobi = np.linalg.inv(jacobi)
     \item Transform the shape function derviatives from natural coordinates to
         global coordinates
         \begin{equation}
-            \mathbf{B}_g^e = \mathbf{J}^{-1} \mathbf{B}_n^e
+            \m{B}_g^e = \m{J}^{-1} \m{B}_n^e
         \end{equation}
 
-    \item Create the Material Stiffness matrix $ \mathbf{C} $
+    \item Create the Material Stiffness matrix $ \m{C} $
 
     \item Finally for each integration point:
 
         3D:
         \begin{eqarray}
-            \mathbf{B}_{i,x}^e &= \textbf{B}_g(i, 0) \\
-            \mathbf{B}_{i,y}^e &= \textbf{B}_g(i, 1) \\
-            \mathbf{B}_{i,z}^e &= \textbf{B}_g(i, 2)\\
+            \m{B}_{i,x}^e &= \m{B}_g(i, 0) \\
+            \m{B}_{i,y}^e &= \m{B}_g(i, 1) \\
+            \m{B}_{i,z}^e &= \m{B}_g(i, 2)\\
         \end{eqarray}
 
-        where $ \mathbf{B}_{i,x}^e $,  $ \mathbf{B}_{i,y}^e $ and  $ \mathbf{B}_{i,z}^e $
+        where $ \m{B}_{i,x}^e $,  $ \m{B}_{i,y}^e $ and  $ \m{B}_{i,z}^e $
         are vectors of legth = \textit{number of shape functions}
 
-        Then matrix $ \mathbf{B} $ is:
+        Then matrix $ \m{B} $ is:
 
         \begin{equation}
-            \mathbf{B}_i = \begin{bmatrix}
-                \textbf{B}_{i,x}^e & \mathbf{0} & \mathbf{0}\\
-                \mathbf{0} & \textbf{B}_{i,y}^e & \mathbf{0}\\
-                \mathbf{0} & \mathbf{0} & \textbf{B}_{i,z}^e \\
-                \textbf{B}_{i,y}^e & \textbf{B}_{i,x}^e & \mathbf{0}\\
-                \mathbf{0} & \textbf{B}_{i,z}^e & \textbf{B}_{i,y}^e \\
-                \textbf{B}_{i,z}^e & \mathbf{0} & \textbf{B}_{i,x}^e
+            \m{B}_i = \begin{bmatrix}
+                \m{B}_{i,x}^e & \m{0} & \m{0}\\
+                \m{0} & \m{B}_{i,y}^e & \m{0}\\
+                \m{0} & \m{0} & \m{B}_{i,z}^e \\
+                \m{B}_{i,y}^e & \m{B}_{i,x}^e & \m{0}\\
+                \m{0} & \m{B}_{i,z}^e & \m{B}_{i,y}^e \\
+                \m{B}_{i,z}^e & \m{0} & \m{B}_{i,x}^e
             \end{bmatrix}
         \end{equation}
 
-        and matrix $ \mathbf{N} $ is:
+        and matrix $ \m{N} $ is:
 
         \begin{equation}
-            \mathbf{N}_i = \begin{bmatrix}
-                \textbf{N}_{n,i}^e & \mathbf{0} & \mathbf{0}\\
-                \mathbf{0} & \textbf{N}_{n,i}^e & \mathbf{0}\\
-                \mathbf{0} & \mathbf{0} & \textbf{N}_{n,i}^e
+            \m{N}_i = \begin{bmatrix}
+                \m{N}_{n,i}^e & \m{0} & \m{0}\\
+                \m{0} & \m{N}_{n,i}^e & \m{0}\\
+                \m{0} & \m{0} & \m{N}_{n,i}^e
             \end{bmatrix}
         \end{equation}
 
-        where $ \mathbf{0} $ is a zero vector of length = \textit{number of shape functions}
-        and $ \mathbf{N}_{n,i}^e $ is a vector of shape functions in natural coordinates
+        where $ \m{0} $ is a zero vector of length = \textit{number of shape functions}
+        and $ \m{N}_{n,i}^e $ is a vector of shape functions in natural coordinates
         pertaining to the $i$-th integration point.
 
         Then:
 
         \begin{enumerate}
             \item \begin{equation}
-                    \mathbf{K}_i^e = \mathbf{B}_i^T \mathbf{C} \mathbf{B}_i \ det \mathbf{J}_i
+                    \m{K}_i^e = \m{B}_i^T \m{C} \m{B}_i \ det \m{J}_i
                     w_i
                   \end{equation}
 
             \item \begin{equation}
-                    \mathbf{M}_i^e = \rho \mathbf{N}_i^T \mathbf{N}_i \ det \mathbf{J}_i
+                    \m{M}_i^e = \rho \m{N}_i^T \m{N}_i \ det \m{J}_i
                     w_i
                   \end{equation}
             \item \begin{equation}
-                    \mathbf{F}_i^e = \mathbf{N}_i^T \mathbf{F} \ det \mathbf{J}_i
+                    \m{F}_i^e = \m{N}_i^T \m{F} \ det \m{J}_i
                     w_i
                   \end{equation}
 
-                  where $ \mathbf{F} = \begin{bmatrix}f_x \\ f_y \\ f_z\end{bmatrix} $
+                  where $ \m{F} = \begin{bmatrix}f_x \\ f_y \\ f_z\end{bmatrix} $
         \end{enumerate}
 
         where $ w_i $ is the multiple of gaussian weights for the respective
@@ -4559,15 +4559,15 @@ i_jacobi = np.linalg.inv(jacobi)
     \item Finally:
         \begin{enumerate}
             \item \begin{equation}
-                    \mathbf{K}^e = \sum_{i=1}^n \mathbf{K}_i^e
+                    \m{K}^e = \sum_{i=1}^n \m{K}_i^e
                 \end{equation}
 
             \item \begin{equation}
-                    \mathbf{M}^e = \sum_{i=1}^n \mathbf{M}_i^e
+                    \m{M}^e = \sum_{i=1}^n \m{M}_i^e
                 \end{equation}
 
             \item \begin{equation}
-                    \mathbf{F}^e = \sum_{i=1}^n \mathbf{F}_i^e
+                    \m{F}^e = \sum_{i=1}^n \m{F}_i^e
                 \end{equation}
         \end{enumerate}
 \end{enumerate}
@@ -4711,24 +4711,24 @@ coordinates:
 
 \begin{eqarray}
     \frac{\partial N_1^e}{\partial\xi} &= -\frac{1}{8} \left(1-\eta\right) \left(1-\mu\right)\\
-    \frac{\partial N_2^e}{\partial\xi} &= \frac{1}{8} \left(1-\eta\right) \left(1-\mu\right)\\
-    \frac{\partial N_3^e}{\partial\xi} &= \frac{1}{8} \left(1+\eta\right) \left(1-\mu\right)\\
+    \frac{\partial N_2^e}{\partial\xi} &= \phantom{-}\frac{1}{8} \left(1-\eta\right) \left(1-\mu\right)\\
+    \frac{\partial N_3^e}{\partial\xi} &= \phantom{-}\frac{1}{8} \left(1+\eta\right) \left(1-\mu\right)\\
     \frac{\partial N_4^e}{\partial\xi} &= -\frac{1}{8} \left(1+\eta\right) \left(1-\mu\right)\\
     \frac{\partial N_5^e}{\partial\xi} &= -\frac{1}{8} \left(1-\eta\right) \left(1+\mu\right)\\
-    \frac{\partial N_6^e}{\partial\xi} &= \frac{1}{8} \left(1-\eta\right) \left(1+\mu\right)\\
-    \frac{\partial N_7^e}{\partial\xi} &= \frac{1}{8} \left(1+\eta\right) \left(1+\mu\right)\\
+    \frac{\partial N_6^e}{\partial\xi} &= \phantom{-}\frac{1}{8} \left(1-\eta\right) \left(1+\mu\right)\\
+    \frac{\partial N_7^e}{\partial\xi} &= \phantom{-}\frac{1}{8} \left(1+\eta\right) \left(1+\mu\right)\\
     \frac{\partial N_8^e}{\partial\xi} &= -\frac{1}{8} \left(1+\eta\right) \left(1+\mu\right)
 \end{eqarray}
 
 \begin{eqarray}
     \frac{\partial N_1^e}{\partial\eta} &= -\frac{1}{8} \left(1-\xi\right) \left(1-\mu\right)\\
     \frac{\partial N_2^e}{\partial\eta} &= -\frac{1}{8} \left(1+\xi\right) \left(1-\mu\right)\\
-    \frac{\partial N_3^e}{\partial\eta} &= \frac{1}{8} \left(1+\xi\right) \left(1-\mu\right)\\
-    \frac{\partial N_4^e}{\partial\eta} &= \frac{1}{8} \left(1-\xi\right) \left(1-\mu\right)\\
+    \frac{\partial N_3^e}{\partial\eta} &= \phantom{-}\frac{1}{8} \left(1+\xi\right) \left(1-\mu\right)\\
+    \frac{\partial N_4^e}{\partial\eta} &= \phantom{-}\frac{1}{8} \left(1-\xi\right) \left(1-\mu\right)\\
     \frac{\partial N_5^e}{\partial\eta} &= -\frac{1}{8} \left(1-\xi\right) \left(1+\mu\right)\\
     \frac{\partial N_6^e}{\partial\eta} &= -\frac{1}{8} \left(1+\xi\right) \left(1+\mu\right)\\
-    \frac{\partial N_7^e}{\partial\eta} &= \frac{1}{8} \left(1+\xi\right) \left(1+\mu\right)\\
-    \frac{\partial N_8^e}{\partial\eta} &= \frac{1}{8} \left(1-\xi\right) \left(1+\mu\right)
+    \frac{\partial N_7^e}{\partial\eta} &= \phantom{-}\frac{1}{8} \left(1+\xi\right) \left(1+\mu\right)\\
+    \frac{\partial N_8^e}{\partial\eta} &= \phantom{-}\frac{1}{8} \left(1-\xi\right) \left(1+\mu\right)
 \end{eqarray}
 
 \begin{eqarray}
@@ -4736,10 +4736,10 @@ coordinates:
     \frac{\partial N_2^e}{\partial\mu} &= -\frac{1}{8} \left(1+\xi\right) \left(1-\eta\right)\\
     \frac{\partial N_3^e}{\partial\mu} &= -\frac{1}{8} \left(1+\xi\right) \left(1+\eta\right)\\
     \frac{\partial N_4^e}{\partial\mu} &= -\frac{1}{8} \left(1-\xi\right) \left(1+\eta\right)\\
-    \frac{\partial N_5^e}{\partial\mu} &= \frac{1}{8} \left(1-\xi\right) \left(1-\eta\right)\\
-    \frac{\partial N_6^e}{\partial\mu} &= \frac{1}{8} \left(1+\xi\right) \left(1-\eta\right)\\
-    \frac{\partial N_7^e}{\partial\mu} &= \frac{1}{8} \left(1+\xi\right) \left(1+\eta\right)\\
-    \frac{\partial N_8^e}{\partial\mu} &= \frac{1}{8} \left(1-\xi\right) \left(1+\eta\right)
+    \frac{\partial N_5^e}{\partial\mu} &= \phantom{-}\frac{1}{8} \left(1-\xi\right) \left(1-\eta\right)\\
+    \frac{\partial N_6^e}{\partial\mu} &= \phantom{-}\frac{1}{8} \left(1+\xi\right) \left(1-\eta\right)\\
+    \frac{\partial N_7^e}{\partial\mu} &= \phantom{-}\frac{1}{8} \left(1+\xi\right) \left(1+\eta\right)\\
+    \frac{\partial N_8^e}{\partial\mu} &= \phantom{-}\frac{1}{8} \left(1-\xi\right) \left(1+\eta\right)
 \end{eqarray}
 
 \begin{bbox}
@@ -4804,9 +4804,9 @@ In matrix form:
     \end{bmatrix}
 \end{eqarray}
 
-The $ 3 \times 3 $ matrix above is $ \mathbf{J}^{-1} $, the inverse of:
+The $ 3 \times 3 $ matrix above is $ \m{J}^{-1} $, the inverse of:
 \begin{eqarray}
-    \mathbf{J} = \frac{\partial \left( x, y, z \right)}{\partial \left( \xi, \eta, \mu \right)}
+    \m{J} = \frac{\partial \left( x, y, z \right)}{\partial \left( \xi, \eta, \mu \right)}
     = \begin{bmatrix}
         \frac{\partial x}{\partial \xi} &
         \frac{\partial y}{\partial \xi} &
@@ -4820,22 +4820,22 @@ The $ 3 \times 3 $ matrix above is $ \mathbf{J}^{-1} $, the inverse of:
     \end{bmatrix}
 \end{eqarray}
 
-Matrix $ \mathbf{J} $ is called the \textit{Jacobian matrix} of $ (x, y, z) $
+Matrix $ \m{J} $ is called the \textit{Jacobian matrix} of $ (x, y, z) $
 with respect to $ (\xi, \eta, \mu) $. In the finite element literature, matrices
-$ \mathbf{J} $ and $ \mathbf{J}^{-1} $ are called simply the \textit{Jacobian} and
+$ \m{J} $ and $ \m{J}^{-1} $ are called simply the \textit{Jacobian} and
 \textit{inverse Jacobian}, respectively, although such a short name us sometimes
 ambiguous. The notation
 
 \begin{eqarray}
-    \mathbf{J} &=
+    \m{J} &=
     \frac{\partial \left(x, y, z \right)}{\partial \left(\xi, \eta, \mu \right)}\\
-    \mathbf{J}^{-1} &=
+    \m{J}^{-1} &=
     \frac{\partial \left(\xi, \eta, \mu \right)}{\partial \left(x, y, z \right)}
 \end{eqarray}
 
 is standard in multivariable calculus and suggests that the Jacobian may be viewed as
 a generalisation of the ordinary derivativem to which it reduces for a scalar
-function $ \mathbf{x} = x(\xi) $.
+function $ \m{x} = x(\xi) $.
 
 
 
@@ -4857,10 +4857,10 @@ in which $ n $ denotes the number of element nodes.
 
 
 Differentiating these relations with respect to the hexahedron coordinates we construct
-the matrix $ \mathbf{J} $ as follows:
+the matrix $ \m{J} $ as follows:
 
 \begin{equation}
-    \mathbf{J} =
+    \m{J} =
     \begin{bmatrix}
         x_i \frac{\partial N_i^e}{\partial \xi} &
         y_i \frac{\partial N_i^e}{\partial \xi} &
@@ -4876,7 +4876,7 @@ the matrix $ \mathbf{J} $ as follows:
 
 or:
 \begin{equation}
-    \mathbf{J}_i =
+    \m{J}_i =
     \begin{bmatrix}
         \frac{\partial N_1^e}{\partial \xi} &
         \frac{\partial N_2^e}{\partial \xi} &
@@ -4900,18 +4900,18 @@ or:
 \end{equation}
 
 
-Given a point of hexahedron coordinates $ ( \xi, \eta, \mu ) $ the Jacobian $ \mathbf{J} $
+Given a point of hexahedron coordinates $ ( \xi, \eta, \mu ) $ the Jacobian $ \m{J} $
 can be easilly formed using the above formula, and numerically inverted to form
-$ \mathbf{J}^{-1} $.
+$ \m{J}^{-1} $.
 
 
 \subsubsection{The Strain-Displacement Matrix}
 
-Having obtained the shape function derivatives, the matrix $ \mathbf{B} $ for hexahedron
+Having obtained the shape function derivatives, the matrix $ \m{B} $ for hexahedron
 element displays the usual structure for 3D elements:
 
 \begin{equation}
-    \mathbf{B} = \mathbf{D}\mathbf{\Phi} =
+    \m{B} = \m{D}\m{\Phi} =
     \begin{bmatrix}
         \frac{\partial}{\partial x} & 0 & 0 \\
         0 & \frac{\partial}{\partial y} & 0 \\
@@ -4921,26 +4921,26 @@ element displays the usual structure for 3D elements:
         \frac{\partial}{\partial z} & 0 & \frac{\partial}{\partial x}
     \end{bmatrix}
     \begin{bmatrix}
-        \mathbf{q} & \mathbf{0} & \mathbf{0} \\
-        \mathbf{0} & \mathbf{q} & \mathbf{0} \\
-        \mathbf{0} & \mathbf{0} & \mathbf{q}
+        \m{q} & \m{0} & \m{0} \\
+        \m{0} & \m{q} & \m{0} \\
+        \m{0} & \m{0} & \m{q}
     \end{bmatrix} =
     \begin{bmatrix}
-        \mathbf{q}_x & \mathbf{0} & \mathbf{0} \\
-        \mathbf{0} & \mathbf{q}_y & \mathbf{0} \\
-        \mathbf{0} & \mathbf{0} & \mathbf{q}_z \\
-        \mathbf{q}_y & \mathbf{q}_x & \mathbf{0} \\
-        \mathbf{0} & \mathbf{q}_z & \mathbf{q}_y \\
-        \mathbf{q}_z & \mathbf{0} & \mathbf{q}_x
+        \m{q}_x & \m{0} & \m{0} \\
+        \m{0} & \m{q}_y & \m{0} \\
+        \m{0} & \m{0} & \m{q}_z \\
+        \m{q}_y & \m{q}_x & \m{0} \\
+        \m{0} & \m{q}_z & \m{q}_y \\
+        \m{q}_z & \m{0} & \m{q}_x
     \end{bmatrix}
 \end{equation}
 
 where:
 \begin{eqarray}
-    \mathbf{q} &= \begin{bmatrix} N_1^e & \dots & N_n^e \end{bmatrix}\\
-    \mathbf{q}_x &= \begin{bmatrix} \frac{\partial N_1^e}{\partial x} & \dots & \frac{\partial N_n^e}{\partial x} \end{bmatrix}\\
-    \mathbf{q}_y &= \begin{bmatrix} \frac{\partial N_1^e}{\partial y} & \dots & \frac{\partial N_n^e}{\partial y} \end{bmatrix}\\
-    \mathbf{q}_z &= \begin{bmatrix} \frac{\partial N_1^e}{\partial z} & \dots & \frac{\partial N_n^e}{\partial z} \end{bmatrix}
+    \m{q} &= \begin{bmatrix} N_1^e & \dots & N_n^e \end{bmatrix}\\
+    \m{q}_x &= \begin{bmatrix} \frac{\partial N_1^e}{\partial x} & \dots & \frac{\partial N_n^e}{\partial x} \end{bmatrix}\\
+    \m{q}_y &= \begin{bmatrix} \frac{\partial N_1^e}{\partial y} & \dots & \frac{\partial N_n^e}{\partial y} \end{bmatrix}\\
+    \m{q}_z &= \begin{bmatrix} \frac{\partial N_1^e}{\partial z} & \dots & \frac{\partial N_n^e}{\partial z} \end{bmatrix}
 \end{eqarray}
 
 are row vectors of length $ n $, $ n $ being the number of nodes in the element.
@@ -4952,25 +4952,25 @@ are row vectors of length $ n $, $ n $ being the number of nodes in the element.
 The element stiffness Matrix is given by:
 
 \begin{equation}
-    \mathbf{K}^e = \int_{V^e} \mathbf{B}^T \mathbf{E} \mathbf{B} dV^e
+    \m{K}^e = \int_{V^e} \m{B}^T \m{E} \m{B} dV^e
 \end{equation}
 
 As in two-dimensional case, this is replaced by a numerical integration formula which
 now involves a triple loop over conventional Gauss quadrature rules. Assuming that
-the stress-strain matrix $ \mathbf{E} $ is constant over the element,
+the stress-strain matrix $ \m{E} $ is constant over the element,
 
 \begin{equation}
-    \mathbf{K}^e = \sum_{i=1}^{p_1} \sum_{j=1}^{p_2} \sum_{k=1}^{p_3}
-    w_i w_j w_k \mathbf{B}_{ijk}^T \mathbf{E} \mathbf{B}_{ijk} \mathbf{J}_{ijk}
+    \m{K}^e = \sum_{i=1}^{p_1} \sum_{j=1}^{p_2} \sum_{k=1}^{p_3}
+    w_i w_j w_k \m{B}_{ijk}^T \m{E} \m{B}_{ijk} \m{J}_{ijk}
 \end{equation}
 
 Here $ p_1 $, $ p_2 $ and $ p_3 $ are the number of Gauss points in the $ \xi $,
-$ \eta $ and $ \mu $ direction, respectively, while $ \mathbf{B}_{ijk} $
-and $ \mathbf{J}_{ijk} $ are abbreviations for:
+$ \eta $ and $ \mu $ direction, respectively, while $ \m{B}_{ijk} $
+and $ \m{J}_{ijk} $ are abbreviations for:
 
 \begin{eqarray}
-    \mathbf{B}_{ijk} &= \mathbf{B} \left(\xi_i, \eta_i, \mu_i\right) \\
-    \mathbf{J}_{ijk} &= det \mathbf{J} \left(\xi_i, \eta_i, \mu_i\right)
+    \m{B}_{ijk} &= \m{B} \left(\xi_i, \eta_i, \mu_i\right) \\
+    \m{J}_{ijk} &= det \m{J} \left(\xi_i, \eta_i, \mu_i\right)
 \end{eqarray}
 
 Usually the number of integration points is taken the same in all directions:
