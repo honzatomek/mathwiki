@@ -90,6 +90,31 @@
     \end{center}
 }
 
+\newcount\myloopcounter
+\newcommand{\repeatit}[3][10]{%
+    \myloopcounter1% initialize the loop counter
+    \loop\ifnum\myloopcounter < #1
+    #2#3%
+    \advance\myloopcounter by 1%
+    \repeat% start again
+    #2%
+}
+
+\newenvironment{qbox}
+{
+%\centering{\huge{?}}
+\begin{center}
+    \repeatit[44]{?}{\ }
+\end{center}
+%\hrule
+}
+{
+%\hrule
+\begin{center}
+    \repeatit[44]{?`}{\ }
+\end{center}
+}
+
 \newenvironment{eqarray}
 {
     \begin{eqnarray}
@@ -508,19 +533,19 @@ It can be read as:
 \end{eqarray}
 
 Or:
-\begin{equation}
+\begin{equation}\label{rbe2-coefficients}
     \m{u}_s = \m{\closure{T}} \m{u}_m
 \end{equation}
 
 This equation should be then expanded to all DOFs, where in $ \m{T} $ the
-slave DOFs are missing and the DOFs that do not take part in RBEs have $ 1 $ on
+slave DOFs columns are missing and the DOFs that do not take part in RBEs have $ 1 $ on
 the diagonal. The resulting  matrix should have the same number of rows as
 the master stiffness matrix.
 
 Then the master stiffness equation is modified:
-\begin{eqarray}
-    \m{\hat{f}} &= \m{T}^T \m{f} \\
+\begin{eqarray}\label{rbe2-master-slave-modified}
     \m{\hat{K}} &= \m{T}^T \m{K} \m{T} \\
+    \m{\hat{f}} &= \m{T}^T \m{f} \\
     \m{\hat{K}} \m{\hat{u}} &= \m{\hat{f}} \\
 \end{eqarray}
 
@@ -544,53 +569,182 @@ equations such that:
     \end{bmatrix}
 \end{equation}
 
-This means:
-\begin{eqarray}\label{rbe2-master-slave-full-partitioned}
-    \m{K}_{uu} \m{u}_u + \m{K}_{um} \m{u}_m + \m{K}_{us} \m{u}_s &= \m{f}_u \\
-    \m{K}_{um}^T \m{u}_u + \m{K}_{mm} \m{u}_m + \m{K}_{ms} \m{u}_s &= \m{f}_m \\
-    \m{K}_{us}^T \m{u}_u + \m{K}_{ms}^T \m{u}_m + \m{K}_{ss} \m{u}_s &= \m{f}_s \\
-\end{eqarray}
+\begin{qbox}
+    Based on \eqref{rbe2-master-slave-modified} we could probably partition
+    the matrices as:
+    \begin{equation}\label{rbe2-partition-T-u-m-s}
+        \begin{matrix}
+            \begin{matrix}
+                \begin{matrix}
+                    \ 
+                \end{matrix} \\
+                \left. \begin{matrix}
+                    u \\
+                    m \\
+                    s \\
+                \end{matrix} \right|
+            \end{matrix}
+            & \begin{matrix}
+                \begin{matrix}
+                    u & m \\
+                    \hline
+                \end{matrix} \\
+                \begin{bmatrix}
+                    \m{I} & \m{0} \\
+                    \m{0} & \m{I} \\
+                    \m{0} & \m{\closure{T}} \\
+                \end{bmatrix} \\
+            \end{matrix}
+        \end{matrix}
+    \end{equation}
 
-Setting $ \m{f}_s = \m{0} $ we get:
-\begin{equation}\label{rbe2-slave-force}
-    \m{K}_{us}^T \m{u}_u + \m{K}_{ms}^T \m{u}_m + \m{K}_{ss} \m{u}_s = \m{0}
-\end{equation}
+    If we expand \eqref{rbe2-coefficients} and partition the matrices
+    based on \eqref{rbe2-partition-T-u-m-s} into independent or
+    \textbf{unconstrained}, \textbf{master}
+    and \textbf{slave} nodes, then the equation:
+    \begin{equation}
+        \m{u} = \m{T} \m{\hat{u}}
+    \end{equation}
 
-The \textbf{master-slave} relation can be written as:
-\begin{equation}\label{rbe2-master-slave-relation}
-    \m{u}_s = \m{\closure{T}} \m{u}_m + \m{g}
-\end{equation}
+    becomes:
+    \begin{equation}
+        \begin{bmatrix}
+            \m{u}_u  \\
+            \m{u}_m \\
+            \m{u}_s \\
+        \end{bmatrix}
+        = \begin{bmatrix}
+            \m{I} & \m{0} \\
+            \m{0} & \m{I} \\
+            \m{0} & \m{\closure{T}} \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            \m{u}_u \\
+            \m{u}_m \\
+        \end{bmatrix}
+    \end{equation}
 
-Substituting \eqref{rbe2-master-slave-relation} and \eqref{rbe2-slave-force}
-into \eqref{rbe2-master-slave-full-partitioned} yields:
-\begin{eqarray}\label{rbe2-master-slave-substituted-partitioned}
-    \m{K}_{uu} \m{u}_u + \m{K}_{um} \m{u}_m + \m{K}_{us} \m{\closure{T}} \m{u}_m 
-    + \m{K}_{us} \m{g} &= \m{f}_u \\
-    \m{K}_{um}^T \m{u}_u + \m{K}_{mm} \m{u}_m + \m{K}_{ms} \m{\closure{T}} \m{u}_m
-    + \m{K}_{ms} \m{g} &= \m{f}_m \\
-    \m{K}_{us}^T \m{u}_u + \m{K}_{ms}^T \m{u}_m + \m{K}_{ss} \m{\closure{T}} \m{u}_m
-    + \m{K}_{ss} \m{g} &= \m{0} \\
-\end{eqarray}
 
-Then:
-\begin{eqarray}
-    \m{K}_{uu} \m{u}_u + \left(\m{K}_{um} + \m{K}_{us} \m{\closure{T}} \right) \m{u}_m
-    &= \m{f}_u - \m{K}_{us} \m{g} \\
-    \m{K}_{um}^T \m{u}_u + \left(\m{K}_{mm} + \m{K}_{ms}^T \m{\closure{T}} \right) \m{u}_m
-    &= \m{f}_m - \m{K}_{ms} \m{g} \\
-    \m{K}_{us}^T \m{u}_u + \left(\m{K}_{ms}^T + \m{K}_{ss} \m{\closure{T}} \right) \m{u}_m
-    &= -\m{K}_{ss} \m{g}
-\end{eqarray}
+    Finally the equation \eqref{rbe2-master-slave-modified} can be rewritten as:
+    \begin{equation}
+        \begin{bmatrix}
+            \m{I} & \m{0} & \m{0} \\
+            \m{0} & \m{I} & \m{\closure{T}}^T \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            \m{K}_{uu} & \m{K}_{um} & \m{K}_{us} \\
+            \m{K}_{mu} & \m{K}_{mm} & \m{K}_{ms} \\
+            \m{K}_{su} & \m{K}_{sm} & \m{K}_{ss} \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            \m{I} & \m{0} \\
+            \m{0} & \m{I} \\
+            \m{0} & \m{\closure{T}} \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            \m{u}_u \\
+            \m{u}_m \\
+        \end{bmatrix}
+        = \begin{bmatrix}
+            \m{I} & \m{0} & \m{0} \\
+            \m{0} & \m{I} & \m{\closure{T}}^T \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            \m{f}_u \\
+            \m{f}_m \\
+            \m{f}_s \\
+        \end{bmatrix}
+    \end{equation}
 
-By setting $ \m{\hat{K}}_{um} = \left(\m{K}_{um} + \m{K}_{us} \m{\closure{T}} \right) $
-and enforcing symmetry we get:
-\begin{eqarray}
-    \m{K}_{uu} \m{u}_u + \m{\hat{K}}_{um} \m{u}_m
-    &= \m{f}_u - \m{K}_{us} \m{g} \\
-    \m{\hat{K}}_{um}^T \m{u}_{u} - \m{K}_{um} \m{u}_u - \m{K}_{us} \m{\closure{T}} \m{u}_u
-    + \m{K}_{mm} \m{u}_m + \m{K}_{ms}^T \m{\closure{T}} \m{u}_m
-    &= \m{f}_m - \m{K}_{ms} \m{g} \\
-\end{eqarray}
+    Expanding and multiplying:
+    \begin{equation}
+        \scalebox{0.92}{
+        $ \begin{bmatrix}
+            \m{K}_{uu} & \m{K}_{um} & \m{K}_{us} \\
+            \m{K}_{mu} + \m{\closure{T}}^T \m{K}_{su} &
+            \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{sm} &
+            \m{K}_{ms} + \m{\closure{T}}^T \m{K}_{ss} \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            \m{I} & \m{0} \\
+            \m{0} & \m{I} \\
+            \m{0} & \m{\closure{T}} \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            \m{u}_u \\
+            \m{u}_m \\
+        \end{bmatrix}
+        = \begin{bmatrix}
+            \m{f}_u \\
+            \m{f}_m + \m{\closure{T}}^T \m{f}_s \\
+        \end{bmatrix} $
+        }
+    \end{equation}
+
+    \begin{equation}
+        \scalebox{0.95}{
+        $ \begin{bmatrix}
+            \m{K}_{uu} & \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
+            \m{K}_{mu} + \m{\closure{T}}^T \m{K}_{su} &
+            \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{sm} +
+            \m{K}_{ms} \m{\closure{T}} + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}} \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            \m{u}_u \\
+            \m{u}_m \\
+        \end{bmatrix}
+        = \begin{bmatrix}
+            \m{f}_u \\
+            \m{f}_m + \m{\closure{T}}^T \m{f}_s \\
+        \end{bmatrix} $
+        }
+    \end{equation}
+
+    which is equal to:
+    \begin{equation}
+        \scalebox{0.95}{
+        $ \begin{bmatrix}
+            \m{K}_{uu} & \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
+            (\m{K}_{um} + \m{K}_{us} \m{\closure{T}})^T &
+            \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{sm} +
+            \m{K}_{sm}^T \m{\closure{T}} + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}} \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            \m{u}_u \\
+            \m{u}_m \\
+        \end{bmatrix}
+        = \begin{bmatrix}
+            \m{f}_u \\
+            \m{f}_m + \m{\closure{T}}^T \m{f}_s \\
+        \end{bmatrix} $
+        }
+    \end{equation}
+
+    considering that $ \m{f}_s = \m{0} $ the equations reduce to:
+    \begin{equation}
+        \begin{bmatrix}
+            \m{K}_{uu} & \m{\hat{K}}_{um} \\
+            \m{\hat{K}}_{um}^T & \m{\hat{K}}_{mm} \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            \m{u}_u \\
+            \m{u}_m \\
+        \end{bmatrix}
+        = \begin{bmatrix}
+            \m{f}_u \\
+            \m{f}_m \\
+        \end{bmatrix}
+    \end{equation}
+
+    where:
+    \begin{eqarray}
+        \m{\hat{K}}_{um} &= \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
+        \m{\hat{K}}_{mm} &= \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{sm}
+                          + \m{K}_{sm}^T \m{\closure{T}}
+                          + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}}
+    \end{eqarray}
+
+\end{qbox}
 
 
 \begin{bbox}
