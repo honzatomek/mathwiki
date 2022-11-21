@@ -706,8 +706,8 @@ equations such that:
         $ \begin{bmatrix}
             \m{K}_{uu} & \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
             (\m{K}_{um} + \m{K}_{us} \m{\closure{T}})^T &
-            \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{sm} +
-            \m{K}_{sm}^T \m{\closure{T}} + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}} \\
+            \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{ms}^T +
+            \m{K}_{ms} \m{\closure{T}} + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}} \\
         \end{bmatrix}
         \begin{bmatrix}
             \m{u}_u \\
@@ -739,8 +739,11 @@ equations such that:
     where:
     \begin{eqarray}
         \m{\hat{K}}_{um} &= \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
-        \m{\hat{K}}_{mm} &= \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{sm}
-                          + \m{K}_{sm}^T \m{\closure{T}}
+        \m{\hat{K}}_{mm} &= \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{ms}^T
+                          + \m{K}_{ms} \m{\closure{T}}
+                          + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}} \\
+                         &= \m{K}_{mm} + \m{K}_{ms} \m{\closure{T}}
+                          + (\m{K}_{ms} \m{\closure{T}})^T
                           + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}}
     \end{eqarray}
 
@@ -776,12 +779,6 @@ equations such that:
         \m{\hat{K}}_{mm} &= \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{ms}^T
                             + \m{K}_{ms} \m{\closure{T}}
                             + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}}
-    \end{eqarray}
-
-    or?
-    \begin{eqarray}
-        \m{\hat{K}}_{um} &= \m{K}_{um} \m{\closure{T}} \\
-        \m{\hat{K}}_{mm} &= \m{\closure{T}}^T \m{K}_{mm} \m{\closure{T}} \\
     \end{eqarray}
 
 \end{bbox}
