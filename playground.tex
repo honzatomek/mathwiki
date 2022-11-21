@@ -1,0 +1,635 @@
+\documentclass[10pt,b5paper,titlepage]{book}
+
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+%\usepackage{xcolor}
+\usepackage{color}
+\usepackage{graphicx}
+
+% python - needs pip install Pygments
+\usepackage{minted}
+\usemintedstyle{native}
+
+\usepackage{hyperref}
+
+\author{Jan Tomek}
+\title{\bf Playground}
+
+% python code format
+\setminted[python]{breaklines, framesep=2mm, fontsize=\footnotesize, numbersep=5pt}
+\newminted[python]{python}{linenos=true,
+                           frame=lines,
+                           baselinestretch=1.2,
+                           mathescape,
+                           xleftmargin=0cm,
+                           framesep=2mm,
+                           fontsize=\footnotesize}
+
+\setlength{\parindent}{0ex}
+\setlength{\parskip}{1em plus 0.1em minus 0.2em}
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\bullet$}
+\renewcommand{\labelitemiii}{$\bullet$}
+\renewcommand{\labelitemiv}{$\bullet$}
+
+%Commands definitions
+\newcommand\setbackgroundcolour{\pagecolor[rgb]{0.15,0.15,0.15}}
+\newcommand\settextcolour{\color[rgb]{0.9,0.9,0.9}}
+\newcommand\invertbackgroundtext{\setbackgroundcolour\settextcolour}
+
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+\newcommand*{\Resize}[2]{\resizebox{#1}{!}{$#2$}}%
+
+% Lagrangian symbol
+\newcommand{\lagr}{\mathop{\mathcal{L}}}
+\DeclareMathOperator{\Lagr}{\mathcal{L}}
+
+% matrix notation
+\newcommand{\m}{\mathbf}
+% matrix notation greek letters
+\newcommand{\M}{\pmb}
+
+% null symbol
+\newcommand{\Null}{\text{\O}}
+
+\newcommand{\closure}[2][3]{%
+{}\mkern#1mu\overline{\mkern-#1mu#2}}
+
+% maximum number of entries in matrix
+\setcounter{MaxMatrixCols}{20}
+
+% equal by definition
+\newcommand*\eqd{\stackrel{\triangle}{=}}
+
+% {name}[number of arguments][1st default value] etc..
+% the argument value is then inserted at #argument_number
+\newenvironment{bbox}[1][0.96]
+{
+    \begin{center}
+        \begin{tabular}{|p{#1\textwidth}|}
+            \hline\\
+}
+{
+            \\\\\hline
+        \end{tabular}
+    \end{center}
+}
+
+\newenvironment{bboxtitle}[1][0.96]
+{
+    \begin{center}
+        #1\\[1ex]
+        \begin{tabular}{|p{#1\textwidth}|}
+            \hline\\
+}
+{
+            \\\\\hline
+        \end{tabular}
+    \end{center}
+}
+
+\newenvironment{eqarray}
+{
+    \begin{eqnarray}
+        \begin{aligned}
+}
+{
+        \end{aligned}
+    \end{eqnarray}
+}
+
+%Command execution.
+%If this line is commented, then the appearance remains as usual.
+\invertbackgroundtext
+
+\begin{document}
+
+\maketitle
+
+\chapter{RBE2}
+
+\begin{bbox}[0.95]
+    The rigid freebody relations between \textbf{slave} and \textbf{master} node are:
+    \begin{eqarray}
+        \m{T}_s &= \m{T}_m + \m{R}_s \times \overline{\m{x}} \\
+        \m{R}_s &= \m{R}_m
+    \end{eqarray}
+
+    Where $ \overline{\m{x}} $ is a vector from \textbf{slave} to \textbf{master}:
+    \begin{equation}
+        \overline{\m{x}} =
+        \begin{bmatrix}
+            \overline{x} \\
+            \overline{y} \\
+            \overline{z}
+        \end{bmatrix} =
+        \begin{bmatrix}
+            x_s - x_m \\
+            y_s - y_m \\
+            z_s - z_m
+        \end{bmatrix}
+    \end{equation}
+
+    Then \textit{vector multiplication} (cross product) is defined as:
+    \begin{eqarray}
+        \m{R}_s \times \m{x}_s
+        &= \m{R}_m \times \m{x} = & \\
+        &= \begin{bmatrix}
+             \phi_m \\
+             \psi_m \\
+             \theta_m
+           \end{bmatrix} \times \begin{bmatrix}
+             x_s - x_m \\
+             y_s - y_m \\
+             z_s - z_m
+           \end{bmatrix}
+        &= \begin{bmatrix}
+             \phi_m \\
+             \psi_m \\
+             \theta_m
+           \end{bmatrix} \times \begin{bmatrix}
+             \overline{x} \\
+             \overline{y} \\
+             \overline{z}
+           \end{bmatrix} = \\
+        &= \begin{bmatrix}
+             \psi_m (z_s - z_m ) - \theta_m (y_s - y_m) \\
+             \theta_m (x_s - x_m) - \phi_m (z_s - z_m) \\
+             \phi_m (y_s - y_m) - \psi_m (x_s - x_m)
+           \end{bmatrix}
+        &= \begin{bmatrix}
+            \psi_m \overline{z} - \theta_m \overline{y} \\
+            \theta_m \overline{x} - \phi_m \overline{z} \\
+            \phi_m \overline{y} - \psi_m \overline{x}
+        \end{bmatrix} = \\
+        &= \begin{bmatrix}
+            \phantom{-}0 & \phantom{-}\overline{z} & -\overline{y} \\
+            -\overline{z} & \phantom{-}0 & \phantom{-}\overline{x} \\
+            \phantom{-}\overline{y} & -\overline{x} & \phantom{-}0
+        \end{bmatrix}
+        \begin{bmatrix}
+            \phi_m \\
+            \psi_m \\
+            \theta_m
+        \end{bmatrix}
+    \end{eqarray}
+\end{bbox}
+
+\begin{bbox}[0.95]
+    The \textbf{slave} equations can be written as:
+    \begin{equation}
+        \begin{bmatrix}
+            u_s \\
+            v_s \\
+            w_s \\
+            \phi_s \\
+            \psi_s \\
+            \theta_s
+        \end{bmatrix}
+        = \begin{bmatrix}
+            1 & 0 & 0 & 0 & \phantom{-(}z_s - z_m & -(y_s - y_m) \\
+            0 & 1 & 0 & -(z_s - z_m) & 0 & \phantom{-(}x_s - x_m \\
+            0 & 0 & 1 & \phantom{-(}y_s - y_m & -(x_s - x_m) & 0 \\
+            0 & 0 & 0 & 1 & 0 & 0 \\
+            0 & 0 & 0 & 0 & 1 & 0 \\
+            0 & 0 & 0 & 0 & 0 & 1 \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            u_m \\
+            v_m \\
+            w_m \\
+            \phi_m \\
+            \psi_m \\
+            \theta_m
+        \end{bmatrix}
+    \end{equation}
+
+    or:
+    \begin{equation}
+        \begin{bmatrix}
+            u_s \\
+            v_s \\
+            w_s \\
+            \phi_s \\
+            \psi_s \\
+            \theta_s
+        \end{bmatrix}
+        = \begin{bmatrix}
+            1 & 0 & 0 & \phantom{-}0 & \phantom{-}\overline{z} & -\overline{y} \\
+            0 & 1 & 0 & -\overline{z} & \phantom{-}0 & \phantom{-}\overline{x} \\
+            0 & 0 & 1 & \phantom{-}\overline{y} & -\overline{x} & \phantom{-}0 \\
+            0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+            0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+            0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            u_m \\
+            v_m \\
+            w_m \\
+            \phi_m \\
+            \psi_m \\
+            \theta_m
+        \end{bmatrix}
+    \end{equation}
+
+    Finally the force and moment conditions have to be imposed:
+    \begin{eqarray}
+        \m{F}_m + \sum_{i=1}^n \m{F}_{s,i} &= \Null \\
+        \m{M}_m + \sum_{i=1}^n \m{M}_{s,i} &= \Null \\
+    \end{eqarray}
+
+    which is equal to:
+    \begin{eqarray}
+        k_{m,u} u_m + \sum_{i=1}^n k_{s,u,i} u_{s,i} &= \Null \\
+        k_{m,v} v_m + \sum_{i=1}^n k_{s,v,i} v_{s,i} &= \Null \\
+        k_{m,w} w_m + \sum_{i=1}^n k_{s,w,i} w_{s,i} &= \Null \\
+        k_{m,\phi} \phi_m + \sum_{i=1}^n
+        \left(
+            k_{s,\phi,i} \phi_{s,i}
+            + k_{s,v,i} v_{s,i} \overline{z}_{i}
+            + k_{s,w,i} w_{s,i} \overline{y}_{i}
+    \right) &= \Null \\
+        k_{m,\psi} \psi_m + \sum_{i=1}^n
+        \left(
+            k_{s,\psi,i} \psi_{s,i}
+            + k_{s,u,i} u_{s,i} \overline{z}_{i}
+            + k_{s,w,i} w_{s,i} \overline{x}_{i}
+        \right) &= \Null \\
+        k_{m,\theta} \theta_m + \sum_{i=1}^n
+        \left(
+            k_{s,\theta,i} \theta_{s,i}
+            + k_{s,u,i} u_{s,i} \overline{y}_{i}
+            + k_{s,v,i} v_{s,i} \overline{x}_{i}
+        \right) &= \Null \\
+    \end{eqarray}
+
+\end{bbox}
+
+\section{RBE2 Example:}
+
+Master Node:
+\begin{equation}
+    \m{X}_m =
+    \begin{bmatrix}
+        1 & 1 & 1
+    \end{bmatrix}^T
+\end{equation}
+
+Slave Nodes:
+\begin{eqarray}
+    \m{X}_{s,1} =
+    \begin{bmatrix}
+        0 & 0 & 0
+    \end{bmatrix}^T \\
+    \m{X}_{s,1} =
+    \begin{bmatrix}
+        2 & 0 & 0
+    \end{bmatrix}^T \\
+    \m{X}_{s,1} =
+    \begin{bmatrix}
+        2 & 2 & 0
+    \end{bmatrix}^T \\
+    \m{X}_{s,1} =
+    \begin{bmatrix}
+        0 & 2 & 0
+    \end{bmatrix}^T \\
+\end{eqarray}
+
+Then Slave Node 1 equations are:
+\begin{eqarray}
+    \m{x}_1 &=
+    \begin{bmatrix}
+        x_{s,1} - x_m & y_{s,1} - y_m & z_{s,1} - z_m
+    \end{bmatrix}^T =
+    \begin{bmatrix}
+        -1 & -1 & -1
+    \end{bmatrix}^T
+\end{eqarray}
+
+Other Slave Nodes:
+\begin{eqarray}
+    \m{x}_2 &=
+    \begin{bmatrix}
+        2 - 1 & 0 - 1 & 0 - 1
+    \end{bmatrix}^T =
+    \begin{bmatrix}
+        \phantom{-}1 & -1 & -1
+    \end{bmatrix}^T \\
+    \m{x}_3 &=
+    \begin{bmatrix}
+        2 - 1 & 2 - 1 & 0 - 1
+    \end{bmatrix}^T =
+    \begin{bmatrix}
+        \phantom{-}1 & \phantom{-}1 & -1
+    \end{bmatrix}^T \\
+    \m{x}_4 &=
+    \begin{bmatrix}
+        0 - 1 & 2 - 1 & 0 - 1
+    \end{bmatrix}^T =
+    \begin{bmatrix}
+        -1 & \phantom{-}1 & -1
+    \end{bmatrix}^T
+\end{eqarray}
+
+Therefore, after filling in the coefficients:
+\renewcommand\arraystretch{1.6}
+\begin{eqarray}
+    \begin{bmatrix}
+        u_{s,1} \\
+        v_{s,1} \\
+        w_{s,1} \\
+        \phi_{s,1} \\
+        \psi_{s,1} \\
+        \theta_{s,1}
+    \end{bmatrix}
+    &= \begin{bmatrix}
+        1 & 0 & 0 & \phantom{-}0 & -1 & \phantom{-}1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & -1 \\
+        0 & 0 & 1 & -1 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_m \\
+        v_m \\
+        w_m \\
+        \phi_m \\
+        \psi_m \\
+        \theta_m
+    \end{bmatrix} \\
+    \begin{bmatrix}
+        u_{s,2} \\
+        v_{s,2} \\
+        w_{s,2} \\
+        \phi_{s,2} \\
+        \psi_{s,2} \\
+        \theta_{s,2}
+    \end{bmatrix}
+    &= \begin{bmatrix}
+        1 & 0 & 0 & \phantom{-}0 & -1 & \phantom{-}1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}1 \\
+        0 & 0 & 1 & -1 & -1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_m \\
+        v_m \\
+        w_m \\
+        \phi_m \\
+        \psi_m \\
+        \theta_m
+    \end{bmatrix} \\
+    \begin{bmatrix}
+        u_{s,3} \\
+        v_{s,3} \\
+        w_{s,3} \\
+        \phi_{s,3} \\
+        \psi_{s,3} \\
+        \theta_{s,3}
+    \end{bmatrix}
+    &= \begin{bmatrix}
+        1 & 0 & 0 & \phantom{-}0 & -1 & -1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}1 \\
+        0 & 0 & 1 & \phantom{-}1 & -1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_m \\
+        v_m \\
+        w_m \\
+        \phi_m \\
+        \psi_m \\
+        \theta_m
+    \end{bmatrix} \\
+    \begin{bmatrix}
+        u_{s,4} \\
+        v_{s,4} \\
+        w_{s,4} \\
+        \phi_{s,4} \\
+        \psi_{s,4} \\
+        \theta_{s,4}
+    \end{bmatrix}
+    &= \begin{bmatrix}
+        1 & 0 & 0 & \phantom{-}0 & -1 & -1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & -1 \\
+        0 & 0 & 1 & \phantom{-}1 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_m \\
+        v_m \\
+        w_m \\
+        \phi_m \\
+        \psi_m \\
+        \theta_m
+    \end{bmatrix}
+\end{eqarray}
+\renewcommand\arraystretch{1}
+
+When all put together:
+\begin{equation}
+    \begin{bmatrix}
+        u_{s,1} \\
+        v_{s,1} \\
+        w_{s,1} \\
+        \phi_{s,1} \\
+        \psi_{s,1} \\
+        \theta_{s,1} \\
+        u_{s,2} \\
+        v_{s,2} \\
+        w_{s,2} \\
+        \phi_{s,2} \\
+        \psi_{s,2} \\
+        \theta_{s,2} \\
+        u_{s,3} \\
+        v_{s,3} \\
+        w_{s,3} \\
+        \phi_{s,3} \\
+        \psi_{s,3} \\
+        \theta_{s,3} \\
+        u_{s,4} \\
+        v_{s,4} \\
+        w_{s,4} \\
+        \phi_{s,4} \\
+        \psi_{s,4} \\
+        \theta_{s,4}
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 & 0 & 0 & \phantom{-}0 & -1 & \phantom{-}1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & -1 \\
+        0 & 0 & 1 & -1 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+        1 & 0 & 0 & \phantom{-}0 & -1 & \phantom{-}1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}1 \\
+        0 & 0 & 1 & -1 & -1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+        1 & 0 & 0 & \phantom{-}0 & -1 & -1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}1 \\
+        0 & 0 & 1 & \phantom{-}1 & -1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+        1 & 0 & 0 & \phantom{-}0 & -1 & -1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & -1 \\
+        0 & 0 & 1 & \phantom{-}1 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_m \\
+        v_m \\
+        w_m \\
+        \phi_m \\
+        \psi_m \\
+        \theta_m
+    \end{bmatrix}
+\end{equation}
+
+It can be read as:
+\begin{eqarray}
+    u_{s,1} &= u_m -\psi_m + \theta_m \\
+    v_{s,1} &= v_m \phi_m - \theta_m \\
+    \vdots \\
+    \theta_{s,4} &= \theta_m
+\end{eqarray}
+
+Or:
+\begin{equation}
+    \m{u}_s = \m{\closure{T}} \m{u}_m
+\end{equation}
+
+This equation should be then expanded to all DOFs, where in $ \m{T} $ the
+slave DOFs are missing and the DOFs that do not take part in RBEs have $ 1 $ on
+the diagonal. The resulting  matrix should have the same number of rows as
+the master stiffness matrix.
+
+Then the master stiffness equation is modified:
+\begin{eqarray}
+    \m{\hat{f}} &= \m{T}^T \m{f} \\
+    \m{\hat{K}} &= \m{T}^T \m{K} \m{T} \\
+    \m{\hat{K}} \m{\hat{u}} &= \m{\hat{f}} \\
+\end{eqarray}
+
+If we'd like to make the procedure more general, partition the master stiffness
+equations such that:
+\begin{equation}
+    \begin{bmatrix}
+        \m{K}_{uu} & \m{K}_{um} & \m{K}_{us} \\
+        \m{K}_{um}^T & \m{K}_{mm} & \m{K}_{ms} \\
+        \m{K}_{us}^T & \m{K}_{ms}^T & \m{K}_{ss}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+        \m{u}_s
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{f}_u \\
+        \m{f}_m \\
+        \m{f}_s
+    \end{bmatrix}
+\end{equation}
+
+This means:
+\begin{eqarray}\label{rbe2-master-slave-full-partitioned}
+    \m{K}_{uu} \m{u}_u + \m{K}_{um} \m{u}_m + \m{K}_{us} \m{u}_s &= \m{f}_u \\
+    \m{K}_{um}^T \m{u}_u + \m{K}_{mm} \m{u}_m + \m{K}_{ms} \m{u}_s &= \m{f}_m \\
+    \m{K}_{us}^T \m{u}_u + \m{K}_{ms}^T \m{u}_m + \m{K}_{ss} \m{u}_s &= \m{f}_s \\
+\end{eqarray}
+
+Setting $ \m{f}_s = \m{0} $ we get:
+\begin{equation}\label{rbe2-slave-force}
+    \m{K}_{us}^T \m{u}_u + \m{K}_{ms}^T \m{u}_m + \m{K}_{ss} \m{u}_s = \m{0}
+\end{equation}
+
+The \textbf{master-slave} relation can be written as:
+\begin{equation}\label{rbe2-master-slave-relation}
+    \m{u}_s = \m{\closure{T}} \m{u}_m + \m{g}
+\end{equation}
+
+Substituting \eqref{rbe2-master-slave-relation} and \eqref{rbe2-slave-force}
+into \eqref{rbe2-master-slave-full-partitioned} yields:
+\begin{eqarray}\label{rbe2-master-slave-substituted-partitioned}
+    \m{K}_{uu} \m{u}_u + \m{K}_{um} \m{u}_m + \m{K}_{us} \m{\closure{T}} \m{u}_m 
+    + \m{K}_{us} \m{g} &= \m{f}_u \\
+    \m{K}_{um}^T \m{u}_u + \m{K}_{mm} \m{u}_m + \m{K}_{ms} \m{\closure{T}} \m{u}_m
+    + \m{K}_{ms} \m{g} &= \m{f}_m \\
+    \m{K}_{us}^T \m{u}_u + \m{K}_{ms}^T \m{u}_m + \m{K}_{ss} \m{\closure{T}} \m{u}_m
+    + \m{K}_{ss} \m{g} &= \m{0} \\
+\end{eqarray}
+
+Then:
+\begin{eqarray}
+    \m{K}_{uu} \m{u}_u + \left(\m{K}_{um} + \m{K}_{us} \m{\closure{T}} \right) \m{u}_m
+    &= \m{f}_u - \m{K}_{us} \m{g} \\
+    \m{K}_{um}^T \m{u}_u + \left(\m{K}_{mm} + \m{K}_{ms}^T \m{\closure{T}} \right) \m{u}_m
+    &= \m{f}_m - \m{K}_{ms} \m{g} \\
+    \m{K}_{us}^T \m{u}_u + \left(\m{K}_{ms}^T + \m{K}_{ss} \m{\closure{T}} \right) \m{u}_m
+    &= -\m{K}_{ss} \m{g}
+\end{eqarray}
+
+By setting $ \m{\hat{K}}_{um} = \left(\m{K}_{um} + \m{K}_{us} \m{\closure{T}} \right) $
+and enforcing symmetry we get:
+\begin{eqarray}
+    \m{K}_{uu} \m{u}_u + \m{\hat{K}}_{um} \m{u}_m
+    &= \m{f}_u - \m{K}_{us} \m{g} \\
+    \m{\hat{K}}_{um}^T \m{u}_{u} - \m{K}_{um} \m{u}_u - \m{K}_{us} \m{\closure{T}} \m{u}_u
+    + \m{K}_{mm} \m{u}_m + \m{K}_{ms}^T \m{\closure{T}} \m{u}_m
+    &= \m{f}_m - \m{K}_{ms} \m{g} \\
+\end{eqarray}
+
+
+\begin{bbox}
+
+    Then if \textbf{master-slave} relations are written as (\textit{general case}):
+    \begin{equation}
+        \m{u}_s = \m{\closure{T}} \m{u}_m + \m{g}
+    \end{equation}
+
+    Inserting into the partitioned master stiffness equations:
+    \begin{equation}
+        \begin{bmatrix}
+            \m{K}_{uu} & \m{\hat{K}}_{um} \\
+            \m{\hat{K}}_{um}^T & \m{\hat{K}}_{mm}
+        \end{bmatrix}
+        \begin{bmatrix}
+            \m{u}_u \\
+            \m{u}_m
+        \end{bmatrix}
+        = \begin{bmatrix}
+            \m{f}_u - \m{K}_{us} \m{g} \\
+            \m{f}_m - \m{K}_{ms} \m{g}
+        \end{bmatrix}
+    \end{equation}
+
+    where:
+    \begin{eqarray}
+        \m{\hat{K}}_{um} &= \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
+        \m{\hat{K}}_{mm} &= \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{ms}^T
+                            + \m{K}_{ms} \m{\closure{T}}
+                            + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}}
+    \end{eqarray}
+
+    or?
+    \begin{eqarray}
+        \m{\hat{K}}_{um} &= \m{K}_{um} \m{\closure{T}} \\
+        \m{\hat{K}}_{mm} &= \m{\closure{T}}^T \m{K}_{mm} \m{\closure{T}} \\
+    \end{eqarray}
+
+\end{bbox}
+
+\end{document}

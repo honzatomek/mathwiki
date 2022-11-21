@@ -51,6 +51,9 @@
 % matrix notation greek letters
 \newcommand{\M}{\pmb}
 
+% null symbol
+\newcommand{\Null}{\text{\O}}
+
 \newcommand{\closure}[2][3]{%
 {}\mkern#1mu\overline{\mkern-#1mu#2}}
 
@@ -172,7 +175,7 @@ for short (\textbf{MFC}s) are functional equations that connect
     \end{equation}
 \end{bbox}
 
-where function $ F $ vanishes id all its nodal displacement arguments do.
+where function $ F $ vanishes if all its nodal displacement arguments do.
 Equation \eqref{canonical-constraint-form} is called the
 \textit{canonical form} of the constraint.
 
@@ -410,12 +413,12 @@ To apply this method by \textit{hand}, the MFCs are taken one at a time. For eac
 constraint a \textbf{slave} DOF is chosen. The freedoms remaining in that constraint
 are labeled \textbf{master}. A new set of DOFs $ \m{\hat{u}} $ is established
 by removing all slave freedoms from $ \m{u} $. This new vector contains
-master freedoms as well as thise that do not appear in the MFCs. A matrix transformation
+master freedoms as well as those that do not appear in the MFCs. A matrix transformation
 equation that relates $ \m{u} $ to $ \m{\hat{u}} $ is generated. This
 equation is used ot apply a congruent transformation to the master stiffness equations.
 This procedure yields a set of modified stiffness equations that are expressed in terms
-of the new freedo set $ \m{\hat{u}} $. Because the modified system does not contain
-the slave freedoms, these habe been effectively eliminated.
+of the new freedom set $ \m{\hat{u}} $. Because the modified system does not contain
+the slave freedoms, these have been effectively eliminated.
 
 \subsection{A One-Constraint Example}
 
@@ -451,7 +454,7 @@ original unknowns $ u_1, \dots, u_7 $ to the new set in which $ u_6 $ is missing
     \end{bmatrix}
 \end{equation}
 
-This is the reqired transformation relation. In compact form:
+This is the required transformation relation. In compact form:
 
 \begin{equation}
     \m{u} = \m{T} \m{\hat{u}}
@@ -581,7 +584,7 @@ and numerical difficulties when it is programmed as an automated procedure, as
 further discussed later.
 
 \begin{bbox}
-    The 3 MFCs \eqref{mfc-ms-3-constraints} with $ U_6 $, $ u_4 $ and $ u_2 $ chosen
+    The 3 MFCs \eqref{mfc-ms-3-constraints} with $ u_6 $, $ u_4 $ and $ u_2 $ chosen
     as slaves and $ u_1 $, $ u_2 $ and $ u_5 $ chosen as masters, may be presented
     in the partitioned matrix form:
 
@@ -667,7 +670,7 @@ and build the transformation:
         u_4 \\
         u_5 \\
         u_7
-    \end{bmatrix}
+    \end{bmatrix} +
     \begin{bmatrix}
         0 \\
         0 \\
@@ -789,7 +792,7 @@ sitffness equation \eqref{mfc-ms-partitioned} and symmetrizing yields:
     \end{bmatrix}
 \end{equation}
 
-where $ \m{\hat{K}}_{um} = \left( \m{K}_{um} + \m{K}_{us} \m{T} \right)^T $ \\
+where $ \m{\hat{K}}_{um} = \m{K}_{um} + \m{K}_{us} \m{T} $ \\
 and $ \m{\hat{K}}_{mm} = \m{K}_{mm} + \m{T}^T \m{K}_{ms}^T
 + \m{K}_{ms} \m{T} + \m{T}^T \m{K}_{ss} \m{T} $.
 
