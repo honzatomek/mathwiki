@@ -787,28 +787,40 @@ equations such that:
 \end{bbox}
 
 
-\section{RBE2 Example 2D with Rods}
+\newpage
+\section{RBE2 Example 2D with ROD Elements}
 
 \subsection{Recap}
 
-Rod Stiffness Matrix:
+ROD Stiffness Matrix:
 \begin{equation}
-    \m{k}_l^e = \frac{E^e A^e}{L^e} \begin{bmatrix}
+    \m{K}_l^e = \frac{E^e A^e}{L^e} \begin{bmatrix}
         \phantom{-}1 & -1 \\
         -1 & \phantom{-}1
     \end{bmatrix}
 \end{equation}
 
-Rod Transformation Matrix:
-\begin{equation}
-    \m{u}_g =
+ROD Transformation Matrix:
+\begin{eqarray}
+    \m{u}_g &=
     \begin{bmatrix}
         \phantom{-}c & s \\
         -s & c \\
-    \end{bmatrix} \m{u}_l
-\end{equation}
+    \end{bmatrix} \m{u}_l \\
+    \m{u}_g &= \m{T} \m{u}_l
+\end{eqarray}
 
-where $ s = \sin = \frac{y_2 - y_1}{L^e} $ and $ c = \cos  = \frac{x_2 - x_1}{L^e} $
+where:
+\begin{eqarray}
+    s &= \sin \alpha^e &= \frac{y_2 - y_1}{L^e} \\
+    c &= \cos \alpha^e &= \frac{x_2 - x_1}{L^e} \\
+\end{eqarray}
+
+Then the \textbf{global master stiffness matrix} is:
+
+\begin{equation}
+    \m{T}^T \m{K}_l^e \m{T} \m{u}_g = \m{T}^T \m{f}_l
+\end{equation}
 
 
 
