@@ -292,7 +292,7 @@
 
 \end{bbox}
 
-\section{RBE2 Example:}
+\section{RBE2 Coefficients Example:}
 
 Master Node:
 \begin{equation}
@@ -536,6 +536,9 @@ Or:
 \begin{equation}\label{rbe2-coefficients}
     \m{u}_s = \m{\closure{T}} \m{u}_m
 \end{equation}
+
+
+\section{Editing Master Sitffness Matrix}
 
 This equation should be then expanded to all DOFs, where in $ \m{T} $ the
 slave DOFs columns are missing and the DOFs that do not take part in RBEs have $ 1 $ on
@@ -782,5 +785,31 @@ equations such that:
     \end{eqarray}
 
 \end{bbox}
+
+
+\section{RBE2 Example 2D with Rods}
+
+\subsection{Recap}
+
+Rod Stiffness Matrix:
+\begin{equation}
+    \m{k}_l^e = \frac{E^e A^e}{L^e} \begin{bmatrix}
+        \phantom{-}1 & -1 \\
+        -1 & \phantom{-}1
+    \end{bmatrix}
+\end{equation}
+
+Rod Transformation Matrix:
+\begin{equation}
+    \m{u}_g =
+    \begin{bmatrix}
+        \phantom{-}c & s \\
+        -s & c \\
+    \end{bmatrix} \m{u}_l
+\end{equation}
+
+where $ s = \sin = \frac{y_2 - y_1}{L^e} $ and $ c = \cos  = \frac{x_2 - x_1}{L^e} $
+
+
 
 \end{document}
