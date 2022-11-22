@@ -104,14 +104,14 @@
 {
 %\centering{\huge{?}}
 \begin{center}
-    \repeatit[44]{?}{\ }
+    \repeatit[42]{?}{\ }
 \end{center}
 %\hrule
 }
 {
 %\hrule
 \begin{center}
-    \repeatit[44]{?`}{\ }
+    \repeatit[42]{?`}{\ }
 \end{center}
 }
 
@@ -259,36 +259,38 @@
         \end{bmatrix}
     \end{equation}
 
-    Finally the force and moment conditions have to be imposed:
-    \begin{eqarray}
-        \m{F}_m + \sum_{i=1}^n \m{F}_{s,i} &= \Null \\
-        \m{M}_m + \sum_{i=1}^n \m{M}_{s,i} &= \Null \\
-    \end{eqarray}
+    \begin{qbox}
+        Finally the force and moment conditions have to be imposed:
+        \begin{eqarray}
+            \m{F}_m + \sum_{i=1}^n \m{F}_{s,i} &= \Null \\
+            \m{M}_m + \sum_{i=1}^n \m{M}_{s,i} &= \Null \\
+        \end{eqarray}
 
-    which is equal to:
-    \begin{eqarray}
-        k_{m,u} u_m + \sum_{i=1}^n k_{s,u,i} u_{s,i} &= \Null \\
-        k_{m,v} v_m + \sum_{i=1}^n k_{s,v,i} v_{s,i} &= \Null \\
-        k_{m,w} w_m + \sum_{i=1}^n k_{s,w,i} w_{s,i} &= \Null \\
-        k_{m,\phi} \phi_m + \sum_{i=1}^n
-        \left(
-            k_{s,\phi,i} \phi_{s,i}
-            + k_{s,v,i} v_{s,i} \overline{z}_{i}
-            + k_{s,w,i} w_{s,i} \overline{y}_{i}
-    \right) &= \Null \\
-        k_{m,\psi} \psi_m + \sum_{i=1}^n
-        \left(
-            k_{s,\psi,i} \psi_{s,i}
-            + k_{s,u,i} u_{s,i} \overline{z}_{i}
-            + k_{s,w,i} w_{s,i} \overline{x}_{i}
+        which is equal to:
+        \begin{eqarray}
+            k_{m,u} u_m + \sum_{i=1}^n k_{s,u,i} u_{s,i} &= \Null \\
+            k_{m,v} v_m + \sum_{i=1}^n k_{s,v,i} v_{s,i} &= \Null \\
+            k_{m,w} w_m + \sum_{i=1}^n k_{s,w,i} w_{s,i} &= \Null \\
+            k_{m,\phi} \phi_m + \sum_{i=1}^n
+            \left(
+                k_{s,\phi,i} \phi_{s,i}
+                + k_{s,v,i} v_{s,i} \overline{z}_{i}
+                + k_{s,w,i} w_{s,i} \overline{y}_{i}
         \right) &= \Null \\
-        k_{m,\theta} \theta_m + \sum_{i=1}^n
-        \left(
-            k_{s,\theta,i} \theta_{s,i}
-            + k_{s,u,i} u_{s,i} \overline{y}_{i}
-            + k_{s,v,i} v_{s,i} \overline{x}_{i}
-        \right) &= \Null \\
-    \end{eqarray}
+            k_{m,\psi} \psi_m + \sum_{i=1}^n
+            \left(
+                k_{s,\psi,i} \psi_{s,i}
+                + k_{s,u,i} u_{s,i} \overline{z}_{i}
+                + k_{s,w,i} w_{s,i} \overline{x}_{i}
+            \right) &= \Null \\
+            k_{m,\theta} \theta_m + \sum_{i=1}^n
+            \left(
+                k_{s,\theta,i} \theta_{s,i}
+                + k_{s,u,i} u_{s,i} \overline{y}_{i}
+                + k_{s,v,i} v_{s,i} \overline{x}_{i}
+            \right) &= \Null \\
+        \end{eqarray}
+    \end{qbox}
 
 \end{bbox}
 
@@ -795,8 +797,10 @@ equations such that:
 ROD Stiffness Matrix:
 \begin{equation}
     \m{K}_l^e = \frac{E^e A^e}{L^e} \begin{bmatrix}
-        \phantom{-}1 & -1 \\
-        -1 & \phantom{-}1
+        \phantom{-}1 & 0 & -1 & 0 \\
+        \phantom{-}0 & 0 & \phantom{-}0 & 0 \\
+        -1 & 0 & \phantom{-}1 & 0 \\
+        \phantom{-}0 & 0 & \phantom{-}0 & 0 \\
     \end{bmatrix}
 \end{equation}
 
@@ -804,8 +808,10 @@ ROD Transformation Matrix:
 \begin{eqarray}
     \m{u}_g &=
     \begin{bmatrix}
-        \phantom{-}c & s \\
-        -s & c \\
+        \phantom{-}c & s & \phantom{-}0 & 0 \\
+        -s & c & \phantom{-}0 & 0 \\
+        \phantom{-}0 & 0 & \phantom{-}c & s \\
+        \phantom{-}0 & 0 & -s & c \\
     \end{bmatrix} \m{u}_l \\
     \m{u}_g &= \m{T} \m{u}_l
 \end{eqarray}
@@ -820,6 +826,11 @@ Then the \textbf{global master stiffness matrix} is:
 
 \begin{equation}
     \m{T}^T \m{K}_l^e \m{T} \m{u}_g = \m{T}^T \m{f}_l
+\end{equation}
+
+Or:
+\begin{equation}
+    \m{K}_g \m{u}_g = \m{f}_g
 \end{equation}
 
 
