@@ -4,9 +4,11 @@
 \usepackage{amsmath}
 \usepackage{amsfonts}
 \usepackage{amssymb}
+\usepackage{mathtools}
 %\usepackage{xcolor}
 \usepackage{color}
 \usepackage{graphicx}
+\usepackage[table]{xcolor}
 
 % python - needs pip install Pygments
 \usepackage{minted}
@@ -162,7 +164,7 @@
         \m{R}_s \times \m{x}_s
         &= \m{R}_m \times \m{x} = & \\
         &= \begin{bmatrix}
-             \phi_m \\
+             \varphi_m \\
              \psi_m \\
              \theta_m
            \end{bmatrix} \times \begin{bmatrix}
@@ -171,7 +173,7 @@
              z_s - z_m
            \end{bmatrix}
         &= \begin{bmatrix}
-             \phi_m \\
+             \varphi_m \\
              \psi_m \\
              \theta_m
            \end{bmatrix} \times \begin{bmatrix}
@@ -181,13 +183,13 @@
            \end{bmatrix} = \\
         &= \begin{bmatrix}
              \psi_m (z_s - z_m ) - \theta_m (y_s - y_m) \\
-             \theta_m (x_s - x_m) - \phi_m (z_s - z_m) \\
-             \phi_m (y_s - y_m) - \psi_m (x_s - x_m)
+             \theta_m (x_s - x_m) - \varphi_m (z_s - z_m) \\
+             \varphi_m (y_s - y_m) - \psi_m (x_s - x_m)
            \end{bmatrix}
         &= \begin{bmatrix}
             \psi_m \overline{z} - \theta_m \overline{y} \\
-            \theta_m \overline{x} - \phi_m \overline{z} \\
-            \phi_m \overline{y} - \psi_m \overline{x}
+            \theta_m \overline{x} - \varphi_m \overline{z} \\
+            \varphi_m \overline{y} - \psi_m \overline{x}
         \end{bmatrix} = \\
         &= \begin{bmatrix}
             \phantom{-}0 & \phantom{-}\overline{z} & -\overline{y} \\
@@ -195,7 +197,7 @@
             \phantom{-}\overline{y} & -\overline{x} & \phantom{-}0
         \end{bmatrix}
         \begin{bmatrix}
-            \phi_m \\
+            \varphi_m \\
             \psi_m \\
             \theta_m
         \end{bmatrix}
@@ -209,7 +211,7 @@
             u_s \\
             v_s \\
             w_s \\
-            \phi_s \\
+            \varphi_s \\
             \psi_s \\
             \theta_s
         \end{bmatrix}
@@ -225,7 +227,7 @@
             u_m \\
             v_m \\
             w_m \\
-            \phi_m \\
+            \varphi_m \\
             \psi_m \\
             \theta_m
         \end{bmatrix}
@@ -237,7 +239,7 @@
             u_s \\
             v_s \\
             w_s \\
-            \phi_s \\
+            \varphi_s \\
             \psi_s \\
             \theta_s
         \end{bmatrix}
@@ -253,7 +255,7 @@
             u_m \\
             v_m \\
             w_m \\
-            \phi_m \\
+            \varphi_m \\
             \psi_m \\
             \theta_m
         \end{bmatrix}
@@ -271,9 +273,9 @@
             k_{m,u} u_m + \sum_{i=1}^n k_{s,u,i} u_{s,i} &= \Null \\
             k_{m,v} v_m + \sum_{i=1}^n k_{s,v,i} v_{s,i} &= \Null \\
             k_{m,w} w_m + \sum_{i=1}^n k_{s,w,i} w_{s,i} &= \Null \\
-            k_{m,\phi} \phi_m + \sum_{i=1}^n
+            k_{m,\varphi} \varphi_m + \sum_{i=1}^n
             \left(
-                k_{s,\phi,i} \phi_{s,i}
+                k_{s,\varphi,i} \varphi_{s,i}
                 + k_{s,v,i} v_{s,i} \overline{z}_{i}
                 + k_{s,w,i} w_{s,i} \overline{y}_{i}
         \right) &= \Null \\
@@ -367,7 +369,7 @@ Therefore, after filling in the coefficients:
         u_{s,1} \\
         v_{s,1} \\
         w_{s,1} \\
-        \phi_{s,1} \\
+        \varphi_{s,1} \\
         \psi_{s,1} \\
         \theta_{s,1}
     \end{bmatrix}
@@ -383,7 +385,7 @@ Therefore, after filling in the coefficients:
         u_m \\
         v_m \\
         w_m \\
-        \phi_m \\
+        \varphi_m \\
         \psi_m \\
         \theta_m
     \end{bmatrix} \\
@@ -391,7 +393,7 @@ Therefore, after filling in the coefficients:
         u_{s,2} \\
         v_{s,2} \\
         w_{s,2} \\
-        \phi_{s,2} \\
+        \varphi_{s,2} \\
         \psi_{s,2} \\
         \theta_{s,2}
     \end{bmatrix}
@@ -407,7 +409,7 @@ Therefore, after filling in the coefficients:
         u_m \\
         v_m \\
         w_m \\
-        \phi_m \\
+        \varphi_m \\
         \psi_m \\
         \theta_m
     \end{bmatrix} \\
@@ -415,7 +417,7 @@ Therefore, after filling in the coefficients:
         u_{s,3} \\
         v_{s,3} \\
         w_{s,3} \\
-        \phi_{s,3} \\
+        \varphi_{s,3} \\
         \psi_{s,3} \\
         \theta_{s,3}
     \end{bmatrix}
@@ -431,7 +433,7 @@ Therefore, after filling in the coefficients:
         u_m \\
         v_m \\
         w_m \\
-        \phi_m \\
+        \varphi_m \\
         \psi_m \\
         \theta_m
     \end{bmatrix} \\
@@ -439,7 +441,7 @@ Therefore, after filling in the coefficients:
         u_{s,4} \\
         v_{s,4} \\
         w_{s,4} \\
-        \phi_{s,4} \\
+        \varphi_{s,4} \\
         \psi_{s,4} \\
         \theta_{s,4}
     \end{bmatrix}
@@ -455,7 +457,7 @@ Therefore, after filling in the coefficients:
         u_m \\
         v_m \\
         w_m \\
-        \phi_m \\
+        \varphi_m \\
         \psi_m \\
         \theta_m
     \end{bmatrix}
@@ -468,25 +470,25 @@ When all put together:
         u_{s,1} \\
         v_{s,1} \\
         w_{s,1} \\
-        \phi_{s,1} \\
+        \varphi_{s,1} \\
         \psi_{s,1} \\
         \theta_{s,1} \\
         u_{s,2} \\
         v_{s,2} \\
         w_{s,2} \\
-        \phi_{s,2} \\
+        \varphi_{s,2} \\
         \psi_{s,2} \\
         \theta_{s,2} \\
         u_{s,3} \\
         v_{s,3} \\
         w_{s,3} \\
-        \phi_{s,3} \\
+        \varphi_{s,3} \\
         \psi_{s,3} \\
         \theta_{s,3} \\
         u_{s,4} \\
         v_{s,4} \\
         w_{s,4} \\
-        \phi_{s,4} \\
+        \varphi_{s,4} \\
         \psi_{s,4} \\
         \theta_{s,4}
     \end{bmatrix}
@@ -520,7 +522,7 @@ When all put together:
         u_m \\
         v_m \\
         w_m \\
-        \phi_m \\
+        \varphi_m \\
         \psi_m \\
         \theta_m
     \end{bmatrix}
@@ -529,7 +531,7 @@ When all put together:
 It can be read as:
 \begin{eqarray}
     u_{s,1} &= u_m -\psi_m + \theta_m \\
-    v_{s,1} &= v_m \phi_m - \theta_m \\
+    v_{s,1} &= v_m \varphi_m - \theta_m \\
     \vdots \\
     \theta_{s,4} &= \theta_m
 \end{eqarray}
@@ -794,6 +796,8 @@ equations such that:
 
 \subsection{Recap}
 
+\subsubsection{Stiffness Matrix}
+
 ROD Stiffness Matrix:
 \begin{equation}
     \m{K}_l^e = \frac{E^e A^e}{L^e} \begin{bmatrix}
@@ -806,14 +810,18 @@ ROD Stiffness Matrix:
 
 ROD Transformation Matrix:
 \begin{eqarray}
-    \m{u}_g &=
+    \m{u}_l &= \prescript{e}{}{\m{T}} \m{u}_g \\
+    \prescript{e}{}{\m{T}}^T \m{u}_l &=
+        \prescript{e}{}{\m{T}}^T \prescript{e}{}{\m{T}} \m{u}_g \\
+    \prescript{e}{}{\m{T}}^T \m{u}_l &= \m{I} \m{u}_g \\
+    \prescript{e}{}{\m{T}}^T \m{u}_l &= \m{u}_g \\
+    \prescript{e}{}{\m{T}} &=
     \begin{bmatrix}
         \phantom{-}c & s & \phantom{-}0 & 0 \\
         -s & c & \phantom{-}0 & 0 \\
         \phantom{-}0 & 0 & \phantom{-}c & s \\
         \phantom{-}0 & 0 & -s & c \\
-    \end{bmatrix} \m{u}_l \\
-    \m{u}_g &= \m{T} \m{u}_l
+    \end{bmatrix} \\
 \end{eqarray}
 
 where:
@@ -825,13 +833,370 @@ where:
 Then the \textbf{global master stiffness matrix} is:
 
 \begin{equation}
-    \m{T}^T \m{K}_l^e \m{T} \m{u}_g = \m{T}^T \m{f}_l
+    \prescript{e}{}{\m{T}}^T \m{K}_l^e \prescript{e}{}{\m{T}} \m{u}_g
+    = \prescript{e}{}{\m{T}}^T \m{f}_l
 \end{equation}
 
 Or:
 \begin{equation}
     \m{K}_g \m{u}_g = \m{f}_g
 \end{equation}
+
+
+\subsubsection{MPC Application}
+
+Afterwards the \textbf{MPCs} are applied:
+\begin{equation}
+    \m{u}_s = \m{\closure{T}} \m{u}_m
+\end{equation}
+
+This, when applied to the whole model:
+\begin{equation}
+    \begin{bmatrix}
+        \m{u}_u  \\
+        \m{u}_m \\
+        \m{u}_s \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{I} & \m{0} \\
+        \m{0} & \m{I} \\
+        \m{0} & \m{\closure{T}} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+    \end{bmatrix}
+\end{equation}
+
+with \textbf{transformation matrix} $ \m{T} $ being:
+\begin{equation}
+    \m{T} = \begin{bmatrix}
+        \m{I} & \m{0} \\
+        \m{0} & \m{I} \\
+        \m{0} & \m{\closure{T}} \\
+    \end{bmatrix}
+\end{equation}
+
+Applying the transformation matrix to get \textbf{modified master equation system}:
+\begin{eqarray}
+    \m{T}^T \m{K}_g \m{T} \m{\hat{u}}_g &= \m{T}^T \m{f}_g \\
+    \m{\hat{K}}_g \m{\hat{u}}_g &= \m{\hat{f}}_g
+\end{eqarray}
+
+Where $ \m{\hat{u}}_g = \begin{bmatrix} \m{u}_{g,u} & \m{u}_{g,m} \end{bmatrix}^T $.
+
+From now on, the subscript $ _g $ (\textit{as global}) is implied.
+
+
+\subsubsection{Rotated Nodal Basis}
+
+When a node or an SPC is defined as a \textbf{rotated}/\textbf{skewed} or in
+a different type of Coordinate system (e.g. cylindrical) a transformation matrix
+needs to be applied to such nodes.
+
+\textbf{Cartesian Coordinate system} definition by angle (2D):
+\begin{equation}
+    \m{u}_l = \m{T} \m{u}_g
+\end{equation}
+
+Unpacked:
+\begin{equation}
+    \begin{bmatrix}
+        u_l \\
+        w_l \\
+        \psi_l \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \phantom{-}\cos \alpha & \sin \alpha & 0 \\
+        -\sin \alpha & \cos \alpha & 0 \\
+        0 & 0 & 1 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_g \\
+        w_g \\
+        \psi_g \\
+    \end{bmatrix}
+\end{equation}
+
+\textbf{Cartesian Coordinate system} definition by vectors (2D):
+
+when a \textbf{CSYS} is defined by an \textbf{origin} and \textbf{two vectors}
+$ \m{x} = \begin{pmatrix} x_1 & x_2 & x_3 \end{pmatrix} $
+and $ \m{y} = \begin{pmatrix} y_1 & y_2 & y_3 \end{pmatrix} $,
+then for a Cartesian CSYS it suffices to:
+\begin{eqarray}
+    \m{\closure{x}} &= \frac{\m{x}}{||\m{x}||} \\
+    \m{\closure{y}} &= \frac{\m{y}}{||\m{y}||} \\
+    \m{\closure{z}} &= \m{\closure{x}} \times \m{\closure{y}} \\
+\end{eqarray}
+
+The transformation relation:
+\begin{equation}
+    \m{u}_l = \m{T} \m{u}_g
+\end{equation}
+
+when unpacked:
+\begin{equation}
+    \begin{bmatrix}
+        u_l \\
+        w_l \\
+        \psi_l \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{x} \\
+        \m{y} \\
+        \m{z} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_g \\
+        w_g \\
+        \psi_g \\
+    \end{bmatrix}
+\end{equation}
+
+For a \textbf{2D case} just \textbf{one vector} is enough, the
+$ \m{\closure{z}} = \begin{pmatrix} 0 & 0 & 1 \end{pmatrix} $ and following relations
+apply:
+\begin{eqarray}
+    \m{\closure{x}} &= \m{\closure{y}} \times \m{\closure{z}} \\
+    \m{\closure{y}} &= \m{\closure{z}} \times \m{\closure{x}} \\
+    \m{\closure{z}} &= \m{\closure{x}} \times \m{\closure{y}} \\
+\end{eqarray}
+
+This means that a \textbf{CSYS} defined by an \textbf{origin} point
+$ \m{O} = \begin{pmatrix} x_O & y_O & z_O \end{pmatrix} $,
+point laying on \textbf{x axis}
+$ \m{P}_x = \begin{pmatrix} x_{P_x} & y_{P_x} & z_{P_x} \end{pmatrix} $ and a
+point laying in \textbf{xy plane}
+$ \m{P}_{xy} = \begin{pmatrix} x_{P_{xy}} & y_{P_{xy}} & z_{P_{xy}} \end{pmatrix} $
+define a CSYS followingly:
+\begin{eqarray}
+    \m{x} &= \begin{pmatrix} x_{P_x} - x_O & y_{P_x} - y_O & z_{P_x} - z_O \end{pmatrix} \\
+    \m{\closure{x}} &= \frac{\m{x}}{||\m{x}||} \\
+    \m{\hat{y}} &= \begin{pmatrix} x_{P_{xy}} - x_O & y_{P_{xy}} - y_O & z_{P_{xy}} - z_O \end{pmatrix} \\
+    \m{\closure{\hat{y}}} &= \frac{\m{\hat{y}}}{||\m{\hat{y}}||} \\
+    \m{\closure{z}} &= \m{\closure{x}} \times \m{\closure{\hat{y}}} \\
+    \m{\closure{y}} &= \m{\closure{z}} \times \m{\closure{x}} \\
+\end{eqarray}
+
+
+\textbf{Cylindrical Coordinate system} definition (2D):
+
+\begin{qbox}
+    The basic relation between a point in \textbf{cartesian} and \textbf{cylindrical}
+    CSYS is (when the cartesian CSYS has the same origin as the cylindrical one
+    and both CSYS $ z $ axes overlay):
+    \begin{eqarray}
+        x &= r \cos \varphi \\
+        y &= r \sin \varphi \\
+        z &= z \\
+    \end{eqarray}
+
+     in one direction and:
+     \begin{eqarray}
+         r &= \sqrt{x^2 + y^2} \\
+         \varphi &= \left\{ \begin{array}{cc}
+                    indeterminate & if\ x = 0\ and\ y = 0 \\
+                    \arcsin \frac{y}{r} & if\ x \ge 0 \\
+                    -\arcsin \frac{y}{r} + \pi & if\ x < 0\ and\ y \ge 0 \\
+                    -\arcsin \frac{y}{r} + \pi & if\ x < 0\ and\ y < 0 \\
+                 \end{array} \right.
+     \end{eqarray}
+
+     in the other. One can also use the $ \arctan $ function to compute $ \varphi $:
+     \begin{equation}
+         \varphi = \left\{ \begin{array}{cc}
+                 indeterminate & if\ x = 0\ and\ y = 0 \\
+                 \frac{\pi}{2}\frac{y}{|y|} & if\ x = 0\ and\ y \ne 0 \\
+                 \arctan \frac{y}{x} & if\ x > 0 \\
+                 \arctan \frac{y}{x} + \pi & if\ x < 0\ and\ y \ge 0 \\
+                 \arctan \frac{y}{x} - \pi & if\ x < 0\ and\ y < 0 \\
+             \end{array} \right.
+     \end{equation}
+
+     This is also called the \textbf{atan2(y, x)} function!
+
+     To transform node coordinates from \textbf{cartesian} to \textbf{cylindrical},
+     three transforms are in order:
+
+     \begin{enumerate}
+         \item translate the coordinates so that \textbf{origin} of the new
+             CSYS conforms to the \textbf{origin} of the \textbf{cylidrical}
+             CSYS.
+
+             \begin{equation}
+                 \m{x}_1 = \m{T}_T \m{x}_0
+             \end{equation}
+
+             \begin{equation}
+                 \begin{bmatrix}
+                     x_1 \\
+                     y_1 \\
+                     z_1 \\
+                     1 \\
+                 \end{bmatrix}
+                 = \begin{bmatrix}
+                     1 & 0 & 0 & -x_O^c \\
+                     0 & 1 & 0 & -y_O^c \\
+                     0 & 0 & 1 & -z_O^c \\
+                     0 & 0 & 0 & \phantom{-}1 \\
+                 \end{bmatrix}
+                 \begin{bmatrix}
+                     x_0 \\
+                     y_0 \\
+                     z_0 \\
+                     1 \\
+                 \end{bmatrix}
+             \end{equation}
+
+             where $ \m{x}_O^c $ denotes the \textbf{cylindrical} CSYS origin
+             and $ \m{T}_T $ denotes the translation matrix.
+
+        \item \textbf{rotate} the node to a new \textbf{cartesian} CSYS so that
+            the new CSYS \textbf{x-axis} conforms to the cylindrical CSYS
+            \textbf{r-axis} and the new CSYS \textbf{z-axis} conforms to the
+            cylindrical \textbf{z-axis}.
+
+            \begin{equation}
+                \m{x}_2 = \m{T}_R \m{x}_1
+            \end{equation}
+
+            When the cylindrical CSYS is defined by three points - \textbf{origin}
+            $ \m{x}_O^c $, point on \textbf{r-axis} $ \m{x}_{R}^c $
+            and a point in \textbf{rz-plane} $ \m{x}_{RZ}^c $, then:
+
+            \begin{equation}
+                \vec{\m{r}} = \m{x}_R^c - \m{x}_O^c
+            \end{equation}
+
+            \begin{equation}
+                \m{\closure{x}}_{OR}^c = \frac{\m{x}_{OR}^c}{|| \m{x}_{OR}^c ||}
+            \end{equation}
+
+        \item transform the coordinates to the \textbf{cartesian} CSYS.
+
+    \end{enumerate}
+
+\end{qbox}
+
+
+
+\subsubsection{SPC Application}
+
+Then to solve the \textbf{master stiffness equations} for prescribed \textbf{BCs}
+partitioned to \textbf{unconstrained} and \textbf{master} DOFs such as:
+\begin{equation}
+    \begin{bmatrix}
+        \m{K}_{uu} & \m{\hat{K}}_{um} \\
+        \m{\hat{K}}_{um}^T & \m{\hat{K}}_{mm} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{f}_{u} \\
+        \m{f}_m \\
+    \end{bmatrix}
+\end{equation}
+
+where:
+\begin{eqarray}
+    \m{\hat{K}}_{um} &= \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
+    \m{\hat{K}}_{mm} &= \m{K}_{mm} + \m{K}_{ms} \m{\closure{T}}
+                      + (\m{K}_{ms} \m{\closure{T}})^T
+                      + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}}
+\end{eqarray}
+
+Any of these \textbf{DOFs} can be constrained, so this partitioning scheme looses
+all purposes. Therefore the matrix is repartitioned again into
+\textbf{independent} and \textbf{constrained} partitions:
+\begin{equation}
+    \begin{bmatrix}
+        \m{K}_{ii} & \m{K}_{ic} \\
+        \m{K}_{ic}^T & \m{K}_{cc} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_i \\
+        \m{u}_c \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{f}_{i} \\
+        \m{f}_c \\
+    \end{bmatrix}
+\end{equation}
+
+
+\subsubsection{Solving Linear Equations}
+
+Where the \textbf{unknowns} are $ \m{u}_i $, $ \m{f}_c $:
+\begin{equation}
+    \begin{bmatrix}
+        \m{K}_{ii} & \m{K}_{ic} \\
+        \m{K}_{ic}^T & \m{K}_{cc} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \boxed{\m{u}_i} \\
+        \m{u}_c \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{f}_i \\
+        \boxed{\m{f}_c} \\
+    \end{bmatrix}
+\end{equation}
+
+Unpacking the equations:
+\begin{eqarray}
+    \m{K}_{ii} \boxed{\m{u}_i} &+ \m{K}_{ic} \m{u}_c &= \m{f}_i \\
+    \m{K}_{ic}^T \boxed{\m{u}_i} &+ \m{K}_{cc} \m{u}_c &= \boxed{\m{f}_c} \\
+\end{eqarray}
+
+Then first solve for the \textbf{unknown displacements}:
+\begin{eqarray}
+    \m{K}_{ii} \boxed{\m{u}_i} &= \m{f}_u - \m{K}_{ic} \m{u}_c \\
+    \boxed{\m{u}_i} &= \m{K}_{ii}^{-1} \left( \m{f}_i - \m{K}_{ic} \m{u}_c \right) \\
+\end{eqarray}
+
+Lastly solve for the \textbf{unknown reaction forces}:
+\begin{equation}
+    \boxed{\m{f}_c} = \m{K}_{ii} \m{u}_i + \m{K}_{ic} \m{u}_c
+\end{equation}
+
+
+\subsubsection{Recovering Full Displacement Vector}
+
+The full displacement vector is then recovered:
+\begin{eqarray}
+    \m{T} &= \begin{bmatrix}
+        \m{I} & \m{0} \\
+        \m{0} & \m{I} \\
+        \m{0} & \m{\closure{T}} \\
+    \end{bmatrix} \\
+    \m{\hat{u}} &= \begin{bmatrix}
+        \m{u}_i \\
+        \m{u}_c \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+    \end{bmatrix} \\
+    \m{u}_g &= \m{T} \m{\hat{u}} \\
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+        \m{u}_s \\
+    \end{bmatrix}
+    &= \begin{bmatrix}
+        \m{I} & \m{0} \\
+        \m{0} & \m{I} \\
+        \m{0} & \m{\closure{T}} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+    \end{bmatrix}
+\end{eqarray}
+
 
 
 
