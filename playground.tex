@@ -1062,18 +1062,51 @@ define a CSYS followingly:
             \end{equation}
 
             When the cylindrical CSYS is defined by three points - \textbf{origin}
-            $ \m{x}_O^c $, point on \textbf{r-axis} $ \m{x}_{R}^c $
+             $ \m{x}_O^c = \begin{bmatrix} x_O^C & y_O^c & z_O^c \end{bmatrix}^T $,
+             point on \textbf{r-axis} $ \m{x}_{R}^c $
             and a point in \textbf{rz-plane} $ \m{x}_{RZ}^c $, then:
 
             \begin{equation}
-                \vec{\m{r}} = \m{x}_R^c - \m{x}_O^c
+                \vec{\m{r}} = \frac{\m{x}_R^c - \m{x}_O^c}{||\m{x}_R^c - \m{x}_O^c||}
             \end{equation}
 
             \begin{equation}
-                \m{\closure{x}}_{OR}^c = \frac{\m{x}_{OR}^c}{|| \m{x}_{OR}^c ||}
+                \hat{\m{z}} = \frac{\m{x}_{RZ}^c - \m{x}_O^c}{||\m{x}_{RZ}^c - \m{x}_O^c||}
             \end{equation}
 
-        \item transform the coordinates to the \textbf{cartesian} CSYS.
+            \begin{equation}
+                \vec{\m{y}} = \hat{\m{z}} \times \vec{\m{r}}
+            \end{equation}
+
+            \begin{equation}
+                \vec{\m{z}} = \vec{\m{r}} \times \vec{\m{y}}
+            \end{equation}
+
+            then the transformation can be written:
+            \begin{equation}
+                \begin{bmatrix}
+                    x_2 \\
+                    y_2 \\
+                    z_2 \\
+                    1 \\
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \vec{\m{r}}^T & 0 \\
+                    \vec{\m{y}}^T & 0 \\
+                    \vec{\m{z}}^T & 0 \\
+                    \vec{\m{0}}^T & 1 \\
+                \end{bmatrix}
+                \begin{bmatrix}
+                    x_1 \\
+                    y_1 \\
+                    z_1 \\
+                    1 \\
+                \end{bmatrix}
+            \end{equation}
+
+             where $ \vec{\m{0}} = \begin{pmatrix} 0 & 0 & 0 \end{pmatrix}^T $
+
+        \item transform the coordinates to the \textbf{cylindrical} CSYS.
 
     \end{enumerate}
 
