@@ -56,6 +56,10 @@
 % null symbol
 \newcommand{\Null}{\text{\O}}
 
+% atan2 math symbol
+\DeclareMathOperator{\atantwo}{atan2}
+\DeclareMathOperator{\arctantwo}{arctan2}
+
 \newcommand{\closure}[2][3]{%
 {}\mkern#1mu\overline{\mkern-#1mu#2}}
 
@@ -1014,7 +1018,7 @@ define a CSYS followingly:
              \end{array} \right.
      \end{equation}
 
-     This is also called the \textbf{atan2(y, x)} function!
+     This is also called the $ \atantwo (y, x) $ function!
 
      To transform node coordinates from \textbf{cartesian} to \textbf{cylindrical},
      three transforms are in order:
@@ -1090,7 +1094,7 @@ define a CSYS followingly:
                     z_2 \\
                     1 \\
                 \end{bmatrix}
-                \begin{bmatrix}
+                = \begin{bmatrix}
                     \vec{\m{r}}^T & 0 \\
                     \vec{\m{y}}^T & 0 \\
                     \vec{\m{z}}^T & 0 \\
@@ -1104,9 +1108,49 @@ define a CSYS followingly:
                 \end{bmatrix}
             \end{equation}
 
-             where $ \vec{\m{0}} = \begin{pmatrix} 0 & 0 & 0 \end{pmatrix}^T $
+             where $ \vec{\m{0}} = \begin{bmatrix} 0 & 0 & 0 \end{bmatrix}^T $
+
+             Combining $ \m{T}_R $ and $ \m{T}_T $ together:
+             \begin{equation}
+                 \m{T} = \m{T}_R \m{T}_T
+             \end{equation}
+
+             \begin{equation}
+                 \m{T} = \begin{bmatrix}
+                     r_1 & r_2 & r_3 & 0 \\
+                     y_1 & y_2 & y_3 & 0 \\
+                     z_1 & z_2 & z_3 & 0 \\
+                 \end{bmatrix}
+                 \begin{bmatrix}
+                     1 & 0 & 0 & -x_O^c \\
+                     0 & 1 & 0 & -y_O^c \\
+                     0 & 0 & 1 & -z_O^c \\
+                     0 & 0 & 0 & \phantom{-}1 \\
+                 \end{bmatrix}
+             \end{equation}
+
+             \begin{equation}
+                 \m{T} = \begin{bmatrix}
+                     r_1 & r_2 & r_3 & -r_1 x_O^c -r_2 y_O^c -r_3 z_O^c  \\
+                     y_1 & y_2 & y_3 & -y_1 x_O^c -y_2 y_O^c -y_3 z_O^c  \\
+                     z_1 & z_2 & z_3 & -z_1 x_O^c -z_2 y_O^c -z_3 z_O^c  \\
+                 \end{bmatrix}
+             \end{equation}
+
 
         \item transform the coordinates to the \textbf{cylindrical} CSYS.
+            \begin{equation}
+                \begin{bmatrix}
+                    r \\
+                    \varphi \\
+                    z \\
+                \end{bmatrix}
+                = \begin{bmatrix}
+                    \sqrt{x_2^2 + y_2^2} \\
+                    \atantwo \left(y_2, x_2\right) \\
+                    z_2 \\
+                \end{bmatrix}
+            \end{equation}
 
     \end{enumerate}
 
