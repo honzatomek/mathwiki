@@ -54,6 +54,10 @@
 % null symbol
 \newcommand{\Null}{\text{\O}}
 
+% atan2 math symbol
+\DeclareMathOperator{\atantwo}{atan2}
+\DeclareMathOperator{\arctantwo}{arctan2}
+
 \newcommand{\closure}[2][3]{%
 {}\mkern#1mu\overline{\mkern-#1mu#2}}
 
@@ -88,6 +92,21 @@
             \\\\\hline
         \end{tabular}
     \end{center}
+}
+
+\newenvironment{qbox}
+{
+%\centering{\huge{?}}
+\begin{center}
+    \repeatit[42]{?}{\ }
+\end{center}
+%\hrule
+}
+{
+%\hrule
+\begin{center}
+    \repeatit[42]{?`}{\ }
+\end{center}
 }
 
 \newenvironment{eqarray}
@@ -160,6 +179,414 @@ involve changes only in those columns and rows of $ \m{M} $, $ \m{C} $,
 $ \m{K} $ and $ \m{f} $ that are actually affected. In practice,
 the transformation is carried out effectively on the element level just prior
 to adding the element matrices to the global matrices.
+
+
+\newpage
+\section{Cartesian CSYS}
+
+When a node or an SPC is defined as a \textbf{rotated}/\textbf{skewed} or in
+a different type of Coordinate system (e.g. cylindrical) a transformation matrix
+needs to be applied to such nodes.
+
+\textbf{Cartesian Coordinate system} definition by angle (2D):
+\begin{equation}
+    \m{u}_l = \m{T} \m{u}_g
+\end{equation}
+
+Unpacked:
+\begin{equation}
+    \begin{bmatrix}
+        u_l \\
+        w_l \\
+        \psi_l \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \phantom{-}\cos \alpha & \sin \alpha & 0 \\
+        -\sin \alpha & \cos \alpha & 0 \\
+        0 & 0 & 1 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_g \\
+        w_g \\
+        \psi_g \\
+    \end{bmatrix}
+\end{equation}
+
+%TODO: \textbf{Cartesian Coordinate system} definition by angle (3D):
+
+
+\textbf{Cartesian Coordinate system} definition by vectors (3D):
+
+when a \textbf{CSYS} is defined by an \textbf{origin} and \textbf{two vectors}
+$ \m{x} = \begin{pmatrix} x_1 & x_2 & x_3 \end{pmatrix} $
+and $ \m{y} = \begin{pmatrix} y_1 & y_2 & y_3 \end{pmatrix} $,
+then for a Cartesian CSYS it suffices to:
+\begin{eqarray}
+    \m{\closure{x}} &= \frac{\m{x}}{||\m{x}||} \\
+    \m{\closure{y}} &= \frac{\m{y}}{||\m{y}||} \\
+    \m{\closure{z}} &= \m{\closure{x}} \times \m{\closure{y}} \\
+\end{eqarray}
+
+The transformation relation:
+\begin{equation}
+    \m{u}_l = \m{T} \m{u}_g
+\end{equation}
+
+when unpacked:
+\begin{equation}
+    \begin{bmatrix}
+        u_l \\
+        v_l \\
+        w_l \\
+        \phi_l \\
+        \psi_l \\
+        \rho_l \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{x} & \m{0} \\
+        \m{y} & \m{0} \\
+        \m{z} & \m{0} \\
+        \m{0} & \m{x} \\
+        \m{0} & \m{y} \\
+        \m{0} & \m{z} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_g \\
+        v_g \\
+        w_g \\
+        \phi_g \\
+        \psi_g \\
+        \rho_g \\
+    \end{bmatrix}
+\end{equation}
+
+Where $ \m{0} $ is a $ 3 \times 1 $ zero vector.
+
+For a \textbf{2D case} just \textbf{one vector} is enough, the
+$ \m{\closure{z}} = \begin{pmatrix} 0 & 0 & 1 \end{pmatrix} $ and following relations
+apply:
+\begin{eqarray}
+    \m{\closure{x}} &= \m{\closure{y}} \times \m{\closure{z}} \\
+    \m{\closure{y}} &= \m{\closure{z}} \times \m{\closure{x}} \\
+    \m{\closure{z}} &= \m{\closure{x}} \times \m{\closure{y}} \\
+\end{eqarray}
+
+This means that a \textbf{CSYS} defined by an \textbf{origin} point
+$ \m{O} = \begin{pmatrix} x_O & y_O & z_O \end{pmatrix} $,
+point laying on \textbf{x axis}
+$ \m{P}_x = \begin{pmatrix} x_{P_x} & y_{P_x} & z_{P_x} \end{pmatrix} $ and a
+point laying in \textbf{xy plane}
+$ \m{P}_{xy} = \begin{pmatrix} x_{P_{xy}} & y_{P_{xy}} & z_{P_{xy}} \end{pmatrix} $
+define a CSYS followingly:
+\begin{eqarray}
+    \m{x} &= \begin{pmatrix} x_{P_x} - x_O & y_{P_x} - y_O & z_{P_x} - z_O \end{pmatrix} \\
+    \m{\closure{x}} &= \frac{\m{x}}{||\m{x}||} \\
+    \m{\hat{y}} &= \begin{pmatrix} x_{P_{xy}} - x_O & y_{P_{xy}} - y_O & z_{P_{xy}} - z_O \end{pmatrix} \\
+    \m{\closure{\hat{y}}} &= \frac{\m{\hat{y}}}{||\m{\hat{y}}||} \\
+    \m{\closure{z}} &= \m{\closure{x}} \times \m{\closure{\hat{y}}} \\
+    \m{\closure{y}} &= \m{\closure{z}} \times \m{\closure{x}} \\
+\end{eqarray}
+
+
+\newpage
+\section{Cylidrical CSYS}
+
+The basic relation between a point in \textbf{cartesian} and \textbf{cylindrical}
+CSYS is (when the cartesian CSYS has the same origin as the cylindrical one
+and both CSYS $ z $ axes overlay):
+\begin{eqarray}
+    x &= r \cos \varphi \\
+    y &= r \sin \varphi \\
+    z &= z \\
+\end{eqarray}
+
+ in one direction and:
+ \begin{eqarray}
+     r &= \sqrt{x^2 + y^2} \\
+     \varphi &= \left\{ \begin{array}{cc}
+                indeterminate & if\ x = 0\ and\ y = 0 \\
+                \arcsin \frac{y}{r} & if\ x \ge 0 \\
+                -\arcsin \frac{y}{r} + \pi & if\ x < 0\ and\ y \ge 0 \\
+                -\arcsin \frac{y}{r} + \pi & if\ x < 0\ and\ y < 0 \\
+             \end{array} \right.
+ \end{eqarray}
+
+ in the other. One can also use the $ \arctan $ function to compute $ \varphi $:
+ \begin{equation}
+     \varphi = \left\{ \begin{array}{cc}
+             indeterminate & if\ x = 0\ and\ y = 0 \\
+             \frac{\pi}{2}\frac{y}{|y|} & if\ x = 0\ and\ y \ne 0 \\
+             \arctan \frac{y}{x} & if\ x > 0 \\
+             \arctan \frac{y}{x} + \pi & if\ x < 0\ and\ y \ge 0 \\
+             \arctan \frac{y}{x} - \pi & if\ x < 0\ and\ y < 0 \\
+         \end{array} \right.
+ \end{equation}
+
+ This is also called the $ \atantwo (y, x) $ function!
+
+ To transform node coordinates from \textbf{cartesian} to \textbf{cylindrical},
+ three transforms are in order:
+
+ \begin{enumerate}
+     \item translate the coordinates so that \textbf{origin} of the new
+         CSYS conforms to the \textbf{origin} of the \textbf{cylidrical}
+         CSYS.
+
+         \begin{equation}
+             \m{x}_1 = \m{T}_T \m{x}_0
+         \end{equation}
+
+         \begin{equation}
+             \begin{bmatrix}
+                 x_1 \\
+                 y_1 \\
+                 z_1 \\
+                 1 \\
+             \end{bmatrix}
+             = \begin{bmatrix}
+                 1 & 0 & 0 & -x_O^c \\
+                 0 & 1 & 0 & -y_O^c \\
+                 0 & 0 & 1 & -z_O^c \\
+                 0 & 0 & 0 & \phantom{-}1 \\
+             \end{bmatrix}
+             \begin{bmatrix}
+                 x_0 \\
+                 y_0 \\
+                 z_0 \\
+                 1 \\
+             \end{bmatrix}
+         \end{equation}
+
+         where $ \m{x}_O^c $ denotes the \textbf{cylindrical} CSYS origin
+         and $ \m{T}_T $ denotes the translation matrix.
+
+    \item \textbf{rotate} the node to a new \textbf{cartesian} CSYS so that
+        the new CSYS \textbf{x-axis} conforms to the cylindrical CSYS
+        \textbf{r-axis} and the new CSYS \textbf{z-axis} conforms to the
+        cylindrical \textbf{z-axis}.
+
+        \begin{equation}
+            \m{x}_2 = \m{T}_R \m{x}_1
+        \end{equation}
+
+        When the cylindrical CSYS is defined by three points - \textbf{origin}
+         $ \m{x}_O^c = \begin{bmatrix} x_O^C & y_O^c & z_O^c \end{bmatrix}^T $,
+         point on \textbf{r-axis} $ \m{x}_{R}^c $
+        and a point in \textbf{rz-plane} $ \m{x}_{RZ}^c $, then:
+
+        \begin{equation}
+            \vec{\m{r}} = \frac{\m{x}_R^c - \m{x}_O^c}{||\m{x}_R^c - \m{x}_O^c||}
+        \end{equation}
+
+        \begin{equation}
+            \hat{\m{z}} = \frac{\m{x}_{RZ}^c - \m{x}_O^c}{||\m{x}_{RZ}^c - \m{x}_O^c||}
+        \end{equation}
+
+        \begin{equation}
+            \vec{\m{y}} = \hat{\m{z}} \times \vec{\m{r}}
+        \end{equation}
+
+        \begin{equation}
+            \vec{\m{z}} = \vec{\m{r}} \times \vec{\m{y}}
+        \end{equation}
+
+        then the transformation can be written:
+        \begin{equation}
+            \begin{bmatrix}
+                x_2 \\
+                y_2 \\
+                z_2 \\
+                1 \\
+            \end{bmatrix}
+            = \begin{bmatrix}
+                \vec{\m{r}}^T & 0 \\
+                \vec{\m{y}}^T & 0 \\
+                \vec{\m{z}}^T & 0 \\
+                \vec{\m{0}}^T & 1 \\
+            \end{bmatrix}
+            \begin{bmatrix}
+                x_1 \\
+                y_1 \\
+                z_1 \\
+                1 \\
+            \end{bmatrix}
+        \end{equation}
+
+         where $ \vec{\m{0}} = \begin{bmatrix} 0 & 0 & 0 \end{bmatrix}^T $
+
+         Combining $ \m{T}_R $ and $ \m{T}_T $ together:
+         \begin{equation}
+             \m{T} = \m{T}_R \m{T}_T
+         \end{equation}
+
+         \begin{equation}
+             \m{T} = \begin{bmatrix}
+                 r_1 & r_2 & r_3 & 0 \\
+                 y_1 & y_2 & y_3 & 0 \\
+                 z_1 & z_2 & z_3 & 0 \\
+             \end{bmatrix}
+             \begin{bmatrix}
+                 1 & 0 & 0 & -x_O^c \\
+                 0 & 1 & 0 & -y_O^c \\
+                 0 & 0 & 1 & -z_O^c \\
+                 0 & 0 & 0 & \phantom{-}1 \\
+             \end{bmatrix}
+         \end{equation}
+
+         \begin{equation}
+             \m{T} = \begin{bmatrix}
+                 r_1 & r_2 & r_3 & -r_1 x_O^c -r_2 y_O^c -r_3 z_O^c  \\
+                 y_1 & y_2 & y_3 & -y_1 x_O^c -y_2 y_O^c -y_3 z_O^c  \\
+                 z_1 & z_2 & z_3 & -z_1 x_O^c -z_2 y_O^c -z_3 z_O^c  \\
+             \end{bmatrix}
+         \end{equation}
+
+
+    \item transform the coordinates to the \textbf{cylindrical} CSYS.
+        \begin{equation}
+            \begin{bmatrix}
+                r \\
+                \varphi \\
+                z \\
+            \end{bmatrix}
+            = \begin{bmatrix}
+                \sqrt{x_2^2 + y_2^2} \\
+                \atantwo \left(y_2, x_2\right) \\
+                z_2 \\
+            \end{bmatrix}
+        \end{equation}
+
+\end{enumerate}
+
+\newpage
+\begin{bbox}
+    A \textbf{cylindrical} coordinate system in FEM in the range of \textbf{small}
+    \textbf{displacements} is basically a Cartesian one, just skewed for each
+    node separately so that its \textbf{x} axis coincides with \textbf{r} axis.
+
+    Then the cylindrical to global coordinate transformation is such that:
+    \begin{equation}
+        \begin{bmatrix}
+            x \\
+            y \\
+            z \\
+        \end{bmatrix}_{global}
+        = \begin{bmatrix}
+            r_{11} & r_{12} & r_{13} \\
+            r_{21} & r_{22} & r_{23} \\
+            r_{31} & r_{32} & r_{33} \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            r \cos \varphi \\
+            r \sin \varphi \\
+            z \\
+        \end{bmatrix}_{local}
+        + \begin{bmatrix}
+            x \\
+            y \\
+            z \\
+        \end{bmatrix}_{origin}
+    \end{equation}
+
+    Therefore the Cartesian CSYS transformation matrix for definition of
+    boundary conditions is:
+
+    \begin{enumerate}
+        \item first subtract the cylindrical coordinate origin from the global
+            coordinates:
+            \begin{equation}
+                \begin{bmatrix}
+                    x \\
+                    y \\
+                    z \\
+                \end{bmatrix}_{local}
+                = \begin{bmatrix}
+                    x \\
+                    y \\
+                    z \\
+                \end{bmatrix}_{global}
+                - \begin{bmatrix}
+                    x \\
+                    y \\
+                    z \\
+                \end{bmatrix}_{origin}
+            \end{equation}
+
+        \item then create a transformation matrix that maps the global csys
+            to rotated one such that the \textbf{r} axis coincides with the
+            \textbf{x} axis, $ \M{\varphi} $ axis coincides with the new
+            \textbf{y} axis and \textbf{z} is the same:
+
+            \begin{equation}
+                \m{r}' = \frac{\m{x}_{local}}{|| \m{x}_{local} ||}
+            \end{equation}
+
+            \begin{equation}
+                \m{z} = \frac{\m{z}_{cyl}}{|| \m{z}_{cyl} ||}
+            \end{equation}
+
+            \begin{equation}
+                \M{\varphi} = \m{z} \times \m{r}'
+            \end{equation}
+
+            \begin{equation}
+                \m{r} = \M{\varphi} \times \m{z}
+            \end{equation}
+
+            the transformation matrix is then:
+            \begin{equation}
+                \m{T} = \begin{bmatrix}
+                    r_1 & r_2 & r_3 \\
+                    \varphi_1 & \varphi_2 & \varphi_3 \\
+                    z_1 & z_2 & z_3 \\
+                \end{bmatrix}
+            \end{equation}
+
+        \item This transformation matrix $ \m{T} $ is finally applied and
+            \textbf{BC}s are imposed.
+            \begin{equation}
+                \m{T}^T \m{K} \m{T} \m{\closure{u}} = \m{T}^T \m{f}
+            \end{equation}
+
+    \end{enumerate}
+
+\end{bbox}
+
+\begin{bbox}
+    If there already is a transformation matrix for the cylindrical system
+    prepared, such that:
+    \begin{equation}
+        \m{x}_{local} = \m{T}_{cyl} \left( \m{x}_{global} - \m{x}_{origin} \right)
+    \end{equation}
+
+    then:
+    \begin{equation}
+        r = \sqrt{x_{local}^2 + y_{local}^2}
+    \end{equation}
+
+    \begin{equation}
+        \varphi = \atantwo \frac{y_{local}}{x_{local}}
+    \end{equation}
+
+    \begin{equation}
+        z = z_{local}
+    \end{equation}
+
+    because $ \cos \varphi = x / r $ and $ \sin \varphi = y / r $,
+    then the new transformation matrix is composed:
+    \begin{equation}
+        \m{T} = \begin{bmatrix}
+            x / r & -y/r & 0 \\
+            y/r & x/r & 0 \\
+            0 & 0 & 1 \\
+        \end{bmatrix}
+    \end{equation}
+
+    and finally displacements are transformed from global to local:
+    \begin{equation}
+        \m{u}_{local} = \m{T} \m{T}_{cyl} \m{u}_{global}
+    \end{equation}
+\end{bbox}
 
 
 \newpage
