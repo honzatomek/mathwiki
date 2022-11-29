@@ -67,6 +67,9 @@
 % equal by definition
 \newcommand*\eqd{\stackrel{\triangle}{=}}
 
+% +=
+\newcommand*\eqp{\stackrel{+}{=}}
+
 % {name}[number of arguments][1st default value] etc..
 % the argument value is then inserted at #argument_number
 \newenvironment{bbox}[1][0.96]
@@ -137,13 +140,14 @@
 
 \subsection{Rotation Matrix}
 
-From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}\\
+From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}
 
 \begin{enumerate}
-    \item 2-D (in $\mathbb{R}^{2})$:\\
+    \item 2-D (in $\mathbb{R}^{2}$):
+
         Rotating an object to a new coordinate system:
 
-        \begin{figure}[h]
+        \begin{figure}[ht]
             \centering
             \includegraphics[width=0.35\textwidth]{img/RotationMatrix_1000}
             \caption{Rotating object}
@@ -167,7 +171,7 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}\\
             \mathbf{v}^{'} = \mathbf{T}_{\theta}\mathbf{v}_{0}
         .\end{equation}
 
-        \begin{figure}[h]
+        \begin{figure}[ht]
             \centering
             \includegraphics[width=0.5\textwidth]{img/RotationMatrixAxes_1000}
             \caption{Rotating Axes}
@@ -192,7 +196,7 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}\\
 
         This is the convention commonly used in textbooks.
 
-    \item 3-D ($\mathbb{R}^{3}$):\\
+    \item 3-D ($\mathbb{R}^{3}$):
 
         In $\mathbb{R}^{3}$, coordinate system rotations of the
         \textit{x-}, \textit{y-} and \textit{z-axis} in a counterclockwise
@@ -244,45 +248,47 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}\\
             \end{bmatrix}
         .\end{equation}
 
-    \item \textbf{Euler's angles of XYZ rotation:}\\
+    \item \textbf{Euler's angles of XYZ rotation:}
 
         With the order of \textit{xyz} rotation the rotation matrix is
         composed as:
 
         \begin{equation}
-            \begin{array}{ll}
-                \mathbf{T}
-                &= \mathbf{R}_{z}(\psi)\mathbf{R}_{y}(\theta)\mathbf{R}_{x}(\varphi) \\
-                &=
-                \begin{bmatrix}
-                    \cos \psi & \sin \psi & 0 \\
-                    -\sin \psi & \cos \psi & 0 \\
-                    0 & 0 & 1
-                \end{bmatrix}
-                \begin{bmatrix}
-                    \cos \theta & 0 & -\sin \theta \\
-                    0 & 1 & 0 \\
-                    \sin \theta & 0 & \cos \theta
-                \end{bmatrix}
-                \begin{bmatrix}
-                    1 & 0 & 0 \\
-                    0 & \cos \varphi & \sin \varphi \\
-                    0 & -\sin \varphi & \cos \varphi
-                \end{bmatrix} \\
-                &=
-                \begin{bmatrix}
-                    \cos \theta \cos \psi
-                    & \cos \psi \sin \theta \sin \varphi - \cos \varphi \sin \psi
-                    & \cos \varphi \cos \psi \sin \theta + \sin \varphi \sin \psi \\
-                    \cos \theta \sin \psi
-                    & \cos \varphi \cos \psi + \sin \theta \sin \varphi \sin \psi
-                    & \cos \varphi \sin \theta \sin \psi - \cos \psi \sin \varphi \\
-                    -\sin \theta
-                    & \cos \theta \sin \varphi
-                    & \cos \theta \cos \varphi
-                \end{bmatrix}
-            \end{array}
-        .\end{equation}
+            \scalebox{0.85}{
+                $ \begin{array}{ll}
+                    \mathbf{T}
+                    &= \mathbf{R}_{z}(\psi)\mathbf{R}_{y}(\theta)\mathbf{R}_{x}(\varphi) \\
+                    &=
+                    \begin{bmatrix}
+                        \cos \psi & \sin \psi & 0 \\
+                        -\sin \psi & \cos \psi & 0 \\
+                        0 & 0 & 1
+                    \end{bmatrix}
+                    \begin{bmatrix}
+                        \cos \theta & 0 & -\sin \theta \\
+                        0 & 1 & 0 \\
+                        \sin \theta & 0 & \cos \theta
+                    \end{bmatrix}
+                    \begin{bmatrix}
+                        1 & 0 & 0 \\
+                        0 & \cos \varphi & \sin \varphi \\
+                        0 & -\sin \varphi & \cos \varphi
+                    \end{bmatrix} \\
+                    &=
+                    \begin{bmatrix}
+                        \cos \theta \cos \psi
+                        & \cos \psi \sin \theta \sin \varphi - \cos \varphi \sin \psi
+                        & \cos \varphi \cos \psi \sin \theta + \sin \varphi \sin \psi \\
+                        \cos \theta \sin \psi
+                        & \cos \varphi \cos \psi + \sin \theta \sin \varphi \sin \psi
+                        & \cos \varphi \sin \theta \sin \psi - \cos \psi \sin \varphi \\
+                        -\sin \theta
+                        & \cos \theta \sin \varphi
+                        & \cos \theta \cos \varphi
+                    \end{bmatrix}
+                \end{array} $
+            }
+        \end{equation}
 
         Then the three \textit{Euler angles} for a \textit{xyz} rotation
         can be obtained:
@@ -325,43 +331,45 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}\\
             \end{array}
         .\end{equation}
 
-    \item Euler's angles of \textbf{ZYX} rotation:\\
+    \item Euler's angles of \textbf{ZYX} rotation:
 
         For a rotation defined in \textit{zyx} order the rotation matrix is:
 
         \begin{equation}
-            \begin{array}{ll}
-                \mathbf{T}
-                &= \mathbf{R}_{x}(\varphi)\mathbf{R}_{y}(\theta)\mathbf{R}_{z}(\psi) \\
-                &=
-                \begin{bmatrix}
-                    1 & 0 & 0 \\
-                    0 & \cos \varphi & \sin \varphi \\
-                    0 & -\sin \varphi & \cos \varphi
-                \end{bmatrix}
-                \begin{bmatrix}
-                    \cos \theta & 0 & -\sin \theta \\
-                    0 & 1 & 0 \\
-                    \sin \theta & 0 & \cos \theta
-                \end{bmatrix}
-                \begin{bmatrix}
-                    \cos \psi & \sin \psi & 0 \\
-                    -\sin \psi & \cos \psi & 0 \\
-                    0 & 0 & 1
-                \end{bmatrix} \\
-                &=
-                \begin{bmatrix}
-                    \cos \theta \cos \varphi
-                    & - \cos \theta \sin \varphi
-                    & \sin \varphi \\
-                    \cos \psi \sin \varphi + \cos \varphi \sin \theta \sin \psi
-                    & \cos \varphi \cos \psi - \sin \theta \sin \varphi \sin \psi
-                    & -\cos \theta \sin \psi \\
-                    \sin \varphi \sin \psi - \cos \varphi \cos \psi \sin \theta
-                    & \cos \psi \sin \theta \sin \varphi + \cos \varphi \sin \psi
-                    & \cos \theta \cos \psi
-                \end{bmatrix}
-            \end{array}
+            \scalebox{0.85}{
+                $ \begin{array}{ll}
+                    \mathbf{T}
+                    &= \mathbf{R}_{x}(\varphi)\mathbf{R}_{y}(\theta)\mathbf{R}_{z}(\psi) \\
+                    &=
+                    \begin{bmatrix}
+                        1 & 0 & 0 \\
+                        0 & \cos \varphi & \sin \varphi \\
+                        0 & -\sin \varphi & \cos \varphi
+                    \end{bmatrix}
+                    \begin{bmatrix}
+                        \cos \theta & 0 & -\sin \theta \\
+                        0 & 1 & 0 \\
+                        \sin \theta & 0 & \cos \theta
+                    \end{bmatrix}
+                    \begin{bmatrix}
+                        \cos \psi & \sin \psi & 0 \\
+                        -\sin \psi & \cos \psi & 0 \\
+                        0 & 0 & 1
+                    \end{bmatrix} \\
+                    &=
+                    \begin{bmatrix}
+                        \cos \theta \cos \varphi
+                        & - \cos \theta \sin \varphi
+                        & \sin \varphi \\
+                        \cos \psi \sin \varphi + \cos \varphi \sin \theta \sin \psi
+                        & \cos \varphi \cos \psi - \sin \theta \sin \varphi \sin \psi
+                        & -\cos \theta \sin \psi \\
+                        \sin \varphi \sin \psi - \cos \varphi \cos \psi \sin \theta
+                        & \cos \psi \sin \theta \sin \varphi + \cos \varphi \sin \psi
+                        & \cos \theta \cos \psi
+                    \end{bmatrix}
+                \end{array} $
+            }
         .\end{equation}
 
         \textbf{Note that the angles $\varphi$, $\theta$ and $\psi$ defined here are
@@ -383,7 +391,7 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}\\
 
 
     \item Alternate way of constructing \textbf{Rotation matrix} without specifying
-        angles:\\
+        angles:
 
         The rotation matrix to a new coordinate system can be constructed from
         its axes, where the rotation matrix can be defined as:
@@ -402,7 +410,7 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}\\
         system.
 
 
-        \begin{bbox}
+        \begin{bbox}[0.85]
             The \textbf{transformation matrix} can be defined by any two vectors
             $\mathbf{u}$ and $\mathbf{v}$, where $\mathbf{u}$ defines the direction
             of \textit{x-axis} and $\mathbf{v}$ defines the \textit{xy-plane}.
@@ -445,7 +453,7 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}\\
             the matrix is composed of its vectors.
         \end{bbox}
 
-        \begin{bbox}
+        \begin{bbox}[0.85]
             To test, whether the transformation matrix is correct, one can use
             the orthogonality criterion:
 
@@ -470,7 +478,7 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}\\
 \section{Coordinate Transformation}
 
 \begin{itemize}
-    \item \textbf{Rotation:} \\
+    \item \textbf{Rotation:}
 
         Let $\mathbf{A}^{T} = [a_{x}, a_{y}, a_{z}]$ be the original coordinates,
         $\mathbf{B}^{T} = [b_{x}, b_{y}, b_{z}]$ be the transformed coordinates, and
@@ -511,9 +519,11 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}\\
 
 \section{Tensor Transformation}
 
-From: \href{https://wp.optics.arizona.edu/optomech/wp-content/uploads/sites/53/2016/10/OPTI_222_W21.pdf}{source 1},
+From:
+
+\href{https://wp.optics.arizona.edu/optomech/wp-content/uploads/sites/53/2016/10/OPTI_222_W21.pdf}{source 1},
 \href{https://www.continuummechanics.org/principalstressesandstrains.html}{source 2},
-\href{https://www.ecourses.ou.edu/cgi-bin/eBook.cgi?doc=&topic=me&chap_sec=07.2&page=theory}{source 3} \\
+\href{https://www.ecourses.ou.edu/cgi-bin/eBook.cgi?doc=&topic=me&chap_sec=07.2&page=theory}{source 3}
 
 Let real symmetric matrix  $\mathbf{A}$ be the original tensor,
 real symmetric matrix $\mathbf{B}$ the transformed tensor, and
@@ -550,12 +560,12 @@ orthogonal matrix $\mathbf{T}$ a tranformation matrix in the form:
 where $\mathbf{x} = [x_1, x_2, x_3]$, $\mathbf{y} = [y_1, y_2, y_3]$ and
 $\mathbf{z} = [z_1, z_2, z_3]$ are the \textit{x-axis}, \textit{y-axis} and
 \textit{z-axis} \textbf{unit vectors}, respectively, of the new coordinate
-system defined in the original one, while sharing their origin.\\
+system defined in the original one, while sharing their origin.
 
 The transformation matrix $\mathbf{T}$ must satisfy
 $\mathbf{T}\mathbf{T}^{T} = \mathbf{T}^{T}\mathbf{T} = \mathbf{I}$, where $\mathbf{I}$
 is an identity matrix. This means that transformation matrix must be orthogonal,
-therefore satisfying $\mathbf{T}^{T} = \mathbf{T}^{-1}$.\\
+therefore satisfying $\mathbf{T}^{T} = \mathbf{T}^{-1}$.
 
 Then \textbf{tensor transformation} is performed as such:
 
@@ -568,7 +578,7 @@ Then \textbf{tensor transformation} is performed as such:
 .\end{equation}
 
 \begin{itemize}
-    \item \textbf{Principal values:} \\
+    \item \textbf{Principal values:}
 
         The principal values can be found as the \textbf{eigenvalues} of the tensor
         matrix.
@@ -600,7 +610,7 @@ Then \textbf{tensor transformation} is performed as such:
             \lambda^{3} - I_{1}\lambda^{2} + I_{2}\lambda - I_{3} = 0
         ,\end{equation}
 
-        giving three roots equal to tensor eigenvalues.\\
+        giving three roots equal to tensor eigenvalues.
 
         First compute \textbf{Invariants} $\mathbf{I}_{n}$:
 
@@ -764,7 +774,7 @@ Then \textbf{tensor transformation} is performed as such:
             \end{bmatrix}
         .\end{equation}
 
-    \item \textbf{Maximum Shear value:}\\
+    \item \textbf{Maximum Shear value:}
 
 
         Maximum \textbf{shear stress} occurs at an angle of 45 degrees to principal axes.
@@ -795,7 +805,7 @@ Then \textbf{tensor transformation} is performed as such:
             + \tau_{xy}^{2}}
         .\end{equation}
 
-        \begin{bbox}
+        \begin{bbox}[0.85]
             When the principal tensor is rotated by 45 degrees to obtain \textbf{maximum
             shear stress}, the axial stress components corresponding to this shear
             stress are equal.
@@ -828,7 +838,7 @@ Then \textbf{tensor transformation} is performed as such:
         ,\end{equation}
 
         then $\sigma_1 = \sigma_{max} = 433 \text{ MPa}$ and
-        $\sigma_3 = \sigma_{min} = 24 \text{ MPa}$.\\
+        $\sigma_3 = \sigma_{min} = 24 \text{ MPa}$.
 
         Transformation matrix for rotating by 45 degrees in 3-1 plane is:
 
@@ -887,14 +897,14 @@ Then \textbf{tensor transformation} is performed as such:
         as shown on the diagram. And the maximum shear stress will occur when the
         two principal normal stresses, $\sigma_1$ and $\sigma_2$, are equal.
 
-        \begin{figure}[h]
+        \begin{figure}[ht]
             \centering
             \includegraphics[width=0.8\textwidth]{img/stresses_as_function_of_angle}
             \caption{Stresses as a function of angle}
             \label{fig:stresses_as_function_of_angle-png}
         \end{figure}
 
-        \begin{bbox}
+        \begin{bbox}[0.85]
             When $\sigma_{x}$ or $\sigma_{y}$ are either max or min, the shear stress
             $\tau_{xy}$ is equal to 0. When shear stress $\tau_{xy}$ is max or min,
             the stresses $\sigma_{x}$ and $\sigma_{y}$ are equal to their average.
@@ -906,7 +916,7 @@ Then \textbf{tensor transformation} is performed as such:
 
 \section{Moment of Inertia}
 
-From: \href{https://en.wikipedia.org/wiki/Parallel_axis_theorem}{Parallel axis theorem}\\
+From: \href{https://en.wikipedia.org/wiki/Parallel_axis_theorem}{Parallel axis theorem}
 
 \textit{Parallel axis theorem}, also known as \textit{Huygens-Steiner's theorem}
 or just \textit{Steiner's theorem} can be used to determine the \textbf{moment of inertia}
@@ -917,7 +927,7 @@ and the perpendicular distance between the axes.
 Moment of Inertia = \textbf{tensor}.
 
 \begin{itemize}
-    \item \textbf{Steiner's share:}\\
+    \item \textbf{Steiner's share:}
 
         \begin{equation}
             \mathbf{I}_{ss} = m \times \begin{bmatrix}
@@ -927,7 +937,7 @@ Moment of Inertia = \textbf{tensor}.
             \end{bmatrix}
         .\end{equation}
 
-        \textbf{Identities for a skew-symmetric matrix}\\
+        \textbf{Identities for a skew-symmetric matrix}
 
         In order to compare formulations of the parallel axis theorem using
         skew-symmetric matrices and the tensor formulation, the following
@@ -6693,16 +6703,540 @@ i_jacobi = np.linalg.inv(jacobi)
 \end{enumerate}
 
 
+\newpage
+\section{ROD}
+
+\subsection{Element Formulation}
+The \textbf{rod} element is a 1-D linear element. It has 2 nodes, and 3 dofs for
+each node $ u_x, u_y, u_y $ (or $ u, v, w $). Rotation \textbf{DOF}s are not
+constrained.
+
+\subsubsection{Natural coordinates}
+The natural coordinate $ \xi $ of the \textbf{ROD} element goes from $ 0 $ to $ 1 $.
+The 2-noded rod element is defined by:
+
+\begin{equation}
+    \begin{bmatrix}
+        1 \\
+        x \\
+        y \\
+        z \\
+        u_x \\
+        u_y \\
+        u_z \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 & 1 \\
+        x_1 & x_2 \\
+        y_1 & y_2 \\
+        z_1 & z_2 \\
+        u_{x1} & u_{x2} \\
+        u_{y1} & u_{y2} \\
+        u_{z1} & u_{z2} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        N_1^e \\
+        N_2^e \\
+    \end{bmatrix}
+\end{equation}
+
+\subsubsection{Shape Functions}
+The \textbf{ROD} natural coordinates are:
+
+\begin{table}[ht]
+    \centering
+    \begin{tabular}{|c c |}
+        \hline
+        node & $\xi$ \\
+        \hline
+        1 & 0 \\
+        2 & 1 \\
+        \hline
+    \end{tabular}\\
+    \caption{ROD corners natural coordinates}
+\end{table}
+
+The shape functions are:
+
+\begin{eqarray}
+    N_1^e &= 1 - \xi \\
+    N_2^e &= \xi \\
+\end{eqarray}
+
+
+\subsubsection{Partial Derivatives}
+The shape function derivatives with respect ot the natural coordinate:
+
+\begin{eqarray}
+    \frac{\partial N_1^e}{\partial \xi} &= -1 \\
+    \frac{\partial N_2^e}{\partial \xi} &= 1 \\
+\end{eqarray}
+
+\subsubsection{The Jacobian}
+
+The derivatives of the shape functions are given by the usual chain rule formula:
+\begin{eqarray}
+    \frac{\partial N_i^e}{\partial x} &= \frac{\partial N_i^e}{\partial \xi}
+                                         \frac{\partial \xi}{\partial x} \\
+    \frac{\partial N_i^e}{\partial y} &= \frac{\partial N_i^e}{\partial \xi}
+                                         \frac{\partial \xi}{\partial y} \\
+    \frac{\partial N_i^e}{\partial z} &= \frac{\partial N_i^e}{\partial \xi}
+                                         \frac{\partial \xi}{\partial z} \\
+\end{eqarray}
+
+In matrix form:
+\begin{equation}
+    \begin{bmatrix}
+        \frac{\partial N_i^e}{\partial x} \\
+        \frac{\partial N_i^e}{\partial y} \\
+        \frac{\partial N_i^e}{\partial z} \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \frac{\partial \xi}{\partial x} \\
+        \frac{\partial \xi}{\partial y} \\
+        \frac{\partial \xi}{\partial z} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \frac{\partial N_i^e}{\partial \xi} \\
+    \end{bmatrix}
+\end{equation}
+
+The $ 3 \times 1 $ matrix above is $ \m{J}^{-1} $, the inverse of:
+\begin{equation}
+    \m{J} = \frac{\partial (x, y, z)}{\partial(\xi)} =
+    \begin{bmatrix}
+        \frac{\partial x}{\partial \xi} &
+        \frac{\partial y}{\partial \xi} &
+        \frac{\partial z}{\partial \xi} \\
+    \end{bmatrix}
+\end{equation}
+
+Given the element coordinates the Jacobian can be computed:
+\begin{equation}
+    \m{J}_i = \begin{bmatrix}
+        \frac{\partial N_i^e}{\partial \xi} &
+        \frac{\partial N_i^e}{\partial \xi} &
+        \frac{\partial N_i^e}{\partial \xi} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        x_i \\
+        y_i \\
+        z_i \\
+    \end{bmatrix}
+\end{equation}
+
+end then numerically inverted for $ \m{J}^{-1} $.
+
+\begin{bbox}
+    Assembling the \textbf{Jacobian} thegether gives essentially that
+
+    \begin{equation}
+        \m{J} = l
+    \end{equation}
+
+    and therefore:
+    \begin{equation}
+        \m{J}^{-1} = \frac{1}{l}
+    \end{equation}
+\end{bbox}
+
+\subsection{Example 1D}
+If assembling the element in local CSYS, then $ u_y = 0 $ and $ u_z = 0 $.
+Simplifiying the equations gives that:
+\begin{equation}
+    \m{N} = \begin{bmatrix}
+        N_1^e & N_2^e \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 - \xi & \xi \\
+    \end{bmatrix}
+\end{equation}
+
+and
+\begin{equation}
+    u^e(\xi) = \m{N} \begin{bmatrix}
+        u_1^e \\
+        u_2^e \\
+    \end{bmatrix}
+\end{equation}
+
+shape function derivatives:
+\begin{equation}
+    \m{B} = \frac{\partial \m{N}}{\partial \xi} =
+    \begin{bmatrix}
+        -1 & 1 \\
+    \end{bmatrix}
+\end{equation}
+
+the strain-displacement realtion is given by:
+\begin{equation}
+    \M{\epsilon} = \m{B} \m{u}
+\end{equation}
+
+Integrating the element at midpoint $ \xi = 0.5 $ with a weight of $ w = 1.0 $
+(for interval $ \left< 0, 1 \right> $, for an interval
+$ \left< -1,  1 \right> $ the weight $ w = 2.0 $)
+
+\begin{equation}
+    \m{N} = \begin{bmatrix}
+        0.5 & 0.5 \\
+    \end{bmatrix}
+\end{equation}
+
+Shape Functions in global coordinates:
+
+\begin{equation}
+    \m{N} = 0.5 u_1 + 0.5 u_2 = 0.5 (u_1 + u_2)
+\end{equation}
+
+Shape Function Derivatives in Natural Coordinates:
+
+\begin{equation}
+    \m{B} = \begin{bmatrix}
+        -1 & 1 \\
+    \end{bmatrix}
+\end{equation}
+
+Jacobian:
+
+\begin{equation}
+    \m{J} = \m{B} \m{u} = \begin{bmatrix}
+        -1 & 1 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_1 \\
+        u_2 \\
+    \end{bmatrix}
+    = u_2 - u_1 = l
+\end{equation}
+
+Jacobian Determinant:
+
+\begin{equation}
+    \det \m{J} = l
+\end{equation}
+
+Jacobian Inverse:
+
+\begin{equation}
+    \m{J}^{-1} = \frac{1}{l}
+\end{equation}
+
+Shape function derivatives in global coordinates:
+
+\begin{equation}
+    \m{B}_g = \m{J}^{-1} \m{B} = \frac{1}{l}
+    \begin{bmatrix}
+        -1 & 1 \\
+    \end{bmatrix}
+\end{equation}
+
+Material Stiffness Matrix
+
+\begin{equation}
+    \m{C} = EA
+\end{equation}
+
+Then for each integration point (here $1$):
+
+\begin{eqarray}
+    \m{K}^e &\eqp \m{B}_g^T \m{C} \m{B_g} \det \m{J} w \\
+    \m{K}^e &\eqp \frac{1}{l} \begin{bmatrix} -1 \\ 1 \\ \end{bmatrix}
+                  EA
+                  \frac{1}{l} \begin{bmatrix} -1 & 1 \\ \end{bmatrix}
+                  l 1 \\
+    \m{K}^e &\eqp \frac{EA}{l}
+                  \begin{bmatrix} -1 \\ 1 \\ \end{bmatrix}
+                  \begin{bmatrix} -1 & 1 \\ \end{bmatrix} \\
+    \m{K}^e &\eqp \frac{EA}{l}
+                  \begin{bmatrix}
+                      \phantom{-}1 & -1 \\
+                      -1 & \phantom{-}1 \\
+                  \end{bmatrix}
+\end{eqarray}
+
+
+\subsection{Example 2D}
+If assembling the element in 2D, then and $ u_z = 0 $.
+Simplifiying the equations gives that:
+\begin{equation}
+    \m{N} = \begin{bmatrix}
+        N_1^e & 0 & N_2^e & 0 \\
+        0 & N_1^e & 0 & N_2^e \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 - \xi & 0 & \xi & 0 \\
+        0 & 1 - \xi & 0 & \xi \\
+    \end{bmatrix}
+\end{equation}
+
+and
+\begin{equation}
+    \begin{bmatrix}
+        u_x^e(\xi) \\
+        u_y^e(\xi) \\
+    \end{bmatrix}
+    = \m{N} \begin{bmatrix}
+        u_{x1}^e \\
+        u_{y1}^e \\
+        u_{x2}^e \\
+        u_{y2}^e \\
+    \end{bmatrix}
+\end{equation}
+
+or if:
+\begin{equation}
+    \m{N} = \begin{bmatrix}
+        N_1^e & N_2^e \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 - \xi & \xi \\
+    \end{bmatrix}
+\end{equation}
+
+then:
+\begin{equation}
+    \begin{bmatrix}
+        u_x^e(\xi) \\
+        u_y^e(\xi) \\
+    \end{bmatrix}
+    = \m{N} \begin{bmatrix}
+        u_{x1}^e & u_{y1}^e \\
+        u_{x2}^e & u_{y2}^e \\
+    \end{bmatrix}
+\end{equation}
+
+shape function derivatives:
+\begin{equation}
+    \m{B} = \frac{\partial \m{N}}{\partial \xi} =
+    \begin{bmatrix}
+        -1 & \phantom{-}0 & 1 & 0 \\
+        \phantom{-}0 & -1 & 0 & 1  \\
+    \end{bmatrix}
+\end{equation}
+
+the strain-displacement realtion is given by:
+\begin{equation}
+    \M{\epsilon} = \m{B} \m{u}
+\end{equation}
+
+Integrating the element at midpoint $ \xi = 0.5 $ with a weight of $ w = 1.0 $
+(for interval $ \left< 0, 1 \right> $, for an interval
+$ \left< -1,  1 \right> $ the weight $ w = 2.0 $)
+then numerically:
+
+\begin{equation}
+    \m{N} = \begin{bmatrix}
+        0.5 & 0.5 \\
+    \end{bmatrix}
+\end{equation}
+
+Shape Functions in global coordinates:
+
+\begin{equation}
+    \m{N} = \begin{bmatrix}
+        1 - \xi & 0 & \xi & 0 \\
+        0 & 1 - \xi & 0 & \xi \\
+    \end{bmatrix}_{\xi = 0.5}
+    \begin{bmatrix}
+        u_{x1}^e \\
+        u_{y1}^e \\
+        u_{x2}^e \\
+        u_{y2}^e \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        0.5 u_{x1} + 0.5 u_{x2} \\
+        0.5 u_{y1} + 0.5 u_{y2} \\
+    \end{bmatrix}
+\end{equation}
+
+Shape Function Derivatives in Natural Coordinates (there is a row for each
+integration point):
+
+\begin{equation}
+    \m{B} = \begin{bmatrix}
+        -1 & 1 \\
+    \end{bmatrix}
+\end{equation}
+
+Jacobian:
+
+\begin{equation}
+    \m{J} = \m{B} \m{u} = \begin{bmatrix}
+        -1 & \phantom{-}0 & 1 & 0 \\
+        \phantom{-}0 & -1 & 0 & 1  \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_{x1}^e \\
+        u_{y1}^e \\
+        u_{x2}^e \\
+        u_{y2}^e \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        u_{x2}^e - u_{x1}^e \\
+        u_{y2}^e - u_{y1}^e \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        l_x \\
+        l_y \\
+    \end{bmatrix}
+\end{equation}
+
+Jacobian Determinant (when the \textbf{Jacobian matrix} is a vector, its
+determinant is simply its \textbf{length}):
+
+\begin{equation}
+    \det \m{J} = || \m{J} || = \sqrt{J_1^2 + J_2^2} = \sqrt{l_x^2 + l_y^2} = l
+\end{equation}
+
+Jacobian Inverse (when the \textbf{Jacobian matrix} is a row vector, its inverse
+is just its \textbf{transpose} divided by its determinant squared):
+
+\begin{equation}
+    \m{J}^{-1} = \frac{1}{l^2}
+    \begin{bmatrix}
+        l_x & l_y \\
+    \end{bmatrix}
+\end{equation}
+
+Shape function derivatives in global coordinates:
+
+\begin{eqarray}
+    \m{B}_g
+    &= \m{J}^{-1} \m{B} = \frac{1}{l^2}
+    \begin{bmatrix}
+        l_x & l_y \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        -1 & \phantom{-}0 & 1 & 0 \\
+        \phantom{-}0 & -1 & 0 & 1  \\
+    \end{bmatrix} \\
+    &= \frac{1}{l^2}
+    \begin{bmatrix}
+        -l_x & -l_y & l_x & l_y
+    \end{bmatrix} \\
+    &= \frac{1}{l}
+    \begin{bmatrix}
+        -c & -s & c & s
+    \end{bmatrix}
+\end{eqarray}
+
+Material Stiffness Matrix
+
+\begin{equation}
+    \m{C} = EA
+\end{equation}
+
+Then for each integration point (here $1$):
+
+\begin{equation}
+    \m{K}^e \eqp \m{B}_g^T \m{C} \m{B_g} \det \m{J} w
+\end{equation}
+
+\begin{eqarray}
+    \m{K}^e &\eqp
+    \frac{1}{l}
+    \begin{bmatrix}
+        -c \\
+        -s \\
+        \phantom{-}c \\
+        \phantom{-}s \\
+    \end{bmatrix}
+    EA
+    \frac{1}{l}
+    \begin{bmatrix}
+        -c & -s & c & s
+    \end{bmatrix}
+    l w \\
+    &\eqp
+    \frac{EA}{l}
+    \begin{bmatrix}
+        c^2 & c s & -c^2 & -cs \\
+        cs & s^2 & -cs & -s^2 \\
+        -c^2 & -c s & c^2 & cs \\
+        -cs & -s^2 & cs & s^2 \\
+    \end{bmatrix}
+\end{eqarray}
+
+which is the same result as:
+
+\begin{equation}
+    \m{K}_l^e = \frac{EA}{l}
+    \begin{bmatrix}
+        \phantom{-}1 & 0 & -1 & 0 \\
+        \phantom{-}0 & 0 & \phantom{-}0 & 0 \\
+        -1 & 0 & \phantom{-}1 & 0 \\
+        \phantom{-}0 & 0 & \phantom{-}0 & 0 \\
+    \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+    \m{T} = \begin{bmatrix}
+        \phantom{-}c & s & \phantom{-}0 & 0 \\
+        -s & c & \phantom{-}0 & 0 \\
+        \phantom{-}0 & 0 & \phantom{-}c & s \\
+        \phantom{-}0 & 0 & -s & c \\
+    \end{bmatrix}
+\end{equation}
+
+then the global element stiffness matrix is defined:
+
+\begin{eqarray}
+    \m{K}_g^e &= \m{T}^T \m{K}_l^e \m{T} \\
+    &= \frac{EA}{l}
+    \begin{bmatrix}
+        c & -s & 0 & \phantom{-}0 \\
+        s & \phantom{-}c & 0 & \phantom{-}0 \\
+        0 & \phantom{-}0 & c & -s \\
+        0 & \phantom{-}0 & s & \phantom{-}c \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \phantom{-}1 & 0 & -1 & 0 \\
+        \phantom{-}0 & 0 & \phantom{-}0 & 0 \\
+        -1 & 0 & \phantom{-}1 & 0 \\
+        \phantom{-}0 & 0 & \phantom{-}0 & 0 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \phantom{-}c & s & \phantom{-}0 & 0 \\
+        -s & c & \phantom{-}0 & 0 \\
+        \phantom{-}0 & 0 & \phantom{-}c & s \\
+        \phantom{-}0 & 0 & -s & c \\
+    \end{bmatrix} \\
+    &= \frac{EA}{l}
+    \begin{bmatrix}
+        c & -s & 0 & \phantom{-}0 \\
+        s & \phantom{-}c & 0 & \phantom{-}0 \\
+        0 & \phantom{-}0 & c & -s \\
+        0 & \phantom{-}0 & s & \phantom{-}c \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        c & s & -c & -s \\
+        0 & 0 & 0 & 0 \\
+        -c & -s & c & s \\
+        0 & 0 & 0 & 0 \\
+    \end{bmatrix} \\
+    &= \frac{EA}{l}
+    \begin{bmatrix}
+        c^2 & cs & -c^2 & -cs \\
+        cs & s^2 & -cs & -s^2 \\
+        -c^2 & -cs & c^2 & cs \\
+        -cs & -s^2 & cs & s^2 \\
+    \end{bmatrix}
+\end{eqarray}
+
+
+
+
 
 \newpage
 \section{HEX8}
 
 \subsection{Element Formulation}
 
-The \textbf{Hexahedral} element is a 3-D quadrilateral \textbf{trilinear} element, otherwise known
-as a \textbf{brick}. Topologically is hexahedron equivalent to a cube. It has eight
-corners, twelve edges and six faces. Especially the \textbf{HEX8} element has
-8 interpolation points.
+The \textbf{Hexahedral} element is a 3-D quadrilateral \textbf{trilinear}
+element, otherwise known as a \textbf{brick}. Topologically is hexahedron
+equivalent to a cube. It has eight corners, twelve edges and six faces.
+Especially the \textbf{HEX8} element has 8 interpolation points.
 
 \subsubsection{Natural coordinates}
 The \textbf{natural coordinate system} of a hexahedral element are called
@@ -7457,7 +7991,7 @@ than 2D, so it is needed to procede more slowly here.
 \subsubsection{Tetrahedron Geometry}
 
 The tetrahedron geometry is fully defined by giving the location of the four
-corner nodes with respect to Right-Hand Coordinate Sysetm notation $ (x, ,y z) $:
+corner nodes with respect to Right-Hand Coordinate Sysetm notation $ (x, y, z) $:
 
 
 
