@@ -97,6 +97,16 @@
     \end{center}
 }
 
+\newcount\myloopcounter
+\newcommand{\repeatit}[3][10]{%
+    \myloopcounter1% initialize the loop counter
+    \loop\ifnum\myloopcounter < #1
+    #2#3%
+    \advance\myloopcounter by 1%
+    \repeat% start again
+    #2%
+}
+
 \newenvironment{qbox}
 {
 %\centering{\huge{?}}
@@ -6934,13 +6944,13 @@ Shape function derivatives in global coordinates:
 Material Stiffness Matrix
 
 \begin{equation}
-    \m{C} = EA
+    \m{D} = EA
 \end{equation}
 
 Then for each integration point (here $1$):
 
 \begin{eqarray}
-    \m{K}^e &\eqp \m{B}_g^T \m{C} \m{B_g} \det \m{J} w \\
+    \m{K}^e &\eqp \m{B}_g^T \m{D} \m{B_g} \det \m{J} w \\
     \m{K}^e &\eqp \frac{1}{l} \begin{bmatrix} -1 \\ 1 \\ \end{bmatrix}
                   EA
                   \frac{1}{l} \begin{bmatrix} -1 & 1 \\ \end{bmatrix}
@@ -7051,18 +7061,23 @@ Shape Functions in global coordinates:
 \end{equation}
 
 Shape Function Derivatives in Natural Coordinates (there is a row for each
-integration point):
+integration point if the coordinates are specified as matrix, not a column
+vector. otherwise for each integration point there is a separate $ \m{B} $
+matrix):
 
 \begin{equation}
+    \frac{\partial \m{N}}{\partial \xi} =
     \m{B} = \begin{bmatrix}
-        -1 & 1 \\
+        -1 & 0 & 1 & 0 \\
+        0 & -1 & 0 & 1 \\
     \end{bmatrix}
 \end{equation}
 
 Jacobian:
 
 \begin{equation}
-    \m{J} = \m{B} \m{u} = \begin{bmatrix}
+    \m{J} = \m{B} \m{u} =
+    \begin{bmatrix}
         -1 & \phantom{-}0 & 1 & 0 \\
         \phantom{-}0 & -1 & 0 & 1  \\
     \end{bmatrix}
@@ -7082,55 +7097,98 @@ Jacobian:
     \end{bmatrix}
 \end{equation}
 
-Jacobian Determinant (when the \textbf{Jacobian matrix} is a vector, its
-determinant is simply its \textbf{length}):
+\begin{qbox}
+
+    Jacobian Determinant (when the \textbf{Jacobian matrix} is a vector, its
+    determinant is simply its \textbf{length}):
+
+\end{qbox}
 
 \begin{equation}
     \det \m{J} = || \m{J} || = \sqrt{J_1^2 + J_2^2} = \sqrt{l_x^2 + l_y^2} = l
 \end{equation}
 
-Jacobian Inverse (when the \textbf{Jacobian matrix} is a row vector, its inverse
-is just its \textbf{transpose} divided by its determinant squared):
+
+\begin{qbox}
+
+    Jacobian Inverse (when the \textbf{Jacobian matrix} is a row vector, its inverse
+    is just its \textbf{transpose} divided by its determinant squared):
+
+    \textbf{Moore-Penrose pseudoinverse}:
+    \begin{eqarray}
+        \boxed{\m{J}^{-1}} =
+        \m{J}^{+} &= \left( \m{J}^T \m{J} \right)^{-1} \m{J}^T \\
+                  &= \left(
+                      \begin{bmatrix}
+                          l_x & l_y \\
+                      \end{bmatrix}
+                      \begin{bmatrix}
+                          l_x \\
+                          l_y \\
+                      \end{bmatrix}
+                  \right)^{-1}
+                      \begin{bmatrix}
+                          l_x & l_y \\
+                      \end{bmatrix} \\
+                  &= \left( l_x^2 + l_y^2 \right)^{-1}
+                      \begin{bmatrix}
+                          l_x & l_y \\
+                      \end{bmatrix} \\
+                  &= \frac{1}{l_x^2 + l_y^2}
+                      \begin{bmatrix}
+                          l_x & l_y \\
+                      \end{bmatrix} \\
+                  &= \frac{1}{\sqrt{l_x^2 + l_y^2}^2}
+                      \begin{bmatrix}
+                          l_x & l_y \\
+                      \end{bmatrix} \\
+                  &= \boxed{\frac{1}{l^2} \m{J}^T}
+    \end{eqarray}
+
+\end{qbox}
 
 \begin{equation}
     \m{J}^{-1} = \frac{1}{l^2}
     \begin{bmatrix}
         l_x & l_y \\
     \end{bmatrix}
+    = \frac{1}{l}
+    \begin{bmatrix}
+        c & s \\
+    \end{bmatrix}
 \end{equation}
+
+where $ c = \cos \varphi = l_x / l $ and $ s = \sin \varphi = l_y / l $.
 
 Shape function derivatives in global coordinates:
 
-\begin{eqarray}
+\begin{equation}
     \m{B}_g
-    &= \m{J}^{-1} \m{B} = \frac{1}{l^2}
+    = \m{J}^{-1} \m{B}
+    = \frac{1}{l}
     \begin{bmatrix}
-        l_x & l_y \\
+        c & s \\
     \end{bmatrix}
     \begin{bmatrix}
         -1 & \phantom{-}0 & 1 & 0 \\
         \phantom{-}0 & -1 & 0 & 1  \\
-    \end{bmatrix} \\
-    &= \frac{1}{l^2}
-    \begin{bmatrix}
-        -l_x & -l_y & l_x & l_y
-    \end{bmatrix} \\
-    &= \frac{1}{l}
+    \end{bmatrix}
+    = \frac{1}{l}
     \begin{bmatrix}
         -c & -s & c & s
     \end{bmatrix}
-\end{eqarray}
+\end{equation}
 
 Material Stiffness Matrix
 
 \begin{equation}
-    \m{C} = EA
+    \m{D} = EA
 \end{equation}
 
 Then for each integration point (here $1$):
 
 \begin{equation}
-    \m{K}^e \eqp \m{B}_g^T \m{C} \m{B_g} \det \m{J} w
+    \m{K}^e \eqp \m{B}_g^T \m{D} \m{B_g} \det \m{J} w
 \end{equation}
 
 \begin{eqarray}
@@ -7155,10 +7213,15 @@ Then for each integration point (here $1$):
         cs & s^2 & -cs & -s^2 \\
         -c^2 & -c s & c^2 & cs \\
         -cs & -s^2 & cs & s^2 \\
-    \end{bmatrix}
+    \end{bmatrix} w
 \end{eqarray}
 
-which is the same result as:
+which is the same result as when the element stiffness matrix is derived
+in local coordinate system for a situation where $ \xi $ axis coincides with
+the element $ x $ axis and the $ u_y $ component is $ 0 $. Afterwards,
+the element \textbf{stiffness, mass} and \textbf{damping} matrices as well as
+\textbf{forces} vector are tranformed to the global CSYS using a transformation
+matrix $ \m{T} $:
 
 \begin{equation}
     \m{K}_l^e = \frac{EA}{l}
@@ -7224,6 +7287,277 @@ then the global element stiffness matrix is defined:
     \end{bmatrix}
 \end{eqarray}
 
+
+
+
+
+\subsection{Example 3D}
+If assembling the element in 3D, then and $ u_z \neq 0 $.
+Simplifiying the equations gives that:
+\begin{equation}
+    \m{N} = \begin{bmatrix}
+        N_1^e & 0 & 0 & N_2^e & 0 & 0 \\
+        0 & N_1^e & 0 & 0 & N_2^e & 0 \\
+        0 & 0 & N_1^e & 0 & 0 & N_2^e \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 - \xi & 0 & 0 & \xi & 0 & 0 \\
+        0 & 1 - \xi & 0 & 0 & \xi & 0  \\
+        0 & 0 & 1 - \xi & 0 & 0 & \xi \\
+    \end{bmatrix}
+\end{equation}
+
+and
+\begin{equation}
+    \begin{bmatrix}
+        u_x^e(\xi) \\
+        u_y^e(\xi) \\
+        u_z^e(\xi) \\
+    \end{bmatrix}
+    = \m{N}(\xi) \begin{bmatrix}
+        u_{x1}^e \\
+        u_{y1}^e \\
+        u_{z1}^e \\
+        u_{x2}^e \\
+        u_{y2}^e \\
+        u_{z2}^e \\
+    \end{bmatrix}
+\end{equation}
+
+or if:
+\begin{equation}
+    \m{N} = \begin{bmatrix}
+        N_1^e & N_2^e \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 - \xi & \xi \\
+    \end{bmatrix}
+\end{equation}
+
+then:
+\begin{equation}
+    \begin{bmatrix}
+        u_x^e(\xi) \\
+        u_y^e(\xi) \\
+        u_z^e(\xi) \\
+    \end{bmatrix}
+    = \m{N}(\xi) \begin{bmatrix}
+        u_{x1}^e & u_{y1}^e& u_{z1}^e \\
+        u_{x2}^e & u_{y2}^e& u_{z2}^e \\
+    \end{bmatrix}
+\end{equation}
+
+shape function derivatives:
+\begin{equation}
+    \m{B} = \frac{\partial \m{N}}{\partial \xi} =
+    \begin{bmatrix}
+        -1 & \phantom{-}0 & \phantom{-}0 & 1 & 0 & 0 \\
+        \phantom{-}0 & -1 & \phantom{-}0 & 0 & 1 & 0  \\
+        \phantom{-}0 & \phantom{-}0 & -1 & 0 & 0 & 1  \\
+    \end{bmatrix}
+\end{equation}
+
+the strain-displacement realtion is given by:
+\begin{equation}
+    \M{\epsilon} = \m{B} \m{u}
+\end{equation}
+
+Integrating the element at midpoint $ \xi = 0.5 $ with a weight of $ w = 1.0 $
+(for interval $ \left< 0, 1 \right> $, for an interval
+$ \left< -1,  1 \right> $ the weight $ w = 2.0 $)
+then numerically:
+
+\begin{equation}
+    \m{N} = \begin{bmatrix}
+        0.5 & 0.5 \\
+    \end{bmatrix}
+\end{equation}
+
+Shape Functions in global coordinates:
+
+\begin{equation}
+    \m{N} = \begin{bmatrix}
+        1 - \xi & 0 & 0 & \xi & 0 & 0 \\
+        0 & 1 - \xi & 0 & 0 & \xi & 0  \\
+        0 & 0 & 1 - \xi & 0 & 0 & \xi \\
+    \end{bmatrix}_{\xi = 0.5}
+    \begin{bmatrix}
+        u_{x1}^e \\
+        u_{y1}^e \\
+        u_{z1}^e \\
+        u_{x2}^e \\
+        u_{y2}^e \\
+        u_{z2}^e \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        0.5 u_{x1} + 0.5 u_{x2} \\
+        0.5 u_{y1} + 0.5 u_{y2} \\
+        0.5 u_{z1} + 0.5 u_{z2} \\
+    \end{bmatrix}
+\end{equation}
+
+Shape Function Derivatives in Natural Coordinates (there is a row for each
+integration point if the coordinates are specified as matrix, not a column
+vector. otherwise for each integration point there is a separate $ \m{B} $
+matrix):
+
+\begin{equation}
+    \frac{\partial \m{N}}{\partial \xi} =
+    \m{B} = \begin{bmatrix}
+        -1 & \phantom{-}0 & \phantom{-}0 & 1 & 0 & 0 \\
+        \phantom{-}0 & -1 & \phantom{-}0 & 0 & 1 & 0  \\
+        \phantom{-}0 & \phantom{-}0 & -1 & 0 & 0 & 1  \\
+    \end{bmatrix}
+\end{equation}
+
+Jacobian:
+
+\begin{equation}
+    \m{J} = \m{B} \m{u} =
+    \begin{bmatrix}
+        -1 & \phantom{-}0 & \phantom{-}0 & 1 & 0 & 0 \\
+        \phantom{-}0 & -1 & \phantom{-}0 & 0 & 1 & 0  \\
+        \phantom{-}0 & \phantom{-}0 & -1 & 0 & 0 & 1  \\
+    \end{bmatrix}_{\xi=0.5}
+    \begin{bmatrix}
+        u_{x1}^e \\
+        u_{y1}^e \\
+        u_{z1}^e \\
+        u_{x2}^e \\
+        u_{y2}^e \\
+        u_{z2}^e \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        u_{x2}^e - u_{x1}^e \\
+        u_{y2}^e - u_{y1}^e \\
+        u_{z2}^e - u_{z1}^e \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        l_x \\
+        l_y \\
+        l_z \\
+    \end{bmatrix}
+\end{equation}
+
+\begin{qbox}
+
+    Jacobian Determinant (when the \textbf{Jacobian matrix} is a vector, its
+    determinant is simply its \textbf{length}):
+
+\end{qbox}
+
+\begin{equation}
+    \det \m{J} = || \m{J} || = \sqrt{J_1^2 + J_2^2 + J_3^2}
+               = \sqrt{l_x^2 + l_y^2 + l_y^2} = l
+\end{equation}
+
+
+\begin{qbox}
+
+    Jacobian Inverse (when the \textbf{Jacobian matrix} is a row vector, its inverse
+    is just its \textbf{transpose} divided by its determinant squared):
+
+    \textbf{Moore-Penrose pseudoinverse}:
+    \begin{eqarray}
+        \boxed{\m{J}^{-1}} =
+        \m{J}^{+} &= \left( \m{J}^T \m{J} \right)^{-1} \m{J}^T \\
+                  &= \left(
+                      \begin{bmatrix}
+                          l_x & l_y & l_z \\
+                      \end{bmatrix}
+                      \begin{bmatrix}
+                          l_x \\
+                          l_y \\
+                          l_z \\
+                      \end{bmatrix}
+                  \right)^{-1}
+                      \begin{bmatrix}
+                          l_x & l_y & l_z \\
+                      \end{bmatrix} \\
+                  &= \left( l_x^2 + l_y^2 + l_z^2 \right)^{-1}
+                      \begin{bmatrix}
+                          l_x & l_y & l_z \\
+                      \end{bmatrix} \\
+                  &= \frac{1}{l_x^2 + l_y^2 + l_z^2}
+                      \begin{bmatrix}
+                          l_x & l_y & l_z \\
+                      \end{bmatrix} \\
+                  &= \frac{1}{\sqrt{l_x^2 + l_y^2 + l_z^2}^2}
+                      \begin{bmatrix}
+                          l_x & l_y & l_z \\
+                      \end{bmatrix} \\
+                  &= \boxed{\frac{1}{l^2} \m{J}^T}
+    \end{eqarray}
+
+\end{qbox}
+
+\begin{equation}
+    \m{J}^{-1} = \frac{1}{l^2}
+    \begin{bmatrix}
+        l_x & l_y & l_z \\
+    \end{bmatrix}
+\end{equation}
+
+Shape function derivatives in global coordinates:
+
+\begin{eqarray}
+    \m{B}_g
+    &= \m{J}^{-1} \m{B}
+    = \frac{1}{l^2}
+    \begin{bmatrix}
+        l_x & l_y & l_z \\
+    \end{bmatrix}_{\xi = 0.5}
+    \begin{bmatrix}
+        -1 & \phantom{-}0 & \phantom{-}0 & 1 & 0 & 0 \\
+        \phantom{-}0 & -1 & \phantom{-}0 & 0 & 1 & 0  \\
+        \phantom{-}0 & \phantom{-}0 & -1 & 0 & 0 & 1  \\
+    \end{bmatrix}_{\xi = 0.5} \\
+    &= \frac{1}{l^2}
+    \begin{bmatrix}
+        -l_x & -l_y & -l_z & l_x & l_y & l_z
+    \end{bmatrix}
+\end{eqarray}
+
+Material Stiffness Matrix
+
+\begin{equation}
+    \m{D} = EA
+\end{equation}
+
+Then for each integration point (here $1$):
+
+\begin{equation}
+    \m{K}^e \eqp \m{B}_g^T \m{D} \m{B_g} \det \m{J} w
+\end{equation}
+
+\begin{eqarray}
+    \m{K}^e &\eqp
+    \frac{1}{l^2}
+    \begin{bmatrix}
+        -l_x \\
+        -l_y \\
+        -l_z \\
+        \phantom{-}l_x \\
+        \phantom{-}l_y \\
+        \phantom{-}l_z
+    \end{bmatrix}
+    EA
+    \frac{1}{l^2}
+    \begin{bmatrix}
+        -l_x & -l_y & -l_z & l_x & l_y & l_z
+    \end{bmatrix}
+    l w \\
+    &\eqp
+    \frac{EA}{l^3}
+    \begin{bmatrix}
+        l_x^2 & l_x l_y & l_x l_z & -l_x^2 & -l_x l_y & -l_x l_z \\
+        l_x l_y & l_y^2 & l_y l_z & -l_x l_y & -l_y^2 & -l_y l_z \\
+        l_x l_z & l_y l_z & l_z^2 & -l_x l_z & -l_y l_z & -l_z^2 \\
+        -l_x^2 & -l_x l_y & -l_x l_z & l_x^2 & l_x l_y & l_x l_z \\
+        -l_x l_y & -l_y^2 & -l_y l_z & l_x l_y & l_y^2 & l_y l_z \\
+        -l_x l_z & -l_y l_z & -l_z^2 & l_x l_z & l_y l_z & l_z^2 \\
+    \end{bmatrix} w
+\end{eqarray}
 
 
 
