@@ -6775,11 +6775,11 @@ The shape functions are:
 
 
 \subsubsection{Partial Derivatives}
-The shape function derivatives with respect ot the natural coordinate:
+The shape function derivatives with respect to the natural coordinate:
 
 \begin{eqarray}
     \frac{\partial N_1^e}{\partial \xi} &= -1 \\
-    \frac{\partial N_2^e}{\partial \xi} &= 1 \\
+    \frac{\partial N_2^e}{\partial \xi} &= \phantom{-}1 \\
 \end{eqarray}
 
 \subsubsection{The Jacobian}
@@ -6838,7 +6838,25 @@ Given the element coordinates the Jacobian can be computed:
 end then numerically inverted for $ \m{J}^{-1} $.
 
 \begin{bbox}
-    Assembling the \textbf{Jacobian} thegether gives essentially that
+    If the $ \m{J} $ is not a square matrix, then \textbf{Moore-Penrose pseudoinverse}
+    applies:
+
+    \begin{equation}
+        \m{J}^{-1} = \m{J}^{+} = \left( \m{J}^T \m{J} \right)^{-1} \m{J}^T
+    \end{equation}
+
+    in python:
+
+    \begin{minted}[linenos=true, xleftmargin=1cm]{python}
+        import numpy as np
+
+        J_i = np.linalg.pinv(J)
+    \end{minted}
+
+\end{bbox}
+
+\begin{bbox}
+    Assembling the \textbf{Jacobian} thegether gives essentially that for a 1D case
 
     \begin{equation}
         \m{J} = l
@@ -6848,7 +6866,31 @@ end then numerically inverted for $ \m{J}^{-1} $.
     \begin{equation}
         \m{J}^{-1} = \frac{1}{l}
     \end{equation}
+
+    \begin{equation}
+        \det{J} = l
+    \end{equation}
 \end{bbox}
+
+afterwards for each integration point:
+\begin{equation}
+    \m{N}^i_g = \m{N}^i \m{u}
+\end{equation}
+
+\begin{equation}
+    \m{B}^i_g = {\m{J}^i}^{-1} \frac{\partial N}{\partial \xi}^i
+\end{equation}
+
+then:
+\begin{eqarray}
+    \m{K}^e &\eqp {\m{B}^i_g}^T \m{D} {\m{B}^i_g} \det \m{J}^i w^i \\
+    \m{M}^e &\eqp \rho {\m{N}^i}^T {\m{N}^i} \det \m{J}^i w^i \\
+    \m{F}^e &\eqp {\m{N}^i}^T \m{F} \det \m{J}^i w^i \\
+\end{eqarray}
+
+
+
+
 
 \subsection{Example 1D}
 If assembling the element in local CSYS, then $ u_y = 0 $ and $ u_z = 0 $.
@@ -6885,7 +6927,7 @@ the strain-displacement realtion is given by:
 
 Integrating the element at midpoint $ \xi = 0.5 $ with a weight of $ w = 1.0 $
 (for interval $ \left< 0, 1 \right> $, for an interval
-$ \left< -1,  1 \right> $ the weight $ w = 2.0 $)
+$ \left< -1,  1 \right> $ the weight is $ w = 2.0 $)
 
 \begin{equation}
     \m{N} = \begin{bmatrix}
@@ -7219,7 +7261,7 @@ Then for each integration point (here $1$):
 which is the same result as when the element stiffness matrix is derived
 in local coordinate system for a situation where $ \xi $ axis coincides with
 the element $ x $ axis and the $ u_y $ component is $ 0 $. Afterwards,
-the element \textbf{stiffness, mass} and \textbf{damping} matrices as well as
+the element \textbf{stiffness} and \textbf{mass} matrices as well as
 \textbf{forces} vector are tranformed to the global CSYS using a transformation
 matrix $ \m{T} $:
 
@@ -7558,6 +7600,324 @@ Then for each integration point (here $1$):
         -l_x l_z & -l_y l_z & -l_z^2 & l_x l_z & l_y l_z & l_z^2 \\
     \end{bmatrix} w
 \end{eqarray}
+
+
+
+
+\subsection{Example 2D quadratic}
+If assembling the element in 2D, then and $ u_z = 0 $.
+
+The node numbering scheme is $ 1 - 3 - 2 $ and the natural coordinate is defined
+$ \xi \in \left< -1, 1 \right> $.
+
+The \textbf{quadratic} shape functions are:
+\begin{eqarray}
+    N_1^e &= -\frac{1}{2} \xi \left( 1 - \xi \right) \\
+    N_2^e &= \phantom{-}\frac{1}{2} \xi \left( 1 + \xi \right) \\
+    N_3^e &= \left( 1 + \xi \right) \left( 1 - \xi \right) \\
+\end{eqarray}
+
+
+\begin{equation}
+    \m{N} = \begin{bmatrix}
+        N_1^e & 0 & N_2^e & 0 & N_3^e & 0 \\
+        0 & N_1^e & 0 & N_2^e & 0 & N_3^e \\
+    \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+    \scalebox{0.80}{
+        $ \m{N} = \begin{bmatrix}
+            -\frac{1}{2} \xi \left( 1 - \xi \right) &
+            0 &
+            \phantom{-}\frac{1}{2} \xi \left( 1 + \xi \right) &
+            0 &
+            \left( 1 + \xi \right) \left( 1 - \xi \right) &
+            0 \\
+            0 &
+            -\frac{1}{2} \xi \left( 1 - \xi \right) &
+            0 &
+            \phantom{-}\frac{1}{2} \xi \left( 1 + \xi \right) &
+            0 &
+            \left( 1 + \xi \right) \left( 1 - \xi \right)
+        \end{bmatrix} $
+    }
+\end{equation}
+
+\begin{equation}
+    \m{N} = \begin{bmatrix}
+        \frac{\xi^2}{2} - \frac{\xi}{2} &
+        0 &
+        \frac{\xi^2}{2} + \frac{\xi}{2} &
+        0 &
+        1 - \xi^2 &
+        0 \\
+        0 &
+        \frac{\xi^2}{2} - \frac{\xi}{2} &
+        0 &
+        \frac{\xi^2}{2} + \frac{\xi}{2} &
+        0 &
+        1 - \xi^2 \\
+    \end{bmatrix}
+\end{equation}
+
+and
+\begin{equation}
+    \begin{bmatrix}
+        u_x^e(\xi) \\
+        u_y^e(\xi) \\
+    \end{bmatrix}
+    = \m{N}(\xi) \begin{bmatrix}
+        u_{x1}^e \\
+        u_{y1}^e \\
+        u_{x2}^e \\
+        u_{y2}^e \\
+        u_{x3}^e \\
+        u_{y3}^e \\
+    \end{bmatrix}
+\end{equation}
+
+or if:
+\begin{equation}
+    \m{N} = \begin{bmatrix}
+        N_1^e & N_2^e & N_3^e \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \frac{\xi^2}{2} - \frac{\xi}{2} &
+        \frac{\xi^2}{2} + \frac{\xi}{2} &
+        1 - \xi^2
+    \end{bmatrix}
+\end{equation}
+
+then:
+\begin{equation}
+    \begin{bmatrix}
+        u_x^e(\xi) \\
+        u_y^e(\xi) \\
+    \end{bmatrix}
+    = \m{N}(\xi) \begin{bmatrix}
+        u_{x1}^e & u_{y1}^e \\
+        u_{x2}^e & u_{y2}^e \\
+        u_{x3}^e & u_{y3}^e \\
+    \end{bmatrix}
+\end{equation}
+
+shape function derivatives:
+\begin{equation}
+    \m{B} = \frac{\partial \m{N}}{\partial \xi} =
+    \begin{bmatrix}
+        \xi -\frac{1}{2} & 0 & \xi + \frac{1}{2} & 0 & -2 \xi & 0 \\
+        0 & \xi -\frac{1}{2} & 0 & \xi + \frac{1}{2} & 0 & -2 \xi \\
+    \end{bmatrix}
+\end{equation}
+
+the strain-displacement realtion is given by:
+\begin{equation}
+    \M{\varepsilon} = \m{B} \m{u}
+\end{equation}
+
+Integrating the element at two \textbf{Gauss-Legendre} points of the natural
+coordinate $ \xi = [-0.5773502692, 0.5773502692] $ with weights of $ w = 1.0 $
+then numerically:
+
+\begin{bbox}
+
+    To get the correct interpolation points and weights, python can be used:
+
+    \begin{minted}[linenos=true, xleftmargin=1cm]{python}
+        import numpy as np
+
+        xi, w = np.polynomial.legendre.leggaus(2)
+    \end{minted}
+
+\end{bbox}
+
+for $ \xi^1 = -0.5773502692 $
+\begin{equation}
+    \m{N}^1 = \begin{bmatrix}
+        \phantom{-}0.45534 & -0.12201 & 0.66667
+    \end{bmatrix}
+\end{equation}
+
+for $ \xi^2 = 0.5773502692 $
+\begin{equation}
+    \m{N}^2 = \begin{bmatrix}
+        -0.12201 & \phantom{-}0.45534 & 0.66667
+    \end{bmatrix}
+\end{equation}
+
+Shape Functions in global coordinates:
+\begin{equation}
+    \begin{bmatrix}
+        u_{x1}^i \\
+        u_{y1}^i \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \frac{\xi^2}{2} - \frac{\xi}{2} &
+        0 &
+        \frac{\xi^2}{2} + \frac{\xi}{2} &
+        0 &
+        1 - \xi^2 &
+        0 \\
+        0 &
+        \frac{\xi^2}{2} - \frac{\xi}{2} &
+        0 &
+        \frac{\xi^2}{2} + \frac{\xi}{2} &
+        0 &
+        1 - \xi^2 \\
+    \end{bmatrix}_{\xi^i}
+    \begin{bmatrix}
+        u_{x1}^e \\
+        u_{y1}^e \\
+        u_{x2}^e \\
+        u_{y2}^e \\
+        u_{x3}^e \\
+        u_{y3}^e \\
+    \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+    \begin{bmatrix}
+        u_{x}^1 \\
+        u_{y}^1 \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \phantom{-}0.45534 u_{x1} - 0.12201 u_{x2} + 0.66667 u_{x3} \\
+        -0.12201 u_{y1} + 0.45534 u_{y2} + 0.66667 u_{y3} \\
+    \end{bmatrix}
+\end{equation}
+
+\begin{equation}
+    \begin{bmatrix}
+        u_{x}^2 \\
+        u_{y}^2 \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        -0.12201 u_{x1} + 0.45534 u_{x2} + 0.66667 u_{x3} \\
+        \phantom{-}0.45534 u_{y1} - 0.12201 u_{y2} + 0.66667 u_{y3} \\
+    \end{bmatrix}
+\end{equation}
+
+Shape Function Derivatives in Natural Coordinates (there is a row for each
+integration point if the coordinates are specified as matrix, not a column
+vector. otherwise for each integration point there is a separate $ \m{B} $
+matrix):
+
+\begin{equation}
+    \frac{\partial \m{N}}{\partial \xi} =
+    \m{B} = \begin{bmatrix}
+        \xi -\frac{1}{2} & 0 & \xi + \frac{1}{2} & 0 & -2 \xi & 0 \\
+        0 & \xi -\frac{1}{2} & 0 & \xi + \frac{1}{2} & 0 & -2 \xi \\
+    \end{bmatrix}
+\end{equation}
+
+Jacobian:
+
+\begin{equation}
+    \m{J} = \m{B} \m{u} =
+    \begin{bmatrix}
+        \xi -\frac{1}{2} & 0 & \xi + \frac{1}{2} & 0 & -2 \xi & 0 \\
+        0 & \xi -\frac{1}{2} & 0 & \xi + \frac{1}{2} & 0 & -2 \xi \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_{x1}^e \\
+        u_{y1}^e \\
+        u_{x2}^e \\
+        u_{y2}^e \\
+        u_{x3}^e \\
+        u_{y3}^e \\
+    \end{bmatrix}
+\end{equation}
+
+for $ \xi^1 = -0.5773502692 $
+\begin{equation}
+    \m{J}^1 = \begin{bmatrix}
+        -1.07735 u_{x1} -0.07735 u_{x2} + 1.15470 u_{3} \\
+        -1.07735 u_{y1} -0.07735 u_{y2} + 1.15470 u_{y3} \\
+    \end{bmatrix}
+\end{equation}
+
+for $ \xi^2 = 0.5773502692 $
+\begin{equation}
+    \m{J}^2 = \begin{bmatrix}
+        \phantom{-}0.07735 u_{x1} + 1.07735 u_{x2} - 1.15470 u_{3} \\
+        \phantom{-}0.07735 u_{y1} + 1.07735 u_{y2} - 1.15470 u_{y3} \\
+    \end{bmatrix}
+\end{equation}
+
+
+Jacobian Determinant (when the \textbf{Jacobian matrix} is a vector, its
+determinant is simply its \textbf{length}):
+\begin{equation}
+    \det \m{J} = || \m{J} ||
+\end{equation}
+
+for $ \xi^1 = -0.5773502692 $
+\begin{equation}
+    \scalebox{0.78}{
+        $ \det\m{J}^1 =
+        \sqrt{ \left( -1.07735 u_{x1} -0.07735 u_{x2} + 1.15470 u_{3} \right)^2 +
+            \left(-1.07735 u_{y1} -0.07735 u_{y2} + 1.15470 u_{y3} \right)^2 } $
+    }
+\end{equation}
+
+for $ \xi^2 = 0.5773502692 $
+\begin{equation}
+    \scalebox{0.78}{
+        $ \det\m{J}^2 =
+        \sqrt{ \left(0.07735 u_{x1} + 1.07735 u_{x2} - 1.15470 u_{3} \right)^2 +
+        \left(0.07735 u_{y1} + 1.07735 u_{y2} - 1.15470 u_{y3} \right)^2} $
+    }
+\end{equation}
+
+Jacobian Inverse (when the \textbf{Jacobian matrix} is a row vector, its inverse
+is just its \textbf{transpose} divided by its determinant squared):
+
+\textbf{Moore-Penrose pseudoinverse}:
+\begin{equation}
+    \m{J}^{-1} =
+    \m{J}^{+} = \left( \m{J}^T \m{J} \right)^{-1} \m{J}^T
+\end{equation}
+
+for $ \xi^1 = -0.5773502692 $
+\begin{equation}
+    {\m{J}^1}^{-1} = \frac{1}{{\det \m{J}^1}^2} {\m{J}^1}^T
+\end{equation}
+
+for $ \xi^2 = 0.5773502692 $
+\begin{equation}
+    {\m{J}^2}^{-1} = \frac{1}{{\det \m{J}^2}^2} {\m{J}^2}^T
+\end{equation}
+
+Shape function derivatives in global coordinates:
+
+\begin{equation}
+    \m{B}_g
+    = \m{J}^{-1} \m{B}
+\end{equation}
+
+for $ \xi^1 = -0.5773502692 $
+\begin{equation}
+    \m{B}^1_g
+    = {\m{J}^1}^{-1} \m{B}^1
+\end{equation}
+
+for $ \xi^2 = 0.5773502692 $
+\begin{equation}
+    \m{B}^2_g
+    = {\m{J}^2}^{-1} \m{B}^2
+\end{equation}
+
+Material Stiffness Matrix
+
+\begin{equation}
+    \m{D} = EA
+\end{equation}
+
+Then the stiffness matrix is composed as:
+\begin{equation}
+    \m{K}^e = \sum_{i=1}^2 {\m{B}_g^i}^T \m{D} \m{B_g}^i \det \m{J}^i w^i
+\end{equation}
 
 
 
