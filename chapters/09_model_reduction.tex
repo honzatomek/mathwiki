@@ -1,0 +1,92 @@
+\newpage
+\chapter{Model reduction}
+
+\section{Guyan reduction}
+\textbf{Guyan reduction}, also known as \textbf{static condensation},
+is a \textit{dimensionality reduction} method which reduces the number
+of \textbf{DOFs} by ignoring the interial terms of the equilibrium equations
+and expressing the unloaded \textbf{DOFs} in terms of the loaded \textbf{DOFs}.
+
+The static equilibrium equation:
+
+\begin{eqarray}
+    \begin{bmatrix}
+        \m{K}_{mm} & \m{K}_{ms} \\
+        \m{K}_{sm} & \m{K}_{ss}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_m \\
+        \m{u}_s
+    \end{bmatrix} &=
+    \begin{bmatrix}
+        \m{f}_m \\
+        \m{f}_s
+    \end{bmatrix} \\
+    \m{K}_{mm} \m{u}_m + \m{K}_{ms} \m{u}_s &= \m{f}_m \\
+    \m{K}_{sm} \m{u}_m + \m{K}_{ss} \m{u}_s &= \m{f}_s
+\end{eqarray}
+
+Where $ m $ denotes the \textbf{master} DOFs and $ s $ the \textbf{slave} DOFs.
+Stating that $ s $ section of the problem DOFs is unloaded, we can
+write that $ \m{f}_s = \m{0} $. Then the slave DOFs are expressed
+by the following equation:
+
+\begin{equation}
+    \m{K}_{sm} \m{u}_m + \m{K}_{ss} \m{u}_s = \m{0}
+\end{equation}
+
+Solving the above equation in terms of the independent (master) DOFs leads to
+the following dependency relations:
+
+\begin{equation}
+    \m{u}_s = -\m{K}_{ss}^{-1} \m{K}_{sm} \m{u}_m
+\end{equation}
+
+Substituting the dependency relations to the upper (master) partition of the static
+equilibrium problem condenses away the slave DOFs, leading to the following reduced
+system of linear equations:
+
+\begin{equation}
+    \left(\m{K}_{mm} - \m{K}_{ms} \m{K}_{ss}^{-1} \m{K}_{sm} \right)
+    \m{u}_m = \m{f}_m
+\end{equation}
+
+The above system of linear equations is equivalent to the original problem, but expressed
+in terms of \textbf{master} DOFs alone. Thus, the \textbf{Guyan} reduction method
+results in a reduced system by condensing away the \textbf{slave} DOFs.
+
+The \textbf{Guyan reduction} can be also expressed as a \textit{change of basis} which
+produces a low-dimensional representation of the original space, represented by the
+\textbf{master} DOFs. The linear transformation that maps the reduced space onto
+the full space is expressed as:
+
+\begin{equation}
+    \begin{bmatrix}
+        \m{u}_m \\
+        \m{u}_s
+    \end{bmatrix} =
+    \begin{bmatrix}
+        \m{I} \\
+        -\m{K}_{ss}^{-1} \m{K}_{sm}
+    \end{bmatrix}
+    \m{u}_m = \m{T}_G \m{u}_m
+\end{equation}
+
+where $ \m{T}_G $ represents the \textbf{Guyan} reduction \textit{transformation matrix}.
+Thus, the reduced problem is represented as:
+
+\begin{equation}
+    \m{K}_G \m{u}_m = \m{f}_m
+\end{equation}
+
+In the above equation, $ \m{K}_G $ represents the reduced system of linear equations
+that's obtained by applying the \textbf{Guyan reduction} transformation on the
+full system, which is expressed as:
+
+\begin{equation}
+    \m{K}_G = \m{T}_G^T \m{K} \m{T}_G
+\end{equation}
+
+where $ \m{T}_G $ has the dimension of $ n_{DOF} \times n_m $.
+
+

@@ -1,0 +1,116 @@
+\newpage
+\chapter{Governing Equations}
+
+\section{Material Matrices}
+
+\begin{table}[ht]
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    \scalebox{0.85}{
+    \begin{tabular}{||c c c c||}
+        \hline
+        \hline
+        Problem & \begin{tabular}{c}Displacement\\components\\ \end{tabular} &
+        Strain vector $ \M{\epsilon}^T $ & Stress vector $ \M{\tau}^T $ \\
+        \hline
+        Bar & $u$ & $ \left[ \epsilon_{xx} \right] $ & $ \left[ \tau_{xx} \right] $ \\
+        Beam & $w$ & $ \left[ \kappa_{xx} \right] $ & $ \left[ m_{xx} \right] $ \\
+        Plane stress & $u,v$ & $ \left[ \epsilon_{xx}, \epsilon_{yy}, \gamma_{xy} \right] $
+                     & $ \left[ \tau_{xx}, \tau_{yy}, \tau_{xy} \right] $ \\
+        Plane strain & $u,v$ & $ \left[ \epsilon_{xx}, \epsilon_{yy}, \gamma_{xy} \right] $
+                     & $ \left[ \tau_{xx}, \tau_{yy}, \tau_{xy} \right] $ \\
+        Axisymmetric & $u,v$
+                     & $ \left[ \epsilon_{xx}, \epsilon_{yy}, \gamma_{xy}, \epsilon_{zz} \right] $
+                     & $ \left[ \tau_{xx}, \tau_{yy}, \tau_{xy}, \tau_{zz} \right] $ \\
+        3D & $u,v,w$
+           & $ \left[ \epsilon_{xx}, \epsilon_{yy}, \epsilon_{zz},
+           \gamma_{xy}, \gamma_{yz}, \gamma_{zx} \right] $
+                     & $ \left[ \tau_{xx}, \tau_{yy}, \tau_{zz},
+                     \tau_{xy}, \tau_{yz}, \tau_{zx} \right] $ \\
+        Plate bending & $w$ & $ \left[ \kappa_{xx}, \kappa_{yy}, \kappa_{xy} \right] $ &
+                             $ \left[ m_{xx}, m_{yy}, m_{xy} \right] $ \\
+        \hline
+        \hline
+        \multicolumn{4}{l}{
+            Notation:
+            $ \epsilon_{xx} = \frac{\partial u}{\partial x} $,
+            $ \epsilon_{yy} = \frac{\partial v}{\partial y} $,
+            $ \gamma_{xy} = \frac{\partial u}{\partial y} + \frac{\partial v}{\partial x} $,
+            $ \dots $,
+            $ \kappa_{xx} = \frac{\partial^2 w}{\partial x^2} $,
+            $ \kappa_{yy} = \frac{\partial^2 w}{\partial y^2} $,
+            $ \kappa_{xy} = \frac{\partial^2 w}{\partial x \partial y} $.
+        } \\
+    \end{tabular}}
+    \caption{Corresponding kinematic and static variables in various problems.}
+\end{table}
+
+
+\begin{table}[ht]
+    \centering
+    \renewcommand{\arraystretch}{2.00}
+    \scalebox{0.75}{
+    \begin{tabular}{||c c||}
+        \hline
+        \hline
+        Problem & Material matrix $ C $ \\
+        \hline
+        Bar & $ E $ \\
+        Beam & $ E I $ \\
+        Plane stress & \begin{math}
+            \frac{E}{1 - \nu^2}
+            \begin{bmatrix}
+                1 & \nu & 0 \\
+                \nu & 1 & 0 \\
+                0 & 0 & \frac{1 - \nu}{2}
+            \end{bmatrix}
+        \end{math} \\
+        Plane strain & \begin{math}
+            \frac{E\left(1 - \nu\right)}{\left(1 + \nu\right)\left(1 - 2\nu\right)}
+            \begin{bmatrix}
+                1 & \frac{\nu}{1 - \nu} & 0 \\
+                \frac{\nu}{1 - \nu} & 1 & 0 \\
+                0 & 0 & \frac{1 - 2 \nu}{2 \left(1 - \nu\right)}
+            \end{bmatrix}
+        \end{math} \\
+        Axisymmetric & \begin{math}
+            \frac{E\left(1 - \nu\right)}{\left(1 + \nu\right)\left(1 - 2\nu\right)}
+            \begin{bmatrix}
+                1 & \frac{\nu}{1 - \nu} & 0 & \frac{\nu}{1 - \nu} \\
+                \frac{\nu}{1 - \nu} & 1 & 0 & \frac{\nu}{1 - \nu} \\
+                0 & 0 & \frac{1 - 2 \nu}{2 \left(1 - \nu\right)} & 0 \\
+                \frac{\nu}{1-\nu} & \frac{\nu}{1-\nu} & 0 & 1
+            \end{bmatrix}
+        \end{math} \\
+        3D & \begin{math}
+            \frac{E\left(1 - \nu\right)}{\left(1 + \nu\right)\left(1 - 2\nu\right)}
+            \begin{bmatrix}
+                1 & \frac{\nu}{1 - \nu} & \frac{\nu}{1 - \nu} & 0 & 0 & 0 \\
+                \frac{\nu}{1 - \nu} & 1 & \frac{\nu}{1 - \nu} & 0 & 0 & 0 \\
+                0 & 0 & \frac{1 - 2 \nu}{2 \left(1 - \nu\right)} & 0 \\
+                \frac{\nu}{1-\nu} & \frac{\nu}{1-\nu} & \frac{\nu}{1-\nu} & 1 & 0 & 0 & 0 \\
+                0 & 0 & 0 & \frac{1 - 2 \nu}{2 \left(1 - \nu \right)} & 0 & 0 \\
+                0 & 0 & 0 & 0 & \frac{1 - 2 \nu}{2 \left(1 - \nu \right)} & 0 \\
+                0 & 0 & 0 & 0 & 0 & \frac{1 - 2 \nu}{2 \left(1 - \nu \right)}
+            \end{bmatrix}
+        \end{math} \\
+        Plate bending & \begin{math}
+            \frac{E h^3}{12 \left(1 - \nu^2 \right)}
+            \begin{bmatrix}
+                1 & \nu & 0 \\
+                \nu & 1 & 0 \\
+                0 & 0 & \frac{1 - \nu}{2}
+            \end{bmatrix}
+        \end{math} \\
+        \hline
+        \hline
+        \multicolumn{2}{l}{
+            Notation:
+            $ E = $ Young's modulus, $ \nu = $ Poisson's ratio,
+            $ h = $ thickness of plate, $ I = $ moment of inertia
+        } \\
+    \end{tabular}}
+    \caption{Generalised stress-strain matrices for isotropic materials}
+\end{table}
+
+

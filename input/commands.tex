@@ -1,0 +1,116 @@
+% python code format
+\usemintedstyle{native}
+\setminted[python]{breaklines, framesep=2mm, fontsize=\footnotesize, numbersep=5pt}
+\newminted[python]{python}{linenos=true,
+                           frame=lines,
+                           baselinestretch=1.2,
+                           mathescape,
+                           xleftmargin=0cm,
+                           framesep=2mm,
+                           fontsize=\footnotesize}
+
+\setlength{\parindent}{0ex}
+\setlength{\parskip}{1em plus 0.1em minus 0.2em}
+\renewcommand{\labelitemi}{$\bullet$}
+\renewcommand{\labelitemii}{$\bullet$}
+\renewcommand{\labelitemiii}{$\bullet$}
+\renewcommand{\labelitemiv}{$\bullet$}
+
+%Commands definitions
+\newcommand\setbackgroundcolour{\pagecolor[rgb]{0.15,0.15,0.15}}
+\newcommand\settextcolour{\color[rgb]{0.9,0.9,0.9}}
+\newcommand\invertbackgroundtext{\setbackgroundcolour\settextcolour}
+
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+\newcommand*{\Resize}[2]{\resizebox{#1}{!}{$#2$}}%
+
+% Lagrangian symbol
+\newcommand{\lagr}{\mathop{\mathcal{L}}}
+\DeclareMathOperator{\Lagr}{\mathcal{L}}
+
+% matrix notation
+\newcommand{\m}{\mathbf}
+% matrix notation greek letters
+\newcommand{\M}{\pmb}
+
+% null symbol
+\newcommand{\Null}{\text{\O}}
+
+% atan2 math symbol
+\DeclareMathOperator{\atantwo}{atan2}
+\DeclareMathOperator{\arctantwo}{arctan2}
+
+\newcommand{\closure}[2][3]{%
+{}\mkern#1mu\overline{\mkern-#1mu#2}}
+
+% maximum number of entries in matrix
+\setcounter{MaxMatrixCols}{20}
+
+% equal by definition
+\newcommand*\eqd{\stackrel{\triangle}{=}}
+
+% +=
+\newcommand*\eqp{\stackrel{+}{=}}
+
+% {name}[number of arguments][1st default value] etc..
+% the argument value is then inserted at #argument_number
+\newenvironment{bbox}[1][0.96]
+{
+    \begin{center}
+        \begin{tabular}{|p{#1\textwidth}|}
+            \hline\\
+}
+{
+            \\\\\hline
+        \end{tabular}
+    \end{center}
+}
+
+\newenvironment{bboxtitle}[1][0.96]
+{
+    \begin{center}
+        #1\\[1ex]
+        \begin{tabular}{|p{#1\textwidth}|}
+            \hline\\
+}
+{
+            \\\\\hline
+        \end{tabular}
+    \end{center}
+}
+
+\newcount\myloopcounter
+\newcommand{\repeatit}[3][10]{%
+    \myloopcounter1% initialize the loop counter
+    \loop\ifnum\myloopcounter < #1
+    #2#3%
+    \advance\myloopcounter by 1%
+    \repeat% start again
+    #2%
+}
+
+\newenvironment{qbox}
+{
+%\centering{\huge{?}}
+\begin{center}
+    \repeatit[42]{?}{\ }
+\end{center}
+%\hrule
+}
+{
+%\hrule
+\begin{center}
+    \repeatit[42]{?`}{\ }
+\end{center}
+}
+
+\newenvironment{eqarray}
+{
+    \begin{eqnarray}
+        \begin{aligned}
+}
+{
+        \end{aligned}
+    \end{eqnarray}
+}
+

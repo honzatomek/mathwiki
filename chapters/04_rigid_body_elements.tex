@@ -1,0 +1,797 @@
+\newpage
+\chapter{Rigid Body Elements}
+
+\section{RBE2}
+
+\begin{bbox}[0.95]
+    The rigid freebody relations between \textbf{slave} and \textbf{master} node are:
+    \begin{eqarray}
+        \m{T}_s &= \m{T}_m + \m{R}_s \times \overline{\m{x}} \\
+        \m{R}_s &= \m{R}_m
+    \end{eqarray}
+
+    Where $ \overline{\m{x}} $ is a vector from \textbf{slave} to \textbf{master}:
+    \begin{equation}
+        \overline{\m{x}} =
+        \begin{bmatrix}
+            \overline{x} \\
+            \overline{y} \\
+            \overline{z}
+        \end{bmatrix} =
+        \begin{bmatrix}
+            x_s - x_m \\
+            y_s - y_m \\
+            z_s - z_m
+        \end{bmatrix}
+    \end{equation}
+
+    Then \textit{vector multiplication} (cross product) is defined as:
+    \begin{eqarray}
+        \m{R}_s \times \m{x}_s
+        &= \m{R}_m \times \m{x} = & \\
+        &= \begin{bmatrix}
+             \varphi_m \\
+             \psi_m \\
+             \theta_m
+           \end{bmatrix} \times \begin{bmatrix}
+             x_s - x_m \\
+             y_s - y_m \\
+             z_s - z_m
+           \end{bmatrix}
+        &= \begin{bmatrix}
+             \varphi_m \\
+             \psi_m \\
+             \theta_m
+           \end{bmatrix} \times \begin{bmatrix}
+             \overline{x} \\
+             \overline{y} \\
+             \overline{z}
+           \end{bmatrix} = \\
+        &= \begin{bmatrix}
+             \psi_m (z_s - z_m ) - \theta_m (y_s - y_m) \\
+             \theta_m (x_s - x_m) - \varphi_m (z_s - z_m) \\
+             \varphi_m (y_s - y_m) - \psi_m (x_s - x_m)
+           \end{bmatrix}
+        &= \begin{bmatrix}
+            \psi_m \overline{z} - \theta_m \overline{y} \\
+            \theta_m \overline{x} - \varphi_m \overline{z} \\
+            \varphi_m \overline{y} - \psi_m \overline{x}
+        \end{bmatrix} = \\
+        &= \begin{bmatrix}
+            \phantom{-}0 & \phantom{-}\overline{z} & -\overline{y} \\
+            -\overline{z} & \phantom{-}0 & \phantom{-}\overline{x} \\
+            \phantom{-}\overline{y} & -\overline{x} & \phantom{-}0
+        \end{bmatrix}
+        \begin{bmatrix}
+            \varphi_m \\
+            \psi_m \\
+            \theta_m
+        \end{bmatrix}
+    \end{eqarray}
+\end{bbox}
+
+\begin{bbox}[0.95]
+    The \textbf{slave} equations can be written as:
+    \begin{equation}
+        \begin{bmatrix}
+            u_s \\
+            v_s \\
+            w_s \\
+            \varphi_s \\
+            \psi_s \\
+            \theta_s
+        \end{bmatrix}
+        = \begin{bmatrix}
+            1 & 0 & 0 & 0 & \phantom{-(}z_s - z_m & -(y_s - y_m) \\
+            0 & 1 & 0 & -(z_s - z_m) & 0 & \phantom{-(}x_s - x_m \\
+            0 & 0 & 1 & \phantom{-(}y_s - y_m & -(x_s - x_m) & 0 \\
+            0 & 0 & 0 & 1 & 0 & 0 \\
+            0 & 0 & 0 & 0 & 1 & 0 \\
+            0 & 0 & 0 & 0 & 0 & 1 \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            u_m \\
+            v_m \\
+            w_m \\
+            \varphi_m \\
+            \psi_m \\
+            \theta_m
+        \end{bmatrix}
+    \end{equation}
+
+    or:
+    \begin{equation}
+        \begin{bmatrix}
+            u_s \\
+            v_s \\
+            w_s \\
+            \varphi_s \\
+            \psi_s \\
+            \theta_s
+        \end{bmatrix}
+        = \begin{bmatrix}
+            1 & 0 & 0 & \phantom{-}0 & \phantom{-}\overline{z} & -\overline{y} \\
+            0 & 1 & 0 & -\overline{z} & \phantom{-}0 & \phantom{-}\overline{x} \\
+            0 & 0 & 1 & \phantom{-}\overline{y} & -\overline{x} & \phantom{-}0 \\
+            0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+            0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+            0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+        \end{bmatrix}
+        \begin{bmatrix}
+            u_m \\
+            v_m \\
+            w_m \\
+            \varphi_m \\
+            \psi_m \\
+            \theta_m
+        \end{bmatrix}
+    \end{equation}
+\end{bbox}
+
+\subsection{RBE2 Coefficients Example:}
+
+Master Node:
+\begin{equation}
+    \m{X}_m =
+    \begin{bmatrix}
+        1 & 1 & 1
+    \end{bmatrix}^T
+\end{equation}
+
+Slave Nodes:
+\begin{eqarray}
+    \m{X}_{s,1} =
+    \begin{bmatrix}
+        0 & 0 & 0
+    \end{bmatrix}^T \\
+    \m{X}_{s,1} =
+    \begin{bmatrix}
+        2 & 0 & 0
+    \end{bmatrix}^T \\
+    \m{X}_{s,1} =
+    \begin{bmatrix}
+        2 & 2 & 0
+    \end{bmatrix}^T \\
+    \m{X}_{s,1} =
+    \begin{bmatrix}
+        0 & 2 & 0
+    \end{bmatrix}^T \\
+\end{eqarray}
+
+Then Slave Node 1 equations are:
+\begin{eqarray}
+    \m{x}_1 &=
+    \begin{bmatrix}
+        x_{s,1} - x_m & y_{s,1} - y_m & z_{s,1} - z_m
+    \end{bmatrix}^T =
+    \begin{bmatrix}
+        -1 & -1 & -1
+    \end{bmatrix}^T
+\end{eqarray}
+
+Other Slave Nodes:
+\begin{eqarray}
+    \m{x}_2 &=
+    \begin{bmatrix}
+        2 - 1 & 0 - 1 & 0 - 1
+    \end{bmatrix}^T =
+    \begin{bmatrix}
+        \phantom{-}1 & -1 & -1
+    \end{bmatrix}^T \\
+    \m{x}_3 &=
+    \begin{bmatrix}
+        2 - 1 & 2 - 1 & 0 - 1
+    \end{bmatrix}^T =
+    \begin{bmatrix}
+        \phantom{-}1 & \phantom{-}1 & -1
+    \end{bmatrix}^T \\
+    \m{x}_4 &=
+    \begin{bmatrix}
+        0 - 1 & 2 - 1 & 0 - 1
+    \end{bmatrix}^T =
+    \begin{bmatrix}
+        -1 & \phantom{-}1 & -1
+    \end{bmatrix}^T
+\end{eqarray}
+
+Therefore, after filling in the coefficients:
+\renewcommand\arraystretch{1.6}
+\begin{eqarray}
+    \begin{bmatrix}
+        u_{s,1} \\
+        v_{s,1} \\
+        w_{s,1} \\
+        \varphi_{s,1} \\
+        \psi_{s,1} \\
+        \theta_{s,1}
+    \end{bmatrix}
+    &= \begin{bmatrix}
+        1 & 0 & 0 & \phantom{-}0 & -1 & \phantom{-}1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & -1 \\
+        0 & 0 & 1 & -1 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_m \\
+        v_m \\
+        w_m \\
+        \varphi_m \\
+        \psi_m \\
+        \theta_m
+    \end{bmatrix} \\
+    \begin{bmatrix}
+        u_{s,2} \\
+        v_{s,2} \\
+        w_{s,2} \\
+        \varphi_{s,2} \\
+        \psi_{s,2} \\
+        \theta_{s,2}
+    \end{bmatrix}
+    &= \begin{bmatrix}
+        1 & 0 & 0 & \phantom{-}0 & -1 & \phantom{-}1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}1 \\
+        0 & 0 & 1 & -1 & -1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_m \\
+        v_m \\
+        w_m \\
+        \varphi_m \\
+        \psi_m \\
+        \theta_m
+    \end{bmatrix} \\
+    \begin{bmatrix}
+        u_{s,3} \\
+        v_{s,3} \\
+        w_{s,3} \\
+        \varphi_{s,3} \\
+        \psi_{s,3} \\
+        \theta_{s,3}
+    \end{bmatrix}
+    &= \begin{bmatrix}
+        1 & 0 & 0 & \phantom{-}0 & -1 & -1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}1 \\
+        0 & 0 & 1 & \phantom{-}1 & -1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_m \\
+        v_m \\
+        w_m \\
+        \varphi_m \\
+        \psi_m \\
+        \theta_m
+    \end{bmatrix} \\
+    \begin{bmatrix}
+        u_{s,4} \\
+        v_{s,4} \\
+        w_{s,4} \\
+        \varphi_{s,4} \\
+        \psi_{s,4} \\
+        \theta_{s,4}
+    \end{bmatrix}
+    &= \begin{bmatrix}
+        1 & 0 & 0 & \phantom{-}0 & -1 & -1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & -1 \\
+        0 & 0 & 1 & \phantom{-}1 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_m \\
+        v_m \\
+        w_m \\
+        \varphi_m \\
+        \psi_m \\
+        \theta_m
+    \end{bmatrix}
+\end{eqarray}
+\renewcommand\arraystretch{1}
+
+When all put together:
+\begin{equation}
+    \begin{bmatrix}
+        u_{s,1} \\
+        v_{s,1} \\
+        w_{s,1} \\
+        \varphi_{s,1} \\
+        \psi_{s,1} \\
+        \theta_{s,1} \\
+        u_{s,2} \\
+        v_{s,2} \\
+        w_{s,2} \\
+        \varphi_{s,2} \\
+        \psi_{s,2} \\
+        \theta_{s,2} \\
+        u_{s,3} \\
+        v_{s,3} \\
+        w_{s,3} \\
+        \varphi_{s,3} \\
+        \psi_{s,3} \\
+        \theta_{s,3} \\
+        u_{s,4} \\
+        v_{s,4} \\
+        w_{s,4} \\
+        \varphi_{s,4} \\
+        \psi_{s,4} \\
+        \theta_{s,4}
+    \end{bmatrix}
+    = \begin{bmatrix}
+        1 & 0 & 0 & \phantom{-}0 & -1 & \phantom{-}1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & -1 \\
+        0 & 0 & 1 & -1 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+        1 & 0 & 0 & \phantom{-}0 & -1 & \phantom{-}1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}1 \\
+        0 & 0 & 1 & -1 & -1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+        1 & 0 & 0 & \phantom{-}0 & -1 & -1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}1 \\
+        0 & 0 & 1 & \phantom{-}1 & -1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+        1 & 0 & 0 & \phantom{-}0 & -1 & -1 \\
+        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & -1 \\
+        0 & 0 & 1 & \phantom{-}1 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
+        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        u_m \\
+        v_m \\
+        w_m \\
+        \varphi_m \\
+        \psi_m \\
+        \theta_m
+    \end{bmatrix}
+\end{equation}
+
+It can be read as:
+\begin{eqarray}
+    u_{s,1} &= u_m -\psi_m + \theta_m \\
+    v_{s,1} &= v_m \varphi_m - \theta_m \\
+    \vdots \\
+    \theta_{s,4} &= \theta_m
+\end{eqarray}
+
+Or:
+\begin{equation}\label{rbe2-coefficients}
+    \m{u}_s = \m{\closure{T}} \m{u}_m
+\end{equation}
+
+
+\subsection{Editing Master Sitffness Matrix}
+
+This equation should be then expanded to all DOFs, where in $ \m{T} $ the
+slave DOFs columns are missing and the DOFs that do not take part in RBEs have $ 1 $ on
+the diagonal. The resulting  matrix should have the same number of rows as
+the master stiffness matrix.
+
+Then the master stiffness equation is modified:
+\begin{eqarray}\label{rbe2-master-slave-modified}
+    \m{\hat{K}} &= \m{T}^T \m{K} \m{T} \\
+    \m{\hat{f}} &= \m{T}^T \m{f} \\
+    \m{\hat{K}} \m{\hat{u}} &= \m{\hat{f}} \\
+\end{eqarray}
+
+If we'd like to make the procedure more general, partition the master stiffness
+equations such that:
+\begin{equation}
+    \begin{bmatrix}
+        \m{K}_{uu} & \m{K}_{um} & \m{K}_{us} \\
+        \m{K}_{um}^T & \m{K}_{mm} & \m{K}_{ms} \\
+        \m{K}_{us}^T & \m{K}_{ms}^T & \m{K}_{ss}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+        \m{u}_s
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{f}_u \\
+        \m{f}_m \\
+        \m{f}_s
+    \end{bmatrix}
+\end{equation}
+
+Based on \eqref{rbe2-master-slave-modified} we could probably partition
+the matrices as:
+\begin{equation}\label{rbe2-partition-T-u-m-s}
+    \begin{matrix}
+        \begin{matrix}
+            \begin{matrix}
+                \ 
+            \end{matrix} \\
+            \left. \begin{matrix}
+                u \\
+                m \\
+                s \\
+            \end{matrix} \right|
+        \end{matrix}
+        & \begin{matrix}
+            \begin{matrix}
+                u & m \\
+                \hline
+            \end{matrix} \\
+            \begin{bmatrix}
+                \m{I} & \m{0} \\
+                \m{0} & \m{I} \\
+                \m{0} & \m{\closure{T}} \\
+            \end{bmatrix} \\
+        \end{matrix}
+    \end{matrix}
+\end{equation}
+
+If we expand \eqref{rbe2-coefficients} and partition the matrices
+based on \eqref{rbe2-partition-T-u-m-s} into independent or
+\textbf{unconstrained}, \textbf{master}
+and \textbf{slave} nodes, then the equation:
+\begin{equation}
+    \m{u} = \m{T} \m{\hat{u}}
+\end{equation}
+
+becomes:
+\begin{equation}
+    \begin{bmatrix}
+        \m{u}_u  \\
+        \m{u}_m \\
+        \m{u}_s \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{I} & \m{0} \\
+        \m{0} & \m{I} \\
+        \m{0} & \m{\closure{T}} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+    \end{bmatrix}
+\end{equation}
+
+
+Finally the equation \eqref{rbe2-master-slave-modified} can be rewritten as:
+\begin{equation}
+    \begin{bmatrix}
+        \m{I} & \m{0} & \m{0} \\
+        \m{0} & \m{I} & \m{\closure{T}}^T \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{K}_{uu} & \m{K}_{um} & \m{K}_{us} \\
+        \m{K}_{mu} & \m{K}_{mm} & \m{K}_{ms} \\
+        \m{K}_{su} & \m{K}_{sm} & \m{K}_{ss} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{I} & \m{0} \\
+        \m{0} & \m{I} \\
+        \m{0} & \m{\closure{T}} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{I} & \m{0} & \m{0} \\
+        \m{0} & \m{I} & \m{\closure{T}}^T \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{f}_u \\
+        \m{f}_m \\
+        \m{f}_s \\
+    \end{bmatrix}
+\end{equation}
+
+Expanding and multiplying:
+\begin{equation}
+    \scalebox{0.92}{
+    $ \begin{bmatrix}
+        \m{K}_{uu} & \m{K}_{um} & \m{K}_{us} \\
+        \m{K}_{mu} + \m{\closure{T}}^T \m{K}_{su} &
+        \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{sm} &
+        \m{K}_{ms} + \m{\closure{T}}^T \m{K}_{ss} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{I} & \m{0} \\
+        \m{0} & \m{I} \\
+        \m{0} & \m{\closure{T}} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{f}_u \\
+        \m{f}_m + \m{\closure{T}}^T \m{f}_s \\
+    \end{bmatrix} $
+    }
+\end{equation}
+
+\begin{equation}
+    \scalebox{0.95}{
+    $ \begin{bmatrix}
+        \m{K}_{uu} & \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
+        \m{K}_{mu} + \m{\closure{T}}^T \m{K}_{su} &
+        \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{sm} +
+        \m{K}_{ms} \m{\closure{T}} + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{f}_u \\
+        \m{f}_m + \m{\closure{T}}^T \m{f}_s \\
+    \end{bmatrix} $
+    }
+\end{equation}
+
+which is equal to:
+\begin{equation}
+    \scalebox{0.95}{
+    $ \begin{bmatrix}
+        \m{K}_{uu} & \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
+        (\m{K}_{um} + \m{K}_{us} \m{\closure{T}})^T &
+        \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{ms}^T +
+        \m{K}_{ms} \m{\closure{T}} + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{f}_u \\
+        \m{f}_m + \m{\closure{T}}^T \m{f}_s \\
+    \end{bmatrix} $
+    }
+\end{equation}
+
+considering that $ \m{f}_s = \m{0} $ the equations reduce to:
+\begin{equation}
+    \begin{bmatrix}
+        \m{K}_{uu} & \m{\hat{K}}_{um} \\
+        \m{\hat{K}}_{um}^T & \m{\hat{K}}_{mm} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{f}_u \\
+        \m{f}_m \\
+    \end{bmatrix}
+\end{equation}
+
+where:
+\begin{eqarray}
+    \m{\hat{K}}_{um} &= \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
+    \m{\hat{K}}_{mm} &= \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{ms}^T
+                      + \m{K}_{ms} \m{\closure{T}}
+                      + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}} \\
+                     &= \m{K}_{mm} + \m{K}_{ms} \m{\closure{T}}
+                      + (\m{K}_{ms} \m{\closure{T}})^T
+                      + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}}
+\end{eqarray}
+
+
+\begin{bbox}
+
+    Then if \textbf{master-slave} relations are written as (\textit{general case}):
+    \begin{equation}
+        \m{u}_s = \m{\closure{T}} \m{u}_m + \m{g}
+    \end{equation}
+
+    Inserting into the partitioned master stiffness equations:
+    \begin{equation}
+        \begin{bmatrix}
+            \m{K}_{uu} & \m{\hat{K}}_{um} \\
+            \m{\hat{K}}_{um}^T & \m{\hat{K}}_{mm}
+        \end{bmatrix}
+        \begin{bmatrix}
+            \m{u}_u \\
+            \m{u}_m
+        \end{bmatrix}
+        = \begin{bmatrix}
+            \m{f}_u - \m{K}_{us} \m{g} \\
+            \m{f}_m - \m{K}_{ms} \m{g}
+        \end{bmatrix}
+    \end{equation}
+
+    where:
+    \begin{eqarray}
+        \m{\hat{K}}_{um} &= \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
+        \m{\hat{K}}_{mm} &= \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{ms}^T
+                            + \m{K}_{ms} \m{\closure{T}}
+                            + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}}
+    \end{eqarray}
+
+\end{bbox}
+
+
+\subsubsection{MPC Application}
+
+Afterwards the \textbf{MPCs} are applied:
+\begin{equation}
+    \m{u}_s = \m{\closure{T}} \m{u}_m
+\end{equation}
+
+This, when applied to the whole model:
+\begin{equation}
+    \begin{bmatrix}
+        \m{u}_u  \\
+        \m{u}_m \\
+        \m{u}_s \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{I} & \m{0} \\
+        \m{0} & \m{I} \\
+        \m{0} & \m{\closure{T}} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+    \end{bmatrix}
+\end{equation}
+
+with \textbf{transformation matrix} $ \m{T} $ being:
+\begin{equation}
+    \m{T} = \begin{bmatrix}
+        \m{I} & \m{0} \\
+        \m{0} & \m{I} \\
+        \m{0} & \m{\closure{T}} \\
+    \end{bmatrix}
+\end{equation}
+
+Applying the transformation matrix to get \textbf{modified master equation system}:
+\begin{eqarray}
+    \m{T}^T \m{K}_g \m{T} \m{\hat{u}}_g &= \m{T}^T \m{f}_g \\
+    \m{\hat{K}}_g \m{\hat{u}}_g &= \m{\hat{f}}_g
+\end{eqarray}
+
+Where $ \m{\hat{u}}_g = \begin{bmatrix} \m{u}_{g,u} & \m{u}_{g,m} \end{bmatrix}^T $.
+
+From now on, the subscript $ _g $ (\textit{as global}) is implied.
+
+
+\subsubsection{Rotated Nodal Basis}
+
+When a node or an SPC is defined as a \textbf{rotated}/\textbf{skewed} or in
+a different type of Coordinate system (e.g. cylindrical) a transformation matrix
+needs to be applied to such nodes.
+
+\textbf{Cartesian Coordinate system} definition by angle (2D):
+\begin{equation}
+    \m{u}_l = \m{T} \m{u}_g
+\end{equation}
+
+
+\subsubsection{SPC Application}
+
+Then to solve the \textbf{master stiffness equations} for prescribed \textbf{BCs}
+partitioned to \textbf{unconstrained} and \textbf{master} DOFs such as:
+\begin{equation}
+    \begin{bmatrix}
+        \m{K}_{uu} & \m{\hat{K}}_{um} \\
+        \m{\hat{K}}_{um}^T & \m{\hat{K}}_{mm} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{f}_{u} \\
+        \m{f}_m \\
+    \end{bmatrix}
+\end{equation}
+
+where:
+\begin{eqarray}
+    \m{\hat{K}}_{um} &= \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
+    \m{\hat{K}}_{mm} &= \m{K}_{mm} + \m{K}_{ms} \m{\closure{T}}
+                      + (\m{K}_{ms} \m{\closure{T}})^T
+                      + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}}
+\end{eqarray}
+
+Any of these \textbf{DOFs} can be constrained, so this partitioning scheme looses
+all purposes. Therefore the matrix is repartitioned again into
+\textbf{independent} and \textbf{constrained} partitions:
+\begin{equation}
+    \begin{bmatrix}
+        \m{K}_{ii} & \m{K}_{ic} \\
+        \m{K}_{ic}^T & \m{K}_{cc} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_i \\
+        \m{u}_c \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{f}_{i} \\
+        \m{f}_c \\
+    \end{bmatrix}
+\end{equation}
+
+
+\subsubsection{Solving Linear Equations}
+
+Where the \textbf{unknowns} are $ \m{u}_i $, $ \m{f}_c $:
+\begin{equation}
+    \begin{bmatrix}
+        \m{K}_{ii} & \m{K}_{ic} \\
+        \m{K}_{ic}^T & \m{K}_{cc} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \boxed{\m{u}_i} \\
+        \m{u}_c \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{f}_i \\
+        \boxed{\m{f}_c} \\
+    \end{bmatrix}
+\end{equation}
+
+Unpacking the equations:
+\begin{eqarray}
+    \m{K}_{ii} \boxed{\m{u}_i} &+ \m{K}_{ic} \m{u}_c &= \m{f}_i \\
+    \m{K}_{ic}^T \boxed{\m{u}_i} &+ \m{K}_{cc} \m{u}_c &= \boxed{\m{f}_c} \\
+\end{eqarray}
+
+Then first solve for the \textbf{unknown displacements}:
+\begin{eqarray}
+    \m{K}_{ii} \boxed{\m{u}_i} &= \m{f}_u - \m{K}_{ic} \m{u}_c \\
+    \boxed{\m{u}_i} &= \m{K}_{ii}^{-1} \left( \m{f}_i - \m{K}_{ic} \m{u}_c \right) \\
+\end{eqarray}
+
+Lastly solve for the \textbf{unknown reaction forces}:
+\begin{equation}
+    \boxed{\m{f}_c} = \m{K}_{ii} \m{u}_i + \m{K}_{ic} \m{u}_c
+\end{equation}
+
+
+\subsubsection{Recovering Full Displacement Vector}
+
+The full displacement vector is then recovered:
+\begin{eqarray}
+    \m{T} &= \begin{bmatrix}
+        \m{I} & \m{0} \\
+        \m{0} & \m{I} \\
+        \m{0} & \m{\closure{T}} \\
+    \end{bmatrix} \\
+    \m{\hat{u}} &= \begin{bmatrix}
+        \m{u}_i \\
+        \m{u}_c \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+    \end{bmatrix} \\
+    \m{u}_g &= \m{T} \m{\hat{u}} \\
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+        \m{u}_s \\
+    \end{bmatrix}
+    &= \begin{bmatrix}
+        \m{I} & \m{0} \\
+        \m{0} & \m{I} \\
+        \m{0} & \m{\closure{T}} \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_u \\
+        \m{u}_m \\
+    \end{bmatrix}
+\end{eqarray}
+
+
+
