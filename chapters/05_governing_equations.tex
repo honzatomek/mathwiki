@@ -13,19 +13,19 @@
         Problem & \begin{tabular}{c}Displacement\\components\\ \end{tabular} &
         Strain vector $ \M{\epsilon}^T $ & Stress vector $ \M{\tau}^T $ \\
         \hline
-        Bar & $u$ & $ \left[ \epsilon_{xx} \right] $ & $ \left[ \tau_{xx} \right] $ \\
+        Bar & $u$ & $ \left[ \epsilon_{xx} \right] $ & $ \left[ \sigma_{xx} \right] $ \\
         Beam & $w$ & $ \left[ \kappa_{xx} \right] $ & $ \left[ m_{xx} \right] $ \\
         Plane stress & $u,v$ & $ \left[ \epsilon_{xx}, \epsilon_{yy}, \gamma_{xy} \right] $
-                     & $ \left[ \tau_{xx}, \tau_{yy}, \tau_{xy} \right] $ \\
+                     & $ \left[ \sigma_{xx}, \sigma_{yy}, \tau_{xy} \right] $ \\
         Plane strain & $u,v$ & $ \left[ \epsilon_{xx}, \epsilon_{yy}, \gamma_{xy} \right] $
-                     & $ \left[ \tau_{xx}, \tau_{yy}, \tau_{xy} \right] $ \\
+                     & $ \left[ \sigma_{xx}, \sigma_{yy}, \tau_{xy} \right] $ \\
         Axisymmetric & $u,v$
                      & $ \left[ \epsilon_{xx}, \epsilon_{yy}, \gamma_{xy}, \epsilon_{zz} \right] $
-                     & $ \left[ \tau_{xx}, \tau_{yy}, \tau_{xy}, \tau_{zz} \right] $ \\
+                     & $ \left[ \sigma_{xx}, \sigma_{yy}, \tau_{xy}, \sigma_{zz} \right] $ \\
         3D & $u,v,w$
            & $ \left[ \epsilon_{xx}, \epsilon_{yy}, \epsilon_{zz},
            \gamma_{xy}, \gamma_{yz}, \gamma_{zx} \right] $
-                     & $ \left[ \tau_{xx}, \tau_{yy}, \tau_{zz},
+                     & $ \left[ \sigma_{xx}, \sigma_{yy}, \sigma_{zz},
                      \tau_{xy}, \tau_{yz}, \tau_{zx} \right] $ \\
         Plate bending & $w$ & $ \left[ \kappa_{xx}, \kappa_{yy}, \kappa_{xy} \right] $ &
                              $ \left[ m_{xx}, m_{yy}, m_{xy} \right] $ \\
@@ -87,8 +87,7 @@
             \begin{bmatrix}
                 1 & \frac{\nu}{1 - \nu} & \frac{\nu}{1 - \nu} & 0 & 0 & 0 \\
                 \frac{\nu}{1 - \nu} & 1 & \frac{\nu}{1 - \nu} & 0 & 0 & 0 \\
-                0 & 0 & \frac{1 - 2 \nu}{2 \left(1 - \nu\right)} & 0 \\
-                \frac{\nu}{1-\nu} & \frac{\nu}{1-\nu} & \frac{\nu}{1-\nu} & 1 & 0 & 0 & 0 \\
+                \frac{\nu}{1 - \nu} & \frac{\nu}{1 - \nu} & 1 & 0 & 0 & 0 \\
                 0 & 0 & 0 & \frac{1 - 2 \nu}{2 \left(1 - \nu \right)} & 0 & 0 \\
                 0 & 0 & 0 & 0 & \frac{1 - 2 \nu}{2 \left(1 - \nu \right)} & 0 \\
                 0 & 0 & 0 & 0 & 0 & \frac{1 - 2 \nu}{2 \left(1 - \nu \right)}

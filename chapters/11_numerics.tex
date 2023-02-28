@@ -1,0 +1,159 @@
+\newpage
+\chapter{Numerics}
+
+\section{Factorisation}
+
+\subsection{Cholesky Factorisation}
+
+Cholesky Factorisation is a matrix operation such that a matrix $ \m{A} $ is
+decomposed to a multiplication of a lower triangular martrix $ \m{L} $ and its
+conjugate transpose $ \m{L}^T $.
+
+The \textbf{Cholesky Factorisation} is applicable to a \textbf{Hermitian},
+\textbf{positive definite} matrices.
+
+\begin{equation}
+    \m{A} = \m{L} \m{L}^*
+\end{equation}
+
+Every Hermitian positive definite matrix (and thus every real-valued symmetric
+positive definite matrix) has a unique Cholesky factorisation.
+
+If $ \m{A} $ can be written as $ \m{L} \m{L}^* $ for some invertible $ \m{L} $,
+lower triangular or otherwise, then $ \m{A} $ is Hermitian and positive definite.
+
+When $ \m{A} $ is a real matrix (hence symmetric and positive definite), the
+factorisation may be written:
+
+\begin{equation}
+    \m{A} = \m{L} \m{L}^T
+\end{equation}
+
+\subsubsection{Positive semidefinite matrices}
+
+If a Hermitian matrix $ \m{A} $ is only positive semidefinite, instead of positive
+definite, then it still has a decomposition of the form $ \m{A} = \m{L} \m{L}^* $
+where the diagonal entries of $ \m{L} $ are allowed to be zero. The decompostion
+need not be unique, for example:
+
+\begin{equation}
+    \begin{bmatrix}
+        0 & 0 \\
+        0 & 1\\
+    \end{bmatrix}
+    = \m{L} \m{L}^*
+\end{equation}
+
+\begin{equation}
+    \m{L} =
+    \begin{bmatrix}
+        0 & 0 \\
+        \cos \theta & \sin \theta
+    \end{bmatrix}
+\end{equation}
+
+However, if the rank of $ \m{A} $ is $ r $, then there is a unique lower triangular
+$ \m{L} $ with exactly $ r $ positive diagonal elements adn $ n - r $ columns
+containing all zeros.
+
+Alternatively, the decomposition can be made unique when  a pivoting choice is
+fixed. Formally, if $ \m{A} $ is an $ n \times n $ positive semidefinite matrix
+of rank $ r $, then there is at least one permutation matrix $ \m{P} $ such
+that $ \m{P} \m{A} \m{P}^T $ has a unique decompostion of the form
+
+\begin{equation}
+    \m{P} \m{A} \m{P}^T = \m{L} \m{L}^*
+\end{equation}
+
+with
+
+\begin{equation}
+    \m{L} = \begin{bmatrix}
+        \m{L}_1 & \m{0} \\
+        \m{L}_2 & \m{0} \\
+    \end{bmatrix}
+\end{equation}
+
+where $ \m{L}_1 $ is a $ r \times r $ lower triangular matrix with positive
+diagonal.
+
+
+\subsubsection{Example}
+
+\begin{equation}
+    \begin{bmatrix}
+        \phantom{-1}4 & \phantom{-}12 & -16 \\
+        \phantom{-}12 & \phantom{-}37 & -43 \\
+        -16 & -43 & \phantom{-}98 \\
+    \end{bmatrix}
+    = \begin{bmatrix}
+        \phantom{-}2 & 0 & 0 \\
+        \phantom{-}6 & 1 & 0 \\
+        -8 & 5 & 3 \\
+    \end{bmatrix}
+    \begin{bmatrix}
+        2 & 6 & -8 \\
+        0 & 1 & \phantom{-}5 \\
+        0 & 0 & \phantom{-}3 \\
+    \end{bmatrix}
+\end{equation}
+
+
+\subsubsection{Applications}
+
+\textbf{Solution of a system of linear equations}
+
+The Cholesky decomposition is mainly used for the numerical solution of
+\textbf{linear equations} $ \m{A} \m{x} = \m{b} $. If $ \m{A} $ is symmetric
+and positive definite, then we can solve $ \m{A} \m{x} = \m{b} $ by first computing
+the Cholesky decomposition $ \m{A} = \m{L} \m{L}^* $, then solving
+$ \m{L} \m{y} = \m{b} $ for $ \m{y} $ by forward substitution and finally solving
+$ \m{L}^* \m{x} = \m{y} $ for $ \m{x} $ by back substitution.
+
+\begin{eqarray}
+    \m{A} \m{x} &= \m{b} \\
+    \m{L} \m{L}^* \m{x} &= \m{b},\ substitute\ \m{L}^* \m{x} = \m{y} \\
+    \m{L} \m{y} &= \m{b},\ then\ solve \\
+    \m{L}^* \m{x} &= \m{y}
+\end{eqarray}
+
+For linear systems that can be put into symmetric form, the Cholesky decomposition
+is the method choice, for superior efficiency and numerical stability. Compared
+to the \textbf{LU} decomposition, it is roughly twice as efficient.
+
+\textbf{Matrix Inversion}
+
+A non-Hermitian matrix $ \m{B} $ can be inverted using the following identity,
+where $ \m{B} \m{B}^* $ will always be Hermitian:
+
+\begin{equation}
+    \m{B}^{-1} = \m{B}^* ( \m{B} \m{B}^* )^{-1}
+\end{equation}
+
+The above stated matrix relation is also called the \index{pseudoinverse}
+\textbf{pseudoinverse}
+of a matrix. The following equality holds:
+
+\begin{equation}
+    \m{B}^* ( \m{B} \m{B}^* )^{-1} = ( \m{B}^* \m{B} )^{-1} \m{B}^*
+\end{equation}
+
+The best way to compute the \index{pseudoinverse} is to use
+\index{singular value decomposition} \index{SVD}. With $ \m{A} $ being
+$ \m{A} = \m{U} \m{S} \m{V}^* $,
+where $ \m{U} $ and $ \m{V} $ (both $ n \times n $) are \index{orthogonal}
+orthogonal and
+$ \m{S} $ ( $ m  \times n $ ) is \index{diagonal} with real, non-negative
+\textit{singular values} $ \sigma_{i,1} = 1, \dots, n $. We find that
+
+\begin{equation}
+    \m{A}^* = \m{V} ( \m{S}^* \m{S} )^{-1} \m{S}^* \m{U}^*
+\end{equation}
+
+If the rank $ r $ of $ \m{A} $ is smaller than $ n $, the inverse of
+$ \m{S}^* \m{S} $ does not exist, and one uses only the first $ r $ singular
+values. $ \m{S} $ then becomes an $ r \times r $ matrix and $ \m{U}$, $ \m{V} $
+shrink accordingly.
+
+
+

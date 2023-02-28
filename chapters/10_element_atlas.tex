@@ -2577,25 +2577,37 @@ def hex8_stiffness_mass_load(coors: np.ndarray,
         dpx = dpsi_g[i,0,:]
         dpy = dpsi_g[i,1,:]
         dpz = dpsi_g[i,2,:]
-        B = np.array(
-            [[dpx[0],0,0,dpx[1],0,0,dpx[2],0,0,dpx[3],0,0],
-             [0,dpy[0],0,0,dpy[1],0,0,dpy[2],0,0,dpy[3],0],
-             [0,0,dpz[0],0,0,dpz[1],0,0,dpz[2],0,0,dpz[3]],
-             [dpy[0],dpx[0],0,dpy[1],dpx[1],0,dpy[2],dpx[2],0,dpy[3],dpx[3],0],
-             [0,dpz[0],dpy[0],0,dpz[1],dpy[1],0,dpz[2],dpy[2],0,dpz[3],dpy[3]],
-             [dpz[0],0,dpx[0],dpz[1],0,dpx[1],dpz[2],0,dpx[2],dpz[3],0,dpx[3]],
-             dtype=float)
+        # B = np.array(
+        #     [[dpx[0],0,0,dpx[1],0,0,dpx[2],0,0,dpx[3],0,0,dpx[4],0,0,dpx[5],0,0,dpx[6],0,0,dpx[7],0,0],
+        #      [0,dpy[0],0,0,dpy[1],0,0,dpy[2],0,0,dpy[3],0,0,dpy[4],0,0,dpy[5],0,0,dpy[6],0,0,dpy[7],0],
+        #      [0,0,dpz[0],0,0,dpz[1],0,0,dpz[2],0,0,dpz[3],0,0,dpz[4],0,0,dpz[5],0,0,dpz[6],0,0,dpz[7]],
+        #      [dpy[0],dpx[0],0,dpy[1],dpx[1],0,dpy[2],dpx[2],0,dpy[3],dpx[3],0,dpy[4],dpx[4],0,dpy[5],dpx[5],0,dpy[6],dpx[6],0,dpy[7],dpx[7],0],
+        #      [0,dpz[0],dpy[0],0,dpz[1],dpy[1],0,dpz[2],dpy[2],0,dpz[3],dpy[3],0,dpz[4],dpy[4],0,dpz[5],dpy[5],0,dpz[6],dpy[6],0,dpz[7],dpy[7]],
+        #      [dpz[0],0,dpx[0],dpz[1],0,dpx[1],dpz[2],0,dpx[2],dpz[3],0,dpx[3],dpz[4],0,dpx[4],dpz[5],0,dpx[5],dpz[6],0,dpx[6],dpz[7],0,dpx[7]]],
+        #      dtype=_FLOAT)
+        B = np.array([np.column_stack((dpx,   o,   o)).flatten(),
+                      np.column_stack((  o, dpy,   o)).flatten(),
+                      np.column_stack((  o,   o, dpz)).flatten(),
+                      np.column_stack((dpy, dpx,   o)).flatten(),
+                      np.column_stack((  o, dpz, dpy)).flatten(),
+                      np.column_stack((dpz,   o, dpx)).flatten()], dtype=float)
 
+        # this is smart but arranges dofs by component, not by node
         # component-wise dof ordering (x1, .. , y1, .. y4, z1, .. , z4)
-        # N = np.array([[*psi[i], *o, *o],
-        #               [*o, *psi[i], *o],
-        #               [*o, *o, *psi[i]]], dtype=float)
+        # N = np.array([
+        #   [*psi[i], *o, *o],
+        #   [*o, *psi[i], *o],
+        #   [*o, *o, *psi[i]]],
+        #   dtype=float)
 
         # node wise dof ordering (x1, y1, z1, .. , x4, y4, z4)
-        N = np.array([[psi[i,0],0,0,psi[i,1],0,0,psi[i,2],0,0,psi[i,3],0,0],
-                      [0,psi[i,0],0,0,psi[i,1],0,0,psi[i,2],0,0,psi[i,3],0],
-                      [0,0,psi[i,0],0,0,psi[i,1],0,0,psi[i,2],0,0,psi[i,3]],
-                      dtype=float)
+        # N = np.array([[p[0],0,0,p[1],0,0,p[2],0,0,p[3],0,0,p[4],0,0,p[5],0,0,p[6],0,0,p[7],0,0],
+        #               [0,p[0],0,0,p[1],0,0,p[2],0,0,p[3],0,0,p[4],0,0,p[5],0,0,p[6],0,0,p[7],0],
+        #               [0,0,p[0],0,0,p[1],0,0,p[2],0,0,p[3],0,0,p[4],0,0,p[5],0,0,p[6],0,0,p[7]]],
+        #               dtype=_FLOAT)
+        N = np.array([np.column_stack((p, o, o)).flatten(),
+                      np.column_stack((o, p, o)).flatten(),
+                      np.column_stack((p, o, o)).flatten()], dtype=float)
 
         F = np.array([[fx], [fy], [fz]], dtype=float)
 

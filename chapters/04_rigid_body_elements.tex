@@ -128,6 +128,7 @@
     \end{equation}
 \end{bbox}
 
+\newpage
 \subsection{RBE2 Coefficients Example:}
 
 Master Node:
@@ -374,7 +375,7 @@ Or:
 \end{equation}
 
 
-\subsection{Editing Master Sitffness Matrix}
+\subsection{Editing the Master Stiffness Matrix}
 
 This equation should be then expanded to all DOFs, where in $ \m{T} $ the
 slave DOFs columns are missing and the DOFs that do not take part in RBEs have $ 1 $ on
@@ -793,5 +794,76 @@ The full displacement vector is then recovered:
     \end{bmatrix}
 \end{eqarray}
 
+
+
+\newpage
+\section{RBE3}
+
+The first step is to calculate the \textbf{weighted COG} of the element, where
+\begin{equation}
+    \m{x}_{COG} = \frac{\sum w_i \m{x}_i}{\sum w_i}
+\end{equation}
+
+where $ w_i $ is a weighting factor of DOF $ i $ and
+$ \m{x}_i $ is the position of the node related with DOF $ i $
+
+Once the \textbf{COG} is found, the loading is transloated from the reference
+point $ \m{x}_{app} $ where it is applied to the \textbf{COG} by performing a
+equilibrium equivalency.
+
+\begin{equation}
+    \m{F}_{COG} = \m{F}_{app}
+\end{equation}
+
+\begin{equation}
+    \m{M}_{COG} = \m{M}_{app} + \m{r} \times \m{F}_{app}
+\end{equation}
+
+Then the $ \m{F}_{COG} $ is reacted (shared) between all master nodes relative
+to their weight.
+
+\begin{equation}
+    \m{F}_i = \m{F}_{COG} \frac{w_i}{\sum w_i}
+\end{equation}
+
+The moment $ \m{M}_{COG} $ is assumed to be reacted (shared) by the mater DOFs
+according to the relative weight of each one of them and the relative position
+with regards to the $ COG $. The reaction force that compensates the moment is
+in the direction perpendicular to the vector joining the $ COG $ with the
+position of the node where the master DOFs are:
+
+\begin{equation}
+    \m{P}_i = -w_i \frac{\m{M}_{COG} \times \m{r}_i }{\sum w_i . \m{r}_i . \m{r}_i}
+\end{equation}
+
+where $ \m{r}_i $ is the vector from the $ COG $ position to the $ i $-th node
+$ \m{r}_i = \m{x}_i - \m{x}_{COG} $.
+
+The total reaction force on the master DOFs is the sum $ \m{F}_i + \m{P}_i $ for
+each master DOF.
+
+\textbf{This force is not dependent on the stiffness of the model.} It is only
+dependent on the weighting factors and the relative postion of the master nodes.
+
+To get the \textbf{slave} node displacements:
+
+\begin{enumerate}
+
+    \item \textbf{COG} position
+    \item $ \m{r}_i $ vectors
+    \item compute the weighted average of the master displacements
+    \item an unknown rotation is assumed and the displacements on the master
+        nodes are written as if they were calculated with a rigid body
+        movement with the weighted average displacements and the unknown
+        rotations for each node $ i $:
+
+        \begin{equation}
+            \m{U}_s = \frac{\sum w_i \m{U}_i}{\sum w_i} + \m{R}_s \times \m{r}_i
+        \end{equation}
+
+        where $ \m{U} $ are translational displacements and $ \m{R} $ are rotational
+        displacements.
+
+\end{enumerate}
 
 
