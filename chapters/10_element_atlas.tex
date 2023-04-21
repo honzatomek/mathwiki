@@ -51,7 +51,7 @@ passed through the values of the function at these points and exactly integrated
 
 As $ n $ values define a polynomial of degree $ n - 1 $, the errors will be
 of the order $ O(h^n) $ where $ h $ is the element size. This leads to the
-well-known \textbf{Newton-Cotes} \'quadrature formulae\'. The integrals can be
+well-known \textbf{Newton-Cotes} 'quadrature formulae'. The integrals can be
 written as:
 
 \begin{equation}
@@ -266,18 +266,17 @@ use different numbers in each direction of integration.
     \caption{Gauss-Legendre Integration Points and Weights}
 \end{table}
 
-\begin{bbox}
-    To get the \textbf{Gauss-Legendre} points and weights in python use:
 
-    \begin{python}
+To get the \textbf{Gauss-Legendre} points and weights in python use:
+
+\begin{python}
 import numpy as np
 
 # number of integration points
 N = 3
 
 points, weights = np.polynomial.legendre.leggauss(N)
-    \end{python}
-\end{bbox}
+\end{python}
 
 
 \newpage
@@ -494,7 +493,7 @@ be generalised to the following steps:
 
     \item select the number of Gauss points based on the order of the element
         \begin{itemize}
-            \item $ 2 $ for linear elements
+            \item $ 1 $ or $ 2 $ for linear elements
             \item $ 3 $ for quadratic elements
         \end{itemize}
 
@@ -966,7 +965,7 @@ Then for each integration point (here $1$):
 
 
 \subsection{Example 2D}
-If assembling the element in 2D, then and $ u_z = 0 $.
+If assembling the element in 2D, then $ u_z = 0 $.
 Simplifiying the equations gives that:
 \begin{equation}
     \m{N} = \begin{bmatrix}
@@ -1288,8 +1287,8 @@ then the global element stiffness matrix is defined:
 
 
 \subsection{Example 3D}
-If assembling the element in 3D, then and $ u_z \neq 0 $.
-Simplifiying the equations gives that:
+If assembling the element in 3D, then $ u_x \neq 0 $, $ u_y \neq 0 $ and $ u_z \neq 0 $.
+The full equations give that:
 \begin{equation}
     \m{N} = \begin{bmatrix}
         N_1^e & 0 & 0 & N_2^e & 0 & 0 \\
@@ -1353,7 +1352,7 @@ shape function derivatives:
     \end{bmatrix}
 \end{equation}
 
-the strain-displacement realtion is given by:
+the strain-displacement relation is given by:
 \begin{equation}
     \M{\epsilon} = \m{B} \m{u}
 \end{equation}
