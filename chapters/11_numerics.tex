@@ -156,4 +156,150 @@ values. $ \m{S} $ then becomes an $ r \times r $ matrix and $ \m{U}$, $ \m{V} $
 shrink accordingly.
 
 
+\section{Linear Regression}
+\subsection{Derivation}
+
+\textbf{Linear Regression} is an approach for predicting a response using
+a \textbf{single feature}. In linear regression we assume that two variables
+i. e. independent and dependent are linearly related.
+
+Generalrly we define $ \m{x} $ as a \textbf{feature vector}:
+
+\begin{equation}
+    \m{x} = \left[ x_1, x_2, ..., x_n \right]
+\end{equation}
+
+and $ \m{y} $ as \textbf{response vector}:
+
+\begin{equation}
+    \m{y} = \left[ y_1, y_2, ..., y_n \right]
+\end{equation}
+
+then a predicted response:
+
+\begin{equation}
+    h(x_i) = \beta_0 + \beta_1 \times x_i
+\end{equation}
+
+where: \\
+$ x_i $ represents the \textit{i}-th observation \\
+$ \beta_1 $ represents the slope, and \\
+$ \beta_0 $ represents the intercept of the regression line.
+
+
+To predict a new value $ y_i $, we need to consider:
+
+\begin{equation}
+    y_i = \beta_0 + \beta_1 \times x_i + \epsilon_i = h(x_i) + \epsilon_i
+\end{equation}
+
+where:\\
+$ \epsilon_i $ is the \textbf{error} of the estimate.
+
+The error function is therefore obtained:
+
+\begin{equation}
+    \epsilon_i = y_i - h(x_i)
+\end{equation}
+
+The $ \beta_0 $ and $ \beta_1 $ coefficients are obtained by minimizing the residual
+\textbf{error} of the estimate using e.g. the \textbf{least square method}:
+
+\begin{eqarray}
+    J(\beta_0, \beta_1) &= \frac{1} {2 n} \sum_{i=1}^{n} \epsilon_i^2 \\
+    &= \frac{1} {2 n} \sum_{i=1}^{n} \left( y_i - h(x_i) \right)^2 \\
+    &= \frac{1} {2 n} \sum_{i=1}^{n} \left( y_i - \beta_0 - \beta_1 \times x_i  \right)^2
+\end{eqarray}
+
+To find the coefficients we can derviate the cost function, first with regards to $ \beta_0 $:
+
+\begin{equation}
+    \frac{\partial J} {\partial \beta_0} \left[ \frac{1} {2 n} \sum_{i=1}^{n} \left( y_i - \beta_0 - \beta_1 \times x_i  \right)^2 \right] = 0
+\end{equation}
+
+where using the chain rule we can write:
+
+\begin{eqarray}
+    u &= y_i - \beta_0 - \beta_1 \times x_i \\
+    J &= \frac{1} {2 n} \sum_{i=1}^n u^2 \\
+    \frac{\partial J} {\partial \beta_0} &= \frac{\partial J} {\partial u} \times \frac{\partial u} {\partial \beta_0} \\
+    \frac{\partial J} {\partial u} &= 2 u \\
+    \frac{\partial u} {\partial \beta_0} &= -1 \\
+    \frac{\partial J} {\partial \beta_0} &= \frac{1} {2n} \times (-2)  \times \sum_{i=1}^n \left(y_i - \beta_0 - \beta_1 \times x_i \right) \\
+    0 &= \frac{1} {n} \sum_{i=1}^n \left( y_i - \beta_0 - \beta_1 \times x_i \right) \\
+    0 &= \frac{1} {n} \sum_{i=1}^n y_i - \frac{1} {n} \sum_{i=1}^n \beta_0 - \frac{1} {n} \beta_1 \sum_{i=1}^n x_i \\
+    0 &= \bar{y}_i - \beta_0 - \beta_1 \bar{x}_i \\
+    \beta_0 &= \bar{y} - \beta_1 \bar{x}
+\end{eqarray}
+
+To find $ \beta_1 $:
+
+\begin{equation}
+    \frac{\partial J} {\partial \beta_1} \left[ \frac{1} {2 n} \sum_{i=1}^{n} \left( y_i - \beta_0 - \beta_1 \times x_i  \right)^2 \right] = 0
+\end{equation}
+
+\begin{eqarray}
+    u &= y_i - \beta_0 - \beta_1 \times x_i \\
+    J &= \frac{1} {2 n} \sum_{i=1}^n u^2 \\
+    \frac{\partial J} {\partial \beta_1} &= \frac{\partial J} {\partial u} \times \frac{\partial u} {\partial \beta_1} \\
+    \frac{\partial J} {\partial u} &= 2 u \\
+    \frac{\partial u} {\partial \beta_1} &= -x \\
+    \frac{\partial J} {\partial \beta_1} &= \frac{1} {2 n} \times (-2) \sum_{i=1}^n x_i \times \left( y_i - \beta_0 - \beta_1 x_i \right) \\
+    0 &= \frac{1}{n} \sum_{i=1}^n x_i \left( y_i - \beta_0 - \beta_1 x_i \right) \\
+    0 &= \frac{1}{n} \sum_{i=1}^n \left( x_i y_i - \beta_0 x_i - \beta_1 x_i^2 \right)
+\end{eqarray}
+
+Substituting the value of $ \beta_0 $:
+
+\begin{eqarray}
+    \beta_0 &= \bar{y} - \beta_1 \bar{x} \\
+    0 &= \frac{1} {n} \sum_{i=1}^n \left(x_i y_i - \left(\bar{y} - \beta_1 \bar{x} \right) x_i - \beta_1 x_i^2 \right) \\
+    0 &= \frac{1} {n} \sum_{i=1}^n \left(x_i y_i - \bar{y} x_i + \beta_1 \bar{x} x_i - \beta_1 x_i^2 \right) \\
+    0 &= \frac{1} {n} \left( \sum_{i=1}^n \left(x_i y_i - \bar{y} x_i \right) - \beta_1 \sum_{i=1}^n \left(x_i^2 - \bar{x} x_i \right) \right) \\
+    \beta_1 &= \frac{\frac{1}{n} \sum_{i=1}^n \left(x_i y_i - \bar{y} x_i \right)}
+                    {\frac{1}{n} \sum_{i=1}^n \left(x_i^2 - \bar{x} x_i \right)}
+\end{eqarray}
+
+Simplifying the formula using:
+
+\begin{eqarray}
+    \bar{y} &= \frac{1}{n} \sum_{i=1}^n y_i \\
+    \bar{x} &= \frac{1}{n} \sum_{i=1}^n x_i
+\end{eqarray}
+
+we get:
+\begin{eqarray}
+    \beta_1 &= \frac{\frac{1}{n} \sum_{i=1}^n x_i y_i - \bar{x} \bar{y}}
+                    {\frac{1}{n} \sum_{i=1}^n x_i^2 - \bar{x} \bar{x}} \\
+    \beta_1 &= \frac{\sum_{i=1}^n x_i y_i - n \bar{x} \bar{y}}
+                    {\sum_{i=1}^n x_i^2 - n \bar{x}^2}
+\end{eqarray}
+
+
+\subsection{Result}
+
+\begin{bbox}
+    So, to recapitulate, to get a linear regression coefficients for a dataset:
+
+    \begin{eqarray}
+        \m{x} &= \left[ x_1, x_2, ..., x_n \right] \\
+        \m{y} &= \left[ y_1, y_2, ..., y_n \right]
+    \end{eqarray}
+
+    we may use equations:
+
+    \begin{eqarray}
+        \beta_1 &= \frac{\sum_{i=1}^n x_i y_i - n \bar{x} \bar{y}}
+                        {\sum_{i=1}^n x_i^2 - n \bar{x}^2} \\
+        \beta_0 &= \bar{y} - \beta_1 \bar{x}
+    \end{eqarray}
+
+    with an error:
+    \begin{equation}
+        \epsilon_i = y_i - \beta_0 - \beta_1 x_i
+    \end{equation}
+
+\end{bbox}
+
+
 
