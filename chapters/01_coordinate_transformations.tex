@@ -941,6 +941,339 @@ also, $ a \mathbf{b} = \mathbf{b} a $ and
 $ \mathbf{-b} = (-1) \mathbf{b} $ for $ a \in \mathbb{R}, \quad b = \mathbf{i}, \mathbf{j}, \mathbf{k} $.
 
 
+\subsection{Quaternion properties:}
+
+The following properties apply:
+
+\begin{enumerate}
+    \item Addition:
+
+        \begin{eqarray}
+            ( a_1 + b_1 \mathbf{i} + c_1 \mathbf{j} + d_1 \mathbf{k} ) +
+            ( a_2 + b_2 \mathbf{i} + c_2 \mathbf{j} + d_2 \mathbf{k} ) = \\
+            = ( a_1 + a_2 ) + ( b_1 + b_2 ) \mathbf{i} + ( c_1 + c_2 ) \mathbf{j} + ( d_1 + d_2 ) \mathbf{k}
+        \end{eqarray}
+
+    \item Component-wise scalar multiplication:
+
+        \begin{equation}
+            \lambda ( a + b \mathbf{i} + c \mathbf{j} + d \mathbf{k} ) =
+            \lambda a + (\lambda b) \mathbf{i} + (\lambda c) \mathbf{j} + (\lambda d) \mathbf{k}
+        \end{equation}
+
+    \item Multiplication of basis elements (the revelation of Hamilton in 1943):
+
+        \begin{eqarray}
+            \mathbf{i}^2 = \mathbf{j}^2 = \mathbf{k}^2 &= -1 \\
+            \mathbf{i} \mathbf{j} \mathbf{k} &= -1
+        \end{eqarray}
+
+    \item Multiplicative identity:
+
+        \begin{eqarray}
+            \mathbf{i} 1 = \quad 1 \mathbf{i} &= \quad \mathbf{i} \\
+            \mathbf{j} 1 = \quad 1 \mathbf{j} &= \quad \mathbf{j} \\
+            \mathbf{k} 1 = \quad 1 \mathbf{k} &= \quad \mathbf{k}
+        \end{eqarray}
+
+    \item Products of basis elements:
+
+        \begin{eqarray}
+            \mathbf{i} \mathbf{j} = -\mathbf{j} \mathbf{i} &= \quad \mathbf{k} \\
+            \mathbf{j} \mathbf{k} = -\mathbf{k} \mathbf{j} &= \quad \mathbf{i} \\
+            \mathbf{k} \mathbf{i} = -\mathbf{i} \mathbf{k} &= \quad \mathbf{j}
+        \end{eqarray}
+
+    \item Inverse:
+
+        \begin{equation}
+            (a + b \mathbf{i} + c \mathbf{j} + d \mathbf{k})^{-1}
+            = \frac{1} {a^2 + b^2 + c^3 + d^2} (a - b \mathbf{i} - c \mathbf{j} - d \mathbf{k})
+        \end{equation}
+
+    \item Product of two \textbf{quaternions} (also called the \textbf{Hamilton product})
+        is determined by the products of the basis elements and the \textbf{distributive} law:
+
+        \begin{equation}
+            ( a_1 + b_1 \mathbf{i} + c_1 \mathbf{j} + d_1 \mathbf{k} ) \times
+            ( a_2 + b_2 \mathbf{i} + c_2 \mathbf{j} + d_2 \mathbf{k} ) = \\
+        \end{equation}
+
+        \begin{eqarray}
+            = & a_1 a_2 \quad &+& a_1 b_2 \mathbf{i} &+& a_1 c_2 \mathbf{j} &+& a_1 d_2 \mathbf{k} \\
+            + & b_1 a_2 \mathbf{i} &+& b_1 b_2 \mathbf{i}^2 &+& b_1 c_2 \mathbf{i} \mathbf{j} &+& b_1 d_2 \mathbf{i} \mathbf{k} \\
+            + & c_1 a_2 \mathbf{j} &+& c_1 b_2 \mathbf{i} \mathbf{j} &+& c_1 c_2 \mathbf{j}^2 &+& c_1 d_2 \mathbf{j} \mathbf{k} \\
+            + & d_1 a_2 \mathbf{k} &+& d_1 b_2 \mathbf{i} \mathbf{k} &+& d_1 c_2 \mathbf{j} \mathbf{k} &+& d_1 d_2 \mathbf{k}^2
+        \end{eqarray}
+
+        \begin{eqarray}
+            = & a_1 a_2 \quad &-& b_1 b_2 &-& c_1 c_2 &-& d_1 d_2 \\
+            + & ( a_1 b_2 &+& b_1 a_2 &+& c_1 d_2 &-& d_1 c_2 ) \times \mathbf{i} \\
+            + & ( a_1 c_2 &-& b_1 d_2 &+& c_1 a_2 &+& d_1 b_2 ) \times \mathbf{j} \\
+            + & ( a_1 d_2 &+& b_1 c_2 &-& c_1 b_2 &+& d_1 a_2 ) \times \mathbf{k}
+        \end{eqarray}
+
+\end{enumerate}
+
+
+\subsection{Scalar and vector parts:}
+
+A quaternion of the form $ a + 0 \mathbf{i} + 0 \mathbf{j} + 0 \mathbf{k} $,
+where $ a $ is a real number, is called \textbf{scalar}, and a quaternion of the form
+$ 0 + b \mathbf{i} + c \mathbf{j} + d \mathbf{k} $ where $ b $, $ c $ and $ d $
+are real numbers, and at least on of $ b $, $ c $ or $ d $ is nonzero, is called
+a \textbf{vector quaternion}. If $ a + b \mathbf{i} + c \mathbf{j} + d \mathbf{k} $
+is any quaternion, then $ a $ is called its \textbf{scalar part} and
+$ b \mathbf{i} + c \mathbf{j} + d \mathbf{k} $ is called its \textbf{vector part}.
+Although every quaternion can be viewed as a vector in a four-dimensional
+vector space, it is common to refer to the \textbf{vector} part as vectors in
+three-dimensional space.
+
+Hamilton also called vector quaternions \textbf{right quaternions} and real
+numbers (considered as quaternions with zero vector part) \textbf{scalar quaternions}.
+
+If a quaternion is divided up into a scalar and a vector part, that is,
+
+\begin{equation}
+    \mathbf{q} = (r, \vec{v}), \mathbf{q} \in \mathbb{H}, r \in \mathbb{R}, \vec{v} \in \mathbb{R}^3
+\end{equation}
+
+then the formulas for \textbf{addition}, \textbf{multiplication}
+and \textbf{multiplicative inverse} are:
+
+\begin{equation}
+    (r_1, \vec{v}_1) + (r_2, \vec{v}_2) = (r_1 + r_2, \vec{v}_1 + \vec{v}_2 )
+\end{equation}
+
+\begin{equation}
+    (r_1, \vec{v}_1) \times (r_2, \vec{v}_2) = (r_1 r_2 - \vec{v}_1 \cdot \vec{v}_2, r_1 \vec{v}_2 + r_2 \vec{v}_1 + \vec{v}_1 \times \vec{v}_2)
+\end{equation}
+
+\begin{equation}
+    (r, \vec{v})^{-1} =
+    \left(
+        \frac{r} {r^2 + \vec{v} \cdot \vec{v}},
+        \frac{-\vec{v}} {r^2 + \vec{v} \cdot \vec{v}}
+    \right)
+\end{equation}
+
+
+\subsection{Conjugation, the norm and reciprocal:}
+
+Conjugation of quaternions is analogous to conjugation of complex numbers.
+To define it, let $ \mathbf{q} = a + b \mathbf{i} + c \mathbf{j} + d \mathbf{k} $
+be a quaternion. The \textbf{conjugate} of $ \mathbf{q} $ is the quaternion
+$ \mathbf{q}^{*} = a - b \mathbf{i} - c \mathbf{j} - d \mathbf{k} $.
+It is denoted by $ \mathbf{q}^{*} $, $ \mathbf{q}^{t} $ or $ \bar{\mathbf{q}} $.
+
+\textbf{Conjugation} is \textbf{involution}, meaning that it is its own inverse,
+so \textbf{conjugating} an element \textbf{twice} returns the original element.
+The \textbf{conjugate} of a \textbf{product} of two quaternions is the product of the
+conjugates in the \textbf{reverse order}. That is, if $ \mathbf{p} $ and
+$ \mathbf{q} $ are quaterninos, then:
+
+\begin{equation}
+    ( \mathbf{p} \mathbf{q} )^{*} = \mathbf{q}^{*} \mathbf{p}^{*}
+\end{equation}
+
+
+The conjugation of a quaternion, in stark contrast to the complex setting, can be
+expressed with multiplication and addition of quaternions:
+
+\begin{equation}
+    \mathbf{q}^{*} = -\frac{1}{2} (\mathbf{q}
+    + \mathbf{i} \mathbf{q} \mathbf{i}
+    + \mathbf{j} \mathbf{q} \mathbf{j}
+    + \mathbf{k} \mathbf{q} \mathbf{i} )
+\end{equation}
+
+
+Conjugation can be used to extract the \textbf{scalar} and \textbf{vector} part of a
+quaternion. The \textbf{scalar} part of $ \mathbf{q} $ is:
+
+\begin{equation}
+    r_q = \frac{1}{2} ( \mathbf{q} + \mathbf{q}^{*} )
+\end{equation}
+
+The \textbf{vector} part of $ \mathbf{q} $ is:
+
+\begin{equation}
+    \vec{v}_q = \frac{1}{2} ( \mathbf{q} - \mathbf{q}^{*} )
+\end{equation}
+
+The \textbf{square root} of the product of a quaternion with its conjugate is called
+its \textbf{norm} and is denoted $ \| q \| $ (Hamilton called this quantity
+the \textbf{tensor} of $ \mathbf{q} $).
+
+\begin{equation}
+    \| \mathbf{q} \| = \sqrt{ \mathbf{q}^{*} \mathbf{q} }
+    = \sqrt{ \mathbf{q} \mathbf{q}^{*} }
+    = \sqrt{ a^2 + b^2 + c^2 + d^2 } \in \mathbb{R} \ge 0
+\end{equation}
+
+This is always a non-negative, real number and is the same as the Euclidean norm
+on $ \mathbb{H} $ considered as the vector space $ \mathbb{R}^4 $. Multiplying
+a quaternion by a real number scales its norm by the absolute value of the number.
+That is, if $ \alpha \in \mathbb{R} $ then:
+
+\begin{equation}
+    \norm{\alpha \m{q}} = \abs{\alpha} \norm{\m{q}}
+\end{equation}
+
+The norm is \textbf{multiplicative}, meaning that:
+
+\begin{equation}
+    \norm{\m{p} \m{q}} = \norm{\m{p}} \norm{\m{q}}
+\end{equation}
+
+for any two quaternion $ \m{p} $ and $ \m{q} $. Multiplicativity is a consequence of the
+formula for the conjugate of a product. Alternatively it follows fom the identity
+
+\begin{equation}
+    det \left( \begin{matrix}
+            a + i b & id + c \\
+            id - c & a - ib
+          \end{matrix} \right) = a^2 + b^2 + c^2 + d^2
+\end{equation}
+
+(where $ i $ denotes the usual imaginary unit) and hence from the multiplicative
+property of determinants of square matrices.
+
+This norm makes it possible to define the \textbf{distance} $ d(\m{p},\m{q}) $
+between $ \m{p} $ and $ \m{q} $ as the norm of their difference:
+
+\begin{equation}
+    d(\m{p},\m{q}) = \norm{\m{p} - \m{q}}
+\end{equation}
+
+This makes $ \mathbb{H} $ a \textbf{metric space}. Addition and multiplication are
+\textbf{continuous} in regard to the associated metric topology. This
+follows exactly the same proof as for the real numbers $ \mathbb{R} $ from the
+fact that $ \mathbb{H} $ is a \textbf{normed algebra}.
+
+
+\subsection{Unit quaternion (or versor):}
+
+A \textbf{unit quaternion} is a quaternion of norm one. Dividing a nonzero quaternion
+$ \m{q} $ by its norm produces a unit quaternion $ \m{Uq} $ called the \textbf{versor}
+of $ \m{q} $:
+
+\begin{equation}
+    \m{Uq} = \frac{\m{q}} {\norm{\m{q}}}
+\end{equation}
+
+Every nonzero quaternion has a unique \textbf{polar decomposition}
+$ \m{q} = \norm{\m{q}} \cdot \m{Uq} $, while the zero quaternion can be formed
+from any unit quaternion.
+
+Using conjugation and the norm makes it possible to define the \textbf{reciprocal}
+of a nonzero quaternion. The product of a quaternion with its reciprocal should
+be equal 1, and the considerations above imply that the product of $ \m{q} $ and
+$ \m{q}^{*} / \norm{\m{q}}^2 $ is 1 (for any order fo multiplication). So the
+\textbf{reciprocal} of $ \m{q} $ is defined to be:
+
+\begin{equation}
+    \m{q}^{-1} = \frac{\m{q}^{*}}{\norm{\m{q}}^2}
+\end{equation}
+
+Since the multiplication is non-commutative, the quotient quantities
+$ \m{p} \m{q}^{-1} $ or $ \m{q}^{-1} \m{p} $ are different (except if $ \m{p} $
+and $ \m{q} $ are scalar multiples of each other or if one is a scalar).
+The notation $ \frac{p}{q} $ is ambiguous and \textbf{should not be used}.
+
+
+
+\subsection{Quaternions and three-dimensional geometry:}
+
+The vector part of a quaternion can be interpreted as a coordinate vector
+in $ \mathbb{R}^3 $, therefore the algebraic operations fo the quaternions reflect
+the geometry of $ \mathbb{R}^3 $. Operations such as the vector dot and cross
+products can be defined in terms of quaternions and thei makes it possible to apply
+quaternion techniques wherever spatial vectors arise. A useful application of quaternions
+has been to interpolate the orientations of key-frames in computer graphics.
+
+For the remainder of this section, $ \m{i} $, $ \m{j} $ and $ \m{k} $ wil denote
+both the three imaginary basis vectors of $ \mathbb{H} $ and a basis for $ \mathbb{R}^3 $.
+Replacing $ \m{i} $ by $ -\m{i} $, $ \m{j} $ by $ -\m{j} $ and $ \m{k} $ by $ -\m{k} $
+sends a vector to its \textbf{additive inverse}, so the additive inverse of a vector
+is the same as its conjugate as a quaternion. For this reason, conjugation
+is sometimes called the \textbf{spatial inverse}.
+
+For two vector quaternions $ \m{p} = b_1 \m{i} + c_1 \m{j} + d_1 \m{k} $ and
+$ \m{q} = b_2 \m{i} + c_2 \m{j} + d_2 \m{k} $ their \textbf{dot product}, by
+analogy to vectors in $ \mathbb{R}^3 $, is:
+
+\begin{equation}
+    \m{p} \cdot \m{q} = b_1 b_2 + c_1 c_2 + d_1 d_2
+\end{equation}
+
+It can also be expressed ina a component-free manner as:
+
+\begin{equation}
+    \m{p} \cdot \m{q} = \frac{1}{2} (\m{p}^{*} \m{q} + \m{q}^{*} \m{p})
+    = \frac{1}{2} (\m{p} \m{q}^{*} + \m{q} \m{p}^{*})
+\end{equation}
+
+This is equal to the scalar parts of the products $ \m{p} \m{q}^{*} $,
+$ \m{q} \m{p}^{*} $, $ \m{p}^{*} \m{q} $ and $ \m{q}^{*} \m{p} $. Note that their
+vector parts are different.
+
+The \textbf{cross product} of $ \m{p} $ and $ \m{q} $ relative to the orientation
+determined by the ordered basis $ \m{i} $, $ \m{j} $ and $ \m{k} $ is:
+
+\begin{equation}
+    \m{p} \times \m{q} = (c_1 d_2 - d_1 c_2) \m{i}
+    + (d_1 b_2 - b_1 d_2) \m{j} + (b_1 c_2 - c_1 b_2) \m{k}
+\end{equation}
+
+(The orientation is necessary to determine the sign.) This is equal to the vector
+part of the product $ \m{p} \m{q} $ (as quaternions), as well as the vector part of
+$ -\m{q}^{*} \m{p}^{*} $. It also has the formula:
+
+\begin{equation}
+    \m{p} \times \m{q} = \frac{1}{2} ( \m{p} \m{q} - \m{q} \m{p})
+\end{equation}
+
+For the \textbf{commutator}, $ [\m{p}, \m{q}] = \m{p} \m{q} - \m{q} \m{p} $ of two
+vector quaternions one obtains:
+
+\begin{equation}
+    [\m{p}, \m{q}] = 2 \m{p} \times \m{q}
+\end{equation}
+
+In general, let $ \m{p} $ and $ \m{q} $ be quaternions and write:
+
+\begin{eqarray}
+    \m{p} &= \m{p}_s + \m{p}_v \\
+    \m{q} &= \m{q}_s + \m{q}_v
+\end{eqarray}
+
+where $ \m{p}_s $ and $ \m{q}_s $ are the scalar parts, and $ \m{p}_v $ and $ \m{q}_v $.
+Then we have the formula:
+
+\begin{equation}
+    \m{p} \m{q} = (\m{p} \m{q})_s + (\m{p} \m{q})_v
+    = (\m{p}_s \m{q}_s -  \m{p}_v \cdot \m{q}_v )
+    + (\m{p}_s \m{q}_v + \m{q}_s \m{p}_v + \m{p}_v \times \m{q}_v)
+\end{equation}
+
+This shows that the noncommutativity of quaternion multiplication comes from the
+multiplication of vector quaternions. It also shows that two quaternions commute
+if and only if their vector parts are collinear. \textbf{Hamilton} showed that
+this product computes the third vertex of spherical triangle from two given
+vertices and their associated arc-lengths, which is also an algebra of points
+in \textbf{Elliptic geometry}.
+
+\textbf{Unit quaternions} can be identified with rotations in $ \mathbb{R}^3 $
+and were called \textbf{versors} by \textbf{Hamilton}.
+
+
+\subsection{Matrix representations:}
+
+Just as complex numbers can be \textbf{represented as matrices}, co can be quaternions.
+
+
+
 \subsection{Quaternions used for coordinate transformation}
 
 One can think of \textbf{quaternions} as a stored information about coordinate
