@@ -887,7 +887,114 @@ Moment of Inertia = \textbf{tensor}.
 
         \end{enumerate}
 
-
-
 \end{itemize}
+
+
+\newpage
+
+\section{Quaternions}
+
+In mathematics, the quaternion number system extends the complex numbers.
+Quaternions were first described by the Irish mathematician William Rowan
+Hamilton in 1843 and applied to mechanics in three-dimensional space.
+The algebra of quaternions is often denoted by $  \mathbf{H} $
+or $ \mathbb{H} $ (for Hamilton).
+
+Although multiplication of quaternions is noncommutative, it gives a definition
+of the quotient of two vectors in a three-dimensional space.
+Quaternions are generally represented in the form:
+
+\begin{equation}
+    a + b \mathbf{i} + c \mathbf{j} + d \mathbf{k}
+\end{equation}
+
+where the coefficients $ a, b, c, d $ are \textit{real numbers} and
+$ \mathbf{1}, \mathbf{i}, \mathbf{j}, \mathbf{k} $ are \textit{basis vectors} or
+\textit{basis elements}.
+
+The Quaterninon multiplication table (left column shows pre-multiplier, top
+row shows post-multiplier):
+
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    % \small
+    % \scriptsize
+    \scalebox{0.80}{
+    \begin{tabular}{||c | c | c | c | c ||}
+        \hline
+        \hline
+        r $ \times $ c  & $ \mathbf{1} $ & $ \quad \mathbf{i} $ & $ \quad \mathbf{j} $ & $ \quad \mathbf{k} $ \\
+        \hline
+        $ \mathbf{1} $  & $ \mathbf{1} $ & $ \quad \mathbf{i} $ & $ \quad \mathbf{j} $ & $ \quad \mathbf{k} $ \\
+        $ \mathbf{i} $  & $ \mathbf{i} $ & $ -\mathbf{1} $ & $ \quad \mathbf{k} $ & $ -\mathbf{j} $ \\
+        $ \mathbf{j} $  & $ \mathbf{j} $ & $ -\mathbf{k} $ & $ -\mathbf{1} $ & $ \quad \mathbf{i} $ \\
+        $ \mathbf{k} $  & $ \mathbf{k} $ & $ \quad \mathbf{j} $ & $ -\mathbf{i} $ & $ -\mathbf{1} $ \\
+        \hline
+        \hline
+    \end{tabular}}
+    \caption{Quaternion multiplication table}
+    \label{tab:quat-mult}
+\end{table}
+
+also, $ a \mathbf{b} = \mathbf{b} a $ and
+$ \mathbf{-b} = (-1) \mathbf{b} $ for $ a \in \mathbb{R}, \quad b = \mathbf{i}, \mathbf{j}, \mathbf{k} $.
+
+
+\subsection{Quaternions used for coordinate transformation}
+
+One can think of \textbf{quaternions} as a stored information about coordinate
+mapping from one space to another. We can split arbitrary \textbf{quaternion}\\
+$ \mathbf{q} = a + b \mathbf{i} + c \mathbf{j} + d \mathbf{k} $ into \textbf{two} parts:
+
+\begin{enumerate}
+    \item a \textbf{real} part $ r = a $ and
+
+    \item a \textbf{vector} part $ \mathbf{v} = \left[ b, c, d \right] $.
+
+\end{enumerate}
+
+Next, if we \textbf{impose} restrictions on such \textbf{quaternions} that:
+
+\begin{enumerate}
+    \item the \textbf{real} part must satisfy: $ r \in \left< -\pi; \pi \right> $
+
+    \item the \textbf{vector} part must have \textbf{unit} length:
+        $ | \textbf{v} | = \sqrt{b^2 + c^2 + d^2} = 0 $
+
+\end{enumerate}
+
+Then, if one thinks of the complex numbers $ \mathbf{i} $, $ \mathbf{j} $ and $ \mathbf{k} $
+as of basis vectors of cartesian system $ \mathbf{x} $, $ \mathbf{y} $ and $ \mathbf{z} $, where
+
+\begin{eqarray}
+    \mathbf{x} &= \left[ 1.0, 0.0, 0.0 \right] \\
+    \mathbf{y} &= \left[ 0.0, 1.0, 0.0 \right] \\
+    \mathbf{z} &= \left[ 0.0, 0.0, 1.0 \right]
+\end{eqarray}
+
+the quaternion multiplication table \ref{tab:quat-mult} makes sense in relation to \textbf{vector cross product}:
+
+\begin{table}[h!]
+    \centering
+    \renewcommand{\arraystretch}{1.25}
+    % \small
+    % \scriptsize
+    \scalebox{0.80}{
+    \begin{tabular}{||c | c | c | c | c ||}
+        \hline
+        \hline
+        r $ \times $ c  & $ \mathbf{1} $ & $ \quad \mathbf{x} $ & $ \quad \mathbf{y} $ & $ \quad \mathbf{z} $ \\
+        \hline
+        $ \mathbf{1} $  & $ \mathbf{1} $ & $ \quad \mathbf{x} $ & $ \quad \mathbf{y} $ & $ \quad \mathbf{z} $ \\
+        $ \mathbf{x} $  & $ \mathbf{x} $ & $ -\mathbf{1} $ & $ \quad \mathbf{z} $ & $ -\mathbf{y} $ \\
+        $ \mathbf{y} $  & $ \mathbf{y} $ & $ -\mathbf{z} $ & $ -\mathbf{1} $ & $ \quad \mathbf{x} $ \\
+        $ \mathbf{z} $  & $ \mathbf{z} $ & $ \quad \mathbf{y} $ & $ -\mathbf{x} $ & $ -\mathbf{1} $ \\
+        \hline
+        \hline
+    \end{tabular}}
+    \caption{Quaternion cartesian base vectors multiplication table}
+    \label{tab:quat-mult-cart}
+\end{table}
+
 
