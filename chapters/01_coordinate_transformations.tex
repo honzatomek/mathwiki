@@ -323,22 +323,24 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}
         \end{bbox}
 
         \begin{bbox}[0.85]
+
             To test, whether the transformation matrix is correct, one can use
             the orthogonality criterion:
 
             \begin{equation}
                 \mathbf{T}^{T} = \mathbf{T}^{-1}
-            .\end{equation}
+            \end{equation}
 
             \begin{equation}
                 \mathbf{T}\mathbf{T}^{T} = \mathbf{T}^{T}\mathbf{T} = \mathbf{I}
-            .\end{equation}
+            \end{equation}
 
             or
 
             \begin{equation}
                 \det(\mathbf{T}) = 1
-            .\end{equation}
+            \end{equation}
+
         \end{bbox}
 
 \end{enumerate}
@@ -941,7 +943,7 @@ also, $ a \mathbf{b} = \mathbf{b} a $ and
 $ \mathbf{-b} = (-1) \mathbf{b} $ for $ a \in \mathbb{R}, \quad b = \mathbf{i}, \mathbf{j}, \mathbf{k} $.
 
 
-\subsection{Quaternion properties:}
+\subsection{Quaternion properties}
 
 The following properties apply:
 
@@ -1016,7 +1018,7 @@ The following properties apply:
 \end{enumerate}
 
 
-\subsection{Scalar and vector parts:}
+\subsection{Scalar and vector parts}
 
 A quaternion of the form $ a + 0 \mathbf{i} + 0 \mathbf{j} + 0 \mathbf{k} $,
 where $ a $ is a real number, is called \textbf{scalar}, and a quaternion of the form
@@ -1058,7 +1060,7 @@ and \textbf{multiplicative inverse} are:
 \end{equation}
 
 
-\subsection{Conjugation, the norm and reciprocal:}
+\subsection{Conjugation, the norm and reciprocal}
 
 Conjugation of quaternions is analogous to conjugation of complex numbers.
 To define it, let $ \mathbf{q} = a + b \mathbf{i} + c \mathbf{j} + d \mathbf{k} $
@@ -1152,7 +1154,7 @@ follows exactly the same proof as for the real numbers $ \mathbb{R} $ from the
 fact that $ \mathbb{H} $ is a \textbf{normed algebra}.
 
 
-\subsection{Unit quaternion (or versor):}
+\subsection{Unit quaternion (or versor)}
 
 A \textbf{unit quaternion} is a quaternion of norm one. Dividing a nonzero quaternion
 $ \m{q} $ by its norm produces a unit quaternion $ \m{Uq} $ called the \textbf{versor}
@@ -1183,7 +1185,7 @@ The notation $ \frac{p}{q} $ is ambiguous and \textbf{should not be used}.
 
 
 
-\subsection{Quaternions and three-dimensional geometry:}
+\subsection{Quaternions and three-dimensional geometry}
 
 The vector part of a quaternion can be interpreted as a coordinate vector
 in $ \mathbb{R}^3 $, therefore the algebraic operations fo the quaternions reflect
@@ -1268,10 +1270,193 @@ in \textbf{Elliptic geometry}.
 and were called \textbf{versors} by \textbf{Hamilton}.
 
 
-\subsection{Matrix representations:}
+\subsection{Matrix representations}
 
 Just as complex numbers can be \textbf{represented as matrices}, co can be quaternions.
+There are \textit{at least} two ways to represent quaternions as matrices in
+such a way that quaternion \textbf{addition} and \textbf{multiplication} correspond
+to the matrix addition and multiplication.
 
+The quaternion $ a + b \m{i} + c \m{j} + d \m{k} $ can be represented:
+
+\begin{enumerate}
+    \item as a $ 2 \times 2 $ complex matrix:
+
+        \begin{equation}
+            \begin{bmatrix}
+                \q a + b i  &  c + d i \\
+                -c + d i  & a - bi
+            \end{bmatrix}
+        \end{equation}
+
+        This representation has the following properties:
+
+        \begin{itemize}
+            \item Constraining any two of $ b $, $ c $ and $ d $ to zero produces
+                a representation fo complex numbers. For example, setting $ c = d = 0 $
+                produces a diagonal complex matrix representation of complex numbers,
+                and setting $ b = d = 0 $ produces a real matrix representation.
+
+            \item The \textbf{norm} of a quaternion (the square root of the product
+                with its conjugate, as with complex numbers) is the square root
+                of the \textbf{determinant} of the corresponding matrix.
+
+            \item The \textbf{conjugate} of a quaternion corresponds to the
+                \textbf{conjugate transpose} of the matrix.
+
+            \item There is a strong relation between quaternion units and
+                \textbf{Pauli matrices} (these are needed to describe the
+                \textit{spin in quantum mechanics}). Obtain the eight quaternion unit matrices
+                by taking $ a $, $ b $, $ c $ and $ d $, set three of them to zero
+                and the fourth to $ 1 $ or $ -1 $. Multiplying any two Pauli matrices
+                always yields a quaternion unit matrix, all of them except for $ -1 $.
+                One obtains $ -1 $ via the last equality:
+
+                \begin{eqarray}
+                    \m{i}^2 = \m{j}^2 = \m{k}^2 = \m{i} \m{j} \m {k} = -1 \\
+                    i j k = \sigma_1 \sigma_2 \sigma_3 \sigma_1 \sigma_2 \sigma_3 = -1
+                \end{eqarray}
+
+        \end{itemize}
+
+    \item Using $ 4 \times 4 $ real matrix the same quaternion can be written as:
+
+        \begin{eqarray}
+            \begin{bmatrix}
+                a & -b & -c  & -d \\
+                b & \q a & -d & \q c \\
+                c & \q d & \q a & -b \\
+                d & -c & \q b & \q a \\
+            \end{bmatrix}
+            &= a \begin{bmatrix}
+                1 & \q 0 & \q 0 & \q 0 \\
+                0 & \q 1 & \q 0 & \q 0 \\
+                0 & \q 0 & \q 1 & \q 0 \\
+                0 & \q 0 & \q 0 & \q 1
+            \end{bmatrix} \\
+            &+ b \begin{bmatrix}
+                0 &   -1 & \q 0 & \q 0 \\
+                1 & \q 0 & \q 0 & \q 0 \\
+                0 & \q 0 & \q 0 &   -1 \\
+                0 & \q 0 & \q 1 & \q 0
+            \end{bmatrix} \\
+            &+ c \begin{bmatrix}
+                0 & \q 0 &   -1 & \q 0 \\
+                0 & \q 0 & \q 0 & \q 1 \\
+                1 & \q 0 & \q 0 & \q 0 \\
+                0 &   -1 & \q 0 & \q 0
+            \end{bmatrix} \\
+            &+ d \begin{bmatrix}
+                0 & \q 0 & \q 0 &   -1 \\
+                0 & \q 0 &   -1 & \q 0 \\
+                0 & \q 1 & \q 0 & \q 0 \\
+                1 & \q 0 & \q 0 & \q 0
+            \end{bmatrix} \\
+        \end{eqarray}
+
+        However the representation above is not unique. For example, the same quaternion
+        can be also represented as:
+
+        \begin{eqarray}
+            \begin{bmatrix}
+                \q a & \q d &   -b  &  -c \\
+                  -d & \q a & \q c &   -b \\
+                \q b &   -c & \q a &   -d \\
+                \q c & \q b & \q d & \q a \\
+            \end{bmatrix}
+            &= a \begin{bmatrix}
+                \q 1 & \q 0 & \q 0 & \q 0 \\
+                \q 0 & \q 1 & \q 0 & \q 0 \\
+                \q 0 & \q 0 & \q 1 & \q 0 \\
+                \q 0 & \q 0 & \q 0 & \q 1
+            \end{bmatrix} \\
+            &+ b \begin{bmatrix}
+                \q 0 & \q 0 &   -1 & \q 0 \\
+                \q 0 & \q 0 & \q 0 &   -1 \\
+                \q 1 & \q 0 & \q 0 & \q 0 \\
+                \q 0 & \q 1 & \q 0 & \q 0
+            \end{bmatrix} \\
+            &+ c \begin{bmatrix}
+                \q 0 & \q 0 & \q 0 &   -1 \\
+                \q 0 & \q 0 & \q 1 & \q 0 \\
+                \q 0 &   -1 & \q 0 & \q 0 \\
+                \q 1 & \q 0 & \q 0 & \q 0
+            \end{bmatrix} \\
+            &+ d \begin{bmatrix}
+                \q 0 & \q 1 & \q 0 & \q 0 \\
+                  -1 & \q 0 & \q 0 & \q 0 \\
+                \q 0 & \q 0 & \q 0 &   -1 \\
+                \q 0 & \q 0 & \q 1 & \q 0
+            \end{bmatrix} \\
+        \end{eqarray}
+
+        There exist 48 distinct matrix representations of thei form in which one of the
+        matrices represents the scalar part and the other three are all skew-symmetric.
+
+\end{enumerate}
+
+
+\subsection{Exponential, logarithm and power functions}
+
+Given a quaternion:
+
+\begin{equation}
+    \m{q} = a + b \m{i} + c \m{j} + d \m{k} = r + \vec{\m{v}}
+\end{equation}
+
+\begin{enumerate}
+    \item the exponential is computed as
+
+        \begin{equation}
+            \exp(\m{q}) = \sum_{n=0}^{\infty} \frac{\m{q}^n}{n!}
+            = e^a \left( \cos \norm{\vec{\m{v}}}
+            + \frac{\vec{\m{v}}}{\norm{\vec{\m{v}}}} \sin \norm{\vec{\m{v}}} \right)
+        \end{equation}
+
+    \item the logarithm is:
+
+        \begin{equation}
+            \ln(\m{q}) = \ln \norm{\m{q}}
+            + \frac{\vec{\m{v}}}{\norm{\vec{\m{v}}}}
+            \arccos \frac{r}{\norm{\m{q}}}
+        \end{equation}
+
+    \item it follows that the polar decomposition of a quaternion may be written
+
+        \begin{equation}
+            \m{q} = \norm{\m{q}}e^{\hat{\m{n}} \varphi} = \norm{\m{q}}
+            \left( \cos(\varphi) + \hat{\m{n}} \sin(\varphi) \right)
+        \end{equation}
+
+        where the angle $ \varphi $ is defined as
+
+        \begin{equation}
+            r = \norm{\m{q}} \cos(\varphi)
+        \end{equation}
+
+        and the unit vecotr $ \hat{\m{n}} $ is defined by
+
+        \begin{equation}
+            \vec{\m{v}} = \hat{\m{n}} \norm{\vec{\m{v}}}
+            = \hat{\m{n}} \norm{\m{q}} \sin(\varphi)
+        \end{equation}
+
+        Any unit quaternion may be expressed in polar form as:
+
+        \begin{equation}
+            \m{q} = \exp(\hat{\m{n}} \varphi)
+        \end{equation}
+
+    \item The power of a quaternion raised to an arbitrary (real) exponend $ x $ is
+        given by:
+
+        \begin{equation}
+            \m{q}^x = \norm{\m{q}}^x e^{\hat{\m{n}} x \varphi}
+            = \norm{\m{q}}^x
+            \left(\cos(x \varphi) + \hat{\m{n}} \sin(x \varphi) \right)
+        \end{equation}
+
+\end{enumerate}
 
 
 \subsection{Quaternions used for coordinate transformation}
@@ -1329,5 +1514,153 @@ the quaternion multiplication table \ref{tab:quat-mult} makes sense in relation 
     \caption{Quaternion cartesian base vectors multiplication table}
     \label{tab:quat-mult-cart}
 \end{table}
+
+
+\begin{bbox}
+
+    In 3-dimensional space, according to the \textbf{Euler's rotation theorem}, any
+    rotation or a sequence of rotations of a rigid body or coordinate system about a fixed
+    point is equivalent to a single rotation by a given angle $ \theta $ about
+    a fixed axis (called the \textit{Euler axis}) that runs through the fixed point.
+    The Euler axis is typically represented by a \textbf{unit vector} $ \vec{\m{u}} $.
+    Therefore, any rotation in three dimensions can be represented as via
+    a \textbf{vector} $ \vec{\m{u}} $ and and angle $ \theta $.
+
+    Quaternions give a simple way to encode this \textbf{axis-angle} representation
+    using four real numbers and can be used to apply (calculate) the corresponding
+    rotation to a \textbf{position vector} $ [x, y, z] $, representing a point
+    relative to the origin in $ \mathbb{R}^3 $.
+
+\end{bbox}
+
+Euclidean vectors such as $ [a_x, a_y, a_z] $ can be rewritten as
+$ a_x \m{i} + a_y \m{j} + a_z \m{k} $, where $ \m{i} $, $ \m{j} $ and $ \m{k} $ are
+unit vectors representing the three \textbf{Cartesian axies} (traditionally
+$ \m{x} $, $ \m{y} $ and $ \m{z} $) and also obey the \textbf{multiplication} rules
+of the fundamental quaternion units by interpreting the Euclidean vector
+$ [a_x, a_y, a_z] $ as the vector part of the pure quaternion
+$ (0, a_x, a_y, a_z) $.
+
+A rotation angle $ \theta $ around the axis defined by the unit vector
+
+\begin{equation}
+    \vec{\m{u}} = (u_x, u_y, u_z) = u_x \m{i} + u_y \m{j} + u_z \m{k}
+\end{equation}
+
+can be represented by \textbf{conjugation} by a unit quaternion $ \m{q} $.
+
+Since the quaternion product
+
+\begin{equation}
+    (0 + u_x \m{i} + u_y \m{j} + u_z \m{k})
+    (0 - u_x \m{i} - u_y \m{j} - u_z \m{k}) = -1
+\end{equation}
+
+using \textbf{Taylor series} of the exponential function, the extension
+of the Euler's formula results in:
+
+\begin{eqarray}
+    \m{q} &= e^{\frac{\theta}{2}(u_x \m{i} + u_y \m{j} + u_z \m{k})} \\
+          &= \cos \frac{\theta}{2} + \left( u_x \m{i} + u_y \m{j} + u_z \m{k} \right)
+          \sin \frac{\theta}{2} \\
+          &= \cos \frac{\theta}{2} + \vec{\m{u}} \sin \frac{\theta}{2}
+\end{eqarray}
+
+It can be shown that the desired rotation can be applied to an ordinary vector
+
+\begin{equation}
+    \m{p} = (p_x, p_y, p_z) = p_x \m{i} + p_y \m{j} + p_z \m{k}
+\end{equation}
+
+in 3-dimensional space, considered as the vector part of the pure quaternion $ \m{p}' $,
+by evaluating the \textbf{conjugation} of $ \m{p}' $ by $ \m{q} $, given by:
+
+\begin{eqarray}
+    L(\m{p}') &:= \m{q} \m{p}' \m{q}^{-1} \\
+    r &= \left(\cos^2 \frac{\theta}{2} - \norm{\m{u}}^2 \right)
+    + 2 ( \m{u} \cdot \m{p}) \m{u}
+    + 2 \cos \frac{\theta}{2} (\m{u} \times \m{p})
+\end{eqarray}
+
+using the \textbf{Hamilton product} where the vector part of the pute quaternion
+$ L(\m{p}') = (0, r_x, r_y, r_z) $ is the new position vector after the rotation.
+In a programmatic implementation \textbf{the conjugation} is achieved by constructing
+a pure quaternion whise vector part is $ \m{p} $, and then performing the quaternion
+conjugation. The vector part of the resulting pure quaternion is the desired
+vector $ \m{r} $. Clearly $ L $ provides a linear transformation of the quaternion
+space to itself, also, since $ \m{q} $ is unitary, the transformation is an
+isometry. Also $ L(\m{q}) = \m{q} $ ans so $ L $ leaves vectors parallel to
+$ \m{q} $ invariant. So, by decomposing $ \m{p} $ as a vector parallel to the
+vector part $ (u_x, u_y, u_z) \sin \frac{\theta}{2} $ of $ \m{q} $ and a vector
+normal to the vector part of $ \m{q} $ and showing that the application of
+$ L $ to the normal component of $ \m{p} $ rotates it, the claim is shown.
+
+So let $ \m{n} $ be the component of $ \m{p} $ orthogonal to the vector part
+of $ \m{q} $ and let $ \m{n}_T = \m{n} \times \m{u} $. It turns out that the
+vector part of $ L(0, \m{n}) $ is given by:
+
+\begin{equation}
+    \left(\cos^2 \frac{\theta}{2} - \sin^2 \frac{\theta}{2} \right) \m{n}
+    + 2 \left(\cos^2 \frac{\theta}{2} \sin^2 \frac{\theta}{2} \right) \m{n}_T
+    = \cos \theta \m{n} + \sin \theta \m{n}_T
+\end{equation}
+
+A geometric fact independent of quaternion is the existence of \textbf{two-to-one}
+mapping from physical rotations to rotational transformation matrices.
+
+If $ 0 \le \theta \le 2 \pi $, a physical rotaion about $ \vec{\m{u}} $ by
+$ \theta $ and a physical rotation about $ -\vec{\m{u}} $ by $ 2 \pi - \theta $
+both achieve the \textbf{same final orientation} by disjoint paths through
+intermediate orientations.
+
+By inserting those vectors and angles into the formula for $ \m{q} $ above,
+one findes that if $ \m{q} $ represents the first rotation, $ -\m{q} $
+represents the second rotation. This is a geometric proof that conjugation
+by $ \m{q} $ and by $ -\m{q} $ must produce the same rotational transformation
+matrix. That fact is confirmed algebraically by noting that the conjugation is
+quadratic in $ \m{q} $, so the sign of $ \m{q} $ cancels, and does not affect
+the result.
+
+If both rotations are a half-turn $ (\theta = \pi) $, both $ \m{q} $ and
+$ -\m{q} $ will have real coordinate equal to zero. Otherwise, one will have a positive
+real part, representing a rotation by an angle less than $ \pi $, and the other
+will have a negative real part, representing a rotation by an angle greater than $ \pi $.
+
+Mathemativally, this operation carries the set of all "pure" quaterninos
+$ \m{p} $ (thise with real part equal to zero) - which consitute a 3-dimensional
+space among the quaternions - into itself, by the desired rotation about the axis
+$ \m{u} $, by the angle $ \theta $.
+
+The rotation is \textbf{clockwise} if our line of sight points in the same direction
+as $ \vec{\m{u}} $.
+
+In the instance that $ \m{q} $ is a \textbf{unit quaternion} and
+
+\begin{equation}
+    \m{q}^{-1} = e^{-\frac{\theta}{2} ( u_x \m{i} + u_y \m{j} + u_z \m{k} )}
+    = \cos \frac{\theta}{2} - ( u_x \m{i} + u_y \m{j} + u_z \m{k} ) \sin \frac{\theta}{2}
+\end{equation}
+
+It follows that conjugation by the product of two quaternions is the composition of
+conjugations by these quaternions. If $ \m{p} $ and $ \m{q} $ are unit quaternions,
+then conjugation (\textbf{rotation}) by $ \m{p} \m{q} $ is:
+
+\begin{equation}
+    \m{p} \m{q} \vec{\m{v}} ( \m{p} \m{q} )^{-1}
+    = \m{p} \m{q} \vec{\m{v}} \m{q}^{-1} \m{p}^{-1}
+    = \m{p} ( \m{q} \vec{\m{v}} \m{q}^{-1} ) \m{p}^{-1}
+\end{equation}
+
+which is \textbf{the same} as conjugating (\textbf{rotating}) by $ \m{q} $ and
+then by $ \m{p} $. The scalar component of the result is \textbf{necessarily zero}.
+
+The quaternion \textbf{inverse} of a rotation is the opposite rotation, since
+
+\begin{equation}
+    \m{q}^{-1} (\m{q} \vec{\m{v}} \m{q}^{-1} ) \m{q} = \vec{\m{v}}
+\end{equation}
+
+The square of a quaternion rotation is a rotation by twice the angle around the same axis.
+
 
 
