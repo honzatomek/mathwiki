@@ -1,7 +1,7 @@
 \newpage
 \chapter{Coordinate Transformations}
 
-\localtableofcontents*
+% \localtableofcontents*
 
 \newpage
 
@@ -391,7 +391,6 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}
 \section{Tensor Transformation}
 
 From:
-
 \href{https://wp.optics.arizona.edu/optomech/wp-content/uploads/sites/53/2016/10/OPTI_222_W21.pdf}{source 1},
 \href{https://www.continuummechanics.org/principalstressesandstrains.html}{source 2},
 \href{https://www.ecourses.ou.edu/cgi-bin/eBook.cgi?doc=&topic=me&chap_sec=07.2&page=theory}{source 3}
@@ -479,6 +478,7 @@ Then \textbf{tensor transformation} is performed as such:
 
         \begin{equation}
             \lambda^{3} - I_{1}\lambda^{2} + I_{2}\lambda - I_{3} = 0
+            \label{eqn:cubic_cardano}
         ,\end{equation}
 
         giving three roots equal to tensor eigenvalues.
@@ -488,16 +488,21 @@ Then \textbf{tensor transformation} is performed as such:
         \begin{equation}
             \begin{array}{ll}
                 I_{1} &= \sigma_{11} + \sigma_{22} + \sigma_{33} \\
-                I_{2} &= \sigma_{11}\sigma_{22} + \sigma_{22}\sigma_{33}
-                + \sigma_{33}\sigma_{11} - \sigma_{12}^{2} - \sigma_{13}^{2} - \sigma_{23}^{2} \\
+                I_{2} &= \sigma_{11}\sigma_{22} + \sigma_{22}\sigma_{33} + \sigma_{33}\sigma_{11}
+                - \left|\sigma_{12}\right|^{2}
+                - \left|\sigma_{13}\right|^{2}
+                - \left|\sigma_{23}\right|^{2} \\
                 I_{3}
-                &= \sigma_{11}\sigma_{22}\sigma_{33}
-                - \sigma_{11}\sigma_{23}^{2}
-                - \sigma_{22}\sigma_{13}^{2}
-                - \sigma_{33}\sigma_{12}^{2}
-                + 2 \sigma_{12}\sigma_{13}\sigma_{23}
+                &=
+                - \sigma_{11}\left|\sigma_{23}\right|^{2}
+                - \sigma_{22}\left|\sigma_{13}\right|^{2}
+                - \sigma_{33}\left|\sigma_{12}\right|^{2}
+                + \sigma_{11}\sigma_{22}\sigma_{33}
+                + 2Re\left(\sigma_{12}\sigma_{13}\sigma_{23}\right)
             \end{array}
         .\end{equation}
+
+        where $ Re() $ means \textbf{real part} in case some of the values are complex.
 
         In matrix form:
 
@@ -644,6 +649,289 @@ Then \textbf{tensor transformation} is performed as such:
                 x_3 & y_3 & z_3
             \end{bmatrix}
         .\end{equation}
+
+
+    \item \textbf{Principal values, Cardano's formula derivation and python implementation:}
+
+        An efficient way to compute the \textbf{roots of the cubic equation} is
+        the \textbf{Cardano's formula} or its variations. \textbf{Cardano's equation}
+        works only for \textbf{depressed} 3rd degree polynomials.
+
+        Once again we start with a \textbf{real, symmetric} tensor $ \Sigma $:
+
+        \begin{equation}
+            \mathbf{\Sigma} = \begin{bmatrix}
+                    \sigma_{xx} & \tau_{xy} & \tau_{xz} \\
+                    \tau_{yx} & \sigma_{yy} & \tau_{yz} \\
+                    \tau_{zx} & \tau_{zy} & \sigma_{zz}
+            \end{bmatrix}
+            \label{eqn:tensor}
+        ,\end{equation}
+
+        Then from the definition of eigenvalues and eignevectors:
+
+        \begin{equation}
+            \mathbf{\Sigma}\mathbf{V} = \mathbf{\Lambda} \mathbf{V}
+        ,\end{equation}
+
+        therefore:
+
+        \begin{equation}
+            (\mathbf{\Sigma} - \mathbf{\Lambda}\mathbf{I})\mathbf{V} = 0
+        ,\end{equation}
+
+        and:
+
+        \begin{equation}
+            det(\mathbf{\Sigma} - \mathbf{\Lambda}\mathbf{I}) = 0
+        ,\end{equation}
+
+        where $\mathbf{\Lambda}$ is a diagonal matrix of eigenvalues (principal values)
+        and $\mathbf{V}$ is the eigenvector matrix.
+
+        \begin{equation}
+            \mathbf{\Lambda_{i}} = \begin{bmatrix}
+                \lambda_{i} & 0 & 0 \\
+                0 & \lambda_{i} & 0 \\
+                0 & 0 & \lambda_{i}
+            \end{bmatrix}
+            \label{eqn:eigenvalues}
+        ,\end{equation}
+
+        \begin{equation}
+            \mathbf{V}_{i}
+            = \begin{bmatrix}
+                \overline{x}_{i1} & \overline{x}_{i2} & \overline{x}_{i3}\\
+                \overline{y}_{i1} & \overline{y}_{i2} & \overline{y}_{i3}\\
+                \overline{z}_{i1} & \overline{z}_{i2} & \overline{z}_{i3}
+            \end{bmatrix}
+            = \begin{bmatrix}
+                \overline{\mathbf{x}}_{i}\\
+                \overline{\mathbf{y}}_{i}\\
+                \overline{\mathbf{z}}_{i}
+            \end{bmatrix}
+        .\end{equation}
+
+        \begin{bbox}[0.85]
+            It needs to be noted that each \textbf{principal value} of
+            a \textbf{tensor matrix} corresponds to three vectors that define
+            a coordinate system where first vector is perpendicular to the
+            principal plane.
+        \end{bbox}
+
+        Rewriting the characteristic cubic equation:
+
+        \begin{eqarray}
+            0 =
+            & \lambda^{3} \\
+            &+ \lambda^{2} \left(-\sigma_{xx} - \sigma_{yy} - \sigma_{zz}\right) \\
+            &+ \lambda \left(\sigma_{xx} \sigma_{yy} + \sigma_{xx} \sigma_{zz}
+                + \sigma_{yy} \sigma_{zz}
+                - \tau_{xy}^{2} - \tau_{xz}^{2} - \tau_{yz}^{2}
+            \right) \\
+            &- \sigma_{xx} \sigma_{yy} \sigma_{zz}
+            + \sigma_{xx} \tau_{yz}^{2}
+            + \sigma_{yy} \tau_{xz}^{2}
+            + \sigma_{zz} \tau_{xy}^{2}
+            - 2 \tau_{xy} \tau_{xz} \tau_{yz}
+            \label{eqn:cubic_cardano2_expanded}
+        \end{eqarray}
+
+        and setting $ I_1, I_2, I_3 $ as invariants:
+
+        \begin{eqarray}
+            I_1 &= -\sigma_{xx} - \sigma_{yy} - \sigma_{zz} \\
+            I_2 &= \sigma_{xx} \sigma_{yy} + \sigma_{xx} \sigma_{zz}
+                + \sigma_{yy} \sigma_{zz}
+                - \tau_{xy}^{2} - \tau_{xz}^{2} - \tau_{yz}^{2}\\
+            I_3 &=
+              \sigma_{xx} \tau_{yz}^{2}
+            + \sigma_{yy} \tau_{xz}^{2}
+            + \sigma_{zz} \tau_{xy}^{2}
+            - \sigma_{xx} \sigma_{yy} \sigma_{zz}
+            - 2Re\left(\tau_{xy} \tau_{xz} \tau_{yz}\right) \\
+            \label{eqn:cardano_invariants_expanded}
+        \end{eqarray}
+
+        where $ Re() $ means \textbf{real part} (contrary to $ Im() $ which would
+        mean imaginarz part).
+
+        in \textbf{matrix} form:
+
+        \begin{eqarray}
+            I_1 &= -tr[\mathbf{\Sigma}] \\
+            I_2 &= \left| \begin{matrix}
+                \sigma_{11} & \sigma_{12} \\
+                \sigma_{12} & \sigma_{22}
+            \end{matrix} \right| + \left| \begin{matrix}
+                \sigma_{11} & \sigma_{13} \\
+                \sigma_{13} & \sigma_{33}
+            \end{matrix} \right| + \left| \begin{matrix}
+                \sigma_{22} & \sigma_{23} \\
+                \sigma_{23} & \sigma_{33}
+            \end{matrix} \right| \\
+                I_3 &= -det(\mathbf{\Sigma})
+        \end{eqarray}
+
+        substituting \ref{eqn:cardano_invariants_expanded} into \ref{eqn:cubic_cardano2_expanded}
+        we get:
+
+        \begin{equation}
+            \lambda^{3} + I_{1}\lambda^{2} + I_{2}\lambda + I_{3} = 0
+            \label{eqn:cubic_cardano2}
+        ,\end{equation}
+
+        where the inveriants are:
+
+        Cardano's method requires first transforming \ref{eqn:cubic_cardano2_expanded}
+        to the form:
+
+        \begin{equation}
+            x^3 - 3x = t
+            \label{eqn:cardano_depressed}
+        \end{equation}
+
+        by defining:
+
+        \begin{eqarray}
+            p &= {I_{1}}^2 - 3I_{2} \\
+            q &= -\frac{27}{2}I_{3} - I_{1}^3 + \frac{9}{2} I_{1} I_{2} \\
+            t &= 2p^{-3/2}q \\
+            x &= \frac{3}{\sqrt{p}}\left(\lambda + \frac{1}{3}I_{1} \right) \\
+        \end{eqarray}
+
+        the the solution to \ref{eqn:cardano_depressed} is given by:
+
+        \begin{equation}
+            x = \frac{1}{u} + u
+        \end{equation}
+
+        with
+
+        \begin{equation}
+            u = \sqrt[3]{\frac{t}{2} \pm \sqrt{\frac{t^2}{4} - 1}}
+        \end{equation}
+
+        We can then write $ u = e^{i\phi} $, with:
+
+        \begin{eqarray}
+            \phi &= \frac{1}{3} \arctan{\frac{\sqrt{\left|
+                    t^2 / 4 - 1
+                \right|}}{t / 2}} \\
+            \phi &= \frac{1}{3} \arctan{\frac{\sqrt{p^3 - q^2}}{q}} \\
+            \phi &= \frac{1}{3} \arctan{\frac{\sqrt{27 \left[
+                \frac{1}{4} I_2^2 \left(p - I_2\right)
+                + I_3 * \left(q + \frac{27}{4} I_3 \right)
+            \right]}}{q}}
+            \label{eqn:cardano_phi}
+        \end{eqarray}
+
+        The last step of \ref{eqn:cardano_phi} is necessary for numerical
+        stability and precision as the term $ p^3 - q^2 $ is highly sensitive.
+
+        \begin{bbox}[0.85]
+
+            The \ref{eqn:cardano_phi} equation can be for better stability
+            and to enforce the angle to the domain $ \phi \in \left< -\pi, \pi \right> $:
+
+            \begin{eqarray}
+                \phi &= \frac{1}{3} arctan2 \left(
+                    \sqrt{27 \left[ \frac{1}{4} I_2^2 \left(p - I_2\right)
+                    + I_3 * \left(q + \frac{27}{4} I_3 \right) \right]} , q \right)
+                \label{eqn:cardano_phi_adjusted}
+            \end{eqarray}
+
+        \end{bbox}
+
+        When evaluating either \ref{eqn:cardano_phi} or \ref{eqn:cardano_phi_adjusted},
+        care must be taken to correctly resolve the ambiguity in the arctan by
+        taking account of the sign of $ q $. For $ q > 0 $, the solution must lie
+        in the first quadrant, for $ q < 0 $, it must be located in the second.
+        In constrast to this, solutions differing by myltiples of $ 2\pi $ are
+        equivalent, so $ x $ can take three different values:
+
+        \begin{eqarray}
+            x_1 &= 2 \cos{\phi} \\
+            x_2 &= 2 \cos{\left(\phi + \frac{2\pi}{3}\right)} = -\cos{\phi} - \sqrt{3} \sin{\phi} \\
+            x_3 &= 2 \cos{\left(\phi - \frac{2\pi}{3}\right)} = -\cos{\phi} + \sqrt{3} \sin{\phi} \\
+        \end{eqarray}
+
+        These values correspond to the three eigenvalues of $ \mathbf{\Sigma} $:
+
+        \begin{equation}
+            \lambda_i = \frac{\sqrt{p}}{3}x_i - \frac{1}{3}I_1
+        \end{equation}
+
+
+        A python implementation:
+
+\begin{python}
+import numpy as np
+
+def principal_cardano_equation(flat_tensor_matrix: np.ndarray) -> np.ndarray:
+    """Eigenvalues of a Hermitian 3x3 matrix using Cardano equations
+
+    source: https://www.mpi-hd.mpg.de/personalhomes/globes/3x3/index.html
+            https://en.wikipedia.org/wiki/Cubic_equation
+
+    [ σx, τxy, τxz]   [a, d, f]
+    [τxy,  σy, τyz] = [d, b, e]
+    [τxz, τyz,  σz]   [f, e, c]
+
+    Args:
+        flat_tensor_matrix (np.ndarray): a symmetric, positive definite tensor components
+                                          [[σx, σy, σz, τxy, τyz, τxz],
+                                           [σx, σy, σz, τxy, τyz, τxz]
+                                                       .
+                                                       .
+                                                       .
+                                           [σx, σy, σz, τxy, τyz, τxz]]
+
+    Returns:
+        np.ndarray: prinicpal stresses sorted from largest to smallest [σ₁, σ₂, σ₃]
+    """
+    # store each component of the tensor into standalone vector
+    a, b, c, d, e, f = flat_tensor_matrix.T
+
+    # prepare values that are used multiple times
+    M_SQRT3 = np.sqrt(3)
+    de = d  *  e
+    dd = d  *  d
+    ee = e  *  e
+    ff = f  *  f
+
+    # tr(A)
+    m = a + b + c
+    # det(A23) + det(13) + det(12)
+    c1 = (a * b + a * c + b * c) - (dd + ee + ff)
+    # det(A)
+    c0 = c * dd + a * ee + b * ff - a * b * c - 2 * f * d * e
+
+    p = m * m - 3.0 * c1
+    q = m * (p - (3.0 / 2.0) * c1) - (27.0 / 2.0) * c0
+    sqrt_p = np.sqrt(np.abs(p))
+
+    phi = 27.0 * ( 0.25 * c1 * c1 * (p - c1) + c0 * (q + 27.0 / 4.0 * c0))
+    phi = (1.0 / 3.0) * np.arctan2(np.sqrt(np.abs(phi)), q)
+
+    c = sqrt_p * np.cos(phi)
+    s = (1.0 / M_SQRT3) * sqrt_p * np.sin(phi)
+
+    l2 = (1.0 / 3.0) * (m - c)
+    l3  = l2 + s
+    l1  = l2 + c
+    l2 -= s
+
+    # Sort the eigenvalues using a fast sorting network
+    l1, l2 = np.minimum(l1, l2), np.maximum(l1, l2)
+    l2, l3 = np.minimum(l2, l3), np.maximum(l2, l3)
+    l1, l2 = np.minimum(l1, l2), np.maximum(l1, l2)
+
+    return np.array([l3, l2, l1], dtype=float).T
+
+\end{python}
+
+
 
     \item \textbf{Maximum Shear value:}
 
