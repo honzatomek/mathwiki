@@ -874,21 +874,21 @@ def principal_cardano_equation(flat_tensor_matrix: np.ndarray) -> np.ndarray:
     source: https://www.mpi-hd.mpg.de/personalhomes/globes/3x3/index.html
             https://en.wikipedia.org/wiki/Cubic_equation
 
-    [ σx, τxy, τxz]   [a, d, f]
-    [τxy,  σy, τyz] = [d, b, e]
-    [τxz, τyz,  σz]   [f, e, c]
+    [ sx, txy, txz]   [a, d, f]
+    [txy,  sy, tyz] = [d, b, e]
+    [txz, tyz,  sz]   [f, e, c]
 
     Args:
         flat_tensor_matrix (np.ndarray): a symmetric, positive definite tensor components
-                                          [[σx, σy, σz, τxy, τyz, τxz],
-                                           [σx, σy, σz, τxy, τyz, τxz]
+                                          [[sx, sy, sz, txy, tyz, txz],
+                                           [sx, sy, sz, txy, tyz, txz]
                                                        .
                                                        .
                                                        .
-                                           [σx, σy, σz, τxy, τyz, τxz]]
+                                           [sx, sy, sz, txy, tyz, txz]]
 
     Returns:
-        np.ndarray: prinicpal stresses sorted from largest to smallest [σ₁, σ₂, σ₃]
+        np.ndarray: prinicpal stresses sorted from largest to smallest [s1, s2, s3]
     """
     # store each component of the tensor into standalone vector
     a, b, c, d, e, f = flat_tensor_matrix.T
