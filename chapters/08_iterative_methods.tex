@@ -1,5 +1,68 @@
 \chapter{Iterative Methods}
 
+
+\section{Root finding problems}
+
+\subsection{Incremental Search Method}
+
+The approximate locations of the roots are best determined by plotting the function.
+Often a very rough plot, based on a few points, is sufficient to provide reasonable
+starting values.
+
+The basic thought behind the incremental search method is simple:
+If $ f(x_1) $ and $ f(x_2) $ have opposite signs, then there is at least one root
+in the interval $ (x_1, x_2) $. If the interval is small enough, it is likely to
+contain a single root. Thus the zeros of $ f(x) $ can be detected by evaluating the
+function $ f(x) $ at intervals $ \Delta x $ and looking for a change in sign.
+
+There are several potential problems with the incremental search method:
+
+\begin{itemize}
+    \item It is possible to miss two closely spaced roots if the search increment
+        $ \Delta x $ is larger than the spacing of the roots
+
+    \item A double root (two roots that coincide) will not be detected.
+
+    \item Certain singularities (poles) of $ f(x) $ can be mistaken for roots.
+        For example, $ f(x) = tan(x) $ changes sign at $ x \pm \frac{1}{2} n \pi $,
+        $ n = 1, 3, 5, \dots $. However, these locations are not true zeroes, because the
+        function does not cross the x-axis.
+
+\end{itemize}
+
+
+\textbf{Example of incremental function in python:}
+
+\begin{python}
+import math
+
+def rootsearch(f: object, a: float, b: float, dx: float) -> float:
+    """function using incremental search on the interval <a, b>, in increments
+    of dx, to find the bounds <x1, x2> of the smallest root of f(x).
+
+    Args:
+        f (object): function to find the smallest root of
+        a (float):  lower bound of the search region
+        b (float):  upper bound of the search region
+        dx (float): search step
+
+    Returns:
+        x1 = x2 = None if no roots were detected.
+        x1 < x2 = the bounds specified by dx (x2 = x1 + dx)
+    """
+    x1, f1 = a, f(a)
+    x2, f2 = b, f(b)
+    while math.sign(f1) == math.sign(f2):
+        if x1 >= b:
+            return None, None
+        x1, f1 = x2, f2
+        x2, f2 = x2 + dx, f(x2 + dx)
+    else:
+        return x1, x3
+
+\end{python}
+
+
 \section{second order ODE's}
 
 Most of FEM problems are \textbf{second order Ordinary Differential Equations}, e.g:
