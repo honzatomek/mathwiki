@@ -1329,8 +1329,8 @@ a suitably chosen time increment. Hence, considering time $ t + \Delta t $:
     \m{F}^{t + \Delta t} - \m{N}^{t + \Delta t} = \m{0}
 \end{equation}
 
-Where $ \m{F} $ is the vector of external forces (loads) and $ \m{N} $
-is the vector of inner forces.
+Where $ \m{F} $ is the vector of \textbf{external forces} (loads) and $ \m{N} $
+is the vector of \textbf{inner forces} (stresses).
 
 Assume that $ \m{F}^{t + \Delta t} $ is independent of the deformations.
 Since the solution is known at time $ t $, we can write:
@@ -1390,7 +1390,7 @@ solution of \eqref{implicit-equation} is obtained to sufficient accuracy.
 
 \subsection{Newton-Raphson}
 Having calculated an \textit{increment} in nodal point displacements, which defines
-a \textit{new total} displacement vector, we can repeat ht incremental solution
+a \textit{new total} displacement vector, we can repeat the incremental solution
 using the currently known total displacements at time $ t $.
 
 The equations used in \textbf{Newton-Raphson} iteration are, $ for\ i = 1, 2, 3, \dots, $
@@ -1418,6 +1418,22 @@ Then, in subsequent iterations, the latest estimates for the nodal point
 displacements are used to evaluate the corresponding element stresses and
 nodal point forces $ \m{N}_{i-1}^{t + \Delta t} $ and
 \textbf{tangent stiffness matrix} $ \m{K}_{i-1}^{t + \Delta t} $.
+
+The \textbf{tangent stiffness matrix} is achieved in the same way as the
+\textbf{global stiffness matrix}, but of the \textbf{deformed} geometry,
+incorporating the model nonlinearities (if applicable), such as:
+
+\begin{itemize}
+    \item \textbf{geometric} non-linearities as large rotations,
+        function-dependent springs, etc.
+
+    \item \textbf{configuration} non-linearities as tension only or compression only
+        elements, contact definitions (usually contacts should be realised on
+        the \textbf{RHS} of the $ \mathbf{K} \mathbf{u} = \mathbf{f} $ equation)
+
+    \item \textbf{material} non-linearities as plasticity etc.
+
+\end{itemize}
 
 The out-of-balance load vector $ \m{F}^{t + \Delta t} - \m{N}_{i-1}^{t + \Delta t} $
 corresponds to a load vector that is not yet balanced by element stress, and
