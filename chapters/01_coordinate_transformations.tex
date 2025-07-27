@@ -98,6 +98,38 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}
             \end{bmatrix}
         .\end{equation}
 
+        \begin{bbox}[0.85]
+            It is best to think about a rotation around axis as about a \textbf{rotation in a plane}.
+            Therefore rotation around $ \mathbf{x} $ is rotation in $ \mathbf{yz} $ plane,
+            rotaton around $ \mathbf{y} $ is a rotation in $ \mathbf{zx} $ plane and
+            a rotaton around $ \mathbf{z} $ is a rotation in $ \mathbf{xy} $ plane.
+
+            The defining the index of the axes such that $ \mathbf{x} = 0 $, $ \mathbf{y} = 1 $
+            and $ \mathbf{z} = 2 $ we can define the rotation matrix so that:
+
+            \begin{equation}
+                \mathbf{R} = \begin{bmatrix}
+                    1 & 0 & 0 \\
+                    0 & 1 & 0 \\
+                    0 & 0 & 1
+                \end{bmatrix}
+            \end{equation}
+
+            then
+            \begin{eqarray}
+                \mathbf{R}_{i,i} &= \cos \theta  \\
+                \mathbf{R}_{i,j} &= \sin \theta  \\
+                \mathbf{R}_{j,i} &= -\sin \theta  \\
+                \mathbf{R}_{j,j} &= \cos \theta  \\
+            \end{eqarray}
+
+            where $ i $ is index of first plane axis and $ j $ is the index of the second
+            plane axis.
+
+            The plane axes always cycle in the following manner: $ xy, yz, zx, xy, ... $.
+
+        \end{bbox}
+
         Any \textbf{rotation} can be given as a composition of rotations
         about three axes (\textbf{Euler's rotation theorem}), and thus
         be represented by a $3 \times 3$ matrix operating on a vector.
@@ -117,147 +149,27 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}
             \end{bmatrix}
         .\end{equation}
 
-    \item \textbf{Euler's angles of XYZ rotation:}
-
-        With the order of \textit{xyz} rotation the rotation matrix is
-        composed as:
+        An \textbf{arbitrary rotation} around a unit vector $ \mathbf{U} = \left( U_x, U_y, U_z \right) $
+        by an angle $ \theta $ is given by:
 
         \begin{equation}
-            \scalebox{0.85}{
-                $ \begin{array}{ll}
-                    \mathbf{T}
-                    &= \mathbf{R}_{z}(\psi)\mathbf{R}_{y}(\theta)\mathbf{R}_{x}(\varphi) \\
-                    &=
-                    \begin{bmatrix}
-                        \cos \psi & \sin \psi & 0 \\
-                        -\sin \psi & \cos \psi & 0 \\
-                        0 & 0 & 1
-                    \end{bmatrix}
-                    \begin{bmatrix}
-                        \cos \theta & 0 & -\sin \theta \\
-                        0 & 1 & 0 \\
-                        \sin \theta & 0 & \cos \theta
-                    \end{bmatrix}
-                    \begin{bmatrix}
-                        1 & 0 & 0 \\
-                        0 & \cos \varphi & \sin \varphi \\
-                        0 & -\sin \varphi & \cos \varphi
-                    \end{bmatrix} \\
-                    &=
-                    \begin{bmatrix}
-                        \cos \theta \cos \psi
-                        & \cos \psi \sin \theta \sin \varphi - \cos \varphi \sin \psi
-                        & \cos \varphi \cos \psi \sin \theta + \sin \varphi \sin \psi \\
-                        \cos \theta \sin \psi
-                        & \cos \varphi \cos \psi + \sin \theta \sin \varphi \sin \psi
-                        & \cos \varphi \sin \theta \sin \psi - \cos \psi \sin \varphi \\
-                        -\sin \theta
-                        & \cos \theta \sin \varphi
-                        & \cos \theta \cos \varphi
-                    \end{bmatrix}
-                \end{array} $
-            }
+            R_U(\theta) = \mathbf{I} + (sin \theta)S + (1 - cos \theta)S^2
         \end{equation}
 
-        Then the three \textit{Euler angles} for a \textit{xyz} rotation
-        can be obtained:
+        where $ \mathbf{I} $ is an identity matrix,
 
         \begin{equation}
-            \varphi = \atantwo(t_{32}, t_{33})
-        ,\end{equation}
+            \mathbf{S} =
+            \begin{bmatrix}
+                0 & -U_x & U_y \\
+                U_z & 0 & -U_x \\
+                -U_y & U_x & 0
+            \end{bmatrix}
+        \end{equation}
 
-        \begin{equation}
-            \theta = \atantwo \left(-t_{31}, \sqrt{ t_{32}^{2} + t_{33}^{2}} \right)
-        ,\end{equation}
-
-        \begin{equation}
-            \psi = \atantwo(t_{21}, t_{11})
-        ,\end{equation}
-
-        where $\atantwo(y, x)$ definition is:
-
-        \begin{equation}
-            \atantwo(y, x) = \left\{
-                \begin{array}{ll}
-                    \arctan\left(\frac{y}{x}\right) & if \quad (x > 0),\\
-                    \arctan\left(\frac{y}{x}\right) + \pi & if \quad (x < 0) \land (y \ge 0),\\
-                    \arctan\left(\frac{y}{x}\right) - \pi & if \quad (x < 0) \land  (y < 0),\\
-                    \frac{\pi}{2} & if \quad (x = 0) \land  (y > 0),\\
-                    -\frac{\pi}{2} & if \quad (x = 0) \land  (y < 0),\\
-                    undefined & if \quad (x = 0) \land (y = 0)
-                \end{array}
-            \right\}
-        .\end{equation}
-
-        \textbf{Note} the angle limitation for values returned while doing
-        an Euler angle decomposition of a \textbf{rotation} matrix:
-
-        \begin{equation}
-            \begin{array}{l}
-                \varphi \in (-\pi, \pi) \\
-                \theta \in (-\frac{\pi}{2}, \frac{\pi}{2}) \\
-                \psi \in (-\pi, \pi)
-            \end{array}
-        .\end{equation}
-
-    \item Euler's angles of \textbf{ZYX} rotation:
-
-        For a rotation defined in \textit{zyx} order the rotation matrix is:
-
-        \begin{equation}
-            \scalebox{0.85}{
-                $ \begin{array}{ll}
-                    \mathbf{T}
-                    &= \mathbf{R}_{x}(\varphi)\mathbf{R}_{y}(\theta)\mathbf{R}_{z}(\psi) \\
-                    &=
-                    \begin{bmatrix}
-                        1 & 0 & 0 \\
-                        0 & \cos \varphi & \sin \varphi \\
-                        0 & -\sin \varphi & \cos \varphi
-                    \end{bmatrix}
-                    \begin{bmatrix}
-                        \cos \theta & 0 & -\sin \theta \\
-                        0 & 1 & 0 \\
-                        \sin \theta & 0 & \cos \theta
-                    \end{bmatrix}
-                    \begin{bmatrix}
-                        \cos \psi & \sin \psi & 0 \\
-                        -\sin \psi & \cos \psi & 0 \\
-                        0 & 0 & 1
-                    \end{bmatrix} \\
-                    &=
-                    \begin{bmatrix}
-                        \cos \theta \cos \varphi
-                        & - \cos \theta \sin \varphi
-                        & \sin \varphi \\
-                        \cos \psi \sin \varphi + \cos \varphi \sin \theta \sin \psi
-                        & \cos \varphi \cos \psi - \sin \theta \sin \varphi \sin \psi
-                        & -\cos \theta \sin \psi \\
-                        \sin \varphi \sin \psi - \cos \varphi \cos \psi \sin \theta
-                        & \cos \psi \sin \theta \sin \varphi + \cos \varphi \sin \psi
-                        & \cos \theta \cos \psi
-                    \end{bmatrix}
-                \end{array} $
-            }
-        .\end{equation}
-
-        \textbf{Note that the angles $\varphi$, $\theta$ and $\psi$ defined here are
-        different from the \textit{XYZ} rotation defined above!} The rotation
-        is performed by first rotating around \textit{z-axis} counterclockwise
-        by an angle $\psi$, then around \textit{y-axis} counterclockwise
-        by an angle $\theta$ and finaly around \textit{x-axis}, counterclockwise,
-        by an angle $\varphi$.
-
-        Then the \textit{Euler's angles} can be obtained as:
-
-        \begin{equation}
-            \left\{ \begin{array}{l}
-                \varphi = \arctan \left( \frac{-t_{12}}{t_{11}} \right)\\
-                \theta = \arcsin \left( t_{13} \right) \\
-                \psi = \arctan \left( \frac{-t_{23}}{t_{33}} \right)
-            \end{array} \right.
-        .\end{equation}
-
+        and $ \theta > 0 $ indicates a counterclockwise rotation in the plane normal
+        to $ \mathbf{U} $. The observer is positioned on the side of the plane to
+        which the vector points and looking back at the origin.
 
     \item Alternate way of constructing \textbf{Rotation matrix} without specifying
         angles:
@@ -344,6 +256,469 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}
         \end{bbox}
 
 \end{enumerate}
+
+
+
+\subsection{Euler's angles of \textbf{XYZ} rotation}
+
+        With the order of \textit{xyz} rotation the rotation matrix is
+        composed as:
+
+        \begin{equation}
+            \scalebox{0.85}{
+                $ \begin{array}{ll}
+                    \mathbf{T}
+                    &= \mathbf{R}_{z}(\psi)\mathbf{R}_{y}(\theta)\mathbf{R}_{x}(\varphi) \\
+                    &=
+                    \begin{bmatrix}
+                        \cos \psi & \sin \psi & 0 \\
+                        -\sin \psi & \cos \psi & 0 \\
+                        0 & 0 & 1
+                    \end{bmatrix}
+                    \begin{bmatrix}
+                        \cos \theta & 0 & -\sin \theta \\
+                        0 & 1 & 0 \\
+                        \sin \theta & 0 & \cos \theta
+                    \end{bmatrix}
+                    \begin{bmatrix}
+                        1 & 0 & 0 \\
+                        0 & \cos \varphi & \sin \varphi \\
+                        0 & -\sin \varphi & \cos \varphi
+                    \end{bmatrix} \\
+                    &=
+                    \begin{bmatrix}
+                        \cos \theta \cos \psi
+                        & \cos \psi \sin \theta \sin \varphi - \cos \varphi \sin \psi
+                        & \cos \varphi \cos \psi \sin \theta + \sin \varphi \sin \psi \\
+                        \cos \theta \sin \psi
+                        & \cos \varphi \cos \psi + \sin \theta \sin \varphi \sin \psi
+                        & \cos \varphi \sin \theta \sin \psi - \cos \psi \sin \varphi \\
+                        -\sin \theta
+                        & \cos \theta \sin \varphi
+                        & \cos \theta \cos \varphi
+                    \end{bmatrix}
+                \end{array} $
+            }
+        \end{equation}
+
+        Then the three \textit{Euler angles} for a \textit{xyz} rotation
+        can be obtained:
+
+        \begin{equation}
+            \varphi = \atantwo(t_{32}, t_{33})
+        ,\end{equation}
+
+        \begin{equation}
+            \theta = \atantwo \left(-t_{31}, \sqrt{ t_{32}^{2} + t_{33}^{2}} \right)
+        ,\end{equation}
+
+        \begin{equation}
+            \psi = \atantwo(t_{21}, t_{11})
+        ,\end{equation}
+
+        where $\atantwo(y, x)$ definition is:
+
+        \begin{equation}
+            \atantwo(y, x) = \left\{
+                \begin{array}{ll}
+                    \arctan\left(\frac{y}{x}\right) & if \quad (x > 0),\\
+                    \arctan\left(\frac{y}{x}\right) + \pi & if \quad (x < 0) \land (y \ge 0),\\
+                    \arctan\left(\frac{y}{x}\right) - \pi & if \quad (x < 0) \land  (y < 0),\\
+                    \frac{\pi}{2} & if \quad (x = 0) \land  (y > 0),\\
+                    -\frac{\pi}{2} & if \quad (x = 0) \land  (y < 0),\\
+                    undefined & if \quad (x = 0) \land (y = 0)
+                \end{array}
+            \right\}
+        .\end{equation}
+
+        \textbf{Note} the angle limitation for values returned while doing
+        an Euler angle decomposition of a \textbf{rotation} matrix:
+
+        \begin{equation}
+            \begin{array}{l}
+                \varphi \in (-\pi, \pi) \\
+                \theta \in (-\frac{\pi}{2}, \frac{\pi}{2}) \\
+                \psi \in (-\pi, \pi)
+            \end{array}
+        .\end{equation}
+
+        A python implementation with alternative components used to obtain the angles
+\begin{python}
+import numpy as np
+
+def EulerXYZ(R: np.ndarray) -> tuple:
+    if R[2,0] < 1.:
+        if R[2,0] > -1.:
+            b = np.arcsin(R[2,0])
+            a = np.arctan2(-R[2,1], R[2,2])
+            c = np.arctan2(-R[1,0], R[0,0])
+        else:
+            b = -np.pi / 2.
+            a = -np.arctan2(R[0,1], R[1,1])
+            c = 0.
+    else:
+        b = np.pi / 2.
+        a = np.arctan2(R[0,1], R[1,1])
+        c = 0.
+
+    return a, b, c
+\end{python}
+
+
+\subsection{Euler's angles of \textbf{ZYX} rotation}
+
+        For a rotation defined in \textit{zyx} order the rotation matrix is:
+
+        \begin{equation}
+            \scalebox{0.85}{
+                $ \begin{array}{ll}
+                    \mathbf{T}
+                    &= \mathbf{R}_{x}(\varphi)\mathbf{R}_{y}(\theta)\mathbf{R}_{z}(\psi) \\
+                    &=
+                    \begin{bmatrix}
+                        1 & 0 & 0 \\
+                        0 & \cos \varphi & \sin \varphi \\
+                        0 & -\sin \varphi & \cos \varphi
+                    \end{bmatrix}
+                    \begin{bmatrix}
+                        \cos \theta & 0 & -\sin \theta \\
+                        0 & 1 & 0 \\
+                        \sin \theta & 0 & \cos \theta
+                    \end{bmatrix}
+                    \begin{bmatrix}
+                        \cos \psi & \sin \psi & 0 \\
+                        -\sin \psi & \cos \psi & 0 \\
+                        0 & 0 & 1
+                    \end{bmatrix} \\
+                    &=
+                    \begin{bmatrix}
+                        \cos \theta \cos \varphi
+                        & - \cos \theta \sin \varphi
+                        & \sin \varphi \\
+                        \cos \psi \sin \varphi + \cos \varphi \sin \theta \sin \psi
+                        & \cos \varphi \cos \psi - \sin \theta \sin \varphi \sin \psi
+                        & -\cos \theta \sin \psi \\
+                        \sin \varphi \sin \psi - \cos \varphi \cos \psi \sin \theta
+                        & \cos \psi \sin \theta \sin \varphi + \cos \varphi \sin \psi
+                        & \cos \theta \cos \psi
+                    \end{bmatrix}
+                \end{array} $
+            }
+        .\end{equation}
+
+        \textbf{Note that the angles $\varphi$, $\theta$ and $\psi$ defined here are
+        different from the \textit{XYZ} rotation defined above!} The rotation
+        is performed by first rotating around \textit{z-axis} counterclockwise
+        by an angle $\psi$, then around \textit{y-axis} counterclockwise
+        by an angle $\theta$ and finaly around \textit{x-axis}, counterclockwise,
+        by an angle $\varphi$.
+
+        Then the \textit{Euler's angles} can be obtained as:
+
+        \begin{equation}
+            \left\{ \begin{array}{l}
+                \varphi = \arctan \left( \frac{-t_{12}}{t_{11}} \right)\\
+                \theta = \arcsin \left( t_{13} \right) \\
+                \psi = \arctan \left( \frac{-t_{23}}{t_{33}} \right)
+            \end{array} \right.
+        .\end{equation}
+
+        A python implementation with alternative components used to obtain the angles
+\begin{python}
+import numpy as np
+
+def EulerZYX(R: np.ndarray) -> tuple:
+    if R[0,2] < 1.:
+        if R[0,2] > -1.:
+            b = np.arcsin(-R[0,2])
+            a = np.arctan2(R[0,1], R[0,0])
+            c = np.arctan2(R[1,2], R[2,2])
+        else:
+            b = np.pi / 2.
+            a = -np.arctan2(-R[2,1], R[1,1])
+            c = 0.
+    else:
+        b = -np.pi / 2.
+        a = np.arctan2(-R[2,1], R[1,1])
+        c = 0.
+
+    return a, b, c
+\end{python}
+
+
+\subsection{Euler's angles of \textbf{XZY} rotation}
+
+        For a rotation defined in \textit{xzy} order the rotation matrix is:
+
+        \begin{equation}
+            \scalebox{0.85}{
+                $ \begin{array}{ll}
+                    \mathbf{T}
+                    &= \mathbf{R}_{x}(\varphi)\mathbf{R}_{z}(\psi)\mathbf{R}_{y}(\theta) \\
+                    &=
+                    \begin{bmatrix}
+                        1 & 0 & 0 \\
+                        0 & \cos \varphi & \sin \varphi \\
+                        0 & -\sin \varphi & \cos \varphi
+                    \end{bmatrix}
+                    \begin{bmatrix}
+                        \cos \psi & \sin \psi & 0 \\
+                        -\sin \psi & \cos \psi & 0 \\
+                        0 & 0 & 1
+                    \end{bmatrix}
+                    \begin{bmatrix}
+                        \cos \theta & 0 & -\sin \theta \\
+                        0 & 1 & 0 \\
+                        \sin \theta & 0 & \cos \theta
+                    \end{bmatrix} \\
+                    &=
+                    \begin{bmatrix}
+                        \cos \theta \cos \psi
+                        &  \sin \varphi \sin \theta + \cos \varphi \cos \theta \sin \psi
+                        & -\cos \varphi \sin \theta + \cos \theta \sin \varphi \sin \psi \\
+                        -\sin \psi
+                        & \cos \varphi \cos \psi
+                        & \cos \psi \sin \varphi \\
+                        \cos \psi \sin \theta
+                        & -\cos \theta \sin \varphi + \cos \varphi \sin \theta \sin \psi
+                        & \cos \varphi \cos \theta + \sin \varphi \sin \theta \sin \psi
+                    \end{bmatrix}
+                \end{array} $
+            }
+        .\end{equation}
+
+        A python implementation used to obtain the angles
+\begin{python}
+import numpy as np
+
+def EulerXZY(R: np.ndarray) -> tuple:
+    if R[1,0] < 1.:
+        if R[1,0] > -1.:
+            b = np.arcsin(-R[1,0])
+            a = np.arctan2(R[1,2], R[1,1])
+            c = np.arctan2(R[2,0], R[0,0])
+        else:
+            b = np.pi / 2.
+            a = -np.arctan2(-R[0,2], R[2,2])
+            c = 0.
+    else:
+        b = -np.pi / 2.
+        a = np.arctan2(-R[0,2], R[2,2])
+        c = 0.
+
+    return a, b, c
+\end{python}
+
+
+\subsection{Euler's angles of \textbf{ZXY} rotation}
+
+        As the derivation of equations is analogous, only the example of algorithm:
+\begin{python}
+import numpy as np
+
+def EulerZXY(R: np.ndarray) -> tuple:
+    if R[1,2] < 1.:
+        if R[1,2] > -1.:
+            b = np.arcsin(R[1,2])
+            a = np.arctan2(-R[1,0], R[1,1])
+            c = np.arctan2(-R[0,2], R[2,2])
+        else:
+            b = -np.pi / 2.
+            a = -np.arctan2(R[2,0], R[0,0])
+            c = 0.
+    else:
+        b = np.pi / 2.
+        a = np.arctan2(R[2,0], R[0,0])
+        c = 0.
+
+    return a, b, c
+\end{python}
+
+\subsection{Euler's angles of \textbf{YXZ} rotation}
+
+\begin{python}
+import numpy as np
+
+def EulerYXZ(R: np.ndarray) -> tuple:
+    if R[2,1] < 1.:
+        if R[2,1] > -1.:
+            b = np.arcsin(-R[2,1])
+            a = np.arctan2(R[2,0], R[2,2])
+            c = np.arctan2(R[0,1], R[1,1])
+        else:
+            b = np.pi / 2.
+            a = -np.arctan2(-R[1,0], R[0,0])
+            c = 0.
+    else:
+        b = -np.pi / 2.
+        a = np.arctan2(-R[1,0], R[0,0])
+        c = 0.
+
+    return a, b, c
+\end{python}
+
+\subsection{Euler's angles of \textbf{YZX} rotation}
+
+\begin{python}
+import numpy as np
+
+def EulerYZX(R: np.ndarray) -> tuple:
+    if R[0,1] < 1.:
+        if R[0,1] > -1.:
+            b = np.arcsin(R[0,1])
+            a = np.arctan2(-R[0,2], R[0,0])
+            c = np.arctan2(-R[2,1], R[1,1])
+        else:
+            b = -np.pi / 2.
+            a = -np.arctan2(R[1,2], R[2,2])
+            c = 0.
+    else:
+        b = np.pi / 2.
+        a = np.arctan2(R[1,2], R[2,2])
+        c = 0.
+
+    return a, b, c
+\end{python}
+
+\subsection{Euler's angles of \textbf{XYX} rotation}
+
+\begin{python}
+import numpy as np
+
+def EulerXYX(R: np.ndarray) -> tuple:
+    if R[0,0] < 1.:
+        if R[0,0] > -1.:
+            b = np.arccos(R[0,0])
+            a = np.arctan2(R[0,1], -R[0,2])
+            c = np.arctan2(R[1,0], R[2,0])
+        else:
+            b = np.pi
+            a = -np.arctan2(-R[2,1], R[1,1])
+            c = 0.
+    else:
+        b = 0.
+        a = np.arctan2(-R[2,1], R[1,1])
+        c = 0.
+
+    return a, b, c
+\end{python}
+
+\subsection{Euler's angles of \textbf{XZX} rotation}
+
+\begin{python}
+import numpy as np
+
+def EulerXZX(R: np.ndarray) -> tuple:
+    if R[0,0] < 1.:
+        if R[0,0] > -1.:
+            b = np.arccos(R[0,0])
+            a = np.arctan2(R[0,2], R[0,1])
+            c = np.arctan2(R[2,0], -R[1,0])
+        else:
+            b = np.pi
+            a = -np.arctan2(R[1,2], R[2,2])
+            c = 0.
+    else:
+        b = 0.
+        a = np.arctan2(R[1,2], R[2,2])
+        c = 0.
+
+    return a, b, c
+\end{python}
+
+\subsection{Euler's angles of \textbf{YXY} rotation}
+
+\begin{python}
+import numpy as np
+
+def EulerYXY(R: np.ndarray) -> tuple:
+    if R[1,1] < 1.:
+        if R[1,1] > -1.:
+            b = np.arccos(R[1,1])
+            a = np.arctan2(R[1,0], R[1,2])
+            c = np.arctan2(R[0,1], -R[2,1])
+        else:
+            b = np.pi
+            a = -np.arctan2(R[2,0], R[0,0])
+            c = 0.
+    else:
+        b = 0.
+        a = np.arctan2(R[2,0], R[0,0])
+        c = 0.
+
+    return a, b, c
+\end{python}
+
+\subsection{Euler's angles of \textbf{YZY} rotation}
+
+\begin{python}
+import numpy as np
+
+def EulerYZY(R: np.ndarray) -> tuple:
+    if R[1,1] < 1.:
+        if R[1,1] > -1.:
+            b = np.arccos(R[1,1])
+            a = np.arctan2(R[1,2], -R[1,0])
+            c = np.arctan2(R[2,1], R[0,1])
+        else:
+            b = np.pi
+            a = -np.arctan2(-R[0,2], R[2,2])
+            c = 0.
+    else:
+        b = 0.
+        a = np.arctan2(-R[0,2], R[2,2])
+        c = 0.
+
+    return a, b, c
+\end{python}
+
+\subsection{Euler's angles of \textbf{ZXZ} rotation}
+
+        \textbf{Note:} One of the most used forms of the \textbf{Euler} angles.
+
+\begin{python}
+import numpy as np
+
+def EulerZXZ(R: np.ndarray) -> tuple:
+    if R[2,2] < 1.:
+        if R[2,2] > -1.:
+            b = np.arccos(R[2,2])
+            a = np.arctan2(R[2,0], -R[2,1])
+            c = np.arctan2(R[0,2], R[1,2])
+        else:
+            b = np.pi
+            a = -np.arctan2(-R[1,0], R[0,0])
+            c = 0.
+    else:
+        b = 0.
+        a = np.arctan2(-R[1,0], R[0,0])
+        c = 0.
+
+    return a, b, c
+\end{python}
+
+\subsection{Euler's angles of \textbf{ZYZ} rotation}
+
+\begin{python}
+import numpy as np
+
+def EulerZYZ(R: np.ndarray) -> tuple:
+    if R[2,2] < 1.:
+        if R[2,2] > -1.:
+            b = np.arccos(R[2,2])
+            a = np.arctan2(R[2,1], R[2,0])
+            c = np.arctan2(R[1,2], -R[0,2])
+        else:
+            b = np.pi
+            a = -np.arctan2(R[0,1], R[1,1])
+            c = 0.
+    else:
+        b = 0.
+        a = np.arctan2(R[0,1], R[1,1])
+        c = 0.
+
+    return a, b, c
+\end{python}
 
 
 \section{Coordinate Transformation}
@@ -1044,6 +1419,13 @@ def principal_cardano_equation(flat_tensor_matrix: np.ndarray) -> np.ndarray:
 
         \textbf{$\sigma_2$ has not changed as it is colinear with the axis of rotation.}
 
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.8\textwidth]{img/stresses_as_function_of_angle}
+            \caption{Stresses as a function of angle}
+            \label{fig:stresses_as_function_of_angle-png}
+        \end{figure}
+
         The relationship between principal normal streses and maximum shear stresses
         can be better understood by examining a plot of the stresses as a function
         of the rotation angle.
@@ -1056,18 +1438,244 @@ def principal_cardano_equation(flat_tensor_matrix: np.ndarray) -> np.ndarray:
         as shown on the diagram. And the maximum shear stress will occur when the
         two principal normal stresses, $\sigma_1$ and $\sigma_2$, are equal.
 
-        \begin{figure}[ht]
-            \centering
-            \includegraphics[width=0.8\textwidth]{img/stresses_as_function_of_angle}
-            \caption{Stresses as a function of angle}
-            \label{fig:stresses_as_function_of_angle-png}
-        \end{figure}
-
         \begin{bbox}[0.85]
             When $\sigma_{x}$ or $\sigma_{y}$ are either max or min, the shear stress
             $\tau_{xy}$ is equal to 0. When shear stress $\tau_{xy}$ is max or min,
             the stresses $\sigma_{x}$ and $\sigma_{y}$ are equal to their average.
         \end{bbox}
+
+
+    \item \textbf{Principal axes, obtaining principal axes with python implementation:}
+
+        The principal axes can be obtained from the following property
+
+        \begin{equation}
+            \mathbf{A}\mathbf{v} = \lambda \mathbf{v}
+        \end{equation}
+
+        As the \textbf{principal axis} (eigenvector) of $ \mathbf{A} $ is not changed
+        by $ \mathbf{A} $, only scaled, then it lies in the \textbf{nullspace} of the
+        matrix $ \mathbf{B} $ from the characteristic equation:
+
+        \begin{equation}
+            \mathbf{B} = (\mathbf{A} - \lambda \mathbf{I})
+        \end{equation}
+
+        The matrix $ \mathbf{B} $ is \textbf{singular} with 2 independent rows and
+        a third one being a linear combination of others. The vector that lies
+        in the \textbf{nullspace} can be obtained by using a cross product of any
+        two rows. This can be performed for the first two principal values
+        (eigenvalues $ \lambda_i $ and the third principal axis can be again
+        computed using a cross product of the two previously extracted axes.
+
+        Python example:
+
+        \begin{python}
+import numpy as np
+
+def gram_schmidt(vectors: np.ndarray) -> np.ndarray:
+    """Perform Gram-Schmidt orthogonalisation of vectors
+
+    Args:
+        vectors (np.ndarray) an array of row vectors to orthogonalise against
+                             each other, if the array is 3 dimensional then
+                             preform orthogonalisation for each array of
+                             row vectors separately
+    Returns:
+        (np.ndarray): an array of orthogonal vectors
+    """
+    ortho = np.copy(vectors)
+
+    if len(ortho.shape) == 3:
+        for i in range(1, ortho.shape[1]):
+            for j in range(i):
+                # np.sum(A * B, axis=1) is equal to row by row dot product of two sets of vectors
+                # written as a 2D matrix
+                vec = ortho[:,j,:] / np.linalg.norm(ortho[:,j,:], axis=1)[:,None]
+                ortho[:,i,:] -= vec * np.sum(ortho[:,i,:] * vec, axis=1)[:,None]
+    elif len(ortho.shape) == 2:
+        for i in range(1, ortho.shape[0]):
+            for j in range(i):
+                # np.sum(A * B, axis=1) is equal to row by row dot product of two sets of vectors
+                # written as a 2D matrix
+                vec = ortho[j,:] / np.linalg.norm(ortho[j,:])
+                ortho[i,:] -= vec * np.dot(ortho[i,:], vec)
+
+    return ortho
+
+
+def normalise(vectors: np.ndarray) -> np.ndarray:
+    """Normalise supplied vectors to a length of 1"""
+    normalised = np.copy(vectors)
+    if len(normalised.shape) == 3:
+        for i in range(vectors.shape[1]):
+            normalised[:,i,:] /= np.linalg.norm(normalised[:,i,:], axis=1)[:,None]
+
+    elif len(normalised.shape) == 2:
+        normalised /= np.linalg.norm(normalised, axis=1)[:,None]
+
+    elif len(normalised.shape) == 1:
+        normalised /= np.linalg.norm(normalised)
+
+    return normalised
+
+
+def orthonormalise(vectors: np.ndarray) -> np.ndarray:
+    """Orhtonormalise sets of supplied vectors using GramSchmidt method
+    first and then normalisation to a length of 1
+    """
+    return normalise(gram_schmidt(vectors))
+
+
+def principal_axes(tensors: np.ndarray, principal_values: np.ndarray) -> np.ndarray:
+    """Get the principal axes corrsponding to the principal values by
+    getting the vector that is in the nullspace of the rank 2 homogeneous
+    equation:
+         (A  - l I) = 0
+    by setting l to l1, l2 and l3, we can obtain three vectors that are
+    in the nullspace of the first, second and third eigenvalue by using
+    cross product of any two rows of the characteristic equation.
+
+    Args:
+        tensors (np.ndarray):          an array of tensors, one tensor
+                                       on each row
+                                       [[sx, sy, sz, txy, tyz, tzx], ... ]
+        principal_values (np.ndarray): an array of the same number of rows
+                                       as the tensors and 3 columns with
+                                       principal values
+
+    Returns:
+        (np.ndarray): the principal axes belonging to the supplied
+                      principal values
+    """
+    principal = np.copy(principal_values)
+    if len(principal.shape) == 1 and principal.shape[0] == 3:
+        principal = principal.reshape(1, 3)
+
+    if len(principal.shape) != len(tensor.shape):
+        raise ValueError(f"A mismatch in tensor and principal values dimensions " +
+            f"{str(tensor.shape):s} != {str(principal.shape):s}")
+    elif principal.shape[0] != tensor.shape[0]:
+        raise ValueError(f"The number of principal values does not match the number of tensors " +
+            f"{str(tensor.shape):s} != {str(principal.shape):s}")
+    elif principal.shape[1] != 3:
+        raise ValueError(f"The number of principal values is not 3: {str(principal.shape):s}")
+
+    # sort principal stresses by amount from largest to smallest
+    amount_idx = np.argsort(np.abs(principal), axis=1)[:,::-1]
+    principal  = np.take_along_axis(principal, amount_idx, axis=1)
+
+    # prepare reverse sort from largest to smallest
+    amount_idx = np.argsort(principal, axis=1)[:,::-1]
+
+    a, b, c, d, e, f = tensor.T
+    l1, l2, l3 = principal.T
+
+    # prepare the array to store the 3x3 transformation matrix composed of
+    # rows of principal axes
+    T = np.zeros((principal.shape[0], 3, 3), dtype=tensor.dtype)
+
+    # prepare a mask where True is if the stress tensor is 0
+    mask_zero = np.isclose(a ** 2 + b ** 2 + c ** 2, 0.)
+
+    # prepare a mask where True is if the prinicpal stresses are equal
+    mask_equal = np.equal(l1, l2, l3)
+
+    # other values - a general case
+    mask_nonz  = np.logical_not(mask_zero) & np.logical_not(mask_equal)
+
+    # a zero tensor
+    if np.any(mask_zero):
+        T[mask_zero] = np.array([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]], dtype=tensor.dtype)
+
+    # triaxial tensrion/compression
+    if np.any(mask_equal):
+        T[mask_equal] = np.array([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]], dtype=tensor.dtype)
+
+    # process each eigenvalue (principal stress) individually (only first two needed)
+    for i, l in enumerate([l1, l2]): # , l3]):
+        # get rows of the tensor (homogeneous equation)
+        v1 = np.array([a - l,     d,     f], dtype=tensor.dtype).T
+        v2 = np.array([    d, b - l,     e], dtype=tensor.dtype).T
+        v3 = np.array([    f,     e, c - l], dtype=tensor.dtype).T
+
+        # get the vector in the tensor nullspace for all combinations of rows
+        v0 = np.array([np.cross(v1, v2),
+                       np.cross(v1, v3),
+                       np.cross(v2, v3)], dtype=tensor.dtype).transpose(1,0,2)
+
+        # get the vector length
+        len_v0 = np.array([
+            np.linalg.norm(v0[:,0], axis=1),
+            np.linalg.norm(v0[:,1], axis=1),
+            np.linalg.norm(v0[:,2], axis=1)], dtype=tensor.dtype).T
+
+        # find the index of largest column value for each row
+        idx_v0 = np.argmax(len_v0, axis=1)
+
+        # select the longest vector in the nullspace of the homogeneous equation
+        v0     = np.take_along_axis(    v0, idx_v0[:,None,None], axis=1).reshape(-1,3)
+
+        # and its respective length
+        len_v0 = np.take_along_axis(len_v0,      idx_v0[:,None], axis=1).flatten()
+
+        # prepare an array masking vectors with 0 or close to 0 length
+        mask_zero_len = np.isclose(len_v0, 0.)
+        mask_some_len = np.logical_not(mask_zero_len)
+
+        # norm the vectors that have nonzero length
+        v0[mask_some_len] /= len_v0[mask_some_len,None]
+
+        # now to deal with vectors that have zero length
+        # 1. case where we are dealing with 1st eigenvalue
+        # should not happen due to the presorting of eigenvalues by
+        # magniture from largest to smallest. If the largest (by magnitude)
+        # eigenvalue has close to 0 length, it is a degenerative case where
+        # there are infinite possibilities for axs direction, so we can
+        # choose one aligned with the global x axis
+        if i == 0:
+            # fallback axis value - global x axis because it does not matter
+            v0[mask_zero_len] = np.array([1., 0., 0.], dtype=float)
+
+        # 2. case where we are dealing with 2nd eigenvalue
+        elif i == 1:
+            # get first principal axis
+            v = T[mask_zero_len,0,:]
+            # check whether it is the fallback axis
+            mask_occupied = np.all(np.isclose(v, np.array([1., 0., 0.])), axis=1)
+            # where it is a fallback axis, use global z axis
+            v[mask_occupied] = np.array([0., 0., 1.])
+            # obtain an arbitrary axis that is perpendicular to 1st and fallback
+            v = np.cross(v, np.array([1., 0., 0.]))
+            # norm it
+            v /= np.linalg.norm(v, axis=1)[:,None]
+            # store it
+            v0[mask_zero_len] = v
+
+        # 3. case where we are dealing with 3rd eigenvalue
+        else:
+            # create an axis perpendicular to the first 2
+            v = np.cross(T[mask_zero_len,0,:], T[mask_zero_len,1,:])
+            # norm it
+            v /= np.linalg.norm(v, axis=1)[:,None]
+            # store it
+            v0[mask_zero_len] = v
+
+        # store the axis
+        T[mask_nonz,i,:] = v0[mask_nonz,:]
+
+    # create the 3rd axis using a cross product of the two previous ones
+    T[:,2,:] = np.cross(T[:,0,:], T[:,1,:])
+    T[:,2,:] /= np.linalg.norm(T[:,2,:], axis=1)[:,None]
+
+
+    # reorder the principal values and axes back to s1 > s2 > s3
+    principal = np.take_along_axis(principal, amount_idx, axis=1) # for checking
+    T = np.take_along_axis(T, amount_idx[:,:,None], axis=1)
+
+    return orthonormalise(T)
+        \end{python}
+
 
 
 \end{itemize}
