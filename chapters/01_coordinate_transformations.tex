@@ -261,88 +261,98 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}
 
 \subsection{Euler's angles of \textbf{XYZ} rotation}
 
-        With the order of \textit{xyz} rotation the rotation matrix is
-        composed as:
+    With the order of \textit{xyz} rotation the rotation matrix is
+    composed as:
 
-        \begin{equation}
-            \scalebox{0.85}{
-                $ \begin{array}{ll}
-                    \mathbf{T}
-                    &= \mathbf{R}_{z}(\psi)\mathbf{R}_{y}(\theta)\mathbf{R}_{x}(\varphi) \\
-                    &=
-                    \begin{bmatrix}
-                        \cos \psi & \sin \psi & 0 \\
-                        -\sin \psi & \cos \psi & 0 \\
-                        0 & 0 & 1
-                    \end{bmatrix}
-                    \begin{bmatrix}
-                        \cos \theta & 0 & -\sin \theta \\
-                        0 & 1 & 0 \\
-                        \sin \theta & 0 & \cos \theta
-                    \end{bmatrix}
-                    \begin{bmatrix}
-                        1 & 0 & 0 \\
-                        0 & \cos \varphi & \sin \varphi \\
-                        0 & -\sin \varphi & \cos \varphi
-                    \end{bmatrix} \\
-                    &=
-                    \begin{bmatrix}
-                        \cos \theta \cos \psi
-                        & \cos \psi \sin \theta \sin \varphi - \cos \varphi \sin \psi
-                        & \cos \varphi \cos \psi \sin \theta + \sin \varphi \sin \psi \\
-                        \cos \theta \sin \psi
-                        & \cos \varphi \cos \psi + \sin \theta \sin \varphi \sin \psi
-                        & \cos \varphi \sin \theta \sin \psi - \cos \psi \sin \varphi \\
-                        -\sin \theta
-                        & \cos \theta \sin \varphi
-                        & \cos \theta \cos \varphi
-                    \end{bmatrix}
-                \end{array} $
-            }
-        \end{equation}
+    \begin{equation}
+        \scalebox{0.85}{
+            $ \begin{array}{ll}
+                \mathbf{T}
+                &= \mathbf{R}_{z}(\psi)\mathbf{R}_{y}(\theta)\mathbf{R}_{x}(\varphi) \\
+                &=
+                \begin{bmatrix}
+                    \cos \psi & \sin \psi & 0 \\
+                    -\sin \psi & \cos \psi & 0 \\
+                    0 & 0 & 1
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \cos \theta & 0 & -\sin \theta \\
+                    0 & 1 & 0 \\
+                    \sin \theta & 0 & \cos \theta
+                \end{bmatrix}
+                \begin{bmatrix}
+                    1 & 0 & 0 \\
+                    0 & \cos \varphi & \sin \varphi \\
+                    0 & -\sin \varphi & \cos \varphi
+                \end{bmatrix} \\
+                &=
+                \begin{bmatrix}
+                    \cos \theta \cos \psi
+                    & \cos \psi \sin \theta \sin \varphi - \cos \varphi \sin \psi
+                    & \cos \varphi \cos \psi \sin \theta + \sin \varphi \sin \psi \\
+                    \cos \theta \sin \psi
+                    & \cos \varphi \cos \psi + \sin \theta \sin \varphi \sin \psi
+                    & \cos \varphi \sin \theta \sin \psi - \cos \psi \sin \varphi \\
+                    -\sin \theta
+                    & \cos \theta \sin \varphi
+                    & \cos \theta \cos \varphi
+                \end{bmatrix}
+            \end{array} $
+        }
+    \end{equation}
 
-        Then the three \textit{Euler angles} for a \textit{xyz} rotation
-        can be obtained:
+    Then the three \textit{Euler angles} for a \textit{xyz} rotation
+    can be obtained:
 
-        \begin{equation}
-            \varphi = \atantwo(t_{32}, t_{33})
-        ,\end{equation}
+    \begin{equation}
+        \varphi = \atantwo(t_{32}, t_{33})
+    ,\end{equation}
 
-        \begin{equation}
-            \theta = \atantwo \left(-t_{31}, \sqrt{ t_{32}^{2} + t_{33}^{2}} \right)
-        ,\end{equation}
+    \begin{equation}
+        \theta = \atantwo \left(-t_{31}, \sqrt{ t_{32}^{2} + t_{33}^{2}} \right)
+    ,\end{equation}
 
-        \begin{equation}
-            \psi = \atantwo(t_{21}, t_{11})
-        ,\end{equation}
+    \begin{equation}
+        \psi = \atantwo(t_{21}, t_{11})
+    ,\end{equation}
 
-        where $\atantwo(y, x)$ definition is:
+    where $\atantwo(y, x)$ definition is:
 
-        \begin{equation}
-            \atantwo(y, x) = \left\{
-                \begin{array}{ll}
-                    \arctan\left(\frac{y}{x}\right) & if \quad (x > 0),\\
-                    \arctan\left(\frac{y}{x}\right) + \pi & if \quad (x < 0) \land (y \ge 0),\\
-                    \arctan\left(\frac{y}{x}\right) - \pi & if \quad (x < 0) \land  (y < 0),\\
-                    \frac{\pi}{2} & if \quad (x = 0) \land  (y > 0),\\
-                    -\frac{\pi}{2} & if \quad (x = 0) \land  (y < 0),\\
-                    undefined & if \quad (x = 0) \land (y = 0)
-                \end{array}
-            \right\}
-        .\end{equation}
-
-        \textbf{Note} the angle limitation for values returned while doing
-        an Euler angle decomposition of a \textbf{rotation} matrix:
-
-        \begin{equation}
-            \begin{array}{l}
-                \varphi \in (-\pi, \pi) \\
-                \theta \in (-\frac{\pi}{2}, \frac{\pi}{2}) \\
-                \psi \in (-\pi, \pi)
+    \begin{equation}
+        \atantwo(y, x) = \left\{
+            \begin{array}{ll}
+                \arctan\left(\frac{y}{x}\right) & if \quad (x > 0),\\
+                \arctan\left(\frac{y}{x}\right) + \pi & if \quad (x < 0) \land (y \ge 0),\\
+                \arctan\left(\frac{y}{x}\right) - \pi & if \quad (x < 0) \land  (y < 0),\\
+                \frac{\pi}{2} & if \quad (x = 0) \land  (y > 0),\\
+                -\frac{\pi}{2} & if \quad (x = 0) \land  (y < 0),\\
+                undefined & if \quad (x = 0) \land (y = 0)
             \end{array}
-        .\end{equation}
+        \right\}
+    .\end{equation}
 
-        A python implementation with alternative components used to obtain the angles
+    \textbf{Note} the angle limitation for values returned while doing
+    an Euler angle decomposition of a \textbf{rotation} matrix:
+
+    \begin{equation}
+        \begin{array}{l}
+            \varphi \in (-\pi, \pi) \\
+            \theta \in (-\frac{\pi}{2}, \frac{\pi}{2}) \\
+            \psi \in (-\pi, \pi)
+        \end{array}
+    .\end{equation}
+
+    Alternative way to obtain the angles:
+    \begin{equation}
+        \left\{ \begin{array}{l}
+            \varphi = \atantwo(-t_{21}, t_{22}) \\
+            \theta = \asin(t_{20}) \\
+            \psi = \atantwo(-t_{10}, t_{00})
+        \end{array} \right.
+    \end{equation}
+
+    A python implementation with alternative components used to obtain the angles
+
 \begin{python}
 import numpy as np
 
@@ -367,63 +377,74 @@ def EulerXYZ(R: np.ndarray) -> tuple:
 
 \subsection{Euler's angles of \textbf{ZYX} rotation}
 
-        For a rotation defined in \textit{zyx} order the rotation matrix is:
+    For a rotation defined in \textit{zyx} order the rotation matrix is:
 
-        \begin{equation}
-            \scalebox{0.85}{
-                $ \begin{array}{ll}
-                    \mathbf{T}
-                    &= \mathbf{R}_{x}(\varphi)\mathbf{R}_{y}(\theta)\mathbf{R}_{z}(\psi) \\
-                    &=
-                    \begin{bmatrix}
-                        1 & 0 & 0 \\
-                        0 & \cos \varphi & \sin \varphi \\
-                        0 & -\sin \varphi & \cos \varphi
-                    \end{bmatrix}
-                    \begin{bmatrix}
-                        \cos \theta & 0 & -\sin \theta \\
-                        0 & 1 & 0 \\
-                        \sin \theta & 0 & \cos \theta
-                    \end{bmatrix}
-                    \begin{bmatrix}
-                        \cos \psi & \sin \psi & 0 \\
-                        -\sin \psi & \cos \psi & 0 \\
-                        0 & 0 & 1
-                    \end{bmatrix} \\
-                    &=
-                    \begin{bmatrix}
-                        \cos \theta \cos \varphi
-                        & - \cos \theta \sin \varphi
-                        & \sin \varphi \\
-                        \cos \psi \sin \varphi + \cos \varphi \sin \theta \sin \psi
-                        & \cos \varphi \cos \psi - \sin \theta \sin \varphi \sin \psi
-                        & -\cos \theta \sin \psi \\
-                        \sin \varphi \sin \psi - \cos \varphi \cos \psi \sin \theta
-                        & \cos \psi \sin \theta \sin \varphi + \cos \varphi \sin \psi
-                        & \cos \theta \cos \psi
-                    \end{bmatrix}
-                \end{array} $
-            }
-        .\end{equation}
+    \begin{equation}
+        \scalebox{0.85}{
+            $ \begin{array}{ll}
+                \mathbf{T}
+                &= \mathbf{R}_{x}(\varphi)\mathbf{R}_{y}(\theta)\mathbf{R}_{z}(\psi) \\
+                &=
+                \begin{bmatrix}
+                    1 & 0 & 0 \\
+                    0 & \cos \varphi & \sin \varphi \\
+                    0 & -\sin \varphi & \cos \varphi
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \cos \theta & 0 & -\sin \theta \\
+                    0 & 1 & 0 \\
+                    \sin \theta & 0 & \cos \theta
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \cos \psi & \sin \psi & 0 \\
+                    -\sin \psi & \cos \psi & 0 \\
+                    0 & 0 & 1
+                \end{bmatrix} \\
+                &=
+                \begin{bmatrix}
+                    \cos \theta \cos \varphi
+                    & - \cos \theta \sin \varphi
+                    & \sin \varphi \\
+                    \cos \psi \sin \varphi + \cos \varphi \sin \theta \sin \psi
+                    & \cos \varphi \cos \psi - \sin \theta \sin \varphi \sin \psi
+                    & -\cos \theta \sin \psi \\
+                    \sin \varphi \sin \psi - \cos \varphi \cos \psi \sin \theta
+                    & \cos \psi \sin \theta \sin \varphi + \cos \varphi \sin \psi
+                    & \cos \theta \cos \psi
+                \end{bmatrix}
+            \end{array} $
+        }
+    .\end{equation}
 
-        \textbf{Note that the angles $\varphi$, $\theta$ and $\psi$ defined here are
-        different from the \textit{XYZ} rotation defined above!} The rotation
-        is performed by first rotating around \textit{z-axis} counterclockwise
-        by an angle $\psi$, then around \textit{y-axis} counterclockwise
-        by an angle $\theta$ and finaly around \textit{x-axis}, counterclockwise,
-        by an angle $\varphi$.
+    \textbf{Note that the angles $\varphi$, $\theta$ and $\psi$ defined here are
+    different from the \textit{XYZ} rotation defined above!} The rotation
+    is performed by first rotating around \textit{z-axis} counterclockwise
+    by an angle $\psi$, then around \textit{y-axis} counterclockwise
+    by an angle $\theta$ and finaly around \textit{x-axis}, counterclockwise,
+    by an angle $\varphi$.
 
-        Then the \textit{Euler's angles} can be obtained as:
+    Then the \textit{Euler's angles} can be obtained as:
 
-        \begin{equation}
-            \left\{ \begin{array}{l}
-                \varphi = \arctan \left( \frac{-t_{12}}{t_{11}} \right)\\
-                \theta = \arcsin \left( t_{13} \right) \\
-                \psi = \arctan \left( \frac{-t_{23}}{t_{33}} \right)
-            \end{array} \right.
-        .\end{equation}
+    \begin{equation}
+        \left\{ \begin{array}{l}
+            \varphi = \arctan \left( \frac{-t_{12}}{t_{11}} \right)\\
+            \theta = \arcsin \left( t_{13} \right) \\
+            \psi = \arctan \left( \frac{-t_{23}}{t_{33}} \right)
+        \end{array} \right.
+    .\end{equation}
 
-        A python implementation with alternative components used to obtain the angles
+    Alternative way to obtain the angles:
+
+    \begin{equation}
+        \left\{ \begin{array}{l}
+            \varphi = \atantwo(t_{12}, t_{22}) \\
+            \theta = \asin(-t_{02}) \\
+            \psi = \atantwo(t_{01}, t_{00})
+        \end{array} \right.
+    \end{equation}
+
+    A python implementation with alternative components used to obtain the angles
+
 \begin{python}
 import numpy as np
 
@@ -448,46 +469,57 @@ def EulerZYX(R: np.ndarray) -> tuple:
 
 \subsection{Euler's angles of \textbf{XZY} rotation}
 
-        For a rotation defined in \textit{xzy} order the rotation matrix is:
+    For a rotation defined in \textit{xzy} order the rotation matrix is:
 
-        \begin{equation}
-            \scalebox{0.85}{
-                $ \begin{array}{ll}
-                    \mathbf{T}
-                    &= \mathbf{R}_{x}(\varphi)\mathbf{R}_{z}(\psi)\mathbf{R}_{y}(\theta) \\
-                    &=
-                    \begin{bmatrix}
-                        1 & 0 & 0 \\
-                        0 & \cos \varphi & \sin \varphi \\
-                        0 & -\sin \varphi & \cos \varphi
-                    \end{bmatrix}
-                    \begin{bmatrix}
-                        \cos \psi & \sin \psi & 0 \\
-                        -\sin \psi & \cos \psi & 0 \\
-                        0 & 0 & 1
-                    \end{bmatrix}
-                    \begin{bmatrix}
-                        \cos \theta & 0 & -\sin \theta \\
-                        0 & 1 & 0 \\
-                        \sin \theta & 0 & \cos \theta
-                    \end{bmatrix} \\
-                    &=
-                    \begin{bmatrix}
-                        \cos \theta \cos \psi
-                        &  \sin \varphi \sin \theta + \cos \varphi \cos \theta \sin \psi
-                        & -\cos \varphi \sin \theta + \cos \theta \sin \varphi \sin \psi \\
-                        -\sin \psi
-                        & \cos \varphi \cos \psi
-                        & \cos \psi \sin \varphi \\
-                        \cos \psi \sin \theta
-                        & -\cos \theta \sin \varphi + \cos \varphi \sin \theta \sin \psi
-                        & \cos \varphi \cos \theta + \sin \varphi \sin \theta \sin \psi
-                    \end{bmatrix}
-                \end{array} $
-            }
-        .\end{equation}
+    \begin{equation}
+        \scalebox{0.85}{
+            $ \begin{array}{ll}
+                \mathbf{T}
+                &= \mathbf{R}_{x}(\varphi)\mathbf{R}_{z}(\psi)\mathbf{R}_{y}(\theta) \\
+                &=
+                \begin{bmatrix}
+                    1 & 0 & 0 \\
+                    0 & \cos \varphi & \sin \varphi \\
+                    0 & -\sin \varphi & \cos \varphi
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \cos \psi & \sin \psi & 0 \\
+                    -\sin \psi & \cos \psi & 0 \\
+                    0 & 0 & 1
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \cos \theta & 0 & -\sin \theta \\
+                    0 & 1 & 0 \\
+                    \sin \theta & 0 & \cos \theta
+                \end{bmatrix} \\
+                &=
+                \begin{bmatrix}
+                    \cos \theta \cos \psi
+                    &  \sin \varphi \sin \theta + \cos \varphi \cos \theta \sin \psi
+                    & -\cos \varphi \sin \theta + \cos \theta \sin \varphi \sin \psi \\
+                    -\sin \psi
+                    & \cos \varphi \cos \psi
+                    & \cos \psi \sin \varphi \\
+                    \cos \psi \sin \theta
+                    & -\cos \theta \sin \varphi + \cos \varphi \sin \theta \sin \psi
+                    & \cos \varphi \cos \theta + \sin \varphi \sin \theta \sin \psi
+                \end{bmatrix}
+            \end{array} $
+        }
+    .\end{equation}
 
-        A python implementation used to obtain the angles
+    The the angles are:
+
+    \begin{equation}
+        \left\{ \begin{array}{l}
+            \varphi = \atantwo(t_{12}, t_{11}) \\
+            \theta = \atantwo(t_{20}, t_{00}) \\
+            \psi = \asin(-t_{10})
+        \end{array} \right.
+    \end{equation}
+
+    A python implementation used to obtain the angles
+
 \begin{python}
 import numpy as np
 
@@ -512,7 +544,57 @@ def EulerXZY(R: np.ndarray) -> tuple:
 
 \subsection{Euler's angles of \textbf{ZXY} rotation}
 
-        As the derivation of equations is analogous, only the example of algorithm:
+    For a rotation defined in \textit{zxy} order the rotation matrix is:
+
+    \begin{equation}
+        \scalebox{0.85}{
+            $ \begin{array}{ll}
+                \mathbf{T}
+                &= \mathbf{R}_{z}(\psi)\mathbf{R}_{x}(\varphi)\mathbf{R}_{y}(\theta) \\
+                &=
+                \begin{bmatrix}
+                    \cos \psi & \sin \psi & 0 \\
+                    -\sin \psi & \cos \psi & 0 \\
+                    0 & 0 & 1
+                \end{bmatrix}
+                \begin{bmatrix}
+                    1 & 0 & 0 \\
+                    0 & \cos \varphi & \sin \varphi \\
+                    0 & -\sin \varphi & \cos \varphi
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \cos \theta & 0 & -\sin \theta \\
+                    0 & 1 & 0 \\
+                    \sin \theta & 0 & \cos \theta
+                \end{bmatrix} \\
+                &=
+                \begin{bmatrix}
+                    \cos \theta \cos \psi - \sin \varphi \sin \theta \sin \psi
+                    &  \cos \psi \sin \varphi \sin \theta + \cos \theta \sin \psi
+                    & -\cos \varphi \sin \theta \\
+                    -\cos \varphi \sin \psi
+                    & \cos \varphi \cos \psi
+                    & \sin \varphi \\
+                    \cos \psi \sin \theta + \cos \theta \sin \varphi \sin \psi
+                    & -\cos \theta \cos \psi \sin \theta + \sin \theta \sin \psi
+                    & \cos \varphi \cos \theta
+                \end{bmatrix}
+            \end{array} $
+        }
+    .\end{equation}
+
+    The the angles are:
+
+    \begin{equation}
+        \left\{ \begin{array}{l}
+            \varphi = \atantwo(t_{12}, t_{11}) \\
+            \theta = \atantwo(t_{20}, t_{00}) \\
+            \psi = \asin(-t_{10})
+        \end{array} \right.
+    \end{equation}
+
+    Python example of algorithm:
+
 \begin{python}
 import numpy as np
 
@@ -536,7 +618,59 @@ def EulerZXY(R: np.ndarray) -> tuple:
 
 \subsection{Euler's angles of \textbf{YXZ} rotation}
 
+    For a rotation defined in \textit{yxz} order the rotation matrix is:
+
+    \begin{equation}
+        \scalebox{0.85}{
+            $ \begin{array}{ll}
+                \mathbf{T}
+                &= \mathbf{R}_{y}(\theta)\mathbf{R}_{x}(\varphi)\mathbf{R}_{z}(\psi) \\
+                &=
+                \begin{bmatrix}
+                    \cos \theta & 0 & -\sin \theta \\
+                    0 & 1 & 0 \\
+                    \sin \theta & 0 & \cos \theta
+                \end{bmatrix}
+                \begin{bmatrix}
+                    1 & 0 & 0 \\
+                    0 & \cos \varphi & \sin \varphi \\
+                    0 & -\sin \varphi & \cos \varphi
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \cos \psi & \sin \psi & 0 \\
+                    -\sin \psi & \cos \psi & 0 \\
+                    0 & 0 & 1
+                \end{bmatrix} \\
+                &=
+                \begin{bmatrix}
+                    \cos \theta \cos \psi + \sin \varphi \sin \theta \sin \psi
+                    &  \cos \varphi \sin \psi
+                    & -\cos \psi \sin \theta + \cos \theta \sin \varphi \sin \psi \\
+                    \cos \psi \sin \varphi \sin \theta - \cos \theta \sin \psi
+                    & \cos \varphi \cos \psi
+                    & \cos \theta \cos \psi \sin \varphi + \sin \theta \sin \psi \\
+                    \cos \varphi \sin \theta
+                    & -\sin \varphi
+                    & \cos \varphi \cos \theta
+                \end{bmatrix}
+            \end{array} $
+        }
+    .\end{equation}
+
+    The the angles are:
+
+    \begin{equation}
+        \left\{ \begin{array}{l}
+            \varphi = \asin(-t_{21}) \\
+            \theta = \atantwo(t_{20}, t_{22}) \\
+            \psi = \atantwo(t_{01}, t_{11})
+        \end{array} \right.
+    \end{equation}
+
+    Python example of algorithm:
+
 \begin{python}
+
 import numpy as np
 
 def EulerYXZ(R: np.ndarray) -> tuple:
@@ -558,6 +692,57 @@ def EulerYXZ(R: np.ndarray) -> tuple:
 \end{python}
 
 \subsection{Euler's angles of \textbf{YZX} rotation}
+
+    For a rotation defined in \textit{yzx} order the rotation matrix is:
+
+    \begin{equation}
+        \scalebox{0.85}{
+            $ \begin{array}{ll}
+                \mathbf{T}
+                &= \mathbf{R}_{y}(\theta)\mathbf{R}_{x}(\varphi)\mathbf{R}_{z}(\psi) \\
+                &=
+                \begin{bmatrix}
+                    \cos \theta & 0 & -\sin \theta \\
+                    0 & 1 & 0 \\
+                    \sin \theta & 0 & \cos \theta
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \cos \psi & \sin \psi & 0 \\
+                    -\sin \psi & \cos \psi & 0 \\
+                    0 & 0 & 1
+                \end{bmatrix}
+                \begin{bmatrix}
+                    1 & 0 & 0 \\
+                    0 & \cos \varphi & \sin \varphi \\
+                    0 & -\sin \varphi & \cos \varphi
+                \end{bmatrix} \\
+                &=
+                \begin{bmatrix}
+                    \cos \theta \cos \psi
+                    &  \sin \psi
+                    & -\cos \psi \sin \theta \\
+                    \sin \varphi \sin \theta - \cos \varphi \cos \theta \sin \psi
+                    & \cos \varphi \cos \psi
+                    & \cos \theta \sin \varphi + \cos \varphi \sin \theta \sin \psi \\
+                    \cos \varphi \sin \theta + \cos \theta \sin \varphi \sin \psi
+                    & -\cos \psi \sin \varphi
+                    & \cos \varphi \cos \theta - \sin \varphi \sin \theta \sin \psi
+                \end{bmatrix}
+            \end{array} $
+        }
+    .\end{equation}
+
+    The the angles are:
+
+    \begin{equation}
+        \left\{ \begin{array}{l}
+            \varphi = \atantwo(-t_{12}, t_{11}) \\
+            \theta = \atantwo(-t_{02}, t_{00}) \\
+            \psi = \asin(t_{01})
+        \end{array} \right.
+    \end{equation}
+
+    Python example of algorithm:
 
 \begin{python}
 import numpy as np
@@ -582,6 +767,57 @@ def EulerYZX(R: np.ndarray) -> tuple:
 
 \subsection{Euler's angles of \textbf{XYX} rotation}
 
+    For a rotation defined in \textit{xyx} order the rotation matrix is:
+
+    \begin{equation}
+        \scalebox{0.85}{
+            $ \begin{array}{ll}
+                \mathbf{T}
+                &= \mathbf{R}_{x}(\varphi_1)\mathbf{R}_{y}(\theta)\mathbf{R}_{x}(\varphi_0) \\
+                &=
+                \begin{bmatrix}
+                    1 & 0 & 0 \\
+                    0 & \cos \varphi_1 & \sin \varphi_1 \\
+                    0 & -\sin \varphi_1 & \cos \varphi_1
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \cos \psi & \sin \psi & 0 \\
+                    -\sin \psi & \cos \psi & 0 \\
+                    0 & 0 & 1
+                \end{bmatrix}
+                \begin{bmatrix}
+                    1 & 0 & 0 \\
+                    0 & \cos \varphi_0 & \sin \varphi_0 \\
+                    0 & -\sin \varphi_0 & \cos \varphi_0
+                \end{bmatrix} \\
+                &=
+                \begin{bmatrix}
+                    \cos \psi
+                    &  \sin \psi \cos \varphi_1
+                    & \sin \psi \sin \varphi_1 \\
+                    -\sin \psi \cos \varphi_0
+                    & \cos \psi \cos \varphi_0 \cos \varphi_1 - \sin \varphi_0 \sin \varphi_1
+                    & \cos \psi \cos \varphi_0 \sin \varphi_1 + \cos \varphi_1 \sin \varphi_0 \\
+                    \sin \psi \sin \varphi_0
+                    & -\cos \varphi_0 \sin \varphi_1 - \cos \psi \cos \varphi_1 \sin \varphi_0
+                    & \cos \varphi_0 \cos \varphi_1 - \cos \psi \sin \varphi_0 \sin \varphi_1
+                \end{bmatrix}
+            \end{array} $
+        }
+    .\end{equation}
+
+    The the angles are:
+
+    \begin{equation}
+        \left\{ \begin{array}{l}
+            \varphi_0 = \atantwo(t_{02}, -t_{10}) \\
+            \psi = \acos(t_{00}) \\
+            \varphi_1 = \atantwo(t_{02}, t_{01})
+        \end{array} \right.
+    \end{equation}
+
+    Python example of algorithm:
+
 \begin{python}
 import numpy as np
 
@@ -604,6 +840,57 @@ def EulerXYX(R: np.ndarray) -> tuple:
 \end{python}
 
 \subsection{Euler's angles of \textbf{XZX} rotation}
+
+    For a rotation defined in \textit{xzx} order the rotation matrix is:
+
+    \begin{equation}
+        \scalebox{0.85}{
+            $ \begin{array}{ll}
+                \mathbf{T}
+                &= \mathbf{R}_{x}(\varphi_1)\mathbf{R}_{z}(\psi)\mathbf{R}_{x}(\varphi_0) \\
+                &=
+                \begin{bmatrix}
+                    1 & 0 & 0 \\
+                    0 & \cos \varphi_1 & \sin \varphi_1 \\
+                    0 & -\sin \varphi_1 & \cos \varphi_1
+                \end{bmatrix}
+                \begin{bmatrix}
+                    \cos \theta & 0 & -\sin \theta \\
+                    0 & 1 & 0 \\
+                    \sin \theta & 0 & \cos \theta
+                \end{bmatrix}
+                \begin{bmatrix}
+                    1 & 0 & 0 \\
+                    0 & \cos \varphi_0 & \sin \varphi_0 \\
+                    0 & -\sin \varphi_0 & \cos \varphi_0
+                \end{bmatrix} \\
+                &=
+                \begin{bmatrix}
+                    \cos \theta
+                    &  \sin \theta \sin \varphi_1
+                    & -\sin \theta \cos \varphi_1 \\
+                    \sin \theta \sin \varphi_0
+                    & \cos \varphi_0 \cos \varphi_1 - \cos \theta \sin \varphi_0 \sin \varphi_1
+                    & \cos \varphi_0 \sin \varphi_1 + \cos \theta \cos \varphi_1 \sin \varphi_0 \\
+                    \sin \theta \cos \varphi_0
+                    & -\cos \theta \cos \varphi_0 \sin \varphi_1 - \cos \varphi_1 \sin \varphi_0
+                    & \cos \theta \cos \varphi_0 \cos \varphi_1 - \sin \varphi_0 \sin \varphi_1
+                \end{bmatrix}
+            \end{array} $
+        }
+    .\end{equation}
+
+    The the angles are:
+
+    \begin{equation}
+        \left\{ \begin{array}{l}
+            \varphi_0 = \atantwo(t_{10}, t_{20}) \\
+            \theta = \acos(t_{00}) \\
+            \varphi_1 = \atantwo(t_{01}, -t_{02})
+        \end{array} \right.
+    \end{equation}
+
+    Python example of algorithm:
 
 \begin{python}
 import numpy as np
