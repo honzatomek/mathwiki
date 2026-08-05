@@ -2265,7 +2265,7 @@ we get:
     we may use equations:
 
     \begin{eqarray}
-            \beta_1 &= \frac{\sum_{i=1}^n x_i y_i - n \bar{x} \bar{y}}
+        \beta_1 &= \frac{\sum_{i=1}^n x_i y_i - n \bar{x} \bar{y}}
                         {\sum_{i=1}^n x_i^2 - n \bar{x}^2} \\
         \beta_0 &= \bar{y} - \beta_1 \bar{x}
     \end{eqarray}
@@ -2279,6 +2279,1442 @@ we get:
 
 
 \section{Interpolation and Mapping of Values}
+
+Values often have to be transferred from one set of points or one mesh to
+another. Examples are the transfer of pressure from a fluid mesh to a
+structural mesh, the evaluation of measured data at finite element nodes, the
+mapping of temperatures between analyses and the comparison of results from
+two different discretisations.
+
+Let the source data be known at positions $ \m{x}_i $:
+
+\begin{equation}
+    u_i = u(\m{x}_i), \qquad i=1,\dots,n_s
+\end{equation}
+
+and let $ \m{x} $ be a target position. The mapping operation constructs an
+estimate:
+
+\begin{equation}
+    \widehat{u}(\m{x})
+\end{equation}
+
+from the available source values. In many methods this estimate is a weighted
+sum:
+
+\begin{equation}
+    \widehat{u}(\m{x}) = \sum_{i=1}^{n_s} w_i(\m{x}) u_i
+\end{equation}
+
+with weights that depend on the geometry and on the selected interpolation
+method.
+
+A useful first requirement is the reproduction of a constant field. If all
+source values are equal to $ c $, the mapped value should also be $ c $. This
+is obtained when:
+
+\begin{equation}
+    \sum_{i=1}^{n_s} w_i(\m{x}) = 1
+\end{equation}
+
+A stronger requirement is the reproduction of a linear field. If:
+
+\begin{equation}
+    u(\m{x}) = a_0 + \m{a}^T\m{x}
+\end{equation}
+
+then an exactly linearly consistent interpolation should satisfy:
+
+\begin{eqarray}
+    \sum_i w_i(\m{x}) &= 1 \\
+    \sum_i w_i(\m{x})\m{x}_i &= \m{x}
+\end{eqarray}
+
+The first equation reproduces the constant part and the second equation
+reproduces the linear part.
+
+\subsection{Interpolation, Approximation and Extrapolation}
+
+The words interpolation, approximation and extrapolation describe different
+situations:
+
+\begin{itemize}
+    \item \textbf{Interpolation} evaluates a field between known values. An
+          interpolating method normally reproduces the source values exactly.
+    \item \textbf{Approximation} constructs a smooth or otherwise restricted
+          field that need not pass through every source value. This is useful
+          when the data contain noise.
+    \item \textbf{Extrapolation} evaluates the field outside the region covered
+          by the source data. The farther the target lies outside this region,
+          the less information is available to determine the value.
+\end{itemize}
+
+For a point cloud, the natural interpolation region is usually its convex
+hull. For a finite element mesh, it is the union of the source elements.
+Inside this region, surrounding source values constrain the estimate from
+several directions. Outside it, all source points may lie on one side of the
+target and the result depends more strongly on assumptions made by the method.
+
+A second distinction concerns what the mapping should preserve. Pointwise
+mapping attempts to reproduce the value at each target point. Conservative
+mapping instead preserves an integral quantity such as total force, heat,
+mass or flux. The two objectives are not generally equivalent.
+
+\subsection{Nearest-Neighbour Mapping}
+
+The simplest mapping assigns the value of the closest source point. Let:
+
+\begin{equation}
+    j = \arg\min_i \norm{\m{x}-\m{x}_i}
+\end{equation}
+
+then:
+
+\begin{equation}
+    \widehat{u}(\m{x}) = u_j
+\end{equation}
+
+The method is piecewise constant. Space is divided into Voronoi cells and every
+target point in one cell receives the value of the source point belonging to
+that cell.
+
+Nearest-neighbour mapping is suitable for discrete quantities such as material
+numbers, region identifiers and contact status. It does not create values that
+were absent from the source data and therefore cannot overshoot. For a smooth
+physical field, however, it produces jumps at the Voronoi boundaries and only
+first-order geometric accuracy.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def Nearest_Neighbour(source_points: np.ndarray,
+                      source_values: np.ndarray,
+                      target_points: np.ndarray) -> np.ndarray:
+    """Map values from source points to target points by nearest neighbour."""
+    source_points = np.asarray(source_points, dtype=float)
+    source_values = np.asarray(source_values)
+    target_points = np.asarray(target_points, dtype=float)
+
+    if source_points.ndim != 2 or target_points.ndim != 2:
+        raise ValueError("Point arrays must have shape (number, dimension).")
+    if source_points.shape[0] != source_values.shape[0]:
+        raise ValueError("Each source point must have one source value.")
+    if source_points.shape[1] != target_points.shape[1]:
+        raise ValueError("Source and target dimensions must agree.")
+
+    result_shape = (target_points.shape[0],) + source_values.shape[1:]
+    result = np.empty(result_shape, dtype=source_values.dtype)
+
+    for t, point in enumerate(target_points):
+        best_index = 0
+        best_distance_squared = float("inf")
+
+        for i, source_point in enumerate(source_points):
+            difference = point - source_point
+            distance_squared = np.dot(difference, difference)
+            if distance_squared < best_distance_squared:
+                best_distance_squared = distance_squared
+                best_index = i
+
+        result[t] = source_values[best_index]
+
+    return result
+
+
+source_points = np.array([[0.0], [1.0], [2.0]])
+source_values = np.array([0.0, 10.0, 20.0])
+target_points = np.array([[0.2], [0.8], [1.6]])
+
+mapped = Nearest_Neighbour(source_points, source_values, target_points)
+print(mapped)  # [ 0. 10. 20.]
+\end{python}
+
+A direct search compares every target point with every source point and costs
+$ \mathcal{O}(n_s n_t) $. For large point clouds the same rule is normally
+accelerated by a spatial search structure such as a uniform grid, a $k$-d tree
+or a bounding volume hierarchy.
+
+\subsection{Inverse-Distance Weighting}
+
+Nearest-neighbour mapping uses only one source value. A smoother estimate is
+obtained when several nearby points contribute with weights that decrease with
+distance. For inverse-distance weighting:
+
+\begin{equation}
+    \widetilde{w}_i(\m{x}) =
+    \frac{1}{\left(\norm{\m{x}-\m{x}_i}+\epsilon\right)^p}
+\end{equation}
+
+and the normalized weights are:
+
+\begin{equation}
+    w_i(\m{x}) =
+    \frac{\widetilde{w}_i(\m{x})}
+         {\sum_j \widetilde{w}_j(\m{x})}
+\end{equation}
+
+so that:
+
+\begin{equation}
+    \widehat{u}(\m{x}) =
+    \frac{\sum_i \widetilde{w}_i(\m{x}) u_i}
+         {\sum_i \widetilde{w}_i(\m{x})}
+\end{equation}
+
+The exponent $ p $ controls how local the interpolation is. A larger exponent
+gives more importance to the nearest points. The value $ p=2 $ is common, but
+it is not universally optimal.
+
+If the target coincides with a source point, its value should be returned
+exactly instead of relying on the regularisation $ \epsilon $. In practice the
+sum is also restricted to the $ k $ nearest points or to a radius of influence.
+This reduces cost and prevents distant data from affecting a local estimate.
+
+Inverse-distance weighting reproduces constant fields because its normalized
+weights sum to one. It does not generally reproduce linear fields exactly. It
+is also sensitive to nonuniform point density: a dense cluster can receive a
+large total weight merely because it contains many points.
+
+Python implementation using the $ k $ nearest source points:
+
+\begin{python}
+import numpy as np
+
+
+def Inverse_Distance_Weighting(source_points: np.ndarray,
+                               source_values: np.ndarray,
+                               target_points: np.ndarray,
+                               power: float = 2.0,
+                               neighbours: int | None = None,
+                               tolerance: float = 1.0e-12) -> np.ndarray:
+    """Map scalar or component-wise values by inverse-distance weighting."""
+    source_points = np.asarray(source_points, dtype=float)
+    source_values = np.asarray(source_values, dtype=float)
+    target_points = np.asarray(target_points, dtype=float)
+
+    if source_points.shape[0] != source_values.shape[0]:
+        raise ValueError("Each source point must have one source value.")
+    if power <= 0.0:
+        raise ValueError("The distance exponent must be positive.")
+
+    n_source = source_points.shape[0]
+    if neighbours is None:
+        neighbours = n_source
+    neighbours = max(1, min(int(neighbours), n_source))
+
+    result_shape = (target_points.shape[0],) + source_values.shape[1:]
+    result = np.empty(result_shape, dtype=float)
+
+    for t, point in enumerate(target_points):
+        difference = source_points - point
+        distance_squared = np.sum(difference * difference, axis=1)
+        closest = int(np.argmin(distance_squared))
+
+        if distance_squared[closest] <= tolerance * tolerance:
+            result[t] = source_values[closest]
+            continue
+
+        indices = np.argsort(distance_squared)[:neighbours]
+        distances = np.sqrt(distance_squared[indices])
+        weights = 1.0 / distances**power
+        weights /= np.sum(weights)
+
+        values = source_values[indices]
+        result[t] = np.tensordot(weights, values, axes=(0, 0))
+
+    return result
+
+
+source_points = np.array([[0.0], [1.0], [2.0]])
+source_values = np.array([0.0, 1.0, 4.0])
+target_points = np.array([[0.5], [1.5]])
+
+mapped = Inverse_Distance_Weighting(
+    source_points,
+    source_values,
+    target_points,
+    power=2.0,
+    neighbours=2,
+)
+print(mapped)
+\end{python}
+
+\subsection{One-Dimensional Interpolation}
+
+When the source coordinates are ordered along one axis, the interval containing
+the target can be found directly. Let:
+
+\begin{equation}
+    x_i \leq x \leq x_{i+1}
+\end{equation}
+
+and define the local coordinate:
+
+\begin{equation}
+    \xi = \frac{x-x_i}{x_{i+1}-x_i}
+\end{equation}
+
+For a target inside the interval, $ 0\leq\xi\leq1 $. Piecewise linear
+interpolation is:
+
+\begin{equation}
+    \widehat{u}(x) = (1-\xi)u_i + \xi u_{i+1}
+\end{equation}
+
+The interpolation is continuous, reproduces every source value and reproduces
+linear functions exactly. Its derivative is constant within each interval and
+may jump at a source point.
+
+If the same equation is evaluated with $ \xi<0 $ or $ \xi>1 $, it becomes
+linear extrapolation. This preserves the slope of the first or last interval,
+but the magnitude can grow without bound as the target moves away from the
+known data.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def Piecewise_Linear_Interpolation(x_source: np.ndarray,
+                                   u_source: np.ndarray,
+                                   x_target: np.ndarray,
+                                   extrapolation: str = "linear") -> np.ndarray:
+    """Interpolate ordered one-dimensional data component by component."""
+    x_source = np.asarray(x_source, dtype=float)
+    u_source = np.asarray(u_source, dtype=float)
+    x_target = np.asarray(x_target, dtype=float)
+
+    if x_source.ndim != 1 or x_source.size < 2:
+        raise ValueError("At least two one-dimensional source coordinates are required.")
+    if u_source.shape[0] != x_source.size:
+        raise ValueError("Each source coordinate must have one source value.")
+    if np.any(x_source[1:] <= x_source[:-1]):
+        raise ValueError("Source coordinates must be strictly increasing.")
+    if extrapolation not in ("linear", "constant", "error"):
+        raise ValueError("Unknown extrapolation rule.")
+
+    result_shape = x_target.shape + u_source.shape[1:]
+    result = np.empty(result_shape, dtype=float)
+
+    flat_target = x_target.reshape(-1)
+    flat_result = result.reshape((flat_target.size,) + u_source.shape[1:])
+
+    for j, x in enumerate(flat_target):
+        if x < x_source[0]:
+            if extrapolation == "error":
+                raise ValueError("Target lies below the source interval.")
+            if extrapolation == "constant":
+                flat_result[j] = u_source[0]
+                continue
+            i = 0
+        elif x > x_source[-1]:
+            if extrapolation == "error":
+                raise ValueError("Target lies above the source interval.")
+            if extrapolation == "constant":
+                flat_result[j] = u_source[-1]
+                continue
+            i = x_source.size - 2
+        else:
+            i = int(np.searchsorted(x_source, x, side="right") - 1)
+            i = min(max(i, 0), x_source.size - 2)
+
+        xi = (x - x_source[i]) / (x_source[i + 1] - x_source[i])
+        flat_result[j] = (1.0 - xi) * u_source[i] + xi * u_source[i + 1]
+
+    return result
+
+
+x_source = np.array([0.0, 1.0, 3.0])
+u_source = np.array([0.0, 2.0, 4.0])
+x_target = np.array([-0.5, 0.5, 2.0, 4.0])
+
+print(Piecewise_Linear_Interpolation(
+    x_source,
+    u_source,
+    x_target,
+    extrapolation="linear",
+))
+\end{python}
+
+Higher-order interpolation uses more than two neighbouring points. A global
+polynomial through $ n $ points may oscillate strongly, especially near the
+ends of a long interval. Piecewise polynomials avoid this problem.
+
+A cubic spline is piecewise cubic and usually enforces continuity of the first
+and second derivatives. It is smooth, but it can overshoot between monotone
+source values. For constitutive curves and other data that must remain
+monotone, a monotone cubic Hermite method is often safer. Akima interpolation
+is another local cubic construction that reduces oscillation near abrupt
+changes of slope.
+
+\subsection{Interpolation on Structured Grids}
+
+For a Cartesian grid, interpolation may be performed successively along each
+coordinate. In a rectangular cell define:
+
+\begin{eqarray}
+    \xi &= \frac{x-x_0}{x_1-x_0} \\
+    \eta &= \frac{y-y_0}{y_1-y_0}
+\end{eqarray}
+
+The four bilinear shape functions are:
+
+\begin{eqarray}
+    N_{00} &= (1-\xi)(1-\eta) \\
+    N_{10} &= \xi(1-\eta) \\
+    N_{11} &= \xi\eta \\
+    N_{01} &= (1-\xi)\eta
+\end{eqarray}
+
+and:
+
+\begin{equation}
+    \widehat{u}(\xi,\eta) =
+    N_{00}u_{00}+N_{10}u_{10}+N_{11}u_{11}+N_{01}u_{01}
+\end{equation}
+
+Bilinear interpolation reproduces functions of the form:
+
+\begin{equation}
+    u(x,y) = a_0+a_1x+a_2y+a_3xy
+\end{equation}
+
+within an axis-aligned rectangular cell. It is linear along every line parallel
+to one coordinate axis, but it is not generally linear along an arbitrary
+diagonal.
+
+For a three-dimensional rectangular cell, trilinear interpolation uses eight
+corner values:
+
+\begin{equation}
+    \widehat{u}(\xi,\eta,\zeta) =
+    \sum_{i=0}^{1}\sum_{j=0}^{1}\sum_{k=0}^{1}
+    N_i(\xi)N_j(\eta)N_k(\zeta)u_{ijk}
+\end{equation}
+
+where:
+
+\begin{equation}
+    N_0(s)=1-s, \qquad N_1(s)=s
+\end{equation}
+
+The same tensor-product idea extends to bicubic and tricubic interpolation,
+where values and derivatives from neighbouring grid points are used to obtain
+a smoother field.
+
+\subsection{Interpolation on Finite Elements}
+
+A source finite element mesh already defines an interpolation field. The
+mapping problem therefore consists of two steps:
+
+\begin{enumerate}
+    \item find the source element containing the target point,
+    \item evaluate the source element shape functions at that point.
+\end{enumerate}
+
+The element search can dominate the total cost. Testing every target against
+every source element is rarely acceptable for large meshes. Bounding boxes,
+uniform spatial bins, octrees and bounding volume hierarchies are commonly used
+to create a short list of candidate elements.
+
+\subsubsection{Barycentric Coordinates in a Triangle}
+
+For a triangle with nodes $ \m{x}_1 $, $ \m{x}_2 $ and $ \m{x}_3 $, the target
+point is written as:
+
+\begin{equation}
+    \m{x} = \lambda_1\m{x}_1+\lambda_2\m{x}_2+\lambda_3\m{x}_3
+\end{equation}
+
+with:
+
+\begin{equation}
+    \lambda_1+\lambda_2+\lambda_3=1
+\end{equation}
+
+The barycentric coordinates are also the linear triangle shape functions. The
+mapped value is:
+
+\begin{equation}
+    \widehat{u}(\m{x}) = \lambda_1u_1+\lambda_2u_2+\lambda_3u_3
+\end{equation}
+
+The point lies inside or on the triangle when:
+
+\begin{equation}
+    0\leq\lambda_i\leq1
+\end{equation}
+
+apart from a numerical tolerance. If one coordinate is negative, the point lies
+outside the edge opposite that node. Evaluating the same equation still gives
+an affine extrapolation.
+
+For coordinates $ \m{x}_i=[x_i,y_i]^T $, solve:
+
+\begin{equation}
+    \begin{bmatrix}
+        x_1 & x_2 & x_3 \\
+        y_1 & y_2 & y_3 \\
+        1   & 1   & 1
+    \end{bmatrix}
+    \begin{bmatrix}
+        \lambda_1 \\
+        \lambda_2 \\
+        \lambda_3
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        x \\
+        y \\
+        1
+    \end{bmatrix}
+\end{equation}
+
+For a triangle it is convenient to evaluate the closed-form determinant
+expressions directly.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def Triangle_Barycentric_Coordinates(vertices: np.ndarray,
+                                     point: np.ndarray,
+                                     tolerance: float = 1.0e-14) -> np.ndarray:
+    """Return the three barycentric coordinates of a two-dimensional point."""
+    vertices = np.asarray(vertices, dtype=float)
+    point = np.asarray(point, dtype=float)
+
+    if vertices.shape != (3, 2) or point.shape != (2,):
+        raise ValueError("Expected three 2D vertices and one 2D point.")
+
+    x1, y1 = vertices[0]
+    x2, y2 = vertices[1]
+    x3, y3 = vertices[2]
+    x, y = point
+
+    denominator = (y2 - y3) * (x1 - x3) + (x3 - x2) * (y1 - y3)
+    if abs(denominator) <= tolerance:
+        raise ValueError("The triangle is degenerate.")
+
+    lambda_1 = ((y2 - y3) * (x - x3)
+                + (x3 - x2) * (y - y3)) / denominator
+    lambda_2 = ((y3 - y1) * (x - x3)
+                + (x1 - x3) * (y - y3)) / denominator
+    lambda_3 = 1.0 - lambda_1 - lambda_2
+
+    return np.array([lambda_1, lambda_2, lambda_3])
+
+
+def Triangle_Interpolation(vertices: np.ndarray,
+                           values: np.ndarray,
+                           point: np.ndarray,
+                           allow_extrapolation: bool = False,
+                           tolerance: float = 1.0e-12):
+    """Interpolate scalar or component-wise values in a linear triangle."""
+    values = np.asarray(values, dtype=float)
+    barycentric = Triangle_Barycentric_Coordinates(vertices, point)
+
+    if not allow_extrapolation:
+        if np.any(barycentric < -tolerance) or np.any(barycentric > 1.0 + tolerance):
+            raise ValueError("The target point lies outside the triangle.")
+
+    return np.tensordot(barycentric, values, axes=(0, 0))
+
+
+vertices = np.array([[0.0, 0.0],
+                     [2.0, 0.0],
+                     [0.0, 1.0]])
+values = np.array([1.0, 5.0, 4.0])
+point = np.array([0.5, 0.25])
+
+weights = Triangle_Barycentric_Coordinates(vertices, point)
+value = Triangle_Interpolation(vertices, values, point)
+print(weights, value)
+\end{python}
+
+The same idea applies to a tetrahedron using four barycentric coordinates. A
+linear simplex is especially convenient because the natural coordinates are
+obtained from one linear system and the interpolation reproduces all affine
+fields exactly.
+
+\subsubsection{Isoparametric Shape Functions}
+
+For a general finite element, both geometry and field values are interpolated
+using shape functions in natural coordinates $ \M{\xi} $:
+
+\begin{eqarray}
+    \m{x}(\M{\xi}) &= \sum_{a=1}^{n_e} N_a(\M{\xi})\m{x}_a \\
+    \widehat{u}(\M{\xi}) &= \sum_{a=1}^{n_e} N_a(\M{\xi})u_a
+\end{eqarray}
+
+The target position $ \m{x} $ is known, but its natural coordinate
+$ \M{\xi} $ is not. It is obtained from the inverse isoparametric mapping:
+
+\begin{equation}
+    \m{r}(\M{\xi}) =
+    \sum_a N_a(\M{\xi})\m{x}_a-\m{x}=\m{0}
+\end{equation}
+
+For nonlinear geometry interpolation this equation is solved iteratively. A
+Newton step is:
+
+\begin{equation}
+    \M{\xi}^{(k+1)} = \M{\xi}^{(k)}-
+    \m{J}^{-1}(\M{\xi}^{(k)})\m{r}(\M{\xi}^{(k)})
+\end{equation}
+
+where:
+
+\begin{equation}
+    \m{J} = \frac{\partial\m{x}}{\partial\M{\xi}}
+\end{equation}
+
+is the geometric Jacobian. A converged natural coordinate must still be checked
+against the element domain. Newton convergence alone does not prove that the
+target lies inside the element.
+
+For a four-node quadrilateral with natural coordinates
+$ -1\leq\xi,\eta\leq1 $, the shape functions are:
+
+\begin{eqarray}
+    N_1 &= \frac{1}{4}(1-\xi)(1-\eta) \\
+    N_2 &= \frac{1}{4}(1+\xi)(1-\eta) \\
+    N_3 &= \frac{1}{4}(1+\xi)(1+\eta) \\
+    N_4 &= \frac{1}{4}(1-\xi)(1+\eta)
+\end{eqarray}
+
+Python implementation including the inverse mapping:
+
+\begin{python}
+import numpy as np
+
+
+def Quad4_Shape_Functions(xi: float, eta: float):
+    N = 0.25 * np.array([
+        (1.0 - xi) * (1.0 - eta),
+        (1.0 + xi) * (1.0 - eta),
+        (1.0 + xi) * (1.0 + eta),
+        (1.0 - xi) * (1.0 + eta),
+    ])
+
+    dN_dxi = 0.25 * np.array([
+        -(1.0 - eta),
+         (1.0 - eta),
+         (1.0 + eta),
+        -(1.0 + eta),
+    ])
+
+    dN_deta = 0.25 * np.array([
+        -(1.0 - xi),
+        -(1.0 + xi),
+         (1.0 + xi),
+         (1.0 - xi),
+    ])
+    return N, dN_dxi, dN_deta
+
+
+def Solve_2x2(A: np.ndarray, b: np.ndarray,
+              tolerance: float = 1.0e-14) -> np.ndarray:
+    determinant = A[0, 0] * A[1, 1] - A[0, 1] * A[1, 0]
+    if abs(determinant) <= tolerance:
+        raise ValueError("Singular two by two system.")
+
+    return np.array([
+        ( b[0] * A[1, 1] - A[0, 1] * b[1]) / determinant,
+        (-b[0] * A[1, 0] + A[0, 0] * b[1]) / determinant,
+    ])
+
+
+def Quad4_Natural_Coordinates(vertices: np.ndarray,
+                              point: np.ndarray,
+                              tolerance: float = 1.0e-12,
+                              maximum_iterations: int = 25) -> np.ndarray:
+    """Find natural coordinates of a point in a bilinear quadrilateral."""
+    vertices = np.asarray(vertices, dtype=float)
+    point = np.asarray(point, dtype=float)
+    natural = np.zeros(2, dtype=float)
+
+    for _ in range(maximum_iterations):
+        xi, eta = natural
+        N, dN_dxi, dN_deta = Quad4_Shape_Functions(xi, eta)
+
+        mapped_point = N @ vertices
+        residual = mapped_point - point
+        if np.sqrt(np.dot(residual, residual)) <= tolerance:
+            return natural
+
+        Jacobian = np.column_stack((dN_dxi @ vertices,
+                                    dN_deta @ vertices))
+        increment = Solve_2x2(Jacobian, residual)
+        natural -= increment
+
+        if np.sqrt(np.dot(increment, increment)) <= tolerance:
+            return natural
+
+    raise RuntimeError("Inverse isoparametric mapping did not converge.")
+
+
+def Quad4_Interpolation(vertices: np.ndarray,
+                        values: np.ndarray,
+                        point: np.ndarray,
+                        allow_extrapolation: bool = False,
+                        tolerance: float = 1.0e-10):
+    natural = Quad4_Natural_Coordinates(vertices, point)
+    xi, eta = natural
+
+    if not allow_extrapolation:
+        if abs(xi) > 1.0 + tolerance or abs(eta) > 1.0 + tolerance:
+            raise ValueError("The target point lies outside the quadrilateral.")
+
+    N, _, _ = Quad4_Shape_Functions(xi, eta)
+    return np.tensordot(N, np.asarray(values, dtype=float), axes=(0, 0))
+
+
+vertices = np.array([[0.0, 0.0],
+                     [2.0, 0.2],
+                     [1.8, 1.2],
+                     [-0.1, 1.0]])
+values = np.array([0.0, 2.0, 4.0, 1.0])
+point = np.array([0.9, 0.55])
+
+print(Quad4_Natural_Coordinates(vertices, point))
+print(Quad4_Interpolation(vertices, values, point))
+\end{python}
+
+\subsection{Extrapolation Outside the Source Domain}
+
+Extrapolation requires an assumption about the field where no source data
+exist. The selected rule should therefore be stated explicitly instead of
+being hidden inside the mapping implementation.
+
+\subsubsection{Nearest-Boundary Projection}
+
+A target point outside the source domain may be projected onto the closest
+source boundary point:
+
+\begin{equation}
+    \m{x}_p = \arg\min_{\m{y}\in\Gamma_s}
+    \norm{\m{x}-\m{y}}
+\end{equation}
+
+and the field is extended by:
+
+\begin{equation}
+    \widehat{u}(\m{x}) = u(\m{x}_p)
+\end{equation}
+
+The value is constant in the outward normal direction. This rule is bounded
+and often suitable when a surface result is to be mapped to nearby offset
+points. It does not continue the normal gradient.
+
+For a polygonal or finite element boundary, the closest point is found by
+projecting onto candidate edges or faces and clamping the local coordinates to
+their valid range.
+
+\subsubsection{Affine Extrapolation}
+
+The shape functions of a linear element can be evaluated outside the element.
+For a triangle, for example, one or more barycentric coordinates become
+negative, but:
+
+\begin{equation}
+    \widehat{u}(\m{x}) = \sum_i\lambda_i(\m{x})u_i
+\end{equation}
+
+still continues the same affine field. This is exact when the true field is
+linear, but it may produce large values far from the element. A distance limit
+or a transition to a bounded far-field value is therefore commonly applied.
+
+\subsubsection{Artificial Bounding Domain}
+
+Unrestricted extrapolation may be replaced by interpolation over an enlarged
+artificial domain. Construct a box $ \Omega_b $ around the source data and add
+support points at its corners. Assign these artificial points a prescribed
+far-field value, for example the source mean:
+
+\begin{equation}
+    \bar{u} = \frac{1}{n_s}\sum_{i=1}^{n_s}u_i
+\end{equation}
+
+The augmented data set is:
+
+\begin{eqarray}
+    \m{X}_{aug} &= [\m{X}_{source};\m{X}_{box}] \\
+    \m{u}_{aug} &= [\m{u}_{source};\bar{u},\dots,\bar{u}]
+\end{eqarray}
+
+A target outside the original source hull but inside the box is then inside the
+hull of the augmented points. A scattered-data interpolant, a triangulation, an
+RBF or a moving least-squares method can use these added points.
+
+The box does not add measured information. It imposes a boundary assumption.
+Its size controls how quickly the estimate approaches the assigned far-field
+value. A close box creates a strong transition; a distant box allows the local
+source trend to continue farther. Assigning one global mean is bounded and
+neutral, but a physical far-field value, a local boundary average or zero may
+be more appropriate for a particular quantity.
+
+Adding only corners is sufficient to enclose the convex hull, but it may not
+control the field well along a long box edge. Additional points can therefore
+be placed on the faces. The distribution of artificial points should not be so
+dense that it overwhelms the real data in methods whose weights depend on point
+density.
+
+The following example augments a two-dimensional point cloud with mean-valued
+box corners and uses the inverse-distance weighting routine defined above for
+the final interpolation:
+
+\begin{python}
+import numpy as np
+
+
+def Add_Mean_Valued_Box(source_points: np.ndarray,
+                        source_values: np.ndarray,
+                        margin: float = 1.0):
+    """Add the corners of an expanded 2D box to a scattered data set."""
+    source_points = np.asarray(source_points, dtype=float)
+    source_values = np.asarray(source_values, dtype=float)
+
+    if source_points.ndim != 2 or source_points.shape[1] != 2:
+        raise ValueError("This example expects two-dimensional source points.")
+    if margin <= 0.0:
+        raise ValueError("The box margin must be positive.")
+
+    minimum = np.min(source_points, axis=0)
+    maximum = np.max(source_points, axis=0)
+    extent = maximum - minimum
+
+    # A zero extent can occur when all points share one coordinate.
+    scale = max(float(np.max(extent)), 1.0)
+    padding = margin * np.where(extent > 0.0, extent, scale)
+    lower = minimum - padding
+    upper = maximum + padding
+
+    corners = np.array([
+        [lower[0], lower[1]],
+        [upper[0], lower[1]],
+        [upper[0], upper[1]],
+        [lower[0], upper[1]],
+    ])
+
+    mean_value = np.mean(source_values, axis=0)
+    corner_values = np.empty((4,) + source_values.shape[1:], dtype=float)
+    corner_values[...] = mean_value
+
+    augmented_points = np.concatenate((source_points, corners), axis=0)
+    augmented_values = np.concatenate((source_values, corner_values), axis=0)
+    return augmented_points, augmented_values
+
+
+source_points = np.array([[0.0, 0.0],
+                          [1.0, 0.0],
+                          [0.0, 1.0],
+                          [1.0, 1.0]])
+source_values = np.array([0.0, 2.0, 4.0, 6.0])
+
+target_points = np.array([[1.2, 0.5],
+                          [2.5, 0.5]])
+
+points, values = Add_Mean_Valued_Box(
+    source_points,
+    source_values,
+    margin=2.0,
+)
+
+mapped = Inverse_Distance_Weighting(
+    points,
+    values,
+    target_points,
+    power=2.0,
+    neighbours=6,
+)
+print(mapped)
+\end{python}
+
+The result depends on both the box and the selected interpolant. The method
+should therefore be validated by varying the box size and checking whether the
+mapped values in the region of interest remain stable.
+
+\subsection{Interpolation of Scattered Data}
+
+When only scattered source points are available, no element connectivity exists
+a priori. The interpolation method must construct a neighbourhood or a global
+basis from the point positions.
+
+\subsubsection{Delaunay and Natural-Neighbour Interpolation}
+
+A Delaunay triangulation divides the convex hull of a point cloud into
+simplices. In two dimensions these are triangles; in three dimensions they are
+tetrahedra. The triangulation is chosen so that no source point lies inside the
+circumcircle or circumsphere of a simplex.
+
+After the containing simplex has been found, ordinary piecewise linear
+interpolation uses its barycentric coordinates. The result is continuous and
+linearly consistent, but its gradient changes between neighbouring simplices.
+
+Natural-neighbour interpolation is based on the dual Voronoi diagram. Insert
+the target point into the diagram. The area or volume taken from each
+neighbouring Voronoi cell defines its weight. The weights are local, positive
+inside the convex hull and sum to one. The method is smoother than piecewise
+linear Delaunay interpolation and has no arbitrary distance exponent.
+
+Neither method defines a unique value outside the convex hull. Extrapolation
+must be handled separately, for example by boundary projection or by adding an
+artificial bounding domain.
+
+\subsubsection{Radial Basis Function Interpolation}
+
+A radial basis function depends only on the distance from a centre. A global
+RBF interpolant is:
+
+\begin{equation}
+    \widehat{u}(\m{x}) =
+    \sum_{i=1}^{n_s}\lambda_i
+    \phi\left(\norm{\m{x}-\m{x}_i}\right)
+    + \m{p}^T(\m{x})\m{c}
+\end{equation}
+
+The polynomial term supplies the required polynomial consistency. For an
+affine term in $ d $ dimensions:
+
+\begin{equation}
+    \m{p}(\m{x}) = [1,x_1,\dots,x_d]^T
+\end{equation}
+
+The coefficients follow from:
+
+\begin{equation}
+    \begin{bmatrix}
+        \M{\Phi} & \m{P} \\
+        \m{P}^T & \m{0}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \M{\lambda} \\
+        \m{c}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        \m{u} \\
+        \m{0}
+    \end{bmatrix}
+\end{equation}
+
+where:
+
+\begin{eqarray}
+    \Phi_{ij} &= \phi(\norm{\m{x}_i-\m{x}_j}) \\
+    P_{ij} &= p_j(\m{x}_i)
+\end{eqarray}
+
+Common radial functions include:
+
+\begin{eqarray}
+    \phi(r) &= r^3 \qquad &&\text{cubic polyharmonic spline} \\
+    \phi(r) &= r^2\ln r &&\text{thin-plate spline} \\
+    \phi(r) &= \exp[-(\epsilon r)^2] &&\text{Gaussian} \\
+    \phi(r) &= \sqrt{1+(\epsilon r)^2} &&\text{multiquadric}
+\end{eqarray}
+
+Global RBF interpolation is smooth and works in any spatial dimension, but its
+matrix is dense. The factorisation cost grows approximately with
+$ n_s^3 $ and the storage with $ n_s^2 $. Compactly supported radial functions
+produce sparse matrices and are therefore preferable for large point sets.
+
+The following implementation uses the cubic kernel $ \phi(r)=r^3 $ and an
+affine polynomial term. The Gaussian elimination is included so the numerical
+steps remain visible:
+
+\begin{python}
+import numpy as np
+
+
+def Gaussian_Elimination(A: np.ndarray,
+                         b: np.ndarray,
+                         tolerance: float = 1.0e-14) -> np.ndarray:
+    """Solve a dense linear system by elimination with partial pivoting."""
+    A = np.asarray(A, dtype=float).copy()
+    b = np.asarray(b, dtype=float).copy()
+
+    flatten = b.ndim == 1
+    if flatten:
+        b = b.reshape(-1, 1)
+    if A.ndim != 2 or A.shape[0] != A.shape[1]:
+        raise ValueError("The coefficient matrix must be square.")
+    if b.shape[0] != A.shape[0]:
+        raise ValueError("The right hand side has an incompatible size.")
+
+    n = A.shape[0]
+    for k in range(n - 1):
+        pivot = k + int(np.argmax(np.abs(A[k:, k])))
+        if abs(A[pivot, k]) <= tolerance:
+            raise ValueError("The interpolation system is singular.")
+
+        if pivot != k:
+            A[[k, pivot], :] = A[[pivot, k], :]
+            b[[k, pivot], :] = b[[pivot, k], :]
+
+        for i in range(k + 1, n):
+            factor = A[i, k] / A[k, k]
+            A[i, k:] -= factor * A[k, k:]
+            b[i, :] -= factor * b[k, :]
+
+    if abs(A[-1, -1]) <= tolerance:
+        raise ValueError("The interpolation system is singular.")
+
+    x = np.zeros_like(b)
+    for i in range(n - 1, -1, -1):
+        residual = b[i, :].copy()
+        for j in range(i + 1, n):
+            residual -= A[i, j] * x[j, :]
+        x[i, :] = residual / A[i, i]
+
+    return x[:, 0] if flatten else x
+
+
+def Cubic_RBF_Fit(source_points: np.ndarray,
+                  source_values: np.ndarray):
+    """Fit a cubic RBF with an affine polynomial term."""
+    points = np.asarray(source_points, dtype=float)
+    values = np.asarray(source_values, dtype=float)
+
+    if points.ndim != 2 or values.shape[0] != points.shape[0]:
+        raise ValueError("Source point and value counts must agree.")
+
+    n, dimension = points.shape
+    difference = points[:, None, :] - points[None, :, :]
+    radius = np.sqrt(np.sum(difference * difference, axis=2))
+    Phi = radius**3
+    P = np.column_stack((np.ones(n), points))
+
+    system = np.zeros((n + dimension + 1, n + dimension + 1))
+    system[:n, :n] = Phi
+    system[:n, n:] = P
+    system[n:, :n] = P.T
+
+    right_shape = (n + dimension + 1,) + values.shape[1:]
+    right = np.zeros(right_shape, dtype=float)
+    right[:n] = values
+
+    coefficients = Gaussian_Elimination(system, right)
+    radial_coefficients = coefficients[:n]
+    polynomial_coefficients = coefficients[n:]
+    return radial_coefficients, polynomial_coefficients
+
+
+def Cubic_RBF_Evaluate(source_points: np.ndarray,
+                       radial_coefficients: np.ndarray,
+                       polynomial_coefficients: np.ndarray,
+                       target_points: np.ndarray) -> np.ndarray:
+    points = np.asarray(source_points, dtype=float)
+    targets = np.asarray(target_points, dtype=float)
+
+    difference = targets[:, None, :] - points[None, :, :]
+    radius = np.sqrt(np.sum(difference * difference, axis=2))
+    Phi_target = radius**3
+    P_target = np.column_stack((np.ones(targets.shape[0]), targets))
+
+    return (np.tensordot(Phi_target, radial_coefficients, axes=(1, 0))
+            + np.tensordot(P_target, polynomial_coefficients, axes=(1, 0)))
+
+
+source_points = np.array([[0.0, 0.0],
+                          [1.0, 0.0],
+                          [0.0, 1.0],
+                          [1.0, 1.0],
+                          [0.5, 0.4]])
+source_values = np.array([0.0, 1.0, 1.0, 2.0, 0.7])
+target_points = np.array([[0.25, 0.25], [0.75, 0.60]])
+
+radial, polynomial = Cubic_RBF_Fit(source_points, source_values)
+mapped = Cubic_RBF_Evaluate(
+    source_points,
+    radial,
+    polynomial,
+    target_points,
+)
+print(mapped)
+\end{python}
+
+The polynomial side conditions are not an optional decoration. They remove
+nonuniqueness for conditionally positive definite kernels and ensure that an
+affine source field is reproduced exactly. The source points must also support
+the selected polynomial basis; for an affine basis in two dimensions they must
+not all lie on one line.
+
+\subsubsection{Moving Least Squares}
+
+Moving least squares fits a local polynomial around every target point. Let:
+
+\begin{equation}
+    u_h(\m{y};\m{x}) = \m{p}^T(\m{y})\m{a}(\m{x})
+\end{equation}
+
+where $ \m{x} $ is the target and $ \m{y} $ is a source coordinate. The
+coefficient vector is chosen to minimize:
+
+\begin{equation}
+    J(\m{a}) =
+    \sum_{i=1}^{n_s} w(\norm{\m{x}-\m{x}_i})
+    \left[\m{p}^T(\m{x}_i)\m{a}-u_i\right]^2
+\end{equation}
+
+Differentiation gives the local normal equations:
+
+\begin{equation}
+    \m{A}(\m{x})\m{a}(\m{x})=\m{b}(\m{x})
+\end{equation}
+
+with:
+
+\begin{eqarray}
+    \m{A}(\m{x}) &=
+    \sum_i w_i\m{p}(\m{x}_i)\m{p}^T(\m{x}_i) \\
+    \m{b}(\m{x}) &=
+    \sum_i w_i\m{p}(\m{x}_i)u_i
+\end{eqarray}
+
+and the mapped value is:
+
+\begin{equation}
+    \widehat{u}(\m{x}) = \m{p}^T(\m{x})\m{a}(\m{x})
+\end{equation}
+
+MLS is an approximation unless special interpolating weights are used. It is
+well suited to noisy scattered data and can reproduce polynomials up to the
+order of its basis. A sufficiently rich and well distributed neighbourhood is
+required. Near a boundary, all points may lie on one side and the moment matrix
+$ \m{A} $ can become poorly conditioned. Artificial support points or a larger
+neighbourhood can improve the situation, but they also introduce assumptions.
+
+\subsubsection{Kriging}
+
+Kriging treats the source values as samples of a spatially correlated random
+field. The estimate is again a weighted sum:
+
+\begin{equation}
+    \widehat{u}(\m{x})=\sum_i w_i(\m{x})u_i
+\end{equation}
+
+but the weights are determined from a covariance or variogram model. In
+ordinary kriging:
+
+\begin{equation}
+    \begin{bmatrix}
+        \m{C} & \m{1} \\
+        \m{1}^T & 0
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{w} \\
+        \mu
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        \m{c}(\m{x}) \\
+        1
+    \end{bmatrix}
+\end{equation}
+
+where:
+
+\begin{eqarray}
+    C_{ij} &= C(\m{x}_i,\m{x}_j) \\
+    c_i(\m{x}) &= C(\m{x}_i,\m{x})
+\end{eqarray}
+
+The constraint $ \m{1}^T\m{w}=1 $ makes the estimate unbiased for an unknown
+constant mean. Kriging can represent anisotropic correlation, measurement
+noise and spatial length scales. It also provides an estimate of interpolation
+uncertainty. These benefits require a justified covariance model and make the
+method more involved than deterministic mesh-to-mesh interpolation.
+
+\subsection{Conservative Field Transfer}
+
+Pointwise interpolation preserves a field value locally, but it does not
+normally preserve its integral. Suppose a distributed load $ p $ is mapped
+between two surface meshes. Even if the mapped pressure looks smooth, the total
+force:
+
+\begin{equation}
+    \m{F}=\int_{\Gamma} p\m{n}\,\mathrm{d}\Gamma
+\end{equation}
+
+and the total moment:
+
+\begin{equation}
+    \m{M}=\int_{\Gamma}
+    (\m{x}-\m{x}_0)\times p\m{n}\,\mathrm{d}\Gamma
+\end{equation}
+
+may change. This is unacceptable when the mapped field represents a conserved
+quantity.
+
+\subsubsection{\texorpdfstring{$L^2$}{L2} Projection}
+
+Let the target field be represented by target shape functions:
+
+\begin{equation}
+    u_t(\m{x})=\sum_i N_i^t(\m{x})u_i^t
+\end{equation}
+
+An $ L^2 $ projection chooses the target coefficients so that the mapping error
+is orthogonal to the target approximation space:
+
+\begin{equation}
+    \int_{\Omega_{overlap}} N_i^t
+    \left(u_t-u_s\right)\,\mathrm{d}\Omega=0
+\end{equation}
+
+Substitution gives:
+
+\begin{equation}
+    \m{M}_t\m{u}_t=\m{C}_{ts}\m{u}_s
+\end{equation}
+
+where:
+
+\begin{eqarray}
+    (M_t)_{ij} &=
+    \int_{\Omega_{overlap}}N_i^tN_j^t\,\mathrm{d}\Omega \\
+    (C_{ts})_{ik} &=
+    \int_{\Omega_{overlap}}N_i^tN_k^s\,\mathrm{d}\Omega
+\end{eqarray}
+
+If the target shape functions form a partition of unity, the constant function
+belongs to the target space. Summing the projection equations then shows that
+the scalar integral of the field is preserved. If the coordinate functions
+also belong to the target space and the same geometry is used for integration,
+first moments are preserved as well. For vector tractions on differently
+approximated surfaces, changed normals and geometry still require a separate
+force and moment check.
+
+The difficult part is not the final linear system. It is the integration over
+the geometric intersections of source and target elements. In one dimension,
+the intersections are intervals. In two dimensions, intersecting surface
+elements form polygons that must be segmented and integrated. In three
+dimensions, intersecting volumes are still more complicated.
+
+The following one-dimensional example projects a piecewise linear source field
+onto a different piecewise linear target mesh. Each overlap interval is split
+at every source and target node, so both fields are polynomial within each
+integration segment. It uses the Gaussian elimination routine introduced in
+the RBF example.
+
+\begin{python}
+import numpy as np
+
+
+def Linear_Element_Shape(x: float, x_0: float, x_1: float) -> np.ndarray:
+    length = x_1 - x_0
+    if length <= 0.0:
+        raise ValueError("Element coordinates must be increasing.")
+    xi = (x - x_0) / length
+    return np.array([1.0 - xi, xi])
+
+
+def Find_Interval(nodes: np.ndarray, x: float) -> int:
+    """Return the element index containing x, including the last end point."""
+    if x < nodes[0] or x > nodes[-1]:
+        raise ValueError("Point lies outside the mesh interval.")
+    index = int(np.searchsorted(nodes, x, side="right") - 1)
+    return min(max(index, 0), nodes.size - 2)
+
+
+def L2_Project_Linear_1D(source_nodes: np.ndarray,
+                         source_values: np.ndarray,
+                         target_nodes: np.ndarray) -> np.ndarray:
+    """Project a linear source field onto a linear target mesh."""
+    source_nodes = np.asarray(source_nodes, dtype=float)
+    source_values = np.asarray(source_values, dtype=float)
+    target_nodes = np.asarray(target_nodes, dtype=float)
+
+    if source_values.shape[0] != source_nodes.size:
+        raise ValueError("Each source node must have one source value.")
+    if np.any(source_nodes[1:] <= source_nodes[:-1]):
+        raise ValueError("Source nodes must be strictly increasing.")
+    if np.any(target_nodes[1:] <= target_nodes[:-1]):
+        raise ValueError("Target nodes must be strictly increasing.")
+    if target_nodes[0] < source_nodes[0] or target_nodes[-1] > source_nodes[-1]:
+        raise ValueError("This example requires the target mesh inside the source interval.")
+
+    n_target = target_nodes.size
+    mass = np.zeros((n_target, n_target), dtype=float)
+    right_shape = (n_target,) + source_values.shape[1:]
+    right = np.zeros(right_shape, dtype=float)
+
+    # Split the integration domain at every source and target node.
+    break_points = np.unique(np.concatenate((source_nodes, target_nodes)))
+    lower = target_nodes[0]
+    upper = target_nodes[-1]
+    break_points = break_points[(break_points >= lower) & (break_points <= upper)]
+
+    gauss_coordinate = 1.0 / np.sqrt(3.0)
+    gauss_points = (-gauss_coordinate, gauss_coordinate)
+
+    for a, b in zip(break_points[:-1], break_points[1:]):
+        if b <= a:
+            continue
+
+        middle = 0.5 * (a + b)
+        source_element = Find_Interval(source_nodes, middle)
+        target_element = Find_Interval(target_nodes, middle)
+
+        source_x0 = source_nodes[source_element]
+        source_x1 = source_nodes[source_element + 1]
+        target_x0 = target_nodes[target_element]
+        target_x1 = target_nodes[target_element + 1]
+
+        for gauss in gauss_points:
+            x = 0.5 * (a + b) + 0.5 * (b - a) * gauss
+            weight = 0.5 * (b - a)
+
+            Ns = Linear_Element_Shape(x, source_x0, source_x1)
+            Nt = Linear_Element_Shape(x, target_x0, target_x1)
+            source_value = np.tensordot(
+                Ns,
+                source_values[source_element:source_element + 2],
+                axes=(0, 0),
+            )
+
+            target_indices = (target_element, target_element + 1)
+            for i_local, i_global in enumerate(target_indices):
+                right[i_global] += weight * Nt[i_local] * source_value
+                for j_local, j_global in enumerate(target_indices):
+                    mass[i_global, j_global] += (
+                        weight * Nt[i_local] * Nt[j_local]
+                    )
+
+    return Gaussian_Elimination(mass, right)
+
+
+source_nodes = np.array([0.0, 0.4, 1.0, 1.7, 2.0])
+source_values = np.array([0.0, 1.0, 0.2, 1.4, 1.0])
+target_nodes = np.array([0.0, 0.7, 1.2, 2.0])
+
+target_values = L2_Project_Linear_1D(
+    source_nodes,
+    source_values,
+    target_nodes,
+)
+print(target_values)
+\end{python}
+
+The consistent target mass matrix gives the true $ L^2 $ projection. A lumped
+matrix produces a cheaper local approximation, but changes the projection.
+When transferring loads, a dual formulation or a mapping of nodal resultants
+may be used so that the virtual work is preserved.
+
+\subsubsection{Mortar Mapping}
+
+Mortar methods impose compatibility weakly between nonmatching meshes. Let
+$ \m{u}_s $ and $ \m{u}_t $ be source and target traces on an interface and let
+$ \M{\lambda} $ be a multiplier field. The weak compatibility condition is:
+
+\begin{equation}
+    \int_{\Gamma}
+    \M{\lambda}^T(\m{u}_t-\m{u}_s)\,\mathrm{d}\Gamma=0
+\end{equation}
+
+After discretisation this gives coupling matrices built from products of source,
+target and multiplier shape functions over their overlap. Mortar mappings are
+used for nonconforming mesh coupling, contact, domain decomposition and
+fluid-structure interaction.
+
+The multiplier space and numerical integration must be chosen carefully. A
+poor choice can create rank deficiency or oscillatory transfer. The additional
+complexity is justified when consistency and conservation across nonmatching
+meshes are more important than a simple pointwise value.
+
+\subsection{Mapping Vector and Tensor Quantities}
+
+For a vector field expressed in one common Cartesian coordinate system, scalar
+interpolation weights may be applied component by component:
+
+\begin{equation}
+    \widehat{\m{v}}(\m{x}) = \sum_i w_i(\m{x})\m{v}_i
+\end{equation}
+
+If source and target values use different local bases, the components must first
+be transformed to a common frame. Let $ \m{R}_s $ and $ \m{R}_t $ contain the
+source and target basis vectors. Then:
+
+\begin{eqarray}
+    \m{v}_{global} &= \m{R}_s\m{v}_{source} \\
+    \m{v}_{target} &= \m{R}_t^T\m{v}_{global}
+\end{eqarray}
+
+A second-order tensor transforms as:
+
+\begin{equation}
+    \m{T}_{target} =
+    \m{R}_t^T\m{R}_s\m{T}_{source}
+    \m{R}_s^T\m{R}_t
+\end{equation}
+
+Interpolating tensor components in inconsistent local frames can create a
+physically meaningless result even when each scalar interpolation is
+numerically correct.
+
+Rotations require additional care. Rotation vectors are only locally additive.
+For large rotations, directly averaging Euler angles or rotation matrices does
+not generally produce a valid or path-independent rotation. Unit quaternions
+can be interpolated with normalized linear interpolation for nearby rotations
+or spherical interpolation for two rotations. The sign ambiguity of a
+quaternion must be resolved before interpolation because $ \m{q} $ and
+$ -\m{q} $ represent the same orientation.
+
+\subsection{Accuracy, Robustness and Validation}
+
+A mapping algorithm should be tested with fields whose exact behaviour is
+known. Useful checks are:
+
+\begin{itemize}
+    \item \textbf{Source reproduction:} an interpolating method should return
+          $ u_i $ when evaluated at $ \m{x}_i $.
+    \item \textbf{Partition of unity:} mapping a constant field should return
+          the same constant everywhere in the interpolation domain.
+    \item \textbf{Linear consistency:} map an affine field and compare with its
+          exact value at the targets.
+    \item \textbf{Conservation:} compare integrated force, moment, mass, heat or
+          flux before and after transfer.
+    \item \textbf{Bounds:} check whether a method creates overshoot or values
+          outside physically admissible limits.
+    \item \textbf{Extrapolation distance:} report how far every extrapolated
+          target lies from the source domain.
+    \item \textbf{Neighbour quality:} detect nearly collinear, coplanar or
+          otherwise insufficient point configurations.
+    \item \textbf{Mesh refinement:} repeat the transfer with finer source and
+          target discretisations and check convergence.
+\end{itemize}
+
+For source values $ u_i^{exact} $ and mapped values $ \widehat{u}_i $, common
+error measures are:
+
+\begin{eqarray}
+    e_{max} &= \max_i\abs{\widehat{u}_i-u_i^{exact}} \\
+    e_{RMS} &= \sqrt{\frac{1}{n_t}
+    \sum_{i=1}^{n_t}(\widehat{u}_i-u_i^{exact})^2} \\
+    e_{rel} &=
+    \frac{\sqrt{\sum_i(\widehat{u}_i-u_i^{exact})^2}}
+         {\sqrt{\sum_i(u_i^{exact})^2}}
+\end{eqarray}
+
+No single interpolation method is best for every quantity. A practical choice
+starts from the information available and the property that must be preserved:
+
+\begin{itemize}
+    \item use nearest neighbour for discrete labels,
+    \item use element shape functions when source connectivity is known,
+    \item use IDW, RBF or MLS for scattered continuous data,
+    \item state and limit every extrapolation rule,
+    \item use an $ L^2 $ or mortar projection when integral conservation is the
+          primary requirement.
+\end{itemize}
 
 \section{Modal Assurance Criterion (MAC)}
 
