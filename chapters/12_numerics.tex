@@ -4000,6 +4000,262 @@ print(MAC(phi, psi))  # 1.0: different scale and sign, same shape
 print(MAC(phi, chi))  # smaller: a genuinely different vector direction
 \end{python}
 
+\subsection{Direction- and Magnitude-Sensitive Vector Measures}
+
+MAC is useful when the scale and sign or phase of a vector are arbitrary. It is
+not a complete comparison of two vectors. In particular,
+
+\begin{equation}
+    \operatorname{MAC}(\M{x},\M{x})
+    =\operatorname{MAC}(\M{x},-\M{x})
+    =\operatorname{MAC}(\M{x},10\M{x})=1.
+\end{equation}
+
+The three comparisons have the same vector line, but they do not have the same
+orientation or magnitude. When these quantities are physically meaningful, MAC
+should be accompanied by measures that retain them.
+
+\subsubsection{Signed Cosine Similarity}
+
+For non-zero real vectors, the signed cosine similarity is
+
+\begin{bbox}
+    \begin{equation}\label{signed-cosine-similarity}
+        c(\M{x},\M{y})
+        =
+        \frac{\M{x}^{T}\M{y}}
+        {\norm{\M{x}}_2\norm{\M{y}}_2}
+        =\cos\alpha.
+    \end{equation}
+\end{bbox}
+
+Unlike MAC, the signed cosine is not squared. It therefore distinguishes
+parallel and antiparallel vectors:
+
+\begin{equation}
+    c(\M{x},\M{x})=1,
+    \qquad
+    c(\M{x},-\M{x})=-1.
+\end{equation}
+
+The measure retains direction but still ignores magnitude. Multiplication of
+one vector by a positive scalar does not change $c$. For a negative scalar, only
+the sign changes. The relation to MAC is
+
+\begin{equation}\label{mac-signed-cosine-relation}
+    \operatorname{MAC}(\M{x},\M{y})=c(\M{x},\M{y})^2.
+\end{equation}
+
+Consequently, MAC alone cannot determine whether the signed cosine is
+$+\sqrt{\operatorname{MAC}}$ or $-\sqrt{\operatorname{MAC}}$.
+
+\subsubsection{Norm Ratio and Direct Relative Error}
+
+The ratio of the vector magnitudes is
+
+\begin{equation}\label{vector-norm-ratio}
+    r=\frac{\norm{\M{y}}_2}{\norm{\M{x}}_2}.
+\end{equation}
+
+The quantity $r$ describes scale but contains no directional information. A
+simple magnitude-only error is
+
+\begin{equation}
+    e_{size}=\abs{r-1}.
+\end{equation}
+
+Direction and magnitude are both retained by the direct relative vector error:
+
+\begin{bbox}
+    \begin{equation}\label{direct-relative-vector-error}
+        e_{rel,x}
+        =
+        \frac{\norm{\M{y}-\M{x}}_2}{\norm{\M{x}}_2}.
+    \end{equation}
+\end{bbox}
+
+The subscript $x$ indicates that $\M{x}$ is the reference. Interchanging the
+vectors generally changes the result. Expanding the squared numerator gives
+
+\begin{align}
+    \norm{\M{y}-\M{x}}_2^2
+    &=
+    \norm{\M{x}}_2^2+\norm{\M{y}}_2^2
+    -2\M{x}^{T}\M{y},\\
+    &=
+    \norm{\M{x}}_2^2
+    \left(1+r^2-2r\cos\alpha\right).
+\end{align}
+
+Therefore,
+
+\begin{bbox}
+    \begin{equation}\label{relative-error-angle-scale-relation}
+        e_{rel,x}^{2}
+        =1+r^2-2r\cos\alpha
+        =1+r^2-2r c.
+    \end{equation}
+\end{bbox}
+
+This equation separates the two sources of disagreement. The norm ratio $r$
+contains the scale difference, while the signed cosine $c$ contains the
+orientation difference. Replacing $c$ by MAC is insufficient because the sign
+of $c$ has been lost.
+
+For vectors of equal magnitude, $r=1$, and
+
+\begin{equation}
+    e_{rel,x}
+    =\sqrt{2-2\cos\alpha}
+    =2\sin\left(\frac{\alpha}{2}\right).
+\end{equation}
+
+Thus equal and parallel vectors give zero error, equal orthogonal vectors give
+$\sqrt{2}$, and equal antiparallel vectors give an error of two. MAC gives one
+for both the first and the last case.
+
+The same definition can use a positive-definite weighting matrix:
+
+\begin{equation}
+    e_{rel,x,W}
+    =
+    \frac{\norm{\M{y}-\M{x}}_W}{\norm{\M{x}}_W},
+    \qquad
+    \norm{\M{z}}_W
+    =\sqrt{\M{z}^{H}\m{W}\M{z}}.
+\end{equation}
+
+Unlike MAC, the direct complex-vector error is sensitive to a constant phase
+rotation. This is appropriate when both vectors share a physical phase
+reference. If their global phase is arbitrary, the phase should first be
+aligned, for example by the modal scale factor introduced later.
+
+\subsubsection{Symmetric Normalised Difference}
+
+A reference-independent alternative normalises the difference by the sum of
+both magnitudes:
+
+\begin{bbox}
+    \begin{equation}\label{symmetric-normalised-vector-difference}
+        e_{sym}
+        =
+        \frac{\norm{\M{x}-\M{y}}_2}
+        {\norm{\M{x}}_2+\norm{\M{y}}_2}.
+    \end{equation}
+\end{bbox}
+
+The triangle inequality gives
+
+\begin{equation}
+    0\leq e_{sym}\leq1.
+\end{equation}
+
+The value is zero only for identical vectors. It reaches one for antiparallel
+vectors and also when one vector is zero while the other is not. In terms of
+$r$ and the signed cosine,
+
+\begin{equation}\label{symmetric-error-angle-scale-relation}
+    e_{sym}^{2}
+    =
+    \frac{1+r^2-2r c}{(1+r)^2}.
+\end{equation}
+
+A bounded similarity score may be defined as
+
+\begin{equation}
+    S_{sym}=1-e_{sym}.
+\end{equation}
+
+This score is convenient for ranking, but the error $e_{sym}$ is usually easier
+to interpret because it remains a normalised distance. Neither quantity should
+be called MAC because it tests different properties.
+
+For a unit reference vector, several limiting cases are:
+
+\begin{center}
+\small
+\begin{tabular}{lccccc}
+    comparison & $c$ & $r$ & MAC & $e_{rel,x}$ & $e_{sym}$ \\
+    \hline
+    $\M{y}=\M{x}$ & $1$ & $1$ & $1$ & $0$ & $0$ \\
+    $\M{y}=2\M{x}$ & $1$ & $2$ & $1$ & $1$ & $1/3$ \\
+    $\M{y}=-\M{x}$ & $-1$ & $1$ & $1$ & $2$ & $1$ \\
+    $\M{y}\perp\M{x}$, $\norm{\M{y}}=1$
+        & $0$ & $1$ & $0$ & $\sqrt{2}$ & $1/\sqrt{2}$ \\
+\end{tabular}
+\end{center}
+
+The table shows why no single number can simultaneously replace MAC, signed
+correlation and scale comparison. A useful report may contain the MAC, signed
+cosine, norm ratio and a direct error. Together they state whether two vectors
+have the same line, orientation, magnitude and actual coordinates.
+
+For eigenvectors, a direct magnitude comparison is meaningful only after a
+common normalisation has been imposed. Examples are mass normalisation or unit
+displacement at the same reference coordinate. Without a common
+normalisation, the norm ratio merely compares arbitrary eigenvector scaling. For
+physical displacement vectors, forces or frequency-response functions with a
+common calibration, the direct errors retain information that MAC intentionally
+removes.
+
+\begin{python}
+import numpy as np
+
+
+def Euclidean_Norm(vector):
+    vector = np.asarray(vector, dtype=float).reshape(-1)
+    return np.sqrt(np.dot(vector, vector))
+
+
+def Direction_And_Size_Metrics(reference, comparison,
+                               tolerance=1.0e-14):
+    reference = np.asarray(reference, dtype=float).reshape(-1)
+    comparison = np.asarray(comparison, dtype=float).reshape(-1)
+
+    if reference.size != comparison.size:
+        raise ValueError("The vectors must have the same length.")
+
+    norm_reference = Euclidean_Norm(reference)
+    norm_comparison = Euclidean_Norm(comparison)
+
+    if norm_reference <= tolerance or norm_comparison <= tolerance:
+        raise ValueError("Direction is undefined for a zero vector.")
+
+    signed_cosine = (
+        np.dot(reference, comparison)
+        / (norm_reference * norm_comparison)
+    )
+    signed_cosine = min(1.0, max(-1.0, float(signed_cosine)))
+
+    difference = comparison - reference
+    norm_difference = Euclidean_Norm(difference)
+    norm_ratio = norm_comparison / norm_reference
+
+    return {
+        "signed_cosine": signed_cosine,
+        "mac": signed_cosine**2,
+        "norm_ratio": norm_ratio,
+        "size_error": abs(norm_ratio - 1.0),
+        "relative_error": norm_difference / norm_reference,
+        "symmetric_error": (
+            norm_difference / (norm_reference + norm_comparison)
+        ),
+    }
+
+
+x = np.array([1.0, 0.0])
+comparisons = {
+    "same": np.array([1.0, 0.0]),
+    "twice": np.array([2.0, 0.0]),
+    "opposite": np.array([-1.0, 0.0]),
+    "orthogonal": np.array([0.0, 1.0]),
+}
+
+for name, y in comparisons.items():
+    print(name, Direction_And_Size_Metrics(x, y))
+\end{python}
+
+
 \subsection{AutoMAC and CrossMAC Matrices}
 
 A modal model normally contains several vectors. Arranging the modes as columns,
