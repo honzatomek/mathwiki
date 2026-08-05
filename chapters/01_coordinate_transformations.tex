@@ -346,7 +346,7 @@ From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}
     \begin{equation}
         \left\{ \begin{array}{l}
             \varphi = \atantwo(-t_{21}, t_{22}) \\
-            \theta = \asin(t_{20}) \\
+            \theta = \arcsin(t_{20}) \\
             \psi = \atantwo(-t_{10}, t_{00})
         \end{array} \right.
     \end{equation}
@@ -438,7 +438,7 @@ def EulerXYZ(R: np.ndarray) -> tuple:
     \begin{equation}
         \left\{ \begin{array}{l}
             \varphi = \atantwo(t_{12}, t_{22}) \\
-            \theta = \asin(-t_{02}) \\
+            \theta = \arcsin(-t_{02}) \\
             \psi = \atantwo(t_{01}, t_{00})
         \end{array} \right.
     \end{equation}
@@ -514,7 +514,7 @@ def EulerZYX(R: np.ndarray) -> tuple:
         \left\{ \begin{array}{l}
             \varphi = \atantwo(t_{12}, t_{11}) \\
             \theta = \atantwo(t_{20}, t_{00}) \\
-            \psi = \asin(-t_{10})
+            \psi = \arcsin(-t_{10})
         \end{array} \right.
     \end{equation}
 
@@ -589,7 +589,7 @@ def EulerXZY(R: np.ndarray) -> tuple:
         \left\{ \begin{array}{l}
             \varphi = \atantwo(t_{12}, t_{11}) \\
             \theta = \atantwo(t_{20}, t_{00}) \\
-            \psi = \asin(-t_{10})
+            \psi = \arcsin(-t_{10})
         \end{array} \right.
     \end{equation}
 
@@ -661,7 +661,7 @@ def EulerZXY(R: np.ndarray) -> tuple:
 
     \begin{equation}
         \left\{ \begin{array}{l}
-            \varphi = \asin(-t_{21}) \\
+            \varphi = \arcsin(-t_{21}) \\
             \theta = \atantwo(t_{20}, t_{22}) \\
             \psi = \atantwo(t_{01}, t_{11})
         \end{array} \right.
@@ -738,7 +738,7 @@ def EulerYXZ(R: np.ndarray) -> tuple:
         \left\{ \begin{array}{l}
             \varphi = \atantwo(-t_{12}, t_{11}) \\
             \theta = \atantwo(-t_{02}, t_{00}) \\
-            \psi = \asin(t_{01})
+            \psi = \arcsin(t_{01})
         \end{array} \right.
     \end{equation}
 
@@ -811,7 +811,7 @@ def EulerYZX(R: np.ndarray) -> tuple:
     \begin{equation}
         \left\{ \begin{array}{l}
             \varphi_0 = \atantwo(t_{02}, -t_{10}) \\
-            \psi = \acos(t_{00}) \\
+            \psi = \arccos(t_{00}) \\
             \varphi_1 = \atantwo(t_{02}, t_{01})
         \end{array} \right.
     \end{equation}
@@ -885,7 +885,7 @@ def EulerXYX(R: np.ndarray) -> tuple:
     \begin{equation}
         \left\{ \begin{array}{l}
             \varphi_0 = \atantwo(t_{10}, t_{20}) \\
-            \theta = \acos(t_{00}) \\
+            \theta = \arccos(t_{00}) \\
             \varphi_1 = \atantwo(t_{01}, -t_{02})
         \end{array} \right.
     \end{equation}
