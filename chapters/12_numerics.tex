@@ -573,29 +573,1436 @@ def Cholesky_Solve(L: np.ndarray, b: np.ndarray) -> np.ndarray:
 
 \subsection{LU Factorisation}
 
+The \textbf{LU factorisation} writes a square matrix as a product of a lower
+triangular matrix and an upper triangular matrix:
+
+\begin{equation}
+    \m{A} = \m{L} \m{U}
+\end{equation}
+
+The factorisation is obtained by applying Gaussian elimination to $ \m{A} $.
+The multipliers used to remove the entries below a pivot are stored in
+$ \m{L} $, while the resulting upper triangular matrix is $ \m{U} $. Using a
+unit diagonal in $ \m{L} $ removes the otherwise arbitrary scaling between the
+two factors and gives the \textbf{Doolittle form}:
+
+\begin{equation}
+    L_{ii} = 1
+\end{equation}
+
+Once the factors are available, the equation $ \m{A}\m{x}=\m{b} $ is solved in
+two triangular steps:
+
+\begin{eqarray}
+    \m{L}\m{U}\m{x} &= \m{b} \\
+    \m{L}\m{y} &= \m{b},\quad solve\ by\ forward\ substitution \\
+    \m{U}\m{x} &= \m{y},\quad solve\ by\ backward\ substitution
+\end{eqarray}
+
+The factorisation is more expensive than one triangular solution, but it may be
+reused for many right hand sides. This is important in finite element analysis,
+where the same tangent matrix may be used for several load vectors or for
+several operations within one iteration.
+
 \subsubsection{LU Factorisation without pivoting}
+
+For the Doolittle form, comparison of the entries in
+$ \m{A}=\m{L}\m{U} $ gives:
+
+\begin{eqarray}
+    U_{kj} &= A_{kj} - \sum_{s=1}^{k-1} L_{ks}U_{sj},
+    \qquad j=k,\dots,n \\
+    L_{ik} &= \frac{1}{U_{kk}}
+    \left(A_{ik} - \sum_{s=1}^{k-1}L_{is}U_{sk}\right),
+    \qquad i=k+1,\dots,n
+\end{eqarray}
+
+The first equation forms row $ k $ of $ \m{U} $. The second equation then forms
+column $ k $ of $ \m{L} $. The calculation requires every pivot $ U_{kk} $ to
+be nonzero. A nonsingular matrix can nevertheless produce a zero pivot. For
+example:
+
+\begin{equation}
+    \begin{bmatrix}
+        0 & 1 \\
+        1 & 0
+    \end{bmatrix}
+\end{equation}
+
+is nonsingular, but elimination cannot start without exchanging rows. Even when
+a pivot is merely very small, division by it can amplify rounding errors.
+Factorisation without pivoting is therefore used only when the matrix structure
+ensures safe pivots, or when this has been verified separately.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def LU_No_Pivoting(A: np.ndarray,
+                   tolerance: float = 1.0e-14):
+    """Factorise a square matrix A = L @ U without pivoting.
+
+    L has a unit diagonal. No NumPy linear algebra factorisation or
+    solution routine is used.
+    """
+    A = np.asarray(A)
+    n = A.shape[0]
+
+    if A.shape != (n, n):
+        raise ValueError("A must be square")
+
+    L = np.eye(n, dtype=A.dtype)
+    U = np.zeros_like(A)
+
+    for k in range(n):
+        # Form row k of U.
+        for j in range(k, n):
+            total = 0.0
+            for s in range(k):
+                total += L[k, s] * U[s, j]
+            U[k, j] = A[k, j] - total
+
+        if abs(U[k, k]) <= tolerance:
+            raise ZeroDivisionError(
+                "zero or numerically small pivot; pivoting is required"
+            )
+
+        # Form column k of L.
+        for i in range(k + 1, n):
+            total = 0.0
+            for s in range(k):
+                total += L[i, s] * U[s, k]
+            L[i, k] = (A[i, k] - total) / U[k, k]
+
+    return L, U
+
+
+def LU_Solve(L: np.ndarray,
+             U: np.ndarray,
+             b: np.ndarray) -> np.ndarray:
+    """Solve L @ U @ x = b using the triangular solver defined above."""
+    y = Solve_Triangular(L, b, kind="lower")
+    x = Solve_Triangular(U, y, kind="upper")
+    return x
+\end{python}
+
 \subsubsection{LU Factorisation with row pivoting}
+
+\textbf{Partial pivoting} exchanges rows before each elimination step. In column
+$ k $, the row containing the largest available absolute entry is selected:
+
+\begin{equation}
+    p = \underset{i=k,\dots,n}{\operatorname{argmax}}\abs{U_{ik}}
+\end{equation}
+
+The corresponding rows are exchanged and the factorisation becomes:
+
+\begin{equation}
+    \m{P}\m{A}=\m{L}\m{U}
+\end{equation}
+
+where $ \m{P} $ is a permutation matrix. A permutation matrix only changes the
+order of equations. It is orthogonal, so that:
+
+\begin{equation}
+    \m{P}^{-1}=\m{P}^{T}
+\end{equation}
+
+The row exchange avoids division by zero whenever a usable pivot exists in the
+current column. Selecting the largest candidate also limits the elimination
+multipliers:
+
+\begin{equation}
+    \abs{L_{ik}} = \abs{\frac{U_{ik}}{U_{kk}}} \leq 1
+\end{equation}
+
+Partial pivoting is the usual general-purpose form of LU factorisation. To solve
+$ \m{A}\m{x}=\m{b} $, the right hand side must be permuted in the same way:
+
+\begin{eqarray}
+    \m{P}\m{A}\m{x} &= \m{P}\m{b} \\
+    \m{L}\m{U}\m{x} &= \m{P}\m{b}
+\end{eqarray}
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def LU_Partial_Pivoting(A: np.ndarray,
+                        tolerance: float = 1.0e-14):
+    """Factorise P @ A = L @ U using partial row pivoting."""
+    A = np.array(A, copy=True)
+    n = A.shape[0]
+
+    if A.shape != (n, n):
+        raise ValueError("A must be square")
+
+    U = A.copy()
+    L = np.eye(n, dtype=A.dtype)
+    P = np.eye(n, dtype=A.dtype)
+
+    for k in range(n - 1):
+        # Find the largest available entry in column k.
+        pivot = k
+        for i in range(k + 1, n):
+            if abs(U[i, k]) > abs(U[pivot, k]):
+                pivot = i
+
+        if abs(U[pivot, k]) <= tolerance:
+            raise ZeroDivisionError("matrix is singular to working precision")
+
+        if pivot != k:
+            U[[k, pivot], :] = U[[pivot, k], :]
+            P[[k, pivot], :] = P[[pivot, k], :]
+
+            # The already computed part of L belongs to the exchanged rows.
+            if k > 0:
+                L[[k, pivot], :k] = L[[pivot, k], :k]
+
+        # Gaussian elimination below the pivot.
+        for i in range(k + 1, n):
+            L[i, k] = U[i, k] / U[k, k]
+            U[i, k:] -= L[i, k] * U[k, k:]
+            U[i, k] = 0.0
+
+    if abs(U[-1, -1]) <= tolerance:
+        raise ZeroDivisionError("matrix is singular to working precision")
+
+    return P, L, U
+
+
+def LU_Partial_Solve(P: np.ndarray,
+                     L: np.ndarray,
+                     U: np.ndarray,
+                     b: np.ndarray) -> np.ndarray:
+    """Solve A @ x = b from P @ A = L @ U."""
+    y = Solve_Triangular(L, P @ b, kind="lower")
+    x = Solve_Triangular(U, y, kind="upper")
+    return x
+\end{python}
+
 \subsubsection{LU Factorisation with complete pivoting}
+
+\textbf{Complete pivoting} searches the whole remaining submatrix rather than
+only the current column:
+
+\begin{equation}
+    (p,q)=\underset{i,j=k,\dots,n}{\operatorname{argmax}}\abs{U_{ij}}
+\end{equation}
+
+Both rows and columns are exchanged. The resulting factorisation is:
+
+\begin{equation}
+    \m{P}\m{A}\m{Q}=\m{L}\m{U}
+\end{equation}
+
+The row permutation $ \m{P} $ reorders equations, while the column permutation
+$ \m{Q} $ reorders unknowns. Complete pivoting usually produces smaller element
+growth than partial pivoting, but searching the complete trailing submatrix is
+more expensive and column permutations complicate bookkeeping. It is therefore
+used when additional robustness is more important than the extra work.
+
+For a linear system:
+
+\begin{eqarray}
+    \m{P}\m{A}\m{Q} &= \m{L}\m{U} \\
+    \m{L}\m{U}\m{Q}^{T}\m{x} &= \m{P}\m{b}
+\end{eqarray}
+
+After the triangular solves, the original ordering is restored by
+$ \m{x}=\m{Q}\m{y} $.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def LU_Complete_Pivoting(A: np.ndarray,
+                         tolerance: float = 1.0e-14):
+    """Factorise P @ A @ Q = L @ U using complete pivoting."""
+    A = np.array(A, copy=True)
+    n = A.shape[0]
+
+    if A.shape != (n, n):
+        raise ValueError("A must be square")
+
+    U = A.copy()
+    L = np.eye(n, dtype=A.dtype)
+    P = np.eye(n, dtype=A.dtype)
+    Q = np.eye(n, dtype=A.dtype)
+
+    for k in range(n - 1):
+        pivot_row = k
+        pivot_col = k
+        pivot_value = abs(U[k, k])
+
+        for i in range(k, n):
+            for j in range(k, n):
+                if abs(U[i, j]) > pivot_value:
+                    pivot_row = i
+                    pivot_col = j
+                    pivot_value = abs(U[i, j])
+
+        if pivot_value <= tolerance:
+            raise ZeroDivisionError("matrix is singular to working precision")
+
+        if pivot_row != k:
+            U[[k, pivot_row], :] = U[[pivot_row, k], :]
+            P[[k, pivot_row], :] = P[[pivot_row, k], :]
+            if k > 0:
+                L[[k, pivot_row], :k] = L[[pivot_row, k], :k]
+
+        if pivot_col != k:
+            U[:, [k, pivot_col]] = U[:, [pivot_col, k]]
+            Q[:, [k, pivot_col]] = Q[:, [pivot_col, k]]
+
+        for i in range(k + 1, n):
+            L[i, k] = U[i, k] / U[k, k]
+            U[i, k:] -= L[i, k] * U[k, k:]
+            U[i, k] = 0.0
+
+    if abs(U[-1, -1]) <= tolerance:
+        raise ZeroDivisionError("matrix is singular to working precision")
+
+    return P, L, U, Q
+
+
+def LU_Complete_Solve(P: np.ndarray,
+                      L: np.ndarray,
+                      U: np.ndarray,
+                      Q: np.ndarray,
+                      b: np.ndarray) -> np.ndarray:
+    """Solve A @ x = b from P @ A @ Q = L @ U."""
+    z = Solve_Triangular(L, P @ b, kind="lower")
+    y = Solve_Triangular(U, z, kind="upper")
+    x = Q @ y
+    return x
+\end{python}
 
 \subsection{QR Factorisation}
 
+The \textbf{QR factorisation} writes an $ m\times n $ matrix with
+$ m\geq n $ as:
+
+\begin{equation}
+    \m{A}=\m{Q}\m{R}
+\end{equation}
+
+where the columns of $ \m{Q} $ are orthonormal and $ \m{R} $ is upper
+triangular:
+
+\begin{equation}
+    \m{Q}^{*}\m{Q}=\m{I}
+\end{equation}
+
+In the \textbf{thin QR factorisation}, $ \m{Q} $ has size $ m\times n $ and
+$ \m{R} $ has size $ n\times n $. In the full factorisation, $ \m{Q} $ is
+$ m\times m $ and $ \m{R} $ is $ m\times n $.
+
+Because multiplication by an orthogonal matrix does not change the Euclidean
+norm, QR factorisation transforms a least-squares problem without squaring its
+condition number:
+
+\begin{eqarray}
+    \underset{\m{x}}{\operatorname{minimise}}\norm{\m{A}\m{x}-\m{b}}_2
+    &=
+    \underset{\m{x}}{\operatorname{minimise}}
+    \norm{\m{Q}^{*}\m{A}\m{x}-\m{Q}^{*}\m{b}}_2 \\
+    &=
+    \underset{\m{x}}{\operatorname{minimise}}
+    \norm{\m{R}\m{x}-\m{Q}^{*}\m{b}}_2
+\end{eqarray}
+
+This is numerically preferable to forming the normal equations
+$ \m{A}^{*}\m{A}\m{x}=\m{A}^{*}\m{b} $.
+
 \subsubsection{QR Factorisation using Gram-Schmidt algorithm}
+
+Gram-Schmidt orthogonalisation of the columns of $ \m{A} $ gives
+$ \m{Q} $. Let $ \m{a}_j $ be column $ j $ of $ \m{A} $. Then:
+
+\begin{eqarray}
+    R_{ij} &= \m{q}_i^{*}\m{a}_j, \qquad i<j \\
+    \m{v}_j &= \m{a}_j-\sum_{i=1}^{j-1}R_{ij}\m{q}_i \\
+    R_{jj} &= \norm{\m{v}_j}_2 \\
+    \m{q}_j &= \frac{\m{v}_j}{R_{jj}}
+\end{eqarray}
+
+The coefficients removed from column $ j $ form column $ j $ of
+$ \m{R} $. If $ R_{jj}=0 $, the new column is linearly dependent on the
+previous columns and a full-rank thin QR factorisation does not exist.
+
+The following code uses the modified ordering of the Gram-Schmidt operations,
+which is less sensitive to rounding errors than evaluating all projections from
+the original column at once.
+
+\begin{python}
+import numpy as np
+
+
+def Vector_Norm(x: np.ndarray) -> float:
+    """Euclidean norm without using numpy.linalg."""
+    value = np.dot(np.conjugate(x), x)
+    return float(np.sqrt(np.real(value)))
+
+
+def QR_Gram_Schmidt(A: np.ndarray,
+                    tolerance: float = 1.0e-14):
+    """Compute the thin QR factorisation A = Q @ R."""
+    A = np.asarray(A)
+    m, n = A.shape
+
+    if m < n:
+        raise ValueError("the example assumes m >= n")
+
+    Q = np.zeros((m, n), dtype=A.dtype)
+    R = np.zeros((n, n), dtype=A.dtype)
+
+    for j in range(n):
+        v = A[:, j].copy()
+
+        for i in range(j):
+            R[i, j] = np.dot(np.conjugate(Q[:, i]), v)
+            v -= R[i, j] * Q[:, i]
+
+        R[j, j] = Vector_Norm(v)
+        if R[j, j] <= tolerance:
+            raise ValueError("columns of A are linearly dependent")
+
+        Q[:, j] = v / R[j, j]
+
+    return Q, R
+\end{python}
+
 \subsubsection{QR Factorisation using Givens rotations}
+
+A \textbf{Givens rotation} acts only in a plane spanned by two coordinate axes.
+For real numbers $ a $ and $ b $, choose:
+
+\begin{equation}
+    c=\frac{a}{r},\qquad s=\frac{b}{r},\qquad
+    r=\sqrt{a^2+b^2}
+\end{equation}
+
+and define:
+
+\begin{equation}
+    \m{G}=
+    \begin{bmatrix}
+        c & s \\
+        -s & c
+    \end{bmatrix}
+\end{equation}
+
+Then:
+
+\begin{equation}
+    \m{G}
+    \begin{bmatrix}
+        a \\
+        b
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        r \\
+        0
+    \end{bmatrix}
+\end{equation}
+
+Embedding this $ 2\times2 $ block into an identity matrix allows one entry below
+the diagonal of $ \m{A} $ to be removed without changing the other rows. A
+sequence of rotations gives:
+
+\begin{equation}
+    \m{G}_p\cdots\m{G}_2\m{G}_1\m{A}=\m{R}
+\end{equation}
+
+and therefore:
+
+\begin{equation}
+    \m{A}=\m{Q}\m{R},\qquad
+    \m{Q}=\m{G}_1^{T}\m{G}_2^{T}\cdots\m{G}_p^{T}
+\end{equation}
+
+Givens rotations are especially useful when the matrix is sparse or when only a
+small number of new entries must be eliminated, because each rotation modifies
+only two rows.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def Givens_Parameters(a: float, b: float):
+    """Return c and s so [[c,s],[-s,c]] @ [a,b] = [r,0]."""
+    r = float(np.hypot(abs(a), abs(b)))
+    if r == 0.0:
+        return 1.0, 0.0
+    return a / r, b / r
+
+
+def QR_Givens(A: np.ndarray,
+              tolerance: float = 1.0e-14):
+    """Compute A = Q @ R using real Givens rotations."""
+    R = np.array(A, dtype=float, copy=True)
+    m, n = R.shape
+    Q = np.eye(m)
+
+    for j in range(min(m, n)):
+        # Work upwards so each rotation removes one entry in column j.
+        for i in reversed(range(j + 1, m)):
+            if abs(R[i, j]) <= tolerance:
+                continue
+
+            c, s = Givens_Parameters(R[i - 1, j], R[i, j])
+
+            row_1 = R[i - 1, j:].copy()
+            row_2 = R[i, j:].copy()
+            R[i - 1, j:] = c * row_1 + s * row_2
+            R[i, j:] = -s * row_1 + c * row_2
+
+            # Q <- Q @ G.T, applied only to two columns.
+            col_1 = Q[:, i - 1].copy()
+            col_2 = Q[:, i].copy()
+            Q[:, i - 1] = c * col_1 + s * col_2
+            Q[:, i] = -s * col_1 + c * col_2
+
+    R[abs(R) < tolerance] = 0.0
+    return Q, R
+\end{python}
+
 \subsubsection{QR Factorisation using Householder reflections}
+
+A \textbf{Householder reflection} maps a vector onto a coordinate axis in one
+operation. For a unit vector $ \m{v} $:
+
+\begin{equation}
+    \m{H}=\m{I}-2\m{v}\m{v}^{*}
+\end{equation}
+
+The matrix is Hermitian and unitary:
+
+\begin{equation}
+    \m{H}^{*}=\m{H},\qquad \m{H}^{*}\m{H}=\m{I}
+\end{equation}
+
+For a column segment $ \m{x} $, the vector $ \m{v} $ is selected so that:
+
+\begin{equation}
+    \m{H}\m{x}=-\operatorname{sign}(x_1)\norm{\m{x}}_2\m{e}_1
+\end{equation}
+
+The sign is chosen to avoid subtracting nearly equal numbers while constructing
+$ \m{v} $. Each reflection removes all entries below one diagonal position. A
+matrix with $ n $ columns therefore needs at most $ n $ reflections. Compared
+with Gram-Schmidt, Householder QR usually gives better numerical orthogonality
+and is the standard dense-matrix method.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def Householder_Vector(x: np.ndarray,
+                       tolerance: float = 1.0e-14):
+    """Return a unit vector v defining H = I - 2 v v*."""
+    x = np.asarray(x)
+    norm_x = Vector_Norm(x)
+
+    if norm_x <= tolerance:
+        return np.zeros_like(x), False
+
+    phase = 1.0 if x[0] == 0.0 else x[0] / abs(x[0])
+    v = x.copy()
+    v[0] += phase * norm_x
+
+    norm_v = Vector_Norm(v)
+    if norm_v <= tolerance:
+        return np.zeros_like(x), False
+
+    return v / norm_v, True
+
+
+def QR_Householder(A: np.ndarray,
+                   tolerance: float = 1.0e-14):
+    """Compute the full factorisation A = Q @ R."""
+    R = np.array(A, copy=True)
+    m, n = R.shape
+    Q = np.eye(m, dtype=R.dtype)
+
+    for k in range(min(m, n)):
+        v, active = Householder_Vector(R[k:, k], tolerance)
+        if not active:
+            continue
+
+        # R <- H @ R, applied only to the active trailing block.
+        projection = np.dot(np.conjugate(v), R[k:, k:])
+        R[k:, k:] -= 2.0 * np.outer(v, projection)
+
+        # Q <- Q @ H. H is Hermitian, hence H* = H.
+        projection = np.dot(Q[:, k:], v)
+        Q[:, k:] -= 2.0 * np.outer(projection, np.conjugate(v))
+
+    R[abs(R) < tolerance] = 0.0
+    return Q, R
+\end{python}
+
 \subsubsection{QR Factorisation using Householder reflections with column pivoting}
 
-\subsection{Conversion to Hessenberg tridiagonal form using Givens rotations}
-\subsection{Conversion to Hessenberg tridiagonal form using Householder reflections}
-\subsection{Conversion to Hessenberg tridiagonal form using Jacobi rotations}
+If columns of $ \m{A} $ are nearly linearly dependent, a small diagonal value in
+$ \m{R} $ may occur before the independent directions have been processed.
+\textbf{Column-pivoted QR} chooses at every step the remaining column with the
+largest residual norm. The factorisation is written:
+
+\begin{equation}
+    \m{A}\m{P}=\m{Q}\m{R}
+\end{equation}
+
+where $ \m{P} $ is a column permutation matrix. The diagonal entries of
+$ \m{R} $ then tend to decrease in magnitude. This reveals the numerical rank:
+
+\begin{equation}
+    \abs{R_{11}}\geq\abs{R_{22}}\geq\dots
+\end{equation}
+
+The relation is not guaranteed to be exact for every matrix, but the diagonal
+usually separates well-resolved and nearly dependent directions. This makes
+pivoted QR useful for rank detection, least-squares problems and selecting
+independent interface or measurement coordinates.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def QR_Householder_Pivoting(A: np.ndarray,
+                            tolerance: float = 1.0e-14):
+    """Compute A @ P = Q @ R using Householder column pivoting."""
+    R = np.array(A, copy=True)
+    m, n = R.shape
+    Q = np.eye(m, dtype=R.dtype)
+    P = np.eye(n, dtype=R.dtype)
+
+    for k in range(min(m, n)):
+        # Recompute the residual column norms for clarity.
+        pivot = k
+        largest_norm_squared = -1.0
+        for j in range(k, n):
+            value = np.dot(np.conjugate(R[k:, j]), R[k:, j])
+            norm_squared = float(np.real(value))
+            if norm_squared > largest_norm_squared:
+                largest_norm_squared = norm_squared
+                pivot = j
+
+        if pivot != k:
+            R[:, [k, pivot]] = R[:, [pivot, k]]
+            P[:, [k, pivot]] = P[:, [pivot, k]]
+
+        v, active = Householder_Vector(R[k:, k], tolerance)
+        if not active:
+            continue
+
+        projection = np.dot(np.conjugate(v), R[k:, k:])
+        R[k:, k:] -= 2.0 * np.outer(v, projection)
+
+        projection = np.dot(Q[:, k:], v)
+        Q[:, k:] -= 2.0 * np.outer(projection, np.conjugate(v))
+
+    R[abs(R) < tolerance] = 0.0
+    return Q, R, P
+\end{python}
+
+\subsection{Conversion to Hessenberg form using Givens rotations}
+
+The QR factorisation applies orthogonal transformations from the left and changes
+$ \m{A} $ into an upper triangular matrix. An eigenvalue problem requires a
+\textbf{similarity transformation}, because similarity preserves eigenvalues:
+
+\begin{equation}
+    \m{H}=\m{Q}^{*}\m{A}\m{Q}
+\end{equation}
+
+An \textbf{upper Hessenberg matrix} has zeros below its first subdiagonal:
+
+\begin{equation}
+    H_{ij}=0 \qquad \text{for}\quad i>j+1
+\end{equation}
+
+A Givens rotation is first applied from the left to remove one entry below the
+first subdiagonal and then from the right with its transpose. The right
+multiplication is essential: without it the operation would not be a similarity
+transformation. Repeating this process gives a Hessenberg matrix with the same
+eigenvalues as $ \m{A} $. If $ \m{A} $ is symmetric, symmetry is preserved and
+the Hessenberg matrix is tridiagonal.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def Hessenberg_Givens(A: np.ndarray,
+                      tolerance: float = 1.0e-14):
+    """Compute H = Q.T @ A @ Q using real Givens rotations."""
+    H = np.array(A, dtype=float, copy=True)
+    n = H.shape[0]
+
+    if H.shape != (n, n):
+        raise ValueError("A must be square")
+
+    Q = np.eye(n)
+
+    for k in range(n - 2):
+        for i in reversed(range(k + 2, n)):
+            if abs(H[i, k]) <= tolerance:
+                continue
+
+            c, s = Givens_Parameters(H[i - 1, k], H[i, k])
+
+            # H <- G @ H: rotate rows i-1 and i.
+            row_1 = H[i - 1, :].copy()
+            row_2 = H[i, :].copy()
+            H[i - 1, :] = c * row_1 + s * row_2
+            H[i, :] = -s * row_1 + c * row_2
+
+            # H <- H @ G.T: rotate the matching columns.
+            col_1 = H[:, i - 1].copy()
+            col_2 = H[:, i].copy()
+            H[:, i - 1] = c * col_1 + s * col_2
+            H[:, i] = -s * col_1 + c * col_2
+
+            # Q <- Q @ G.T.
+            col_1 = Q[:, i - 1].copy()
+            col_2 = Q[:, i].copy()
+            Q[:, i - 1] = c * col_1 + s * col_2
+            Q[:, i] = -s * col_1 + c * col_2
+
+    H[abs(H) < tolerance] = 0.0
+    return Q, H
+\end{python}
+
+\subsection{Conversion to Hessenberg form using Householder reflections}
+
+A Householder reflection can remove a complete column segment in one operation.
+At step $ k $, a reflector is constructed from:
+
+\begin{equation}
+    \m{x}=\m{A}_{k+1:n,k}
+\end{equation}
+
+and embedded into the identity matrix:
+
+\begin{equation}
+    \widehat{\m{H}}_k=
+    \begin{bmatrix}
+        \m{I}_{k} & \m{0} \\
+        \m{0} & \m{H}_k
+    \end{bmatrix}
+\end{equation}
+
+The similarity update is:
+
+\begin{equation}
+    \m{A}_{k+1}=\widehat{\m{H}}_k^{*}\m{A}_k\widehat{\m{H}}_k
+\end{equation}
+
+Since a Householder reflector is Hermitian, its conjugate transpose is the
+reflector itself. For dense matrices this method requires fewer transformations
+than the Givens method and is normally preferred. Again, a symmetric matrix is
+reduced to symmetric tridiagonal form.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def Hessenberg_Householder(A: np.ndarray,
+                           tolerance: float = 1.0e-14):
+    """Compute H = Q* @ A @ Q by Householder similarity transforms."""
+    H = np.array(A, copy=True)
+    n = H.shape[0]
+
+    if H.shape != (n, n):
+        raise ValueError("A must be square")
+
+    Q = np.eye(n, dtype=H.dtype)
+
+    for k in range(n - 2):
+        v, active = Householder_Vector(H[k + 1:, k], tolerance)
+        if not active:
+            continue
+
+        # Left multiplication by the embedded reflector.
+        projection = np.dot(np.conjugate(v), H[k + 1:, :])
+        H[k + 1:, :] -= 2.0 * np.outer(v, projection)
+
+        # Right multiplication by the same reflector.
+        projection = np.dot(H[:, k + 1:], v)
+        H[:, k + 1:] -= 2.0 * np.outer(
+            projection, np.conjugate(v)
+        )
+
+        # Accumulate Q.
+        projection = np.dot(Q[:, k + 1:], v)
+        Q[:, k + 1:] -= 2.0 * np.outer(
+            projection, np.conjugate(v)
+        )
+
+    H[abs(H) < tolerance] = 0.0
+    return Q, H
+\end{python}
+
+\subsection{Jacobi similarity rotations}
+
+A \textbf{Jacobi rotation} is a symmetric plane rotation used on both sides of a
+real symmetric matrix:
+
+\begin{equation}
+    \m{A}_{new}=\m{J}^{T}\m{A}\m{J}
+\end{equation}
+
+For selected indices $ p $ and $ q $, the nontrivial part of $ \m{J} $ is:
+
+\begin{equation}
+    \begin{bmatrix}
+        c & -s \\
+        s & c
+    \end{bmatrix}
+\end{equation}
+
+The angle can be selected so that $ A_{pq} $ and $ A_{qp} $ become zero. Unlike
+Householder Hessenberg reduction, however, a later Jacobi rotation can recreate
+entries that an earlier rotation removed. Jacobi rotations are therefore not a
+finite general-purpose Hessenberg-reduction algorithm. Their natural use is to
+reduce a symmetric matrix directly towards diagonal form, as described in the
+next subsection.
+
+A single Jacobi similarity step is useful for understanding the operation:
+
+\begin{python}
+import numpy as np
+
+
+def Jacobi_Rotation(A: np.ndarray, p: int, q: int):
+    """Apply one Jacobi similarity rotation to a real symmetric matrix."""
+    A = np.array(A, dtype=float, copy=True)
+    n = A.shape[0]
+
+    if A.shape != (n, n):
+        raise ValueError("A must be square")
+    if p == q:
+        return A, np.eye(n)
+
+    theta = 0.5 * np.arctan2(
+        2.0 * A[p, q], A[p, p] - A[q, q]
+    )
+    c = float(np.cos(theta))
+    s = float(np.sin(theta))
+
+    J = np.eye(n)
+    J[p, p] = c
+    J[q, q] = c
+    J[p, q] = -s
+    J[q, p] = s
+
+    return J.T @ A @ J, J
+\end{python}
 
 \subsection{Jacobi rotations to diagonal matrix}
+
+For a real symmetric matrix, repeated Jacobi rotations reduce the off-diagonal
+entries while preserving symmetry and eigenvalues. When the process converges:
+
+\begin{equation}
+    \m{D}=\m{V}^{T}\m{A}\m{V}
+\end{equation}
+
+where $ \m{D} $ is diagonal and the columns of $ \m{V} $ are orthonormal
+eigenvectors. The diagonal entries of $ \m{D} $ are the eigenvalues.
+
+A simple strategy selects the largest off-diagonal entry in every iteration:
+
+\begin{equation}
+    (p,q)=\underset{p<q}{\operatorname{argmax}}\abs{A_{pq}}
+\end{equation}
+
+The rotation angle is obtained from:
+
+\begin{equation}
+    \tan(2\theta)=\frac{2A_{pq}}{A_{pp}-A_{qq}}
+\end{equation}
+
+Using $ \operatorname{atan2} $ avoids an explicit division and preserves the
+correct quadrant. The method is easy to understand and produces accurate
+eigenvectors, but each rotation changes rows and columns of a dense matrix. It
+is therefore mainly useful for small or medium symmetric problems and as a
+reference implementation.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def Jacobi_Eigenvalue(A: np.ndarray,
+                      tolerance: float = 1.0e-12,
+                      max_iterations: int = 10000):
+    """Diagonalise a real symmetric matrix with Jacobi rotations."""
+    D = np.array(A, dtype=float, copy=True)
+    n = D.shape[0]
+
+    if D.shape != (n, n):
+        raise ValueError("A must be square")
+
+    V = np.eye(n)
+
+    for iteration in range(max_iterations):
+        # Locate the largest off-diagonal entry.
+        p = 0
+        q = 1
+        largest = 0.0
+        for i in range(n - 1):
+            for j in range(i + 1, n):
+                if abs(D[i, j]) > largest:
+                    largest = abs(D[i, j])
+                    p = i
+                    q = j
+
+        if largest <= tolerance:
+            break
+
+        theta = 0.5 * np.arctan2(
+            2.0 * D[p, q], D[p, p] - D[q, q]
+        )
+        c = float(np.cos(theta))
+        s = float(np.sin(theta))
+
+        J = np.eye(n)
+        J[p, p] = c
+        J[q, q] = c
+        J[p, q] = -s
+        J[q, p] = s
+
+        D = J.T @ D @ J
+        V = V @ J
+
+        # Remove round-off remaining in the selected location.
+        D[p, q] = 0.0
+        D[q, p] = 0.0
+    else:
+        raise RuntimeError("Jacobi iteration did not converge")
+
+    eigenvalues = np.diag(D).copy()
+    return eigenvalues, V
+\end{python}
+
 \subsection{Arnoldi algorithm}
+
+The \textbf{Arnoldi algorithm} constructs an orthonormal basis of a Krylov
+subspace for a general square matrix:
+
+\begin{equation}
+    \mathcal{K}_m(\m{A},\m{b})=
+    \operatorname{span}\left\{
+        \m{b},\m{A}\m{b},\dots,\m{A}^{m-1}\m{b}
+    \right\}
+\end{equation}
+
+Directly forming the powers of $ \m{A} $ would rapidly produce nearly dependent
+vectors. Arnoldi instead multiplies the newest basis vector by $ \m{A} $ and
+orthogonalises the result against all preceding vectors. This gives:
+
+\begin{equation}
+    \m{A}\m{V}_m=\m{V}_{m+1}\overline{\m{H}}_m
+\end{equation}
+
+where $ \m{V}_{m+1} $ has orthonormal columns and
+$ \overline{\m{H}}_m $ is upper Hessenberg. The projected matrix:
+
+\begin{equation}
+    \m{H}_m=\m{V}_m^{*}\m{A}\m{V}_m
+\end{equation}
+
+is small. Its eigenvalues are called \textbf{Ritz values} and approximate
+selected eigenvalues of $ \m{A} $. The same relation is the basis of GMRES for
+linear systems.
+
+If the new vector has zero norm, the Krylov subspace has become invariant under
+$ \m{A} $. This is called a \textbf{happy breakdown}: no further basis vectors
+are required in exact arithmetic.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def Arnoldi(A: np.ndarray,
+            b: np.ndarray,
+            steps: int,
+            tolerance: float = 1.0e-14):
+    """Construct an Arnoldi basis and upper Hessenberg projection."""
+    A = np.asarray(A)
+    b = np.asarray(b)
+    n = A.shape[0]
+    m = min(steps, n)
+    dtype = np.result_type(A, b)
+
+    V = np.zeros((n, m + 1), dtype=dtype)
+    H = np.zeros((m + 1, m), dtype=dtype)
+
+    beta = Vector_Norm(b)
+    if beta <= tolerance:
+        raise ValueError("the starting vector must be nonzero")
+
+    V[:, 0] = b / beta
+    used_steps = m
+
+    for j in range(m):
+        w = A @ V[:, j]
+
+        # Modified Gram-Schmidt orthogonalisation.
+        for i in range(j + 1):
+            H[i, j] = np.dot(np.conjugate(V[:, i]), w)
+            w -= H[i, j] * V[:, i]
+
+        H[j + 1, j] = Vector_Norm(w)
+
+        if H[j + 1, j] <= tolerance:
+            used_steps = j + 1
+            break
+
+        V[:, j + 1] = w / H[j + 1, j]
+
+    return (
+        V[:, :used_steps + 1],
+        H[:used_steps + 1, :used_steps]
+    )
+\end{python}
+
 \subsection{Lanczos algorithm}
+
+For a Hermitian matrix, the Arnoldi projected matrix is also Hermitian. A matrix
+that is both Hermitian and upper Hessenberg must be tridiagonal. This removes the
+need to orthogonalise against every preceding vector and gives the
+\textbf{Lanczos three-term recurrence}:
+
+\begin{eqarray}
+    \m{w}_j &= \m{A}\m{v}_j-\beta_{j-1}\m{v}_{j-1} \\
+    \alpha_j &= \m{v}_j^{*}\m{w}_j \\
+    \m{w}_j &\leftarrow \m{w}_j-\alpha_j\m{v}_j \\
+    \beta_j &= \norm{\m{w}_j}_2 \\
+    \m{v}_{j+1} &= \frac{\m{w}_j}{\beta_j}
+\end{eqarray}
+
+The resulting relation is:
+
+\begin{equation}
+    \m{A}\m{V}_m=\m{V}_m\m{T}_m+
+    \beta_m\m{v}_{m+1}\m{e}_m^{T}
+\end{equation}
+
+where $ \m{T}_m $ is real symmetric tridiagonal for a real symmetric
+$ \m{A} $. Lanczos is well suited to large sparse structural eigenvalue
+problems because it requires only matrix-vector products and stores a limited
+number of vectors.
+
+In exact arithmetic, the three-term recurrence preserves orthogonality. In
+finite precision, converged directions may reappear and produce duplicate Ritz
+values. The example therefore includes optional full reorthogonalisation. This
+increases the cost but makes the educational implementation reliable.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def Lanczos(A: np.ndarray,
+            b: np.ndarray,
+            steps: int,
+            tolerance: float = 1.0e-14,
+            reorthogonalise: bool = True):
+    """Construct a Lanczos basis and symmetric tridiagonal projection."""
+    A = np.asarray(A)
+    b = np.asarray(b)
+    n = A.shape[0]
+    m = min(steps, n)
+    dtype = np.result_type(A, b)
+
+    V = np.zeros((n, m), dtype=dtype)
+    alpha = np.zeros(m)
+    beta = np.zeros(max(m - 1, 0))
+
+    norm_b = Vector_Norm(b)
+    if norm_b <= tolerance:
+        raise ValueError("the starting vector must be nonzero")
+
+    v = b / norm_b
+    v_previous = np.zeros_like(v)
+    beta_previous = 0.0
+    used_steps = m
+
+    for j in range(m):
+        V[:, j] = v
+        w = A @ v - beta_previous * v_previous
+
+        alpha[j] = float(np.real(np.dot(np.conjugate(v), w)))
+        w -= alpha[j] * v
+
+        if reorthogonalise:
+            for i in range(j + 1):
+                coefficient = np.dot(np.conjugate(V[:, i]), w)
+                w -= coefficient * V[:, i]
+
+        if j == m - 1:
+            break
+
+        beta[j] = Vector_Norm(w)
+        if beta[j] <= tolerance:
+            used_steps = j + 1
+            break
+
+        v_previous = v
+        v = w / beta[j]
+        beta_previous = beta[j]
+
+    T = np.diag(alpha[:used_steps])
+    if used_steps > 1:
+        T += np.diag(beta[:used_steps - 1], 1)
+        T += np.diag(beta[:used_steps - 1], -1)
+
+    return V[:, :used_steps], T
+\end{python}
+
 \subsection{Schur algorithm}
 
+Every square complex matrix has a \textbf{Schur decomposition}:
+
+\begin{equation}
+    \m{A}=\m{Z}\m{T}\m{Z}^{*}
+\end{equation}
+
+where $ \m{Z} $ is unitary and $ \m{T} $ is upper triangular. The eigenvalues of
+$ \m{A} $ appear on the diagonal of $ \m{T} $. For real arithmetic, a real
+matrix is generally reduced to \textbf{real Schur form}, which is upper
+quasi-triangular and may contain $ 2\times2 $ diagonal blocks representing
+complex-conjugate eigenvalue pairs.
+
+The QR algorithm first reduces $ \m{A} $ to Hessenberg form and then repeatedly
+performs shifted QR steps:
+
+\begin{eqarray}
+    \m{H}_k-\mu_k\m{I} &= \m{Q}_k\m{R}_k \\
+    \m{H}_{k+1} &= \m{R}_k\m{Q}_k+\mu_k\m{I}
+\end{eqarray}
+
+Since:
+
+\begin{equation}
+    \m{H}_{k+1}=\m{Q}_k^{*}\m{H}_k\m{Q}_k
+\end{equation}
+
+all iterates are similar and have the same eigenvalues. The shift
+$ \mu_k $ accelerates convergence. When a subdiagonal entry becomes small, the
+corresponding eigenvalue is \textbf{deflated} and the iteration continues on the
+remaining leading block.
+
+The following educational implementation converts the matrix to complex
+arithmetic. It therefore converges to triangular complex Schur form even when
+the original real matrix has complex eigenvalues. Production eigensolvers use
+more sophisticated double shifts, aggressive deflation and carefully blocked
+operations.
+
+\begin{python}
+import numpy as np
+
+
+def Schur_QR(A: np.ndarray,
+             tolerance: float = 1.0e-10,
+             max_iterations: int = 5000):
+    """Compute a simple complex Schur form using shifted QR iteration.
+
+    This example reuses Hessenberg_Householder and QR_Householder.
+    """
+    A = np.array(A, dtype=complex, copy=True)
+    n = A.shape[0]
+
+    if A.shape != (n, n):
+        raise ValueError("A must be square")
+
+    Z, H = Hessenberg_Householder(A, tolerance * 0.01)
+    active = n
+    iterations = 0
+
+    while active > 1:
+        scale = (
+            abs(H[active - 2, active - 2])
+            + abs(H[active - 1, active - 1])
+            + 1.0
+        )
+
+        if abs(H[active - 1, active - 2]) <= tolerance * scale:
+            H[active - 1, active - 2] = 0.0
+            active -= 1
+            continue
+
+        if iterations >= max_iterations:
+            raise RuntimeError("shifted QR iteration did not converge")
+
+        # A simple Rayleigh shift from the last diagonal entry.
+        shift = H[active - 1, active - 1]
+        shifted = (
+            H[:active, :active]
+            - shift * np.eye(active, dtype=complex)
+        )
+        Q_step, R_step = QR_Householder(
+            shifted, tolerance * 0.01
+        )
+
+        # Apply the block similarity transformation to the whole matrix.
+        H[:active, :] = np.conjugate(Q_step).T @ H[:active, :]
+        H[:, :active] = H[:, :active] @ Q_step
+        Z[:, :active] = Z[:, :active] @ Q_step
+
+        iterations += 1
+
+    H[abs(H) < tolerance] = 0.0
+    return Z, H
+\end{python}
+
 \subsection{Singular Value Decomposition (SVD)}
+
+For any real or complex $ m\times n $ matrix, the \textbf{singular value
+decomposition} is:
+
+\begin{equation}
+    \m{A}=\m{U}\m{\Sigma}\m{V}^{*}
+\end{equation}
+
+The columns of $ \m{U} $ and $ \m{V} $ are orthonormal. The diagonal entries of
+$ \m{\Sigma} $ are nonnegative singular values:
+
+\begin{equation}
+    \sigma_1\geq\sigma_2\geq\dots\geq0
+\end{equation}
+
+The right singular vectors are eigenvectors of $ \m{A}^{*}\m{A} $, while the
+left singular vectors are eigenvectors of $ \m{A}\m{A}^{*} $:
+
+\begin{eqarray}
+    \m{A}^{*}\m{A}\m{v}_i &= \sigma_i^2\m{v}_i \\
+    \m{A}\m{A}^{*}\m{u}_i &= \sigma_i^2\m{u}_i \\
+    \m{A}\m{v}_i &= \sigma_i\m{u}_i
+\end{eqarray}
+
+The SVD exposes matrix rank, null spaces and conditioning. It also gives the best
+rank-$ r $ approximation in the Euclidean and Frobenius norms:
+
+\begin{equation}
+    \m{A}_r=\sum_{i=1}^{r}\sigma_i\m{u}_i\m{v}_i^{*}
+\end{equation}
+
+The algorithms below form $ \m{A}^{*}\m{A} $ implicitly through repeated
+matrix-vector or matrix-block products. This is useful for explaining the
+relation to eigenvalue iteration, but it squares the condition number and is
+not the preferred production SVD algorithm. Robust libraries use bidiagonal
+reduction followed by specialised iterations.
+
 \subsubsection{SVD using Power Iteration}
+
+Power iteration applied to $ \m{A}^{*}\m{A} $ converges to the dominant right
+singular vector:
+
+\begin{equation}
+    \m{v}^{(k+1)}=
+    \frac{\m{A}^{*}\m{A}\m{v}^{(k)}}
+    {\norm{\m{A}^{*}\m{A}\m{v}^{(k)}}_2}
+\end{equation}
+
+After convergence:
+
+\begin{eqarray}
+    \sigma &= \norm{\m{A}\m{v}}_2 \\
+    \m{u} &= \frac{\m{A}\m{v}}{\sigma}
+\end{eqarray}
+
+The rank-one part is then removed:
+
+\begin{equation}
+    \m{A}\leftarrow\m{A}-\sigma\m{u}\m{v}^{*}
+\end{equation}
+
+and the iteration is repeated for the next singular triplet. This
+\textbf{deflation} is simple but accumulated rounding errors can reduce
+orthogonality, especially for clustered or repeated singular values.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def SVD_Power(A: np.ndarray,
+              rank: int = None,
+              tolerance: float = 1.0e-10,
+              max_iterations: int = 10000):
+    """Approximate a thin SVD by power iteration and rank-one deflation."""
+    B = np.array(A, dtype=float, copy=True)
+    m, n = B.shape
+    maximum_rank = min(m, n)
+    r = maximum_rank if rank is None else min(rank, maximum_rank)
+
+    U = np.zeros((m, r))
+    singular_values = np.zeros(r)
+    V = np.zeros((n, r))
+    used_rank = r
+
+    for k in range(r):
+        # A deterministic nonzero initial vector.
+        v = np.arange(1, n + 1, dtype=float) + k
+        v /= Vector_Norm(v)
+
+        for iteration in range(max_iterations):
+            w = B.T @ (B @ v)
+            norm_w = Vector_Norm(w)
+
+            if norm_w <= tolerance:
+                used_rank = k
+                break
+
+            v_new = w / norm_w
+
+            # The sign of a singular vector is arbitrary.
+            same_sign = Vector_Norm(v_new - v)
+            opposite_sign = Vector_Norm(v_new + v)
+            v = v_new
+
+            if min(same_sign, opposite_sign) <= tolerance:
+                break
+        else:
+            raise RuntimeError("power iteration did not converge")
+
+        if used_rank == k:
+            break
+
+        Av = B @ v
+        sigma = Vector_Norm(Av)
+        if sigma <= tolerance:
+            used_rank = k
+            break
+
+        u = Av / sigma
+        U[:, k] = u
+        singular_values[k] = sigma
+        V[:, k] = v
+
+        # Remove the converged rank-one contribution.
+        B -= sigma * np.outer(u, v)
+
+    return (
+        U[:, :used_rank],
+        singular_values[:used_rank],
+        V[:, :used_rank].T
+    )
+\end{python}
+
 \subsubsection{SVD using QR (orthogonal) Iteration}
+
+Power iteration finds one direction at a time. \textbf{Orthogonal iteration}
+propagates a complete subspace. Starting with an orthonormal matrix
+$ \m{Q}^{(0)} $, repeat:
+
+\begin{eqarray}
+    \m{Y}^{(k)} &= \m{A}^{*}\m{A}\m{Q}^{(k)} \\
+    \m{Y}^{(k)} &= \m{Q}^{(k+1)}\m{R}^{(k+1)}
+\end{eqarray}
+
+The QR factorisation prevents all columns from collapsing onto the dominant
+singular vector. After convergence, each column $ \m{q}_i $ approximates a right
+singular vector. The corresponding left vector and singular value are:
+
+\begin{eqarray}
+    \sigma_i &= \norm{\m{A}\m{q}_i}_2 \\
+    \m{u}_i &= \frac{\m{A}\m{q}_i}{\sigma_i}
+\end{eqarray}
+
+Convergence depends on separation between singular values. Repeated singular
+values define an invariant subspace rather than unique individual vectors; any
+orthonormal basis of that subspace is valid.
+
+Python implementation:
+
+\begin{python}
+import numpy as np
+
+
+def SVD_Orthogonal_Iteration(A: np.ndarray,
+                             tolerance: float = 1.0e-10,
+                             max_iterations: int = 10000):
+    """Approximate a thin SVD using block orthogonal iteration.
+
+    The example reuses QR_Householder and does not call numpy.linalg.
+    """
+    A = np.array(A, dtype=float, copy=True)
+    m, n = A.shape
+    r = min(m, n)
+
+    # Construct a deterministic full-rank starting block.
+    seed = np.empty((n, r))
+    for i in range(n):
+        for j in range(r):
+            seed[i, j] = 1.0 / (1.0 + i + j)
+            if i == j:
+                seed[i, j] += 1.0
+
+    Q, unused_R = QR_Householder(seed)
+    Q = Q[:, :r]
+
+    for iteration in range(max_iterations):
+        Y = A.T @ (A @ Q)
+        Q_new, unused_R = QR_Householder(Y)
+        Q_new = Q_new[:, :r]
+
+        # Compare columns while accounting for arbitrary signs.
+        error = 0.0
+        for j in range(r):
+            same_sign = Vector_Norm(Q_new[:, j] - Q[:, j])
+            opposite_sign = Vector_Norm(Q_new[:, j] + Q[:, j])
+            error = max(error, min(same_sign, opposite_sign))
+
+        Q = Q_new
+        if error <= tolerance:
+            break
+    else:
+        raise RuntimeError("orthogonal iteration did not converge")
+
+    U = np.zeros((m, r))
+    singular_values = np.zeros(r)
+
+    for j in range(r):
+        Aq = A @ Q[:, j]
+        singular_values[j] = Vector_Norm(Aq)
+        if singular_values[j] > tolerance:
+            U[:, j] = Aq / singular_values[j]
+
+    # Sort the singular triplets from largest to smallest.
+    order = np.argsort(-singular_values)
+    singular_values = singular_values[order]
+    U = U[:, order]
+    Q = Q[:, order]
+
+    return U, singular_values, Q.T
+\end{python}
 
 
 \subsection{Positive semidefinite matrices}
