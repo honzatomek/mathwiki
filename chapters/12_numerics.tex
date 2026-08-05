@@ -3716,7 +3716,1061 @@ starts from the information available and the property that must be preserved:
           primary requirement.
 \end{itemize}
 
-\section{Modal Assurance Criterion (MAC)}
+\section{Modal Assurance Criterion and Similarity Metrics}
+
+A comparison of two numerical or experimental models rarely reduces to checking
+whether individual numbers are equal. Eigenvectors may have different scaling,
+a reversed sign or a constant complex phase, even when they describe the same
+physical deformation. Closely spaced modes may also rotate within their common
+modal subspace, so that two valid bases look different when compared vector by
+vector.
+
+Similarity measures remove selected ambiguities and reduce the comparison to
+one or more dimensionless values. The result is useful only when the removed
+ambiguity is physically irrelevant. A scale-invariant criterion, for example,
+cannot reveal an amplitude error. Therefore modal correlation should normally
+be accompanied by natural-frequency differences, scale factors and direct
+residual measures.
+
+Let $ \M{\phi}_r $ denote mode $ r $ from a reference model and
+$ \M{\psi}_s $ mode $ s $ from a second model. Both vectors must first be
+expressed at the same physical coordinates, in the same order and in the same
+coordinate systems. A correlation value calculated from mismatched degrees of
+freedom has no physical meaning, even when the resulting number is close to one.
+
+\subsection{Complex Inner Product and Normalised Correlation}
+
+For real mode shapes, the ordinary dot product is sufficient. Experimental
+modes, damped-system modes and frequency-response functions may be complex. The
+corresponding inner product uses the conjugate transpose:
+
+\begin{equation}
+    \left<\M{x},\M{y}\right>
+    = \M{x}^{H}\M{y}.
+\end{equation}
+
+A positive-definite weighting matrix $ \m{W} $ may be introduced:
+
+\begin{equation}\label{weighted-inner-product-correlation}
+    \left<\M{x},\M{y}\right>_{W}
+    = \M{x}^{H}\m{W}\M{y}.
+\end{equation}
+
+With $ \m{W}=\m{I} $, every retained coordinate receives the same algebraic
+weight. A diagonal matrix may represent coordinate importance or quadrature
+weights. A mass matrix gives the inner product used by structural modes. The
+weighting matrix must be the same for both vectors and must not create a
+negative squared norm.
+
+The normalised complex correlation coefficient is:
+
+\begin{bbox}
+    \begin{equation}\label{normalised-complex-correlation}
+        \rho(\M{x},\M{y}) =
+        \frac{\M{x}^{H}\m{W}\M{y}}
+        {\sqrt{\left(\M{x}^{H}\m{W}\M{x}\right)
+               \left(\M{y}^{H}\m{W}\M{y}\right)}}.
+    \end{equation}
+\end{bbox}
+
+The magnitude satisfies $0\leq\abs{\rho}\leq1$. For real vectors it is the
+cosine of the angle between the two vectors. The argument of $\rho$ gives the
+constant phase rotation that best aligns the vectors. Multiplying either vector
+by a non-zero scalar changes this phase but not $\abs{\rho}$.
+
+\subsection{Modal Assurance Criterion}
+
+The \textbf{Modal Assurance Criterion} (MAC) is the squared magnitude of the
+normalised correlation coefficient:
+
+\begin{bbox}
+    \begin{equation}\label{mac-definition}
+        \operatorname{MAC}(\M{\phi}_r,\M{\psi}_s)
+        =
+        \frac{
+            \abs{\M{\phi}_r^{H}\m{W}\M{\psi}_s}^{2}
+        }{
+            \left(\M{\phi}_r^{H}\m{W}\M{\phi}_r\right)
+            \left(\M{\psi}_s^{H}\m{W}\M{\psi}_s\right)
+        }
+        = \abs{\rho_{rs}}^2.
+    \end{equation}
+\end{bbox}
+
+
+\subsubsection{Geometric Interpretation for Real Vectors}
+
+For two non-zero real vectors in two or three dimensions, the ordinary dot
+product has the familiar geometric interpretation
+
+\begin{equation}\label{vector-angle-definition}
+    \M{x}^{T}\M{y}
+    = \norm{\M{x}}_2\norm{\M{y}}_2\cos\alpha,
+\end{equation}
+
+where $\alpha\in[0,\pi]$ is the angle between the oriented vectors. With the
+unweighted Euclidean inner product, substitution into
+Equation~\ref{mac-definition} gives
+
+\begin{bbox}
+    \begin{equation}\label{mac-cosine-angle}
+        \operatorname{MAC}(\M{x},\M{y})
+        =
+        \frac{(\M{x}^{T}\M{y})^2}
+        {(\M{x}^{T}\M{x})(\M{y}^{T}\M{y})}
+        = \cos^2\alpha.
+    \end{equation}
+\end{bbox}
+
+The same relation is valid in any finite dimension, but in two and three
+dimensions it can be visualised directly as the angle between arrows. For
+example, vectors separated by $60^\circ$ have
+
+\begin{equation}
+    \operatorname{MAC}=\cos^2 60^\circ=0.25.
+\end{equation}
+
+Squaring the cosine removes its sign. Parallel vectors
+($\alpha=0$) and antiparallel vectors ($\alpha=\pi$) therefore both have a MAC
+of one. Likewise, angles $\alpha$ and $\pi-\alpha$ give the same MAC. This is
+not a defect for mode-shape comparison because the sign of a real eigenvector
+is arbitrary, but it means that MAC does not preserve the orientation of an
+ordinary geometric vector.
+
+When the vectors are treated as unoriented lines, the relevant acute angle is
+
+\begin{bbox}
+    \begin{equation}\label{mac-principal-angle}
+        \beta
+        = \arccos\!\left(\sqrt{\operatorname{MAC}}\right),
+        \qquad 0\leq\beta\leq\frac{\pi}{2}.
+    \end{equation}
+\end{bbox}
+
+Thus, $\operatorname{MAC}=0.81$ corresponds to an unoriented angle
+$\beta=\arccos(0.9)\approx25.84^\circ$. The full oriented angle $\alpha$ cannot
+be recovered from MAC alone; the sign of the normalised dot product is also
+required.
+
+For a positive-definite weighting matrix $\m{W}$, the same interpretation holds
+in the weighted geometry:
+
+\begin{equation}
+    \cos\alpha_W
+    =
+    \frac{\M{x}^{T}\m{W}\M{y}}
+    {\sqrt{(\M{x}^{T}\m{W}\M{x})(\M{y}^{T}\m{W}\M{y})}},
+    \qquad
+    \operatorname{MAC}_W=\cos^2\alpha_W.
+\end{equation}
+
+The angle $\alpha_W$ is generally not the visible Euclidean angle between the
+two arrows. The weighting changes the geometry by stretching and rotating the
+coordinate space. A mass-weighted MAC therefore measures the angle induced by
+the mass matrix.
+
+\begin{python}
+import numpy as np
+
+
+def Angle_And_MAC(vector_1, vector_2, tolerance=1.0e-14):
+    vector_1 = np.asarray(vector_1, dtype=float).reshape(-1)
+    vector_2 = np.asarray(vector_2, dtype=float).reshape(-1)
+
+    if vector_1.size not in (2, 3) or vector_2.size != vector_1.size:
+        raise ValueError("Use two vectors of equal length in 2D or 3D.")
+
+    norm_1 = np.sqrt(np.dot(vector_1, vector_1))
+    norm_2 = np.sqrt(np.dot(vector_2, vector_2))
+
+    if norm_1 <= tolerance or norm_2 <= tolerance:
+        raise ValueError("The angle is undefined for a zero-length vector.")
+
+    cosine = np.dot(vector_1, vector_2) / (norm_1 * norm_2)
+    cosine = min(1.0, max(-1.0, float(cosine)))
+
+    oriented_angle = np.arccos(cosine)
+    mac = cosine**2
+    unoriented_angle = np.arccos(abs(cosine))
+
+    return np.degrees(oriented_angle), mac, np.degrees(unoriented_angle)
+
+
+x_2d = np.array([1.0, 0.0])
+y_2d = np.array([0.5, np.sqrt(3.0) / 2.0])
+print(Angle_And_MAC(x_2d, y_2d))
+# (60.0 degrees, 0.25, 60.0 degrees)
+
+x_3d = np.array([1.0, 0.0, 0.0])
+y_3d = np.array([-1.0, -1.0, -1.0])
+print(Angle_And_MAC(x_3d, y_3d))
+# (125.264 degrees, 1/3, 54.736 degrees)
+\end{python}
+
+The MAC lies between zero and one. Its limiting values mean:
+
+\begin{itemize}
+    \item $\operatorname{MAC}_{rs}=1$: the two vectors are linearly dependent,
+    \item $\operatorname{MAC}_{rs}=0$: the two vectors are orthogonal in the
+          selected inner product.
+\end{itemize}
+
+For a real mode, a sign reversal does not change the MAC:
+
+\begin{equation}
+    \operatorname{MAC}(\M{\phi},-\M{\phi})=1.
+\end{equation}
+
+For a complex mode, neither does a constant phase rotation:
+
+\begin{equation}
+    \operatorname{MAC}(\M{\phi},e^{\mathrm{i}\theta}\M{\phi})=1.
+\end{equation}
+
+This invariance is desirable because eigenvectors have arbitrary scale and
+phase. It also explains what MAC does \emph{not} test. A MAC of one does not
+show that two modes have the same natural frequency, modal mass or physical
+amplitude. It only shows that the vectors have the same direction in the
+selected vector space.
+
+There is no universal value that separates a correct mode pair from an
+incorrect one. The interpretation depends on modal density, the number and
+placement of observed coordinates, measurement noise and the intended use of
+the model. A reduced set of coordinates can make physically distinct modes look
+nearly parallel. A high MAC must therefore be read together with the available
+spatial information and with the off-diagonal terms of the complete MAC matrix.
+
+\begin{python}
+import numpy as np
+
+
+def Apply_Weight(vector, weight=None):
+    vector = np.asarray(vector)
+
+    if weight is None:
+        return vector
+
+    weight = np.asarray(weight)
+
+    if weight.ndim == 1:
+        if weight.size != vector.shape[0]:
+            raise ValueError("The weight vector has the wrong length.")
+        return weight * vector
+
+    if weight.ndim == 2:
+        if weight.shape != (vector.shape[0], vector.shape[0]):
+            raise ValueError("The weight matrix has the wrong shape.")
+        return weight @ vector
+
+    raise ValueError("Weight must be None, a vector or a square matrix.")
+
+
+def Weighted_Inner_Product(left, right, weight=None):
+    left = np.asarray(left).reshape(-1)
+    right = np.asarray(right).reshape(-1)
+
+    if left.size != right.size:
+        raise ValueError("The vectors must contain the same coordinates.")
+
+    return np.vdot(left, Apply_Weight(right, weight))
+
+
+def MAC(reference, comparison, weight=None, tolerance=1.0e-14):
+    reference = np.asarray(reference).reshape(-1)
+    comparison = np.asarray(comparison).reshape(-1)
+
+    cross = Weighted_Inner_Product(reference, comparison, weight)
+    norm_reference = Weighted_Inner_Product(reference, reference, weight).real
+    norm_comparison = Weighted_Inner_Product(comparison, comparison, weight).real
+
+    if norm_reference <= tolerance or norm_comparison <= tolerance:
+        raise ValueError("MAC is undefined for a zero-length vector.")
+
+    value = abs(cross)**2 / (norm_reference * norm_comparison)
+
+    # Remove only round-off excursions outside the theoretical interval.
+    return float(min(1.0, max(0.0, value.real)))
+
+
+phi = np.array([1.0, 2.0, -1.0, 0.5])
+psi = -3.0 * phi
+chi = np.array([2.0, -1.0, 0.0, 0.0])
+
+print(MAC(phi, psi))  # 1.0: different scale and sign, same shape
+print(MAC(phi, chi))  # smaller: a genuinely different vector direction
+\end{python}
+
+\subsection{AutoMAC and CrossMAC Matrices}
+
+A modal model normally contains several vectors. Arranging the modes as columns,
+
+\begin{equation}
+    \M{\Phi}=
+    \left[\M{\phi}_1\ \M{\phi}_2\ \cdots\ \M{\phi}_{n_r}\right],
+    \qquad
+    \M{\Psi}=
+    \left[\M{\psi}_1\ \M{\psi}_2\ \cdots\ \M{\psi}_{n_s}\right],
+\end{equation}
+
+allows every pair to be compared. The \textbf{CrossMAC} matrix contains:
+
+\begin{equation}
+    (\m{C}_{MAC})_{rs}
+    =\operatorname{MAC}(\M{\phi}_r,\M{\psi}_s).
+\end{equation}
+
+Rows correspond to reference modes and columns to comparison modes. A clear
+one-to-one modal correspondence appears as one dominant value in each matched
+row and column. If two comparison modes both correlate strongly with one
+reference mode, the causes may include closely spaced modes, an exchanged mode
+order, insufficient coordinates or an actual modelling difference.
+
+An \textbf{AutoMAC} matrix compares a set with itself:
+
+\begin{equation}
+    (\m{A}_{MAC})_{rs}
+    =\operatorname{MAC}(\M{\phi}_r,\M{\phi}_s).
+\end{equation}
+
+Its diagonal is one. Large off-diagonal terms mean that the retained coordinates
+do not distinguish the corresponding modes well. Exact modes of a symmetric
+undamped model are orthogonal with respect to the mass matrix, not necessarily
+with respect to the unweighted Euclidean product. Consequently, an unweighted
+AutoMAC may have non-zero off-diagonal terms even for a mathematically correct
+modal basis.
+
+\begin{python}
+import numpy as np
+
+
+def MAC_Matrix(reference_modes, comparison_modes=None, weight=None):
+    reference_modes = np.asarray(reference_modes)
+
+    if reference_modes.ndim != 2:
+        raise ValueError("Modes must be columns of a two-dimensional array.")
+
+    if comparison_modes is None:
+        comparison_modes = reference_modes
+    else:
+        comparison_modes = np.asarray(comparison_modes)
+
+    if comparison_modes.ndim != 2:
+        raise ValueError("Modes must be columns of a two-dimensional array.")
+
+    if reference_modes.shape[0] != comparison_modes.shape[0]:
+        raise ValueError("Both mode sets must contain the same coordinates.")
+
+    result = np.empty((reference_modes.shape[1], comparison_modes.shape[1]))
+
+    for r in range(reference_modes.shape[1]):
+        for s in range(comparison_modes.shape[1]):
+            result[r, s] = MAC(
+                reference_modes[:, r],
+                comparison_modes[:, s],
+                weight,
+            )
+
+    return result
+
+
+reference = np.array([
+    [ 1.0,  0.0,  1.0],
+    [ 0.0,  1.0,  1.0],
+    [-1.0,  0.0,  1.0],
+    [ 0.0, -1.0,  1.0],
+])
+
+# The first two modes are exchanged and slightly perturbed.
+comparison = np.array([
+    [ 0.05,  1.00,  1.00],
+    [ 1.00,  0.05,  0.95],
+    [-0.05, -1.00,  1.05],
+    [-1.00, -0.05,  1.00],
+])
+
+print(MAC_Matrix(reference, comparison))
+\end{python}
+
+\subsection{Weighted MAC and Cross-Orthogonality}
+
+When complete finite element mode shapes and a compatible mass matrix are
+available, the natural structural inner product is obtained with
+$\m{W}=\m{M}$. The mass-weighted MAC becomes:
+
+\begin{equation}\label{mass-weighted-mac}
+    \operatorname{MAC}_{M}(\M{\phi}_r,\M{\psi}_s)
+    =
+    \frac{\abs{\M{\phi}_r^H\m{M}\M{\psi}_s}^2}
+    {(\M{\phi}_r^H\m{M}\M{\phi}_r)
+     (\M{\psi}_s^H\m{M}\M{\psi}_s)}.
+\end{equation}
+
+A full mass matrix cannot normally be applied directly to a sparse set of test
+coordinates. Extracting only the measured rows and columns of $\m{M}$ does not
+in general preserve the inner product of the omitted coordinates. In that case
+an identity or carefully defined diagonal weighting is more transparent than a
+matrix described incorrectly as the physical mass matrix.
+
+Before taking the absolute square, the normalised weighted products form a
+\textbf{cross-orthogonality matrix}:
+
+\begin{equation}\label{normalised-cross-orthogonality}
+    C_{rs}=
+    \frac{\M{\phi}_r^H\m{W}\M{\psi}_s}
+    {\sqrt{(\M{\phi}_r^H\m{W}\M{\phi}_r)
+           (\M{\psi}_s^H\m{W}\M{\psi}_s)}}.
+\end{equation}
+
+Thus:
+
+\begin{equation}
+    \operatorname{MAC}_{rs}=\abs{C_{rs}}^2.
+\end{equation}
+
+The MAC discards the sign or phase of $C_{rs}$, while the cross-orthogonality
+matrix retains it. If two real mass-normalised modal bases have the same order
+and orientation, $\m{C}$ is close to the identity. A diagonal entry of $-1$
+means that the shape is identical but its arbitrary sign is reversed.
+
+\begin{python}
+import numpy as np
+
+
+def Normalise_Mode(mode, weight=None, tolerance=1.0e-14):
+    mode = np.asarray(mode)
+    norm_squared = Weighted_Inner_Product(mode, mode, weight).real
+
+    if norm_squared <= tolerance:
+        raise ValueError("A zero mode cannot be normalised.")
+
+    return mode / np.sqrt(norm_squared)
+
+
+def Cross_Orthogonality(reference_modes, comparison_modes, weight=None):
+    reference_modes = np.asarray(reference_modes)
+    comparison_modes = np.asarray(comparison_modes)
+
+    if reference_modes.shape[0] != comparison_modes.shape[0]:
+        raise ValueError("Both sets must contain the same coordinates.")
+
+    reference_normalised = np.column_stack([
+        Normalise_Mode(reference_modes[:, i], weight)
+        for i in range(reference_modes.shape[1])
+    ])
+    comparison_normalised = np.column_stack([
+        Normalise_Mode(comparison_modes[:, i], weight)
+        for i in range(comparison_modes.shape[1])
+    ])
+
+    weighted_comparison = np.column_stack([
+        Apply_Weight(comparison_normalised[:, i], weight)
+        for i in range(comparison_normalised.shape[1])
+    ])
+
+    return reference_normalised.conj().T @ weighted_comparison
+
+
+mass = np.diag([2.0, 1.0, 2.0, 1.0])
+cross_orthogonality = Cross_Orthogonality(reference, comparison, mass)
+weighted_mac = abs(cross_orthogonality)**2
+
+print(cross_orthogonality)
+print(weighted_mac)
+\end{python}
+
+\subsection{Modal Scale Factor and Scaled Residual}
+
+MAC intentionally ignores scale. To compare amplitudes, choose a reference mode
+$\M{\phi}$ and scale the comparison mode $\M{\psi}$ by a complex factor $a$.
+The factor that minimises the weighted least-squares residual
+
+\begin{equation}
+    J(a)=\norm{\M{\phi}-a\M{\psi}}_{W}^{2}
+\end{equation}
+
+is the \textbf{Modal Scale Factor} (MSF):
+
+\begin{bbox}
+    \begin{equation}\label{modal-scale-factor}
+        a_{MSF}=
+        \frac{\M{\psi}^{H}\m{W}\M{\phi}}
+             {\M{\psi}^{H}\m{W}\M{\psi}}.
+    \end{equation}
+\end{bbox}
+
+The scaled comparison vector is:
+
+\begin{equation}
+    \widehat{\M{\psi}}=a_{MSF}\M{\psi}.
+\end{equation}
+
+For real modes, the sign of $a_{MSF}$ aligns the arbitrary modal sign. For
+complex modes, its argument aligns the constant phase and its magnitude aligns
+the scale. The remaining relative error is:
+
+\begin{equation}\label{scaled-modal-error}
+    e_{mode}=
+    \frac{\norm{\M{\phi}-a_{MSF}\M{\psi}}_{W}}
+         {\norm{\M{\phi}}_{W}}.
+\end{equation}
+
+With the same inner product and the optimum complex scale factor, Equations
+\eqref{mac-definition} and \eqref{scaled-modal-error} are related by:
+
+\begin{equation}\label{mac-residual-relation}
+    e_{mode}=\sqrt{1-\operatorname{MAC}(\M{\phi},\M{\psi})}.
+\end{equation}
+
+The relation is useful for interpretation: MAC close to one corresponds to a
+small angular residual. It also means that this particular scaled residual does
+not provide information independent of MAC. The scale factor itself does.
+
+\begin{python}
+import numpy as np
+
+
+def Modal_Scale_Factor(reference, comparison, weight=None,
+                       tolerance=1.0e-14):
+    denominator = Weighted_Inner_Product(comparison, comparison, weight)
+
+    if denominator.real <= tolerance:
+        raise ValueError("The comparison mode has zero length.")
+
+    numerator = Weighted_Inner_Product(comparison, reference, weight)
+    return numerator / denominator
+
+
+def Scaled_Modal_Error(reference, comparison, weight=None):
+    reference = np.asarray(reference)
+    comparison = np.asarray(comparison)
+
+    scale = Modal_Scale_Factor(reference, comparison, weight)
+    residual = reference - scale * comparison
+
+    residual_norm = Weighted_Inner_Product(residual, residual, weight).real
+    reference_norm = Weighted_Inner_Product(reference, reference, weight).real
+
+    return scale, np.sqrt(residual_norm / reference_norm)
+
+
+reference_mode = np.array([1.0, 2.0, -1.0, 0.5])
+comparison_mode = 2.0j * reference_mode + np.array([0.00, 0.02, 0.00, -0.01])
+
+scale, error = Scaled_Modal_Error(reference_mode, comparison_mode)
+mac = MAC(reference_mode, comparison_mode)
+
+print(scale)
+print(error)
+print(np.sqrt(1.0 - mac))
+\end{python}
+
+\subsection{Coordinate Modal Assurance Criterion}
+
+MAC indicates whether a pair of complete mode vectors agrees, but it does not
+show where the disagreement occurs. The \textbf{Coordinate Modal Assurance
+Criterion} (COMAC) reverses the comparison. First, $m$ corresponding mode pairs
+are selected and scaled consistently. Then the values at one coordinate $j$ are
+compared over all paired modes:
+
+\begin{bbox}
+    \begin{equation}\label{comac-definition}
+        \operatorname{COMAC}_j=
+        \frac{
+            \abs{\displaystyle\sum_{r=1}^{m}
+                \overline{\phi_{jr}}\psi_{jr}}^2
+        }{
+            \left(\displaystyle\sum_{r=1}^{m}\abs{\phi_{jr}}^2\right)
+            \left(\displaystyle\sum_{r=1}^{m}\abs{\psi_{jr}}^2\right)
+        }.
+    \end{equation}
+\end{bbox}
+
+COMAC is therefore a MAC performed along the modal direction of the two mode
+shape matrices at a fixed physical coordinate. A value near one means that this
+coordinate behaves consistently over the selected mode pairs. A low value marks
+a coordinate that contributes strongly to the disagreement.
+
+COMAC requires more preparation than MAC:
+
+\begin{enumerate}
+    \item the two mode sets must first be paired,
+    \item arbitrary sign or phase differences must be aligned,
+    \item the modes should be normalised or otherwise scaled consistently,
+    \item coordinates with negligible amplitude over all selected modes should
+          not be interpreted as reliable localisation information.
+\end{enumerate}
+
+A low COMAC value is not automatically evidence of a local modelling defect. It
+may also be caused by a sensor orientation error, coordinate mapping error,
+measurement noise, a poorly paired mode or a node located close to modal lines.
+
+\begin{python}
+import numpy as np
+
+
+def Align_Mode_Set(reference_modes, comparison_modes, weight=None):
+    reference_modes = np.asarray(reference_modes)
+    comparison_modes = np.asarray(comparison_modes)
+
+    if reference_modes.shape != comparison_modes.shape:
+        raise ValueError("COMAC requires already paired mode sets.")
+
+    aligned = comparison_modes.astype(
+        np.result_type(reference_modes, comparison_modes, complex),
+        copy=True,
+    )
+
+    for mode in range(reference_modes.shape[1]):
+        scale = Modal_Scale_Factor(
+            reference_modes[:, mode],
+            aligned[:, mode],
+            weight,
+        )
+        aligned[:, mode] *= scale
+
+    return aligned
+
+
+def COMAC(reference_modes, comparison_modes, align=True,
+          tolerance=1.0e-14):
+    reference_modes = np.asarray(reference_modes)
+    comparison_modes = np.asarray(comparison_modes)
+
+    if reference_modes.shape != comparison_modes.shape:
+        raise ValueError("The paired mode matrices must have the same shape.")
+
+    if align:
+        comparison_modes = Align_Mode_Set(reference_modes, comparison_modes)
+
+    numerator = abs(
+        np.sum(np.conj(reference_modes) * comparison_modes, axis=1)
+    )**2
+    denominator = (
+        np.sum(abs(reference_modes)**2, axis=1)
+        * np.sum(abs(comparison_modes)**2, axis=1)
+    )
+
+    result = np.full(reference_modes.shape[0], np.nan, dtype=float)
+    valid = denominator > tolerance
+    result[valid] = numerator[valid] / denominator[valid]
+    return np.clip(result, 0.0, 1.0)
+
+
+paired_reference = reference[:, :2]
+paired_comparison = comparison[:, [1, 0]]
+
+# Introduce a local discrepancy at coordinate 2.
+paired_comparison = paired_comparison.copy()
+paired_comparison[2, :] += np.array([0.45, -0.35])
+
+print(COMAC(paired_reference, paired_comparison))
+\end{python}
+
+\subsection{Repeated Modes and Subspace Similarity}
+
+Individual vectors are not always the correct objects to compare. Consider a
+repeated eigenvalue. Any linearly independent rotation of its modal basis spans
+the same physical eigenspace. Two solvers may therefore return:
+
+\begin{equation}
+    \M{\Psi}=\M{\Phi}\m{R},
+\end{equation}
+
+where $\m{R}$ is an orthogonal or unitary matrix. Individual diagonal MAC values
+can then be low even though both bases describe exactly the same subspace.
+
+Let $\M{Q}_{\Phi}$ and $\M{Q}_{\Psi}$ contain weighted-orthonormal bases of two
+subspaces with the same dimension $p$:
+
+\begin{equation}
+    \M{Q}_{\Phi}^{H}\m{W}\M{Q}_{\Phi}=\m{I},
+    \qquad
+    \M{Q}_{\Psi}^{H}\m{W}\M{Q}_{\Psi}=\m{I}.
+\end{equation}
+
+The singular values of
+$\M{Q}_{\Phi}^{H}\m{W}\M{Q}_{\Psi}$ are the cosines of the principal angles
+between the subspaces. A simple basis-invariant mean similarity is:
+
+\begin{bbox}
+    \begin{equation}\label{mean-subspace-similarity}
+        S_{sub}=
+        \frac{1}{p}
+        \norm{\M{Q}_{\Phi}^{H}\m{W}\M{Q}_{\Psi}}_{F}^{2}.
+    \end{equation}
+\end{bbox}
+
+The value is one when the subspaces are identical and zero when they are
+orthogonal. Unlike a diagonal MAC average, $S_{sub}$ does not depend on the
+particular basis chosen inside either subspace. For unequal subspace dimensions,
+normalising by the smaller dimension answers whether the smaller subspace is
+contained in the larger one.
+
+\begin{python}
+import numpy as np
+
+
+def Weighted_Gram_Schmidt(vectors, weight=None, tolerance=1.0e-12):
+    vectors = np.asarray(vectors)
+    basis = []
+
+    for column in range(vectors.shape[1]):
+        vector = vectors[:, column].astype(
+            np.result_type(vectors, complex),
+            copy=True,
+        )
+
+        # Two passes reduce the loss of orthogonality.
+        for _ in range(2):
+            for q in basis:
+                vector -= q * Weighted_Inner_Product(q, vector, weight)
+
+        norm_squared = Weighted_Inner_Product(vector, vector, weight).real
+        if norm_squared > tolerance**2:
+            basis.append(vector / np.sqrt(norm_squared))
+
+    if not basis:
+        raise ValueError("The vectors do not span a non-zero subspace.")
+
+    return np.column_stack(basis)
+
+
+def Subspace_Similarity(first, second, weight=None):
+    q_first = Weighted_Gram_Schmidt(first, weight)
+    q_second = Weighted_Gram_Schmidt(second, weight)
+
+    weighted_second = np.column_stack([
+        Apply_Weight(q_second[:, i], weight)
+        for i in range(q_second.shape[1])
+    ])
+    cross = q_first.conj().T @ weighted_second
+
+    dimension = min(q_first.shape[1], q_second.shape[1])
+    return float(np.sum(abs(cross)**2).real / dimension)
+
+
+subspace_a = np.array([
+    [1.0, 0.0],
+    [0.0, 1.0],
+    [0.0, 0.0],
+])
+
+angle = 0.73
+rotation = np.array([
+    [np.cos(angle), -np.sin(angle)],
+    [np.sin(angle),  np.cos(angle)],
+])
+subspace_b = subspace_a @ rotation
+
+print(MAC_Matrix(subspace_a, subspace_b))
+print(Subspace_Similarity(subspace_a, subspace_b))  # exactly the same plane
+\end{python}
+
+\subsection{Natural-Frequency Agreement and Mode Pairing}
+
+MAC compares shapes and is independent of eigenvalues. For a candidate pair,
+the signed relative natural-frequency difference may be written:
+
+\begin{equation}\label{relative-frequency-error}
+    e_{f,rs}=
+    \frac{f_s^{comparison}-f_r^{reference}}
+         {f_r^{reference}}.
+\end{equation}
+
+The absolute percentage error is $100\abs{e_{f,rs}}$. Frequency agreement alone
+is not sufficient for pairing because different modes may cross or lie close
+together. MAC alone is also insufficient because spatially undersampled modes
+may look similar. A practical pairing procedure considers both.
+
+One possible dimensionless assignment cost is:
+
+\begin{equation}\label{combined-mode-pairing-cost}
+    c_{rs}=w_{MAC}\left(1-\operatorname{MAC}_{rs}\right)
+          +w_f e_{f,rs}^{2},
+\end{equation}
+
+where the weights state the relative importance assigned by the analyst. This
+is not a universal physical law; it is a transparent optimisation criterion.
+The complete set of pairs should be selected as a global assignment problem.
+Choosing the largest entry independently in every MAC row can assign one
+comparison mode to several reference modes and may miss the best overall
+pairing.
+
+After pairing, report at least the mode numbers, both frequencies, relative
+frequency error, MAC and modal scale factor. For repeated or strongly coupled
+modes, report subspace similarity in place of forcing an arbitrary one-to-one
+vector pairing.
+
+\subsection{Frequency Response Assurance Criterion}
+
+Mode-shape correlation requires modal parameter extraction. The measured and
+calculated frequency-response functions can instead be compared directly. Let
+$\M{h}_A$ and $\M{h}_B$ contain complex FRF samples from the same frequencies
+and channels. The
+\textbf{Frequency Response Assurance Criterion} (FRAC) has the same algebraic
+form as MAC:
+
+\begin{bbox}
+    \begin{equation}\label{frac-definition}
+        \operatorname{FRAC}(\M{h}_A,\M{h}_B)
+        =
+        \frac{\abs{\M{h}_A^{H}\m{W}_f\M{h}_B}^{2}}
+        {(\M{h}_A^{H}\m{W}_f\M{h}_A)
+         (\M{h}_B^{H}\m{W}_f\M{h}_B)}.
+    \end{equation}
+\end{bbox}
+
+The vectors may be constructed in different ways:
+
+\begin{itemize}
+    \item for one input-output pair, stack the FRF values over a selected
+          frequency range,
+    \item at one frequency, stack all measured response channels,
+    \item for a global comparison, stack several channels and frequency lines
+          into one vector.
+\end{itemize}
+
+The construction must be stated because it determines what a single FRAC value
+means. A global value can hide a narrow frequency range with poor correlation.
+A frequency-by-frequency or moving-window FRAC reveals where the disagreement
+occurs.
+
+FRAC is invariant to one constant complex scale factor over the selected vector.
+Thus two FRFs that differ only by a constant gain and phase shift have FRAC one.
+The corresponding complex scale factor is:
+
+\begin{equation}\label{frf-scale-factor}
+    a_H=
+    \frac{\M{h}_B^H\m{W}_f\M{h}_A}
+         {\M{h}_B^H\m{W}_f\M{h}_B}.
+\end{equation}
+
+The unsquared normalised correlation coefficient from Equation
+\eqref{normalised-complex-correlation} is also useful for FRFs. Its magnitude is
+$\sqrt{\operatorname{FRAC}}$, while its argument gives the best constant phase
+offset between the two selected FRF vectors.
+
+Frequency weights can prevent a densely sampled or very large-amplitude region
+from dominating the comparison. For non-uniform frequency spacing, quadrature
+weights represent the integration intervals. Logarithmic amplitude comparison
+may be useful when anti-resonances and low-amplitude regions are important, but
+it answers a different question from complex FRAC and should be reported
+separately.
+
+\begin{python}
+import numpy as np
+
+
+def Complex_Correlation(reference, comparison, weight=None,
+                        tolerance=1.0e-14):
+    reference = np.asarray(reference).reshape(-1)
+    comparison = np.asarray(comparison).reshape(-1)
+
+    cross = Weighted_Inner_Product(reference, comparison, weight)
+    norm_reference = Weighted_Inner_Product(reference, reference, weight).real
+    norm_comparison = Weighted_Inner_Product(comparison, comparison, weight).real
+
+    if norm_reference <= tolerance or norm_comparison <= tolerance:
+        raise ValueError("Correlation is undefined for a zero vector.")
+
+    return cross / np.sqrt(norm_reference * norm_comparison)
+
+
+def FRAC(reference_frf, comparison_frf, weight=None):
+    correlation = Complex_Correlation(reference_frf, comparison_frf, weight)
+    return float(abs(correlation)**2)
+
+
+def Moving_FRAC(reference_frf, comparison_frf, half_window):
+    reference_frf = np.asarray(reference_frf).reshape(-1)
+    comparison_frf = np.asarray(comparison_frf).reshape(-1)
+
+    if reference_frf.size != comparison_frf.size:
+        raise ValueError("The FRFs must use the same frequency lines.")
+
+    result = np.empty(reference_frf.size)
+
+    for centre in range(reference_frf.size):
+        start = max(0, centre - half_window)
+        stop = min(reference_frf.size, centre + half_window + 1)
+        result[centre] = FRAC(
+            reference_frf[start:stop],
+            comparison_frf[start:stop],
+        )
+
+    return result
+
+
+frequency = np.linspace(0.0, 200.0, 401)
+reference_frf = 1.0 / (100.0**2 - frequency**2 + 2.0j * 0.02 * 100.0 * frequency)
+comparison_frf = 1.0 / (103.0**2 - frequency**2 + 2.0j * 0.025 * 103.0 * frequency)
+
+correlation = Complex_Correlation(reference_frf, comparison_frf)
+print(FRAC(reference_frf, comparison_frf))
+print(abs(correlation), np.angle(correlation))
+local_frac = Moving_FRAC(reference_frf, comparison_frf, half_window=10)
+worst = np.argmin(local_frac)
+print(frequency[worst], local_frac[worst])
+\end{python}
+
+\subsection{Direct Error Measures}
+
+Correlation criteria measure alignment but intentionally discard some
+information. Direct errors should therefore accompany them. For complex vectors
+sampled with non-negative weights $w_i$, the relative RMS error is:
+
+\begin{equation}\label{relative-rms-complex}
+    e_{RMS,rel}=
+    \sqrt{
+        \frac{\sum_i w_i\abs{x_i-y_i}^{2}}
+             {\sum_i w_i\abs{x_i}^{2}}
+    }.
+\end{equation}
+
+Unlike MAC or FRAC, this measure detects amplitude differences. It is not
+symmetric: the first vector is the reference. A symmetric normalised error can
+be defined by dividing by the mean energy of both vectors:
+
+\begin{equation}\label{symmetric-normalised-error}
+    e_{sym}=
+    \sqrt{
+        \frac{2\sum_i w_i\abs{x_i-y_i}^{2}}
+             {\sum_i w_i\abs{x_i}^{2}+\sum_i w_i\abs{y_i}^{2}}
+    }.
+\end{equation}
+
+For FRFs it is often useful to separate magnitude and phase. A logarithmic
+magnitude difference is:
+
+\begin{equation}
+    e_{dB,i}=20\log_{10}\frac{\abs{y_i}}{\abs{x_i}},
+\end{equation}
+
+while the wrapped phase difference is:
+
+\begin{equation}
+    \Delta\varphi_i=
+    \atantwo\left(
+        \sin(\varphi_{y,i}-\varphi_{x,i}),
+        \cos(\varphi_{y,i}-\varphi_{x,i})
+    \right).
+\end{equation}
+
+Phase is poorly defined where both magnitudes are close to zero. A phase-error
+summary should therefore use an amplitude threshold or physically justified
+weights rather than treating every frequency line equally.
+
+\begin{python}
+import numpy as np
+
+
+def Relative_RMS_Error(reference, comparison, weight=None,
+                       tolerance=1.0e-14):
+    reference = np.asarray(reference).reshape(-1)
+    comparison = np.asarray(comparison).reshape(-1)
+
+    if reference.size != comparison.size:
+        raise ValueError("Both vectors must have the same length.")
+
+    residual = reference - comparison
+    numerator = Weighted_Inner_Product(residual, residual, weight).real
+    denominator = Weighted_Inner_Product(reference, reference, weight).real
+
+    if denominator <= tolerance:
+        raise ValueError("The reference vector has zero energy.")
+
+    return np.sqrt(numerator / denominator)
+
+
+def Symmetric_Normalised_Error(first, second, weight=None,
+                               tolerance=1.0e-14):
+    first = np.asarray(first).reshape(-1)
+    second = np.asarray(second).reshape(-1)
+    residual = first - second
+
+    numerator = 2.0 * Weighted_Inner_Product(residual, residual, weight).real
+    denominator = (
+        Weighted_Inner_Product(first, first, weight).real
+        + Weighted_Inner_Product(second, second, weight).real
+    )
+
+    if denominator <= tolerance:
+        raise ValueError("Both vectors have zero energy.")
+
+    return np.sqrt(numerator / denominator)
+
+
+def Magnitude_And_Phase_Error(reference, comparison, minimum_magnitude=0.0):
+    reference = np.asarray(reference).reshape(-1)
+    comparison = np.asarray(comparison).reshape(-1)
+
+    magnitude_reference = abs(reference)
+    magnitude_comparison = abs(comparison)
+    valid = (
+        (magnitude_reference > minimum_magnitude)
+        & (magnitude_comparison > minimum_magnitude)
+    )
+
+    magnitude_db = np.full(reference.size, np.nan)
+    phase = np.full(reference.size, np.nan)
+
+    magnitude_db[valid] = 20.0 * np.log10(
+        magnitude_comparison[valid] / magnitude_reference[valid]
+    )
+
+    phase_difference = np.angle(comparison[valid]) - np.angle(reference[valid])
+    phase[valid] = np.arctan2(
+        np.sin(phase_difference),
+        np.cos(phase_difference),
+    )
+
+    return magnitude_db, phase
+
+
+print(Relative_RMS_Error(reference_frf, comparison_frf))
+print(Symmetric_Normalised_Error(reference_frf, comparison_frf))
+\end{python}
+
+\subsection{Choosing and Reporting Similarity Measures}
+
+The metrics answer different questions:
+
+\begin{itemize}
+    \item \textbf{MAC} asks whether two mode vectors have the same shape after
+          arbitrary scaling and constant phase are ignored.
+    \item \textbf{AutoMAC} asks whether the retained coordinates distinguish
+          the modes within one set.
+    \item \textbf{Cross-orthogonality} retains the sign or phase of
+          normalised weighted modal products.
+    \item \textbf{MSF} gives the scale and constant phase required to align one
+          vector with another.
+    \item \textbf{COMAC} localises coordinates that disagree over an already
+          paired and consistently scaled group of modes.
+    \item \textbf{Subspace similarity} compares repeated or closely spaced
+          modal groups without depending on the arbitrary basis inside them.
+    \item \textbf{FRAC} applies the same normalised complex correlation idea to
+          frequency-response data.
+    \item \textbf{Direct RMS, magnitude and phase errors} retain amplitude and
+          local error information that correlation criteria discard.
+\end{itemize}
+
+A defensible modal comparison should document:
+
+\begin{enumerate}
+    \item the common coordinates and their transformations,
+    \item omitted and interpolated degrees of freedom,
+    \item the weighting inner product,
+    \item the mode-pairing rule,
+    \item natural-frequency errors,
+    \item MAC or subspace similarity,
+    \item modal scale factors and direct residuals,
+    \item the frequency and coordinate ranges used for every FRF metric.
+\end{enumerate}
+
+No scalar criterion can prove that two models are physically equivalent. A
+similarity number is a compressed diagnostic. Its value is understood only
+through the data included in the comparison and through the information that the
+normalisation deliberately removes.
 
 \section{Fast Fourier Transform (FFT)}
 
