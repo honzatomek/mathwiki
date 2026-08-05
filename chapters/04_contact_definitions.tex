@@ -1,0 +1,1124 @@
+\newpage
+\chapter{Contact Formulations}
+
+Contact describes the interaction of two bodies whose surfaces may touch,
+transmit forces and subsequently separate or slide. At first sight this may
+look like another application of the \textbf{multifreedom constraints} treated
+in the previous chapter. There is, however, one fundamental difference.
+
+An ordinary MFC is an \textit{equality constraint}. Once imposed, it remains
+active throughout the analysis. Contact in the normal direction is generally a
+\textit{unilateral constraint}: the surfaces must not penetrate each other, but
+they are allowed to separate. Consequently, the constraint is active only while
+the surfaces are closed.
+
+The simplest scalar distinction is
+
+\begin{equation}
+    \underbrace{a(\m{u}) = 0}_{\text{equality constraint}}
+    \qquad \text{versus} \qquad
+    \underbrace{g_n(\m{u}) \geq 0}_{\text{unilateral contact constraint}}.
+\end{equation}
+
+Here $ g_n $ is the \textit{normal gap}. In this chapter the sign convention is:
+
+\begin{equation}
+    g_n > 0 \quad \text{open gap}, \qquad
+    g_n = 0 \quad \text{closed contact}, \qquad
+    g_n < 0 \quad \text{penetration}.
+\end{equation}
+
+A contact definition is therefore not merely a special stiffness placed between
+two nodes. A complete definition has to specify at least four things:
+
+\begin{enumerate}
+    \item how the geometrical gap and relative sliding are measured,
+    \item which normal and tangential motions are admissible,
+    \item how the corresponding constraints are imposed numerically,
+    \item how points on one discretized surface interact with the other surface.
+\end{enumerate}
+
+Terms such as \textit{frictionless}, \textit{rough}, \textit{frictional},
+\textit{no separation} and \textit{bonded} primarily describe the admissible
+relative motion and the tractions that may be transmitted. They should not be
+confused with \textit{penalty}, \textit{Lagrange multiplier} and
+\textit{augmented Lagrangian}, which describe numerical enforcement methods.
+Nor should they be confused with \textit{node-to-surface} or
+\textit{surface-to-surface}, which describe contact discretizations.
+
+\section{A One-Dimensional Contact Example}
+
+The basic behaviour of normal contact can be understood without surface
+geometry. Consider a node attached to a spring of stiffness $ k $. A positive
+external force $ f $ moves the node to the right. A rigid wall is located at
+$ u = g_0 $, as sketched conceptually by
+
+\begin{equation}
+    \text{spring} \; k \quad \longrightarrow \quad u
+    \qquad \vert \qquad \text{rigid wall at } g_0.
+\end{equation}
+
+The distance from the node to the wall is
+
+\begin{equation}\label{contact-1d-gap}
+    g_n = g_0 - u.
+\end{equation}
+
+Thus $ u < g_0 $ means that the node and wall are separated, $ u = g_0 $
+means that they touch, and $ u > g_0 $ would represent an inadmissible
+penetration.
+
+If the wall is absent, equilibrium gives
+
+\begin{equation}
+    k u = f,
+\end{equation}
+
+and therefore $ u = f/k $. Two cases are possible.
+
+\begin{enumerate}
+    \item If $ f/k < g_0 $, the unconstrained displacement does not reach the
+        wall. The contact remains open and the wall exerts no force.
+
+    \item If $ f/k \geq g_0 $, the unconstrained displacement would cross the
+        wall. Contact must become active, the displacement is limited to
+        $ u = g_0 $, and the wall supplies a reaction force.
+\end{enumerate}
+
+Let the compressive contact reaction be denoted by $ p_n \geq 0 $. It acts in
+the direction opposite to increasing $ u $. Equilibrium of the node is
+
+\begin{equation}\label{contact-1d-equilibrium}
+    k u + p_n = f.
+\end{equation}
+
+The exact solution is therefore
+
+\begin{equation}\label{contact-1d-exact-solution}
+    \begin{aligned}
+        u &= \frac{f}{k},       & p_n &= 0,
+        && \text{if } f < k g_0, \\
+        u &= g_0,               & p_n &= f-k g_0,
+        && \text{if } f \geq k g_0.
+    \end{aligned}
+\end{equation}
+
+This small example already contains the central difficulty of contact: before
+solving the equilibrium equations, it is generally not known whether the
+contact reaction is zero or whether the gap is zero. The set of active contact
+constraints is part of the solution.
+
+\section{The Unilateral Normal Constraint}
+
+For a frictionless normal contact pair the admissible states are described by
+three conditions:
+
+\begin{bbox}
+    \begin{equation}\label{contact-kkt-normal}
+        g_n \geq 0, \qquad p_n \geq 0, \qquad p_n g_n = 0.
+    \end{equation}
+\end{bbox}
+
+These are the \textit{Karush--Kuhn--Tucker} conditions for unilateral contact.
+Their meaning is more important than their name.
+
+\begin{enumerate}
+    \item $ g_n \geq 0 $ states that penetration is not admissible.
+
+    \item $ p_n \geq 0 $ states that ordinary contact can push but cannot pull.
+        A tensile normal traction would require an adhesive or bonded interface.
+
+    \item $ p_n g_n = 0 $ is the \textit{complementarity condition}. Either
+        the gap is open and the pressure is zero, or the pressure is positive
+        and the gap is closed. They cannot both be positive.
+\end{enumerate}
+
+The two admissible states may be written explicitly as
+
+\begin{equation}\label{contact-open-closed-states}
+    \begin{aligned}
+        \text{open:}  && g_n &> 0, & p_n &= 0, \\
+        \text{closed:}&& g_n &= 0, & p_n &\geq 0.
+    \end{aligned}
+\end{equation}
+
+At the instant of first touch both $ g_n = 0 $ and $ p_n = 0 $ are possible.
+This transition point separates the open and closed branches.
+
+Equation \eqref{contact-kkt-normal} also explains why replacing contact by a
+permanent equality $ g_n = 0 $ is generally incorrect. Such an equality would
+prevent separation and could transmit tension. It would describe a
+\textit{no-separation} or tied normal interface, not ordinary contact.
+
+\subsection{Contact Status as an Active Set}
+
+Suppose that a finite element model contains many possible contact locations.
+At a given nonlinear iteration the solver classifies each location as active or
+inactive:
+
+\begin{equation}
+    \begin{aligned}
+        \mathcal{A} &= \{ i \; | \; \text{contact constraint } i
+        \text{ is active} \}, \\
+        \mathcal{I} &= \{ i \; | \; \text{contact constraint } i
+        \text{ is inactive} \}.
+    \end{aligned}
+\end{equation}
+
+For an inactive constraint, $ p_{n,i} = 0 $. For an active constraint, the
+solver attempts to enforce $ g_{n,i} = 0 $, either exactly or approximately.
+After the displacement update, the status is checked again. A contact may close,
+open, stick or slip, so the active set changes during the nonlinear solution.
+
+This status update is one reason why a structurally linear model may still
+require a nonlinear contact analysis. Even if the material law and the
+small-displacement stiffness matrix are linear, the switch between
+$ p_n = 0 $ and $ g_n = 0 $ is not.
+
+\section{Contact Kinematics}
+
+The one-dimensional gap \eqref{contact-1d-gap} is replaced in a continuum model
+by the distance between two candidate surfaces. It is common to label one side
+\textit{slave} and the other side \textit{master}. These labels describe the
+search and projection procedure; they do not imply that one physical body is
+more important than the other.
+
+Let a point on the slave surface have reference position $ \m{X}_s $ and current
+position
+
+\begin{equation}
+    \m{x}_s = \m{X}_s + \m{u}_s.
+\end{equation}
+
+Let the master surface be parametrized by surface coordinates $ \M{\xi} $:
+
+\begin{equation}
+    \m{x}_m(\M{\xi}) = \m{X}_m(\M{\xi}) + \m{u}_m(\M{\xi}).
+\end{equation}
+
+A corresponding master point $ \m{x}_m(\closure{\M{\xi}}) $ is found, most often
+by a closest-point projection. If $ \m{n}_m $ is the outward unit normal of the
+master surface at that point, the normal gap is
+
+\begin{bbox}
+    \begin{equation}\label{contact-normal-gap-general}
+        g_n = \left( \m{x}_s -
+        \m{x}_m(\closure{\M{\xi}}) \right)^T \m{n}_m.
+    \end{equation}
+\end{bbox}
+
+The orientation of $ \m{n}_m $ must be chosen consistently with the adopted sign
+convention. Reversing the normal reverses the sign of $ g_n $ and of the normal
+traction definition.
+
+\subsection{Closest-Point Projection}
+
+For a smooth master surface, the closest point satisfies orthogonality of the
+slave-to-master vector to both surface tangent directions:
+
+\begin{equation}\label{contact-closest-point-condition}
+    \left( \m{x}_s - \m{x}_m(\closure{\M{\xi}}) \right)^T
+    \frac{\partial \m{x}_m}{\partial \xi_\alpha} = 0,
+    \qquad \alpha = 1,2.
+\end{equation}
+
+Equation \eqref{contact-closest-point-condition} is itself nonlinear when the
+surface is curved or undergoing finite motion. In practice the projection has
+to determine both the contacted element or segment and the local coordinates
+inside that element.
+
+If the projection falls outside the candidate face, the solver may test an
+adjacent face, edge or vertex. Consequently, contact search is a geometrical
+problem in addition to the mechanical equilibrium problem.
+
+\subsection{Normal and Tangential Decomposition}
+
+The normal projector and the tangential projector are
+
+\begin{equation}
+    \m{P}_n = \m{n} \m{n}^T,
+    \qquad
+    \m{P}_t = \m{I} - \m{n} \m{n}^T.
+\end{equation}
+
+Any relative displacement increment $ \Delta \m{u}_{rel} $ may be decomposed as
+
+\begin{equation}
+    \Delta \m{u}_{rel}
+    = \underbrace{\m{P}_n \Delta \m{u}_{rel}}_{\text{normal part}}
+    + \underbrace{\m{P}_t \Delta \m{u}_{rel}}_{\text{tangential part}}.
+\end{equation}
+
+The incremental tangential slip is commonly written
+
+\begin{equation}\label{contact-tangential-slip-increment}
+    \Delta \m{g}_t =
+    \m{P}_t \left( \Delta \m{u}_s - \Delta \m{u}_m \right).
+\end{equation}
+
+For finite sliding, the tangential basis rotates and the projected master point
+moves across element boundaries. Therefore $ \m{g}_t $ is normally updated
+incrementally rather than treated as a single difference between initial and
+current Cartesian coordinates.
+
+\subsection{Small and Finite Sliding}
+
+A \textit{small-sliding} formulation assumes that the contacted point remains
+near its initial projection. The contact normal and the interpolation of the
+opposite surface can then be updated only mildly or even kept fixed within an
+increment. This is efficient when relative tangential motion is small compared
+with the local element dimensions.
+
+A \textit{finite-sliding} formulation allows the slave point to travel over
+many master faces. The closest point, surface normal, tangent basis and contact
+interpolation must be updated as the bodies move. This is more general but also
+more expensive and more sensitive to surface discretization.
+
+Small versus finite sliding is a kinematic choice. It is independent of whether
+the interface is frictionless or frictional and independent of whether a
+penalty or multiplier method is used.
+
+\section{Normal Constraint Enforcement}
+
+The conditions \eqref{contact-kkt-normal} state the exact mechanical problem,
+but they do not by themselves prescribe how the algebraic equations should be
+formed. The same three families introduced for MFCs appear again:
+
+\begin{enumerate}
+    \item penalty enforcement,
+    \item Lagrange multiplier enforcement,
+    \item augmented Lagrangian enforcement.
+\end{enumerate}
+
+The important difference from ordinary MFCs is that these methods are applied
+only to the currently active contact constraints.
+
+\subsection{The Penalty Method}
+
+Define the positive-part or Macaulay bracket by
+
+\begin{equation}
+    \langle x \rangle = \max(x,0).
+\end{equation}
+
+With the present gap convention, a simple normal penalty law is
+
+\begin{bbox}
+    \begin{equation}\label{contact-normal-penalty-law}
+        p_n = \epsilon_n \langle -g_n \rangle,
+    \end{equation}
+\end{bbox}
+
+where $ \epsilon_n > 0 $ is the normal penalty stiffness. If the gap is open,
+$ g_n > 0 $, then $ p_n = 0 $. If penetration occurs, $ g_n < 0 $, then the
+contact pressure grows in proportion to the penetration $ -g_n $.
+
+The corresponding penalty potential per contact point is
+
+\begin{equation}\label{contact-normal-penalty-potential}
+    \Pi_c = \frac{1}{2} \epsilon_n
+    \langle -g_n \rangle^2.
+\end{equation}
+
+The contact force follows from variation of this potential with respect to the
+nodal displacements. If $ \m{B}_n = \partial g_n / \partial \m{u} $ denotes the
+gap-displacement matrix, the contact contribution to the residual has the form
+
+\begin{equation}
+    \m{r}_c = -\m{B}_n^T p_n,
+\end{equation}
+
+up to the sign convention used for the global residual.
+
+\subsubsection{Penalty Solution of the One-Dimensional Example}
+
+For the node-wall example, penetration is $ u-g_0 $. Once contact is active,
+choose
+
+\begin{equation}
+    p_n = \epsilon_n (u-g_0).
+\end{equation}
+
+Substitution into equilibrium \eqref{contact-1d-equilibrium} gives
+
+\begin{equation}
+    k u + \epsilon_n (u-g_0) = f,
+\end{equation}
+
+and therefore
+
+\begin{equation}\label{contact-1d-penalty-displacement}
+    u = \frac{f + \epsilon_n g_0}{k+\epsilon_n}.
+\end{equation}
+
+The penetration error is
+
+\begin{equation}\label{contact-1d-penalty-penetration}
+    u-g_0 = \frac{f-k g_0}{k+\epsilon_n}.
+\end{equation}
+
+As $ \epsilon_n \rightarrow \infty $, the penetration tends to zero and
+$ u \rightarrow g_0 $. For any finite $ \epsilon_n $, however, some penetration
+is required to generate the contact reaction. This is not a geometrical prediction
+of the physical model. It is the constraint violation introduced by penalty
+enforcement.
+
+The tradeoff is the same as for penalty MFCs. A small $ \epsilon_n $ gives a
+soft interface and excessive penetration. A very large $ \epsilon_n $ improves
+constraint accuracy but increases the condition number of the tangent stiffness
+matrix and can impair Newton convergence.
+
+\subsection{Choosing the Normal Penalty Stiffness}
+
+There is no universal penalty stiffness that is suitable for every contact pair.
+The value has to be large relative to the normal compliance of the adjacent
+finite elements, but not so large that the contact terms dominate the structural
+stiffness by many unnecessary orders of magnitude.
+
+A useful dimensional estimate is
+
+\begin{equation}\label{contact-penalty-scaling}
+    \epsilon_n \sim \alpha \frac{E_{eff} A_c}{h_c},
+\end{equation}
+
+for a discrete contact point carrying representative area $ A_c $, or
+
+\begin{equation}
+    \bar{\epsilon}_n \sim \alpha \frac{E_{eff}}{h_c}
+\end{equation}
+
+for a traction-based surface formulation. Here $ E_{eff} $ is an effective
+normal modulus of the contacting materials, $ h_c $ is a representative element
+length in the contact-normal direction, and $ \alpha $ is a dimensionless
+scaling factor.
+
+These expressions are scaling arguments, not exact laws. Element type,
+integration scheme, shell thickness, material incompressibility and the chosen
+surface discretization all affect the useful range. The computed penetration
+and nonlinear convergence should therefore be checked rather than relying on a
+large default number alone.
+
+\subsection{The Lagrange Multiplier Method}
+
+A Lagrange multiplier can enforce the active normal constraint exactly. For a
+known active set, collect the active gaps in vector $ \m{g}_n $ and linearize
+them as
+
+\begin{equation}
+    \Delta \m{g}_n = \m{A}_n \Delta \m{u},
+\end{equation}
+
+where $ \m{A}_n $ is the active normal constraint matrix. The Newton correction
+has the bordered form
+
+\begin{equation}\label{contact-lagrange-linear-system}
+    \begin{bmatrix}
+        \m{K}_T & \m{A}_n^T \\
+        \m{A}_n & \m{0}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \Delta \m{u} \\
+        \Delta \M{\lambda}_n
+    \end{bmatrix}
+    = -
+    \begin{bmatrix}
+        \m{r} \\
+        \m{g}_n
+    \end{bmatrix}.
+\end{equation}
+
+The multiplier $ \M{\lambda}_n $ represents the contact pressure or an
+equivalent nodal contact force, depending on the discretization. The gap of an
+active constraint can be driven to zero without selecting a penalty stiffness.
+
+This exactness has a price. Additional unknowns are introduced, the coefficient
+matrix becomes indefinite, and the active set must still be determined. A
+multiplier that becomes tensile is inadmissible for ordinary contact; the
+corresponding constraint must be released.
+
+For the one-dimensional example, active contact gives the exact equations
+
+\begin{equation}
+    \begin{bmatrix}
+        k & 1 \\
+        1 & 0
+    \end{bmatrix}
+    \begin{bmatrix}
+        u \\
+        p_n
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        f \\
+        g_0
+    \end{bmatrix}.
+\end{equation}
+
+The solution is $ u=g_0 $ and $ p_n=f-k g_0 $. If this computed $ p_n $ is
+negative, the assumed active status was wrong and the contact must be opened.
+
+\subsection{The Augmented Lagrangian Method}
+
+The augmented Lagrangian method combines a moderate penalty stiffness with an
+iteratively corrected pressure estimate. With iteration index $ j $, one common
+normal update is
+
+\begin{bbox}
+    \begin{equation}\label{contact-augmented-lagrange-update}
+        p_n^{j+1} =
+        \left\langle p_n^j - \epsilon_n g_n^{j+1} \right\rangle.
+    \end{equation}
+\end{bbox}
+
+If penetration remains, $ g_n<0 $, the pressure estimate increases. If the gap
+opens, the positive-part projection prevents a tensile contact pressure and
+ultimately returns the pressure to zero.
+
+The displacement problem inside an augmentation step resembles a penalty
+problem, but the multiplier estimate carries information from one augmentation
+to the next. Hence the gap can be reduced without increasing $ \epsilon_n $ to
+an excessively large value.
+
+The augmented Lagrangian method is therefore often a useful compromise:
+
+\begin{enumerate}
+    \item it is more accurate than a penalty method using the same stiffness,
+    \item it avoids the full multiplier system in some implementations,
+    \item it requires additional status and augmentation iterations.
+\end{enumerate}
+
+The exact implementation varies. Some formulations keep explicit multiplier
+unknowns, while others update pressure-like history variables outside the main
+Newton solve. The mechanical meaning remains the same: a penalty regularization
+is combined with iterative multiplier correction.
+
+\subsection{Assessment of Normal Enforcement Methods}
+
+The three methods should be compared by their numerical consequences rather
+than by the apparent elegance of their equations.
+
+\begin{enumerate}
+    \item \textit{Penalty enforcement} retains the original displacement unknowns
+        and is relatively easy to assemble. The contact constraint is only
+        approximate and its accuracy depends on the penalty stiffness.
+
+    \item \textit{Lagrange multiplier enforcement} can satisfy the active gap
+        exactly and gives the contact reactions directly. It adds unknowns,
+        produces an indefinite system and requires careful treatment of dependent
+        constraints.
+
+    \item \textit{Augmented Lagrangian enforcement} reduces the dependence on a
+        very large penalty stiffness, but adds an outer correction process and
+        still requires contact-status decisions.
+\end{enumerate}
+
+No method removes the underlying nonsmoothness caused by opening and closing.
+A sophisticated enforcement method cannot compensate for an incorrect contact
+normal, poor surface discretization or a failed search projection.
+
+\section{Tangential Contact and Friction}
+
+Normal contact decides whether the surfaces may approach or separate.
+Tangential contact decides whether they may slide and which shear traction is
+transmitted while they are closed.
+
+Let $ \m{t}_t $ denote the tangential traction vector and $ p_n $ the compressive
+normal pressure. A friction law acts only while contact is closed. If the
+surfaces are open, both normal and tangential contact tractions vanish:
+
+\begin{equation}
+    g_n>0 \quad \Longrightarrow \quad p_n=0, \qquad \m{t}_t=\m{0}.
+\end{equation}
+
+\subsection{Frictionless Contact}
+
+Frictionless contact imposes the unilateral normal condition but no tangential
+constraint:
+
+\begin{equation}\label{contact-frictionless-definition}
+    g_n \geq 0, \qquad p_n \geq 0, \qquad p_n g_n=0,
+    \qquad \m{t}_t=\m{0}.
+\end{equation}
+
+The surfaces may separate and may slide freely. Compressive normal traction is
+transmitted, but no shear traction and no tensile normal traction are carried.
+
+Frictionless does not mean that the bodies are disconnected. While closed, the
+normal relative motion is constrained and normal forces can be large. It only
+means that the tangential relative motion does not generate contact shear.
+
+\subsection{Coulomb Friction}
+
+The classical Coulomb law limits the tangential traction by the current normal
+pressure:
+
+\begin{bbox}
+    \begin{equation}\label{contact-coulomb-yield-function}
+        \phi = \norm{\m{t}_t} - \mu p_n \leq 0,
+    \end{equation}
+\end{bbox}
+
+where $ \mu \geq 0 $ is the coefficient of friction. Two states are possible.
+
+\begin{enumerate}
+    \item \textit{Stick}: $ \phi < 0 $. The tangential traction lies inside the
+        friction bound and the incremental tangential slip is constrained to
+        zero, apart from any tangential penalty compliance.
+
+    \item \textit{Slip}: $ \phi = 0 $. The traction magnitude reaches
+        $ \mu p_n $ and its direction opposes the sliding direction.
+\end{enumerate}
+
+For nonzero sliding velocity $ \m{v}_t $, the ideal slip law is
+
+\begin{equation}\label{contact-coulomb-slip-law}
+    \m{t}_t = -\mu p_n
+    \frac{\m{v}_t}{\norm{\m{v}_t}}.
+\end{equation}
+
+The minus sign states that friction resists relative sliding. At zero velocity
+the direction is undefined, which is why the stick state has to be treated as
+an inequality rather than by direct substitution into
+\eqref{contact-coulomb-slip-law}.
+
+\subsection{A Tangential Trial-State Algorithm}
+
+The stick-slip update resembles an elastic predictor and plastic corrector.
+Let $ \epsilon_t $ be a tangential penalty stiffness and let
+$ \Delta \m{g}_t $ be the tangential relative-displacement increment. A trial
+traction is
+
+\begin{equation}\label{contact-friction-trial-traction}
+    \m{t}_t^{trial} = \m{t}_t^n
+    - \epsilon_t \Delta \m{g}_t.
+\end{equation}
+
+The trial friction function is
+
+\begin{equation}
+    \phi^{trial} = \norm{\m{t}_t^{trial}} - \mu p_n.
+\end{equation}
+
+If $ \phi^{trial} \leq 0 $, the contact sticks and
+
+\begin{equation}
+    \m{t}_t^{n+1} = \m{t}_t^{trial}.
+\end{equation}
+
+If $ \phi^{trial} > 0 $, the contact slips and the traction is returned to the
+friction limit:
+
+\begin{equation}\label{contact-friction-return}
+    \m{t}_t^{n+1} =
+    \mu p_n
+    \frac{\m{t}_t^{trial}}{\norm{\m{t}_t^{trial}}}.
+\end{equation}
+
+The signs in \eqref{contact-friction-trial-traction} depend on the adopted
+traction and slip conventions. The important construction is invariant: first
+predict the traction assuming stick, then check the Coulomb bound, and if the
+bound is exceeded project the traction back to the admissible friction surface.
+
+Because the limit $ \mu p_n $ changes with normal pressure, the normal and
+tangential problems are coupled. Opening the contact immediately removes the
+friction traction. A change in normal pressure changes the maximum transferable
+shear.
+
+\subsection{Regularized Friction}
+
+Ideal Coulomb friction is nonsmooth at the transition from stick to slip and at
+zero sliding velocity. Some formulations replace the discontinuous law by a
+smooth approximation, for example
+
+\begin{equation}
+    \m{t}_t = -\mu p_n
+    \tanh\left(\frac{\norm{\m{v}_t}}{v_0}\right)
+    \frac{\m{v}_t}{\norm{\m{v}_t}},
+\end{equation}
+
+with a small regularization velocity $ v_0 $. Such a law can improve nonlinear
+convergence, but it introduces artificial microslip and rate dependence. The
+regularization parameter is therefore part of the numerical model and should be
+reported when it materially affects the result.
+
+\section{Common Contact Definitions}
+
+The common names used in finite element programs can now be stated in terms of
+normal and tangential admissibility. The names are convenient, but their exact
+implementation may differ between programs. The solver-independent mechanical
+meaning is described below.
+
+\subsection{Frictionless}
+
+A frictionless interface has unilateral normal contact and zero tangential
+traction:
+
+\begin{equation}
+    g_n \geq 0, \qquad p_n \geq 0, \qquad p_n g_n=0,
+    \qquad \m{t}_t=\m{0}.
+\end{equation}
+
+It can transmit compression. It cannot transmit tension or shear. It allows
+both separation and unrestricted sliding.
+
+\subsection{Frictional}
+
+A frictional interface has unilateral normal contact together with the Coulomb
+bound
+
+\begin{equation}
+    \norm{\m{t}_t} \leq \mu p_n.
+\end{equation}
+
+It can transmit compression and a pressure-dependent amount of shear. It allows
+separation. While closed, it may stick or slide depending on whether the required
+shear traction is below or at the friction limit.
+
+The frictionless definition is recovered as the special case $ \mu=0 $.
+
+\subsection{Rough}
+
+A rough interface prevents tangential sliding while the surfaces are in contact:
+
+\begin{equation}
+    g_n=0 \quad \Longrightarrow \quad \Delta \m{g}_t=\m{0}.
+\end{equation}
+
+It may be viewed as the limiting case of friction with an unbounded friction
+capacity, although implementations often impose the tangential constraint
+directly rather than using a very large value of $ \mu $.
+
+Rough contact may transmit whatever tangential traction is required to prevent
+slip while the normal contact remains active. It still permits separation and
+normally cannot transmit tensile normal traction. This distinguishes rough
+contact from bonded contact.
+
+\subsection{No Separation}
+
+A no-separation interface prevents opening in the normal direction once the
+interface is closed, but allows tangential sliding:
+
+\begin{equation}\label{contact-no-separation-definition}
+    g_n = 0, \qquad \m{t}_t=\m{0}
+\end{equation}
+
+for the ideal frictionless no-separation case. Because the normal relation is
+bilateral, the interface can develop both compressive and tensile normal
+reactions. It is therefore not ordinary unilateral contact.
+
+The phrase ``once closed'' is important. Some implementations tie surfaces that
+are initially within a specified tolerance; others first allow them to close
+and then prevent reopening. Initial status and program convention must therefore
+be checked.
+
+No separation is useful when two surfaces may slide but are physically retained
+against opening, for example by an idealized enclosure. It is not appropriate
+when real lift-off is expected.
+
+\subsection{Bonded}
+
+An ideal bonded interface enforces displacement continuity in both normal and
+tangential directions:
+
+\begin{bbox}
+    \begin{equation}\label{contact-bonded-definition}
+        \m{u}_s - \m{u}_m = \m{0}.
+    \end{equation}
+\end{bbox}
+
+Equivalently,
+
+\begin{equation}
+    g_n=0, \qquad \m{g}_t=\m{0}.
+\end{equation}
+
+A bonded interface can transmit compression, tension and shear. It allows
+neither separation nor sliding. Mechanically it is a tied interface or a set of
+MFCs, even if it is created through contact-surface machinery.
+
+Bonded contact should not be interpreted as a universal model of adhesive
+failure. The ideal constraint has no strength limit and no fracture energy.
+Debonding requires an additional interface law, such as a cohesive-zone model,
+a damage law or an explicit release criterion.
+
+\subsection{Comparison of the Definitions}
+
+The principal differences are summarized below. ``Yes'' means that the idealized
+definition admits the motion or force without adding another constitutive law.
+
+\begin{center}
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{|l|c|c|c|c|}
+    \hline
+    Definition & Separation & Sliding & Tensile normal force & Shear transfer \\
+    \hline
+    Frictionless & Yes & Yes & No & No \\
+    Frictional & Yes & Conditional & No & Limited by $\mu p_n$ \\
+    Rough & Yes & No while closed & No & Unlimited while closed \\
+    No separation & No & Yes & Yes & No, if frictionless \\
+    Bonded & No & No & Yes & Yes \\
+    \hline
+\end{tabular}%
+}
+\end{center}
+
+This table describes the ideal mechanics, not the numerical enforcement. For
+example, bonded contact may be implemented by direct elimination, MFCs, penalty
+terms, multipliers or mortar constraints. Two models with the same word
+``bonded'' may therefore have different constraint accuracy and conditioning.
+
+\subsection{Cohesive and Adhesive Interfaces}
+
+A cohesive interface is different from an ideal bond because the transmitted
+traction is related to an interface separation. In a simple uncoupled form,
+
+\begin{equation}
+    t_n = t_n(\delta_n), \qquad
+    \m{t}_t = \m{t}_t(\M{\delta}_t),
+\end{equation}
+
+where $ \delta_n $ and $ \M{\delta}_t $ are normal and tangential separations.
+The law may initially be stiff, reach a strength limit and then soften as damage
+grows. The area under a traction-separation curve represents fracture energy.
+
+Thus a cohesive interface is a constitutive model with finite strength and
+possible failure. Bonded contact is an ideal kinematic constraint with unlimited
+strength unless an additional failure rule is supplied.
+
+\section{Contact Discretizations}
+
+The continuous contact conditions apply over surfaces, but a finite element
+model contains nodes, edges, faces and interpolation functions. A contact
+discretization determines where the gap is evaluated and how the resulting
+tractions are distributed to the nodes.
+
+\subsection{Node-to-Node Contact}
+
+Node-to-node contact connects predefined pairs of nodes. For a pair with normal
+$ \m{n} $, the gap may be written
+
+\begin{equation}
+    g_n = (\m{x}_s-\m{x}_m)^T \m{n}.
+\end{equation}
+
+The method is simple and inexpensive, but it requires compatible node locations
+and a known pairing. It is poorly suited to general sliding because a node that
+moves tangentially no longer remains opposite its original partner.
+
+Node-to-node contact is best understood as a collection of discrete contact
+springs or constraints, not as an accurate representation of arbitrary smooth
+surface interaction.
+
+\subsection{Node-to-Surface Contact}
+
+In node-to-surface contact, each slave node is projected onto a master face.
+The gap is evaluated between the slave node and the interpolated master point.
+The contact force acting at the projection is distributed to the master nodes
+through the face shape functions.
+
+This permits a slave node to move over the master mesh and does not require
+matching nodes. However, the result is biased: penetration is prevented at the
+slave nodes, but not necessarily at points between them. A coarse slave surface
+may therefore pass locally through the master surface between slave nodes.
+
+As a general practical rule, the more finely discretized or more deformable
+surface is often selected as slave, while the smoother, coarser or stiffer
+surface is selected as master. This is a useful starting point, not a universal
+law. Curvature, shell normals, expected sliding direction and element order also
+matter.
+
+\subsection{Surface-to-Surface Contact}
+
+Surface-to-surface formulations evaluate contact over slave segments or
+integration points rather than only at slave nodes. The contact virtual work may
+be written schematically as
+
+\begin{equation}\label{contact-virtual-work}
+    \delta W_c =
+    \int_{\Gamma_c}
+    \left( p_n \delta g_n
+    + \m{t}_t^T \delta \m{g}_t \right) d\Gamma.
+\end{equation}
+
+Numerical quadrature converts this surface integral into contact contributions
+at integration points. Surface-to-surface contact generally represents pressure
+more smoothly and reduces nodal bias, especially for higher-order elements and
+curved surfaces.
+
+The term does not uniquely identify one algorithm. Different programs may use
+one-pass, two-pass, segment-to-segment or mortar-like formulations under the
+broad surface-to-surface name.
+
+\subsection{Mortar Contact}
+
+Mortar methods impose contact constraints in a weak, integral sense using
+interpolation spaces for the contact pressure or multipliers. Instead of matching
+the gap independently at isolated nodes, a weighted residual condition is used:
+
+\begin{equation}
+    \int_{\Gamma_c} N_{\lambda i} g_n \, d\Gamma = 0
+\end{equation}
+
+for the active contact region, where $ N_{\lambda i} $ are multiplier or mortar
+shape functions.
+
+Mortar methods are well suited to nonmatching meshes and can provide improved
+conservation and reduced master-slave bias. Their formulation, integration and
+active-set treatment are more involved than classical node-to-surface contact.
+
+\subsection{One-Pass and Two-Pass Contact}
+
+A one-pass method projects one selected side onto the other. It is inherently
+asymmetric because exchanging master and slave changes the discrete equations.
+
+A two-pass or symmetric method performs the constraint construction in both
+directions. This may reduce bias, but simply duplicating constraints can also
+overconstrain the interface, especially for matching meshes or nearly
+incompressible response. A properly designed symmetric or mortar formulation is
+not equivalent to blindly applying two independent node-to-surface pairs.
+
+The words \textit{symmetric} and \textit{asymmetric} should therefore be read as
+properties of the discrete contact algorithm, not of the physical friction law.
+
+\section{Linearization and Nonlinear Solution}
+
+The finite element equilibrium equations including contact may be written
+
+\begin{equation}\label{contact-global-equilibrium}
+    \m{r}(\m{u}) =
+    \m{f}_{int}(\m{u})
+    + \m{f}_c(\m{u})
+    - \m{f}_{ext} = \m{0}.
+\end{equation}
+
+A Newton iteration solves
+
+\begin{equation}\label{contact-newton-system}
+    \m{K}_T^i \Delta \m{u}^i = -\m{r}^i,
+    \qquad
+    \m{u}^{i+1}=\m{u}^i+\Delta \m{u}^i,
+\end{equation}
+
+where
+
+\begin{equation}
+    \m{K}_T =
+    \frac{\partial \m{f}_{int}}{\partial \m{u}}
+    + \frac{\partial \m{f}_c}{\partial \m{u}}.
+\end{equation}
+
+The contact tangent contains more than a normal spring stiffness. Depending on
+the formulation it includes derivatives of the gap, surface normal, projection
+coordinates, pressure law and friction law. In finite sliding, changes of the
+contact geometry produce additional geometric terms.
+
+A typical contact iteration consists conceptually of:
+
+\begin{enumerate}
+    \item predict or update the current geometry,
+    \item search for candidate surface pairs,
+    \item compute projections, gaps and relative tangential increments,
+    \item classify each contact point as open, closed-stick or closed-slip,
+    \item assemble contact residuals and tangent contributions,
+    \item solve the Newton correction,
+    \item repeat until equilibrium and contact conditions are satisfied.
+\end{enumerate}
+
+The actual order may differ, and some solvers update status only at selected
+stages to improve robustness.
+
+\subsection{Contact Chattering}
+
+A contact point may alternate between open and closed states in successive
+iterations. Similarly, a friction point may alternate between stick and slip.
+This behaviour is called \textit{chattering}. It can occur near the transition
+where both branches are nearly admissible.
+
+Chattering may be reduced by smaller load increments, line search, status
+tolerances, augmented Lagrangian updates or mild regularization. Excessive
+stabilization, however, can alter the physical force-displacement response.
+
+\subsection{Initial Gap and Initial Penetration}
+
+Before the first equilibrium iteration, the discretized surfaces may have an
+initial gap or may overlap because of geometry tolerances, mesh approximation,
+shell offsets or intentional interference.
+
+An initial penetration may be treated in several conceptually different ways:
+
+\begin{enumerate}
+    \item preserve it and generate an initial contact force,
+    \item shift the contact reference so that the initial configuration is
+        considered just touching,
+    \item move nodes or surfaces to remove the overlap,
+    \item ramp the interference over several increments.
+\end{enumerate}
+
+These choices do not describe the same model. Removing an initial penetration
+changes the reference geometry, while preserving it may introduce prestress.
+The adopted treatment must therefore be understood rather than accepted as a
+purely numerical setting.
+
+\subsection{Search Distance and Candidate Detection}
+
+To avoid testing every surface face against every other face, contact algorithms
+use spatial search structures and a finite candidate distance. A contact pair
+outside the search region is ignored during that search pass.
+
+A search distance that is too small can miss rapidly closing or initially
+separated surfaces. An excessively large distance increases search cost and can
+create unintended candidate pairs. Search tolerance affects detection; it does
+not by itself define the physical normal stiffness.
+
+\section{Numerical Behaviour and Assessment}
+
+Contact results should not be assessed only by whether the nonlinear solver
+reports convergence. A converged solution may still contain excessive penalty
+penetration, unintended contact pairs or mesh-dependent pressure peaks.
+
+\subsection{Quantities to Check}
+
+Useful checks include:
+
+\begin{enumerate}
+    \item maximum and representative normal penetration,
+    \item normal contact pressure and integrated contact force,
+    \item open, closed, sticking and sliding status distributions,
+    \item frictional traction relative to the bound $ \mu p_n $,
+    \item equilibrium residual and reaction-force balance,
+    \item sensitivity to contact mesh refinement,
+    \item sensitivity to penalty stiffness and load-step size.
+\end{enumerate}
+
+A penetration should be judged relative to a meaningful geometrical scale, such
+as local element thickness, surface curvature radius or allowed interface
+deflection. Reporting only its absolute value can be misleading when model units
+or component sizes differ.
+
+\subsection{Pressure Singularities}
+
+High contact pressure near a sharp edge, corner or the end of a contact region
+may be a genuine mathematical singularity. Mesh refinement can then increase
+the peak pressure rather than converge it to a finite value. Integrated force,
+contact width or pressure away from the singular point may be more meaningful
+quantities.
+
+A smooth pressure contour is not proof of correctness. Nodal averaging and
+postprocessing can hide local oscillations or violations of the contact
+conditions.
+
+\subsection{Mesh Compatibility and Bias}
+
+Nonmatching contact meshes are permissible, but the relative element sizes and
+orders influence pressure transfer. A very coarse surface contacting a very fine
+surface may produce oscillatory tractions or artificial local compliance.
+
+Changing master and slave sides is a useful diagnostic for a biased one-pass
+formulation. Large changes in global response indicate that the contact
+discretization, not only the physical model, controls the answer.
+
+\subsection{Contact in Dynamic Problems}
+
+In dynamics, closing contact can introduce an impact. A purely displacement-based
+penalty law stores elastic contact energy
+
+\begin{equation}
+    \Pi_c = \frac{1}{2}\epsilon_n \langle -g_n \rangle^2
+\end{equation}
+
+and may generate high-frequency oscillations. Contact damping or an impact law
+may be added, but such additions dissipate energy and must be distinguished from
+material damping.
+
+The stable time step of an explicit method can be strongly reduced by a large
+penalty stiffness because the contact stiffness increases the highest system
+frequency. Thus the penalty value affects not only penetration but also
+computational cost.
+
+For implicit dynamics, abrupt status changes and frictional slip can make the
+Newton iterations difficult. Time-step reduction often helps because it limits
+the amount of contact-status change within one increment.
+
+\section{Relation to Multifreedom Constraints}
+
+The connection to Chapter 3 can now be stated precisely.
+
+A bonded interface is essentially a set of displacement equality constraints:
+
+\begin{equation}
+    \m{A}\m{u}=\m{0}.
+\end{equation}
+
+A no-separation normal interface is a bilateral equality constraint on the
+normal gap. A sticking tangential state is an equality constraint on incremental
+tangential slip.
+
+Ordinary normal contact is different because it combines an inequality with a
+reaction-sign condition and complementarity:
+
+\begin{equation}
+    g_n \geq 0, \qquad p_n \geq 0, \qquad p_n g_n=0.
+\end{equation}
+
+Friction adds a second inequality and a second status decision:
+
+\begin{equation}
+    \norm{\m{t}_t} - \mu p_n \leq 0.
+\end{equation}
+
+Therefore contact may be regarded as a changing collection of MFC-like
+constraints whose membership is unknown in advance. Penalty, multiplier and
+augmented Lagrangian methods reappear, but they are embedded in geometry search,
+active-set logic and constitutive stick-slip updates.
+
+This viewpoint is useful because it separates three questions that are often
+mixed together:
+
+\begin{enumerate}
+    \item \textit{What relative motion is physically allowed?}
+        This determines frictionless, frictional, rough, no-separation or bonded
+        behaviour.
+
+    \item \textit{How is the constraint represented on the mesh?}
+        This determines node-to-node, node-to-surface, surface-to-surface or
+        mortar contact.
+
+    \item \textit{How is the discrete constraint imposed?}
+        This determines penalty, Lagrange multiplier, augmented Lagrangian or
+        direct elimination treatment.
+\end{enumerate}
+
+A contact setting is properly understood only when all three questions can be
+answered.
+
+\section{Summary}
+
+Contact is a unilateral interaction. The normal gap may remain positive with
+zero pressure, or the gap may close and develop a compressive pressure. These
+alternatives are expressed by
+
+\begin{equation}
+    g_n \geq 0, \qquad p_n \geq 0, \qquad p_n g_n=0.
+\end{equation}
+
+The contact type describes admissible relative motion and transmitted traction:
+
+\begin{enumerate}
+    \item frictionless contact allows separation and sliding and transmits only
+        compression,
+    \item frictional contact adds a pressure-dependent shear limit,
+    \item rough contact prevents sliding while closed but still allows separation,
+    \item no-separation contact prevents opening but allows tangential sliding,
+    \item bonded contact prevents both opening and sliding and can transmit
+        tension, compression and shear.
+\end{enumerate}
+
+Penalty, Lagrange multiplier and augmented Lagrangian methods describe how the
+normal and tangential constraints are enforced numerically. Node-to-node,
+node-to-surface, surface-to-surface and mortar methods describe how the
+continuous interface is discretized.
+
+No single contact definition or algorithm is uniformly best. The appropriate
+choice depends on the expected motion, required force transfer, mesh relation,
+constraint accuracy and nonlinear robustness. Contact settings should therefore
+be selected from their mechanical meaning first and tuned numerically second.
