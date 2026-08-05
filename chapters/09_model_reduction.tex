@@ -92,3 +92,511 @@ where $ \m{T}_G $ has the dimension of $ n_{DOF} \times n_m $.
 
 \section{Craig-Bampton reduction}
 
+The \textbf{Craig-Bampton reduction}, also known as the \textbf{fixed-interface
+component mode synthesis}, extends the \textbf{Guyan reduction} by supplementing
+the static deformation shapes with a truncated set of dynamic deformation shapes.
+It therefore retains the exact static relation between the interface and internal
+DOFs, while approximating the internal dynamic deformation by a modal base.
+
+The dynamic equilibrium equation is partitioned into the \textbf{boundary} DOFs
+$ b $ and the \textbf{internal} DOFs $ i $:
+
+\begin{equation}
+    \begin{bmatrix}
+        \m{M}_{bb} & \m{M}_{bi} \\
+        \m{M}_{ib} & \m{M}_{ii}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \ddot{\m{u}}_b \\
+        \ddot{\m{u}}_i
+    \end{bmatrix}
+    +
+    \begin{bmatrix}
+        \m{K}_{bb} & \m{K}_{bi} \\
+        \m{K}_{ib} & \m{K}_{ii}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_b \\
+        \m{u}_i
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        \m{f}_b \\
+        \m{f}_i
+    \end{bmatrix}
+\end{equation}
+
+where the boundary DOFs are retained in physical coordinates and the internal DOFs
+are reduced. In the terminology used for the \textbf{Guyan reduction}, the boundary
+DOFs correspond to the master DOFs and the internal DOFs to the slave DOFs.
+
+\subsection{Constraint modes}
+
+The \textbf{constraint modes}, also called the \textbf{static constraint modes},
+describe the static deformation of the internal DOFs caused by a unit displacement
+of each individual boundary DOF. The inertia terms and the externally applied
+forces on the internal DOFs are set to zero:
+
+\begin{equation}
+    \m{K}_{ib} \m{u}_b + \m{K}_{ii} \m{u}_i = \m{0}
+\end{equation}
+
+The internal displacement is then expressed as:
+
+\begin{equation}
+    \m{u}_i = -\m{K}_{ii}^{-1}\m{K}_{ib}\m{u}_b
+             = \M{\Psi}_c \m{u}_b
+\end{equation}
+
+where:
+
+\begin{equation}
+    \M{\Psi}_c = -\m{K}_{ii}^{-1}\m{K}_{ib}
+\end{equation}
+
+is the \textbf{constraint mode matrix}. Each column of $ \M{\Psi}_c $ is the
+internal static displacement field corresponding to a unit displacement of one
+boundary DOF, while all remaining boundary DOFs are held fixed.
+
+The inverse $ \m{K}_{ii}^{-1} $ is only a mathematical notation. Numerically, the
+constraint modes are obtained by solving the multiple right-hand-side problem:
+
+\begin{equation}
+    \m{K}_{ii}\M{\Psi}_c = -\m{K}_{ib}
+\end{equation}
+
+The matrix $ \m{K}_{ii} $ is factorised only once and the factorisation is reused
+for all boundary DOFs.
+
+\subsection{Fixed-interface normal modes}
+
+The dynamic deformation that cannot be represented by the constraint modes is
+approximated using the \textbf{fixed-interface normal modes}. These modes are
+calculated by fixing all boundary DOFs:
+
+\begin{equation}
+    \m{u}_b = \m{0}
+\end{equation}
+
+and solving the internal generalised eigenvalue problem:
+
+\begin{equation}
+    \left( \m{K}_{ii} - \omega_j^2 \m{M}_{ii} \right)
+    \M{\varphi}_j = \m{0}
+\end{equation}
+
+The retained fixed-interface modes are assembled column-wise into the matrix:
+
+\begin{equation}
+    \M{\Phi}_i =
+    \begin{bmatrix}
+        \M{\varphi}_1 & \M{\varphi}_2 & \dots & \M{\varphi}_{n_\varphi}
+    \end{bmatrix}
+\end{equation}
+
+where $ n_\varphi $ is the number of retained fixed-interface modes. When the modes
+are mass-normalised:
+
+\begin{eqarray}
+    \M{\Phi}_i^T \m{M}_{ii} \M{\Phi}_i &= \m{I} \\
+    \M{\Phi}_i^T \m{K}_{ii} \M{\Phi}_i &= \M{\Omega}_i^2
+\end{eqarray}
+
+where:
+
+\begin{equation}
+    \M{\Omega}_i^2 =
+    \begin{bmatrix}
+        \omega_1^2 & \dots & 0 \\
+        \vdots & \ddots & \vdots \\
+        0 & \dots & \omega_{n_\varphi}^2
+    \end{bmatrix}
+\end{equation}
+
+is the diagonal matrix of the retained fixed-interface eigenvalues.
+
+\subsection{Craig-Bampton transformation}
+
+The internal displacement is represented as a superposition of the static
+constraint modes and the fixed-interface normal modes:
+
+\begin{equation}
+    \m{u}_i = \M{\Psi}_c \m{u}_b + \M{\Phi}_i \M{\eta}
+\end{equation}
+
+where $ \M{\eta} $ is the vector of the fixed-interface modal coordinates. The full
+physical displacement vector is therefore expressed as:
+
+\begin{eqarray}
+    \begin{bmatrix}
+        \m{u}_b \\
+        \m{u}_i
+    \end{bmatrix}
+    &=
+    \begin{bmatrix}
+        \m{I} & \m{0} \\
+        \M{\Psi}_c & \M{\Phi}_i
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}_b \\
+        \M{\eta}
+    \end{bmatrix} \\
+    \m{u} &= \m{T}_{CB}\m{q}_{CB}
+\end{eqarray}
+
+where:
+
+\begin{eqarray}
+    \m{T}_{CB} &=
+    \begin{bmatrix}
+        \m{I} & \m{0} \\
+        \M{\Psi}_c & \M{\Phi}_i
+    \end{bmatrix} \\
+    \m{q}_{CB} &=
+    \begin{bmatrix}
+        \m{u}_b \\
+        \M{\eta}
+    \end{bmatrix}
+\end{eqarray}
+
+The Craig-Bampton coordinates therefore consist of:
+
+\begin{itemize}
+    \item the physical displacements of all retained boundary DOFs,
+    \item the modal amplitudes of the retained fixed-interface normal modes.
+\end{itemize}
+
+Substituting $ \m{u} = \m{T}_{CB}\m{q}_{CB} $ to the full equation of motion and
+premultiplying it with $ \m{T}_{CB}^T $ gives the reduced equation:
+
+\begin{equation}
+    \m{M}_{CB}\ddot{\m{q}}_{CB}
+    + \m{C}_{CB}\dot{\m{q}}_{CB}
+    + \m{K}_{CB}\m{q}_{CB}
+    = \m{f}_{CB}
+\end{equation}
+
+where:
+
+\begin{eqarray}
+    \m{M}_{CB} &= \m{T}_{CB}^T \m{M} \m{T}_{CB} \\
+    \m{C}_{CB} &= \m{T}_{CB}^T \m{C} \m{T}_{CB} \\
+    \m{K}_{CB} &= \m{T}_{CB}^T \m{K} \m{T}_{CB} \\
+    \m{f}_{CB} &= \m{T}_{CB}^T \m{f}
+\end{eqarray}
+
+For exact constraint modes and a symmetric stiffness matrix, the reduced
+stiffness matrix has the following block-diagonal form:
+
+\begin{equation}
+    \m{K}_{CB} =
+    \begin{bmatrix}
+        \m{K}_{G} & \m{0} \\
+        \m{0} & \M{\Omega}_i^2
+    \end{bmatrix}
+\end{equation}
+
+where:
+
+\begin{equation}
+    \m{K}_{G} = \m{K}_{bb}
+    - \m{K}_{bi}\m{K}_{ii}^{-1}\m{K}_{ib}
+\end{equation}
+
+is the \textbf{Guyan-condensed stiffness matrix}. The corresponding mass matrix is
+generally not block-diagonal:
+
+\begin{equation}
+    \m{M}_{CB} =
+    \begin{bmatrix}
+        \m{M}_{bb}^{CB} & \m{M}_{b\varphi}^{CB} \\
+        \m{M}_{\varphi b}^{CB} & \m{I}
+    \end{bmatrix}
+\end{equation}
+
+with:
+
+\begin{eqarray}
+    \m{M}_{bb}^{CB} &= \m{M}_{bb}
+    + \m{M}_{bi}\M{\Psi}_c
+    + \M{\Psi}_c^T\m{M}_{ib}
+    + \M{\Psi}_c^T\m{M}_{ii}\M{\Psi}_c \\
+    \m{M}_{b\varphi}^{CB} &=
+    \left( \m{M}_{bi} + \M{\Psi}_c^T\m{M}_{ii} \right)\M{\Phi}_i \\
+    \m{M}_{\varphi b}^{CB} &= \left( \m{M}_{b\varphi}^{CB} \right)^T
+\end{eqarray}
+
+The coupling in the reduced mass matrix is the reason why the Craig-Bampton
+coordinates are not normal modes of the unconstrained component. The boundary
+coordinates remain physical and are dynamically coupled with the fixed-interface
+modal coordinates.
+
+\begin{bbox}[0.96]
+    \textbf{Note}:
+
+    The Craig-Bampton transformation does not reduce the boundary DOFs. If a
+    component has $ n_b $ boundary DOFs and $ n_\varphi $ retained fixed-interface
+    modes, then the reduced model has:
+
+    \begin{equation}
+        n_{CB} = n_b + n_\varphi
+    \end{equation}
+
+    generalised coordinates. A large number of interface nodes can therefore
+    still result in a relatively large Craig-Bampton model.
+\end{bbox}
+
+
+\section{Flexible body modal reduction}
+
+A \textbf{flexible body} used in a multibody or reduced-order simulation is often
+represented by a small set of free-interface normal modes instead of keeping all
+Craig-Bampton boundary coordinates as independent generalised coordinates. This
+can be obtained by performing a second modal reduction in the Craig-Bampton space.
+
+The Craig-Bampton equation without damping and external forces is:
+
+\begin{equation}
+    \m{M}_{CB}\ddot{\m{q}}_{CB}
+    + \m{K}_{CB}\m{q}_{CB} = \m{0}
+\end{equation}
+
+No boundary coordinates are constrained in the second reduction pass. The
+free-interface generalised eigenvalue problem is therefore:
+
+\begin{equation}
+    \left( \m{K}_{CB} - \omega_j^2 \m{M}_{CB} \right)
+    \M{\xi}_j = \m{0}
+\end{equation}
+
+The eigenvectors are assembled into the reduced free-interface mode matrix:
+
+\begin{equation}
+    \M{\Xi} =
+    \begin{bmatrix}
+        \M{\xi}_1 & \M{\xi}_2 & \dots & \M{\xi}_{n_f}
+    \end{bmatrix}
+\end{equation}
+
+where $ n_f $ is the number of retained free-interface modes. The Craig-Bampton
+coordinates are then represented by:
+
+\begin{equation}
+    \m{q}_{CB} = \M{\Xi}\m{q}_f
+\end{equation}
+
+and the full physical displacement is recovered as:
+
+\begin{eqarray}
+    \m{u} &= \m{T}_{CB}\m{q}_{CB} \\
+           &= \m{T}_{CB}\M{\Xi}\m{q}_f \\
+           &= \m{T}_f\m{q}_f
+\end{eqarray}
+
+where:
+
+\begin{equation}
+    \m{T}_f = \m{T}_{CB}\M{\Xi}
+\end{equation}
+
+is the final \textbf{flexible body transformation matrix}. The columns of
+$ \m{T}_f $ are free-interface mode shapes expressed at the original FE DOFs.
+The interface displacement is no longer an independent coordinate. It is
+approximated by the retained flexible body modes in the same way as the internal
+displacement.
+
+The final reduced matrices are calculated as:
+
+\begin{eqarray}
+    \m{M}_f &= \M{\Xi}^T \m{M}_{CB}\M{\Xi}
+             = \m{T}_f^T\m{M}\m{T}_f \\
+    \m{K}_f &= \M{\Xi}^T \m{K}_{CB}\M{\Xi}
+             = \m{T}_f^T\m{K}\m{T}_f \\
+    \m{C}_f &= \M{\Xi}^T \m{C}_{CB}\M{\Xi}
+             = \m{T}_f^T\m{C}\m{T}_f \\
+    \m{f}_f &= \M{\Xi}^T\m{f}_{CB}
+             = \m{T}_f^T\m{f}
+\end{eqarray}
+
+When the free-interface eigenvectors are mass-normalised:
+
+\begin{eqarray}
+    \M{\Xi}^T \m{M}_{CB}\M{\Xi} &= \m{I} \\
+    \M{\Xi}^T \m{K}_{CB}\M{\Xi} &= \M{\Omega}_f^2
+\end{eqarray}
+
+The flexible body equation of motion then becomes:
+
+\begin{equation}
+    \ddot{\m{q}}_f + \m{C}_f\dot{\m{q}}_f
+    + \M{\Omega}_f^2\m{q}_f = \m{f}_f
+\end{equation}
+
+For classical modal damping, the damping matrix can be represented by a diagonal
+matrix:
+
+\begin{equation}
+    \m{C}_f =
+    \begin{bmatrix}
+        2\zeta_1\omega_1 & \dots & 0 \\
+        \vdots & \ddots & \vdots \\
+        0 & \dots & 2\zeta_{n_f}\omega_{n_f}
+    \end{bmatrix}
+\end{equation}
+
+\subsection{Rigid body modes}
+
+A free three-dimensional component has six \textbf{rigid body modes}: three
+translations and three rotations. Their eigenvalues are theoretically equal to
+zero because a rigid body displacement produces no elastic strain energy:
+
+\begin{equation}
+    \m{K}_{CB}\M{\xi}_r = \m{0}
+\end{equation}
+
+In finite-precision arithmetic, the rigid body eigenvalues are usually small but
+not exactly zero. They must therefore be identified using a tolerance relative to
+the characteristic stiffness or to the first elastic eigenvalue, rather than by
+checking whether the calculated frequency is exactly zero.
+
+The exact treatment of the rigid body modes depends on the formulation of the
+surrounding simulation:
+
+\begin{itemize}
+    \item when the flexible component is described only by modal coordinates, the
+          rigid body modes must be retained to allow free translation and rotation,
+    \item when the multibody formulation describes the rigid body position and
+          orientation separately, the six rigid body modes are not used as elastic
+          coordinates; the retained elastic modes must nevertheless remain
+          mass-orthogonal to the rigid body motion.
+\end{itemize}
+
+The second case is commonly used by floating-frame flexible body formulations. The
+large rigid motion is described by the reference frame of the body and the modal
+coordinates describe only the small elastic deformation relative to this frame.
+
+\subsection{Mode truncation}
+
+If all $ n_{CB} $ eigenvectors of the reduced free-interface eigenproblem are kept,
+the transformation $ \M{\Xi} $ represents only another basis of the same
+Craig-Bampton space. The second reduction becomes a dimensionality reduction only
+when the mode matrix is truncated:
+
+\begin{equation}
+    n_f < n_{CB}
+\end{equation}
+
+This provides the distinction between the two reduced representations:
+
+\begin{itemize}
+    \item the Craig-Bampton model retains all boundary DOFs and therefore preserves
+          an independent physical coordinate at every interface DOF,
+    \item the flexible body modal model retains only selected free-interface modes
+          and therefore approximates both the boundary and internal deformation by
+          a smaller number of modal coordinates.
+\end{itemize}
+
+The accuracy of the final flexible body base is limited by both truncation stages.
+The fixed-interface base must first be rich enough to represent the required
+internal dynamics. The free-interface base is then selected according to the
+frequency range and deformation patterns required by the final simulation.
+Increasing the number of free-interface modes cannot recover deformation that was
+already excluded from the Craig-Bampton base.
+
+\subsection{Numerical procedure}
+
+A numerically efficient implementation of the complete reduction can be summarised
+as follows:
+
+\begin{enumerate}
+    \item Reorder the FE matrices into boundary and internal DOFs.
+    \item Factorise $ \m{K}_{ii} $ and solve
+          $ \m{K}_{ii}\M{\Psi}_c = -\m{K}_{ib} $ for all constraint modes.
+    \item Solve the lowest required eigenpairs of
+          $ \m{K}_{ii}\M{\varphi} = \omega^2\m{M}_{ii}\M{\varphi} $
+          with the boundary fixed.
+    \item Mass-normalise the fixed-interface modes and assemble $ \m{T}_{CB} $.
+    \item Calculate $ \m{M}_{CB} $, $ \m{K}_{CB} $ and, when required,
+          $ \m{C}_{CB} $ by congruent transformation.
+    \item Solve the free-interface eigenproblem
+          $ \m{K}_{CB}\M{\xi} = \omega^2\m{M}_{CB}\M{\xi} $.
+    \item Identify the rigid body modes and select the required elastic modes.
+    \item Mass-normalise the retained eigenvectors and assemble
+          $ \m{T}_f = \m{T}_{CB}\M{\Xi} $.
+    \item Calculate the final modal matrices and the load and output projection
+          operators.
+\end{enumerate}
+
+The following numerical considerations are important:
+
+\begin{itemize}
+    \item The matrix inverse must not be formed explicitly. A sparse factorisation
+          and multiple right-hand-side solve should be used for the constraint modes.
+    \item The fixed-interface stiffness matrix $ \m{K}_{ii} $ must be nonsingular.
+          A singular matrix indicates an internal rigid body motion or a mechanism
+          that is not restrained by the selected boundary DOFs.
+    \item Symmetric generalised eigensolvers preserve the mass orthogonality of
+          distinct modes. An ordinary Euclidean Gram-Schmidt process is therefore
+          not normally applied to the eigenvectors.
+    \item Repeated or tightly clustered eigenvalues can require
+          re-orthogonalisation of the corresponding mode block. This must use the
+          mass inner product $ \M{\xi}_r^T\m{M}_{CB}\M{\xi}_s $.
+    \item The Craig-Bampton matrices should be symmetrised only to remove small
+          round-off asymmetry, not to hide an incorrectly assembled transformation.
+    \item Mode selection should be based on the required frequency range and on the
+          deformation and loading patterns, rather than on the mode count alone.
+\end{itemize}
+
+For a retained mode $ \M{\xi}_j $, the mass normalisation is performed as:
+
+\begin{equation}
+    \M{\xi}_{j,mass} =
+    \frac{\M{\xi}_j}
+    {\sqrt{\M{\xi}_j^T\m{M}_{CB}\M{\xi}_j}}
+\end{equation}
+
+The orthogonality and the eigenpair residual can be checked using:
+
+\begin{eqarray}
+    \m{E}_M &= \M{\Xi}^T\m{M}_{CB}\M{\Xi} - \m{I} \\
+    \m{E}_K &= \M{\Xi}^T\m{K}_{CB}\M{\Xi} - \M{\Omega}_f^2 \\
+    \m{r}_j &= \m{K}_{CB}\M{\xi}_j
+              - \omega_j^2\m{M}_{CB}\M{\xi}_j
+\end{eqarray}
+
+A valid reduced base should have small off-diagonal entries in $ \m{E}_M $ and
+$ \m{E}_K $, and a small residual norm $ \norm{\m{r}_j} $ relative to the norms
+of the stiffness and inertia terms.
+
+\begin{bbox}[0.96]
+    \textbf{Note}:
+
+    The free-interface modes calculated in the Craig-Bampton space are not the
+    original full FE free-free modes. They are approximations restricted to the
+    subspace spanned by $ \m{T}_{CB} $. After mapping with
+    $ \m{T}_f = \m{T}_{CB}\M{\Xi} $, they have the same physical meaning and
+    converge towards the full FE free-free modes as the Craig-Bampton base is
+    enriched.
+\end{bbox}
+
+
+\begin{bbox}[0.96]
+    \textbf{Scope of the classical formulation}:
+
+    The above derivation assumes a linear time-invariant system with symmetric
+    mass and stiffness matrices. For a component linearised about a prestressed
+    operating point, the tangent stiffness matrix can be used in the same
+    reduction procedure.
+
+    When a velocity-dependent gyroscopic matrix $ \m{G} $ is retained, it must be
+    transformed together with the other system matrices:
+
+    \begin{equation}
+        \m{G}_{CB} = \m{T}_{CB}^T\m{G}\m{T}_{CB}
+    \end{equation}
+
+    The free-interface problem then contains the term $ i\omega\m{G}_{CB} $ and is
+    no longer the symmetric real-valued eigenproblem described above. Its modes
+    can be complex and the simple mass-orthogonality relations do not generally
+    apply.
+\end{bbox}
