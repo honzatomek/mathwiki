@@ -2265,7 +2265,7 @@ we get:
     we may use equations:
 
     \begin{eqarray}
-        \beta_1 &= \frac{\sum_{i=1}^n x_i y_i - n \bar{x} \bar{y}}
+            \beta_1 &= \frac{\sum_{i=1}^n x_i y_i - n \bar{x} \bar{y}}
                         {\sum_{i=1}^n x_i^2 - n \bar{x}^2} \\
         \beta_0 &= \bar{y} - \beta_1 \bar{x}
     \end{eqarray}
@@ -2281,6 +2281,567 @@ we get:
 \section{Interpolation and Mapping of Values}
 
 \section{Modal Assurance Criterion (MAC)}
+
+\section{Fast Fourier Transform (FFT)}
+
+Many measured and simulated quantities are functions of time. A displacement,
+force or acceleration history may be difficult to interpret directly when
+several oscillations are superposed. The Fourier transform rewrites the same
+signal as a combination of harmonic functions and thereby shows which
+frequencies are present.
+
+The \textbf{Discrete Fourier Transform} (DFT) is the transform applied to a
+finite sequence of sampled values. The \textbf{Fast Fourier Transform} (FFT) is
+not a different transform. It is an efficient algorithm for evaluating the
+DFT. This distinction is important: the sampling, scaling and leakage
+properties belong to the DFT, while the FFT only reduces the amount of work
+required to calculate it.
+
+\subsection{Discrete Fourier Transform}
+
+Let a continuous signal $ x(t) $ be sampled with a constant sampling interval
+$ \Delta t $. A record containing $ N $ samples is written as:
+
+\begin{eqarray}
+    x_n &= x(n\Delta t), \qquad n=0,1,\dots,N-1 \\
+    f_s &= \frac{1}{\Delta t} \\
+    T &= N\Delta t
+\end{eqarray}
+
+where $ f_s $ is the sampling frequency and $ T $ is the length of the sampled
+record. The DFT coefficients are:
+
+\begin{equation}
+    X_k = \sum_{n=0}^{N-1} x_n
+    \exp\left(-\mathrm{i}\,2\pi\frac{kn}{N}\right),
+    \qquad k=0,1,\dots,N-1
+\end{equation}
+
+The inverse transform reconstructs the samples:
+
+\begin{equation}
+    x_n = \frac{1}{N}\sum_{k=0}^{N-1} X_k
+    \exp\left(+\mathrm{i}\,2\pi\frac{kn}{N}\right)
+\end{equation}
+
+This book uses the common convention in which the forward transform is
+unscaled and the factor $ 1/N $ is applied to the inverse transform. Other
+software may distribute the scaling differently, but the product of the
+forward and inverse scaling factors must equal $ 1/N $.
+
+Each coefficient $ X_k $ is the projection of the sampled signal onto a complex
+harmonic basis vector. Its associated frequency is:
+
+\begin{equation}
+    f_k = \frac{k f_s}{N} = \frac{k}{T}
+\end{equation}
+
+and therefore the frequency spacing is:
+
+\begin{equation}
+    \Delta f = \frac{f_s}{N} = \frac{1}{T}
+\end{equation}
+
+A longer record improves the spacing of the frequency bins. Increasing only
+the sampling frequency while keeping the record length unchanged does not
+improve $ \Delta f $; it merely increases the highest representable frequency
+and the number of samples.
+
+\subsection{Frequencies of the DFT Bins}
+
+The DFT returns an array of $ N $ complex coefficients. The array index $ k $
+is not itself a frequency; it must be converted using the sampling frequency
+and the number of samples. For the first part of the array, the relation is:
+
+\begin{equation}
+    f_k = k\Delta f = \frac{k f_s}{N}
+\end{equation}
+
+The DFT output is ordered with the zero-frequency bin first, followed by the
+positive-frequency bins and then the negative-frequency bins. A signed bin
+index may be defined as:
+
+\begin{equation}
+    \widetilde{k} =
+    \begin{cases}
+        k, & 0\leq k\leq \lfloor N/2\rfloor \\
+        k-N, & \lfloor N/2\rfloor < k < N
+    \end{cases}
+\end{equation}
+
+and the corresponding signed frequency is:
+
+\begin{equation}
+    f_k = \widetilde{k}\frac{f_s}{N}
+\end{equation}
+
+For an even number of samples, the bin $ k=N/2 $ lies at the Nyquist
+frequency $ f_s/2 $. The sampled values cannot distinguish $ +f_s/2 $ from
+$ -f_s/2 $, so either sign may be used when labelling the full spectrum. This
+book labels that bin as positive. For an odd number of samples, no bin lies
+exactly at the Nyquist frequency.
+
+For example, let $ N=8 $ and $ f_s=800\,\mathrm{Hz} $. The bin spacing is:
+
+\begin{equation}
+    \Delta f = \frac{800}{8}=100\,\mathrm{Hz}
+\end{equation}
+
+and the full DFT array corresponds to:
+
+\begin{equation}
+    \left[0,\ 100,\ 200,\ 300,\ 400,\ -300,\ -200,\ -100\right]\,\mathrm{Hz}
+\end{equation}
+
+For a real-valued signal, only the non-negative part is normally retained. Its
+frequency array contains $ \lfloor N/2\rfloor+1 $ bins:
+
+\begin{equation}
+    f_k = \frac{k f_s}{N},
+    \qquad k=0,1,\dots,\lfloor N/2\rfloor
+\end{equation}
+
+The following function constructs either frequency array directly from the
+sampling information:
+
+\begin{python}
+import numpy as np
+
+
+def DFT_Frequencies(n_samples: int,
+                    sample_rate: float,
+                    one_sided: bool = False) -> np.ndarray:
+    """Return the frequencies associated with DFT array indices."""
+    if n_samples < 1:
+        raise ValueError("n_samples must be positive")
+    if sample_rate <= 0.0:
+        raise ValueError("sample_rate must be positive")
+
+    if one_sided:
+        n_bins = n_samples // 2 + 1
+        return np.arange(n_bins) * sample_rate / n_samples
+
+    k = np.arange(n_samples)
+    signed_k = np.where(k <= n_samples // 2, k, k - n_samples)
+    return signed_k * sample_rate / n_samples
+
+
+full_frequency = DFT_Frequencies(8, 800.0)
+one_sided_frequency = DFT_Frequencies(8, 800.0, one_sided=True)
+
+print(full_frequency)
+# [   0.  100.  200.  300.  400. -300. -200. -100.]
+
+print(one_sided_frequency)
+# [  0. 100. 200. 300. 400.]
+\end{python}
+
+When a spectral peak occurs at array index $ k $, its frequency is therefore
+obtained either from $ kf_s/N $ or by indexing the corresponding frequency
+array. Keeping the coefficient and frequency arrays in the same order avoids
+mistakes when plotting or selecting spectral components.
+
+The direct evaluation of the DFT computes $ N $ sums containing $ N $ terms.
+Its operation count is therefore proportional to:
+
+\begin{equation}
+    \mathcal{O}(N^2)
+\end{equation}
+
+This is acceptable for short sequences and useful as a reference
+implementation, but it becomes expensive for long measurement records.
+
+\subsection{Radix-2 Cooley--Tukey Algorithm}
+
+The FFT obtains the same coefficients by reusing repeated calculations. For a
+radix-2 transform, the number of samples is a power of two:
+
+\begin{equation}
+    N = 2^p
+\end{equation}
+
+Introduce the twiddle factor:
+
+\begin{equation}
+    W_N = \exp\left(-\mathrm{i}\frac{2\pi}{N}\right)
+\end{equation}
+
+so that the DFT can be written:
+
+\begin{equation}
+    X_k = \sum_{n=0}^{N-1}x_n W_N^{kn}
+\end{equation}
+
+The sequence is separated into samples with even and odd indices:
+
+\begin{eqarray}
+    X_k &= \sum_{m=0}^{N/2-1}x_{2m}W_N^{2mk}
+         + \sum_{m=0}^{N/2-1}x_{2m+1}W_N^{(2m+1)k} \\
+        &= \sum_{m=0}^{N/2-1}x_{2m}W_{N/2}^{mk}
+         + W_N^k\sum_{m=0}^{N/2-1}x_{2m+1}W_{N/2}^{mk}
+\end{eqarray}
+
+The two sums are DFTs of length $ N/2 $. Denote them by $ E_k $ and $ O_k $.
+The first half of the result is then:
+
+\begin{equation}
+    X_k = E_k + W_N^k O_k,
+    \qquad k=0,1,\dots,N/2-1
+\end{equation}
+
+Using $ W_N^{k+N/2}=-W_N^k $, the second half follows without another pair of
+transforms:
+
+\begin{equation}
+    X_{k+N/2} = E_k - W_N^k O_k
+\end{equation}
+
+The combination:
+
+\begin{eqarray}
+    X_k &= E_k + W_N^k O_k \\
+    X_{k+N/2} &= E_k - W_N^k O_k
+\end{eqarray}
+
+is commonly called an FFT \textbf{butterfly}. The same split is applied
+recursively until transforms of length one remain. The work satisfies:
+
+\begin{equation}
+    C(N) = 2C\left(\frac{N}{2}\right) + \mathcal{O}(N)
+\end{equation}
+
+and therefore:
+
+\begin{equation}
+    C(N) = \mathcal{O}(N\log_2 N)
+\end{equation}
+
+For example, a direct DFT of $ N=2^{20} $ samples requires on the order of
+$ 2^{40} $ complex operations, whereas a radix-2 FFT requires on the order of
+$ 20\cdot2^{20} $. The exact operation count depends on the implementation, but
+the difference in scaling is the reason why frequency-domain processing of
+long records is practical.
+
+The recursive formulation is particularly clear and is used in the example
+below. Production FFT libraries generally use iterative, in-place and
+cache-aware implementations and support lengths that are not powers of two by
+combining several radices or by using algorithms such as Bluestein's method.
+
+\subsection{Negative Frequencies and Real Signals}
+
+The indices above $ N/2 $ represent negative frequencies. A convenient signed
+interpretation is:
+
+\begin{equation}
+    f_k =
+    \begin{cases}
+        \dfrac{k f_s}{N}, & 0\leq k\leq N/2 \\
+        \dfrac{(k-N)f_s}{N}, & N/2 < k < N
+    \end{cases}
+\end{equation}
+
+For a real-valued time signal, the DFT has conjugate symmetry:
+
+\begin{equation}
+    X_{N-k} = X_k^*
+\end{equation}
+
+The negative-frequency half therefore contains no independent information. A
+one-sided spectrum keeps the bins from zero to the Nyquist frequency:
+
+\begin{equation}
+    f_{\mathrm{Nyquist}} = \frac{f_s}{2}
+\end{equation}
+
+The zero-frequency coefficient is the sum of the samples. Its amplitude after
+division by $ N $ is the mean value of the signal. The Nyquist bin, present for
+an even number of samples, is also unpaired. All other positive-frequency bins
+have matching negative-frequency bins.
+
+\subsection{Amplitude and Phase Scaling}
+
+For a real signal and the transform convention used above, a one-sided peak
+amplitude spectrum is obtained from:
+
+\begin{equation}
+    A_k = \frac{2|X_k|}{N},
+    \qquad 0 < k < N/2
+\end{equation}
+
+The factor two collects the equal positive- and negative-frequency
+contributions into the retained positive-frequency bin. It must not be applied
+to the direct-current or Nyquist bins:
+
+\begin{eqarray}
+    A_0 &= \frac{|X_0|}{N} \\
+    A_{N/2} &= \frac{|X_{N/2}|}{N}
+\end{eqarray}
+
+The phase is:
+
+\begin{equation}
+    \varphi_k = \operatorname{atan2}\left(\operatorname{Im}(X_k),
+                                           \operatorname{Re}(X_k)\right)
+\end{equation}
+
+Amplitude conventions must always be stated. Peak amplitude, root-mean-square
+amplitude, power spectrum and power spectral density are different quantities.
+For a sinusoidal component, its root-mean-square amplitude is its peak
+amplitude divided by $ \sqrt{2} $. Power spectral density scaling is discussed
+in the following spectral-density section.
+
+\subsection{Sampling, Aliasing and Leakage}
+
+Sampling cannot distinguish frequencies that differ by an integer multiple of
+the sampling frequency. A component above the Nyquist frequency is therefore
+folded into the represented frequency range. This is \textbf{aliasing}. It
+cannot be removed after sampling. The analogue signal must be sufficiently
+band-limited, usually by an anti-aliasing filter, before it is sampled.
+
+The DFT also treats the finite record as one period of an infinitely repeated
+signal. If the values at the two ends do not join continuously, the repeated
+signal contains a discontinuity. Energy from a harmonic component then spreads
+into neighbouring frequency bins. This is \textbf{spectral leakage}.
+
+Leakage is absent for a harmonic whose record contains an integer number of
+periods, because its frequency lies exactly on a DFT bin:
+
+\begin{equation}
+    f = k\Delta f
+\end{equation}
+
+For general measurement records this condition is rarely satisfied. A window
+reduces the discontinuity by gradually reducing the samples near the ends of
+the record. For example, the Hann window is:
+
+\begin{equation}
+    w_n = \frac{1}{2}\left(1-\cos\left(\frac{2\pi n}{N-1}\right)\right)
+\end{equation}
+
+and the transformed samples become:
+
+\begin{equation}
+    x_n^{(w)} = w_n x_n
+\end{equation}
+
+A window reduces distant side lobes but broadens the main spectral peak. It
+also changes the measured amplitude. For deterministic harmonic amplitudes, a
+simple correction uses the \textbf{coherent gain}:
+
+\begin{equation}
+    G_c = \frac{1}{N}\sum_{n=0}^{N-1}w_n
+\end{equation}
+
+so that the amplitude spectrum is divided by $ G_c $. Different windows trade
+peak width against side-lobe suppression; no window is best for every purpose.
+
+Appending zeros increases the number of displayed frequency samples and makes
+the plotted spectrum smoother, but it does not improve the physical frequency
+resolution $ 1/T $. Only a longer measured record does that. Zero-padding can,
+however, make interpolation of an isolated spectral peak more convenient.
+
+\subsection{Python Implementation}
+
+The following direct DFT implements the definition literally. It is useful for
+checking the FFT on short sequences and for showing where the quadratic cost
+comes from.
+
+\begin{python}
+import numpy as np
+
+
+def DFT(x: np.ndarray) -> np.ndarray:
+    """Evaluate the discrete Fourier transform directly.
+
+    The implementation uses NumPy arrays for storage and complex arithmetic.
+    """
+    x = np.asarray(x, dtype=complex).reshape(-1)
+    n_samples = x.size
+    X = np.zeros(n_samples, dtype=complex)
+
+    for k in range(n_samples):
+        value = 0.0j
+        for n in range(n_samples):
+            angle = -2.0 * np.pi * k * n / n_samples
+            value += x[n] * np.exp(1.0j * angle)
+        X[k] = value
+
+    return X
+\end{python}
+
+A recursive radix-2 Cooley--Tukey implementation follows directly from the
+even--odd derivation. The input length is checked explicitly because silently
+padding or truncating the data would change the transform being calculated.
+
+\begin{python}
+import numpy as np
+
+
+def FFT_Radix2(x: np.ndarray) -> np.ndarray:
+    """Evaluate a radix-2 FFT.
+
+    Args:
+        x: one-dimensional real or complex sequence. Its length must be a
+           positive power of two.
+
+    Returns:
+        The unscaled forward DFT of x.
+    """
+    x = np.asarray(x, dtype=complex).reshape(-1)
+    n_samples = x.size
+
+    if n_samples == 0:
+        raise ValueError("x must contain at least one sample")
+    if n_samples & (n_samples - 1):
+        raise ValueError("radix-2 FFT requires a power-of-two length")
+    if n_samples == 1:
+        return x.copy()
+
+    even = FFT_Radix2(x[0::2])
+    odd = FFT_Radix2(x[1::2])
+
+    k = np.arange(n_samples // 2)
+    twiddle = np.exp(-2.0j * np.pi * k / n_samples) * odd
+
+    X = np.empty(n_samples, dtype=complex)
+    X[:n_samples // 2] = even + twiddle
+    X[n_samples // 2:] = even - twiddle
+    return X
+
+
+def IFFT_Radix2(X: np.ndarray) -> np.ndarray:
+    """Evaluate the inverse transform using conjugation of the forward FFT."""
+    X = np.asarray(X, dtype=complex).reshape(-1)
+    if X.size == 0:
+        raise ValueError("X must contain at least one coefficient")
+
+    return np.conjugate(FFT_Radix2(np.conjugate(X))) / X.size
+\end{python}
+
+The inverse relation follows from changing the sign in the complex exponential.
+Conjugation allows the same forward implementation to be reused:
+
+\begin{equation}
+    \operatorname{IDFT}(\m{X}) =
+    \frac{1}{N}\left[\operatorname{DFT}(\m{X}^*)\right]^*
+\end{equation}
+
+The following helper forms a one-sided peak-amplitude spectrum of a real signal.
+It optionally removes the mean and applies a Hann window. The frequency array is
+constructed from the sample rate and record length using the bin relation derived
+above.
+
+\begin{python}
+import numpy as np
+
+
+def One_Sided_Spectrum(x: np.ndarray,
+                       sample_rate: float,
+                       remove_mean: bool = True,
+                       hann_window: bool = True):
+    """Return frequency, peak amplitude and phase for a real signal.
+
+    The sequence length must be a power of two because FFT_Radix2 is used.
+    Amplitudes are corrected for the coherent gain of the selected window.
+    """
+    x = np.asarray(x, dtype=float).reshape(-1).copy()
+    n_samples = x.size
+
+    if n_samples < 2:
+        raise ValueError("at least two samples are required")
+    if n_samples & (n_samples - 1):
+        raise ValueError("the sequence length must be a power of two")
+    if hann_window and n_samples < 4:
+        raise ValueError("the Hann window requires at least four samples")
+    if sample_rate <= 0.0:
+        raise ValueError("sample_rate must be positive")
+
+    if remove_mean:
+        x -= np.sum(x) / n_samples
+
+    if hann_window:
+        n = np.arange(n_samples)
+        window = 0.5 - 0.5 * np.cos(2.0 * np.pi * n / (n_samples - 1))
+    else:
+        window = np.ones(n_samples)
+
+    coherent_gain = np.sum(window) / n_samples
+    X = FFT_Radix2(x * window)
+
+    n_positive = n_samples // 2 + 1
+    X_positive = X[:n_positive]
+    frequency = DFT_Frequencies(
+        n_samples,
+        sample_rate,
+        one_sided=True,
+    )
+
+    amplitude = np.abs(X_positive) / (n_samples * coherent_gain)
+    amplitude[1:-1] *= 2.0
+    phase = np.angle(X_positive)
+
+    return frequency, amplitude, phase
+\end{python}
+
+For example, a signal containing components at $ 50\,\mathrm{Hz} $ and
+$ 120\,\mathrm{Hz} $ may be transformed as follows:
+
+\begin{python}
+import numpy as np
+
+
+sample_rate = 1024.0
+n_samples = 1024
+time = np.arange(n_samples) / sample_rate
+
+signal = (3.0 * np.sin(2.0 * np.pi * 50.0 * time)
+          + 0.8 * np.cos(2.0 * np.pi * 120.0 * time))
+
+frequency, amplitude, phase = One_Sided_Spectrum(
+    signal,
+    sample_rate,
+    remove_mean=True,
+    hann_window=False,
+)
+
+# The largest bins occur at 50 Hz and 120 Hz with peak amplitudes 3.0 and 0.8.
+indices = np.argsort(amplitude)[-2:]
+for index in indices[np.argsort(frequency[indices])]:
+    print(f"{frequency[index]:7.1f} Hz  {amplitude[index]:7.3f}")
+\end{python}
+
+Here the record length is one second, so $ \Delta f=1\,\mathrm{Hz} $, and both
+harmonics coincide exactly with DFT bins. No window is required for this
+constructed example. A general measured signal should not be expected to have
+this property.
+
+\subsection{Relation to Campbell Diagrams and Order Analysis}
+
+A single FFT describes the frequency content of one time record under
+approximately stationary operating conditions. A Campbell diagram describes
+how this content changes with rotational speed or time. It is commonly formed
+by dividing the signal into overlapping blocks, applying a window and an FFT to
+each block, and arranging the resulting spectra along the operating-speed
+axis.
+
+Order analysis uses rotational frequency rather than absolute frequency. For a
+shaft speed $ n_{\mathrm{rpm}} $, the first rotational order is:
+
+\begin{equation}
+    f_{1\mathrm{x}} = \frac{n_{\mathrm{rpm}}}{60}
+\end{equation}
+
+and order $ r $ occurs at:
+
+\begin{equation}
+    f_r = r\frac{n_{\mathrm{rpm}}}{60}
+\end{equation}
+
+Consequently, the FFT supplies the local frequency spectrum, while the Campbell
+or order map supplies the additional dependence on operating speed. During a
+rapid speed sweep, equally spaced time samples are not equally spaced in shaft
+angle. Accurate order tracking may then require angular resampling before the
+FFT rather than simply relabelling frequency bins.
 
 \section{Campbell Diagram, Order Analysis}
 
