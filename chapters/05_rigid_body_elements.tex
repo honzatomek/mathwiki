@@ -769,18 +769,32 @@ discussed in Chapter~\ref{chap:multifreedom-constraints} apply without change.
 \subsection{Why RBE3 Is Different from RBE2}
 
 An RBE2 answers the question: \textit{how must the surrounding nodes move if the
-connection is perfectly rigid?} An RBE3 answers a different question:
+connection is perfectly rigid?} An RBE3 answers the complementary question:
 \textit{what generalized motion of a reference point best represents the motion
-of the surrounding nodes?}
+of a set of surrounding nodes?}
 
-This reversal is essential. The RBE3 does not require all attachment nodes to
-follow one rigid plate. Their local deformation remains available. The reference
-point is instead related to a weighted interpolation of those nodal motions.
-Loads applied to the reference point are transferred back to the attachment
-nodes by work equivalence.
+This reversal is essential. In an RBE2, the reference motion is known and the
+motion of every dependent node is prescribed from it. In an RBE3, the
+attachment nodes remain mutually free to deform and the reference motion is
+constructed as a weighted interpolation of their motion. Loads applied to the
+reference point are then transferred back to the attachment nodes by work
+equivalence. The interpolation therefore introduces kinematic relations, but no
+material stiffness of its own.
 
-Let the translational displacement of attachment node $i$ be $\m{u}_i$, its
-position $\m{x}_i$ and its positive weight $w_i$. Define the weighted centroid
+The detailed definition of an RBE3 varies between finite element programs. Some
+implementations allow several groups of attachment DOFs, different weighting
+factors and selected reference DOFs. The derivation below considers the most
+important and most transparent case: three translational DOFs at each attachment
+node are used to recover the six generalized translations and rotations of a
+reference point. This formulation already contains the main governing
+principles and corresponds closely to the common engineering interpretation of
+an RBE3 spider.
+
+\subsection{Weighted Least-Squares Interpolation}
+
+Let attachment node $i$ have initial position $\m{x}_i$, translational
+displacement $\m{u}_i$ and positive weight $w_i$. The weighted centroid of the
+attachment set is
 
 \begin{equation}\label{rbe3-weighted-centroid}
     \m{x}_c = \frac{\sum_i w_i\m{x}_i}{\sum_i w_i},
@@ -788,205 +802,596 @@ position $\m{x}_i$ and its positive weight $w_i$. Define the weighted centroid
     \m{r}_i=\m{x}_i-\m{x}_c.
 \end{equation}
 
-For a rigid motion about that centroid one would have
+The centroid is not introduced merely as a convenient geometric point. Because
 
 \begin{equation}
-    \m{u}_i \approx \m{u}_c + \m{\theta}\times\m{r}_i.
+    \sum_i w_i\m{r}_i=\m{0},
 \end{equation}
 
-The centroidal translation that minimizes the weighted displacement error is
+it decouples the weighted average translation from the best-fit rotation.
 
-\begin{equation}\label{rbe3-average-translation}
-    \m{u}_c = \frac{\sum_i w_i\m{u}_i}{\sum_i w_i}.
+For small rotations, a rigid motion fitted to attachment node $i$ would predict
+
+\begin{equation}\label{rbe3-rigid-fit-node}
+    \m{u}_i^{\mathrm{fit}}
+    =\m{u}_c+\m{\theta}\times\m{r}_i.
 \end{equation}
 
-The corresponding least-squares rotation follows from
+Introduce the skew-symmetric matrix $\m{S}(\m{r})$ such that
+$\m{S}(\m{r})\m{a}=\m{r}\times\m{a}$. Since
+$\m{\theta}\times\m{r}=-\m{S}(\m{r})\m{\theta}$,
+Eq.~\eqref{rbe3-rigid-fit-node} becomes
 
-\begin{equation}\label{rbe3-rotation-normal-equations}
-    \m{J}_w\m{\theta}
-    = \sum_i w_i\,\m{r}_i\times(\m{u}_i-\m{u}_c),
+\begin{equation}
+    \m{u}_i^{\mathrm{fit}}
+    =\underbrace{\begin{bmatrix}
+        \m{I}&-\m{S}(\m{r}_i)
+    \end{bmatrix}}_{\m{A}_i}
+    \underbrace{\begin{bmatrix}
+        \m{u}_c\\\m{\theta}
+    \end{bmatrix}}_{\m{q}_c}.
+\end{equation}
+
+Stacking all $n$ attachment translations gives
+
+\begin{equation}
+    \m{u}_a=\begin{bmatrix}
+        \m{u}_1\\\m{u}_2\\\vdots\\\m{u}_n
+    \end{bmatrix},
+    \qquad
+    \m{A}=\begin{bmatrix}
+        \m{A}_1\\\m{A}_2\\\vdots\\\m{A}_n
+    \end{bmatrix},
+\end{equation}
+
+and define the block-diagonal weighting matrix
+
+\begin{equation}
+    \m{W}=\operatorname{diag}
+    \left(w_1\m{I},w_2\m{I},\ldots,w_n\m{I}\right).
+\end{equation}
+
+The RBE3 reference motion is obtained by fitting the rigid-motion field to the
+actual nodal translations in a weighted least-squares sense. Thus $\m{q}_c$
+minimizes
+
+\begin{equation}\label{rbe3-least-squares-functional}
+    \Phi(\m{q}_c)
+    =\frac{1}{2}
+    (\m{u}_a-\m{A}\m{q}_c)^T
+    \m{W}
+    (\m{u}_a-\m{A}\m{q}_c).
+\end{equation}
+
+Stationarity gives the normal equations
+
+\begin{equation}\label{rbe3-normal-equations}
+    \m{A}^T\m{W}\m{A}\m{q}_c
+    =\m{A}^T\m{W}\m{u}_a.
+\end{equation}
+
+Because the origin was chosen at the weighted centroid,
+$\m{A}^T\m{W}\m{A}$ takes the particularly simple form
+
+\begin{equation}\label{rbe3-normal-matrix}
+    \m{A}^T\m{W}\m{A}
+    =\begin{bmatrix}
+        w_\Sigma\m{I}&\m{0}\\
+        \m{0}&\m{J}_w
+    \end{bmatrix},
+    \qquad
+    w_\Sigma=\sum_i w_i,
 \end{equation}
 
 where
 
-\begin{equation}
+\begin{equation}\label{rbe3-geometric-inertia}
     \m{J}_w = \sum_i w_i
     \left[(\m{r}_i^T\m{r}_i)\m{I}-\m{r}_i\m{r}_i^T\right].
 \end{equation}
 
-The matrix $\m{J}_w$ has the same geometric form as an inertia tensor. Its
-invertibility immediately exposes an important limitation: if the attachment
-nodes do not span the directions required to identify a rotation, the
-interpolation is singular. A collinear set of nodes, for example, cannot define
-rotation about its own line from translational data alone.
+The matrix $\m{J}_w$ has the same geometric form as an inertia tensor. The
+least-squares translation and rotation are therefore
 
-If the reference point is at $\m{x}_r$, its interpolated translation is
-
-\begin{equation}\label{rbe3-reference-displacement}
-    \m{u}_r = \m{u}_c + \m{\theta}\times(\m{x}_r-\m{x}_c).
+\begin{equation}\label{rbe3-average-translation}
+    \m{u}_c = \frac{1}{w_\Sigma}\sum_i w_i\m{u}_i,
 \end{equation}
 
-Equations~\eqref{rbe3-average-translation}--\eqref{rbe3-reference-displacement}
-may be collected into an interpolation operator
+\begin{equation}\label{rbe3-rotation-normal-equations}
+    \m{J}_w\m{\theta}
+    = \sum_i w_i\,\m{r}_i\times(\m{u}_i-\m{u}_c).
+\end{equation}
 
+Equation~\eqref{rbe3-geometric-inertia} also exposes an important geometric
+requirement. The attachment set must span the motions that the reference point
+is expected to represent. A collinear set of translational nodes cannot identify
+rotation about its own line, because the corresponding component of $\m{J}_w$
+is singular.
+
+When $\m{J}_w$ is nonsingular, the centroidal generalized motion can be written
+as
+
+\begin{equation}\label{rbe3-centroid-interpolation}
+    \m{q}_c
+    =\underbrace{
+      (\m{A}^T\m{W}\m{A})^{-1}\m{A}^T\m{W}
+      }_{\m{H}_c}
+      \m{u}_a.
+\end{equation}
+
+The physical reference point need not coincide with the weighted centroid. Let
+
+\begin{equation}
+    \m{d}=\m{x}_r-\m{x}_c.
+\end{equation}
+
+Its translation is
+
+\begin{equation}
+    \m{u}_r=\m{u}_c+\m{\theta}\times\m{d}
+           =\m{u}_c-\m{S}(\m{d})\m{\theta},
+\end{equation}
+
+while its rotation is the same fitted rotation $\m{\theta}$. Therefore
+
+\begin{equation}\label{rbe3-reference-shift}
+    \underbrace{\begin{bmatrix}
+        \m{u}_r\\\m{\theta}
+    \end{bmatrix}}_{\m{q}_r}
+    =
+    \underbrace{\begin{bmatrix}
+        \m{I}&-\m{S}(\m{d})\\
+        \m{0}&\m{I}
+    \end{bmatrix}}_{\m{P}}
+    \m{q}_c.
+\end{equation}
+
+Combining Eqs.~\eqref{rbe3-centroid-interpolation} and
+\eqref{rbe3-reference-shift} gives the complete interpolation relation
+
+\begin{bbox}[0.88]
 \begin{equation}\label{rbe3-interpolation-operator}
-    \m{u}_r = \m{H}\m{u}_a,
+    \m{q}_r=\m{H}\m{u}_a,
+    \qquad
+    \m{H}=\m{P}\m{H}_c.
 \end{equation}
+\end{bbox}
 
-where $\m{u}_a$ collects the active attachment-node DOFs.
+The contrast with RBE2 is now explicit. The RBE2 matrix $\m{D}$ maps a small set
+of reference DOFs to many attachment DOFs. The RBE3 matrix $\m{H}$ maps many
+attachment DOFs to a small set of generalized reference DOFs.
 
 \subsection{Load Transfer from Virtual Work}
 
-The cleanest derivation of RBE3 load distribution does not start from guessed
-nodal forces. It starts from virtual work. For compatible virtual displacements,
+The cleanest derivation of RBE3 load distribution does not start from an assumed
+nodal-force pattern. It follows directly from virtual work. Let the generalized
+reference load be
 
 \begin{equation}
-    \delta\m{u}_r=\m{H}\delta\m{u}_a.
+    \m{f}_r=
+    \begin{bmatrix}
+        \m{F}_r\\\m{M}_r
+    \end{bmatrix}.
 \end{equation}
 
-Equating the virtual work of the reference resultant and the attachment-node
-forces gives
+For compatible virtual displacements,
 
 \begin{equation}
-    \m{f}_r^T\delta\m{u}_r
-    = \m{f}_a^T\delta\m{u}_a.
+    \delta\m{q}_r=\m{H}\delta\m{u}_a.
 \end{equation}
 
-Therefore
+Equating virtual work at the reference point and at the attachment nodes,
 
-\begin{bbox}
+\begin{equation}
+    \m{f}_r^T\delta\m{q}_r
+    = \m{f}_a^T\delta\m{u}_a,
+\end{equation}
+
+immediately gives
+
+\begin{bbox}[0.88]
 \begin{equation}\label{rbe3-force-transfer}
     \m{f}_a = \m{H}^T\m{f}_r.
 \end{equation}
 \end{bbox}
 
-This transpose relation is the fundamental reason that an interpolation coupling
-can both recover a reference motion and distribute a force or moment without
-introducing an artificial material stiffness.
+Thus the same interpolation that recovers the generalized motion also defines
+the work-equivalent load distribution. No spring stiffness has been introduced
+and no rigid plate has been imposed. The attachment nodes are coupled only
+through the selected generalized reference motion.
 
-\subsection{A Simple Symmetric Example}
+\subsection{Worked Coefficient Example}
 
-Consider four attachment nodes at the corners of a square of side $2a$, with the
-reference point at its centre and equal weights. A pure reference force $F_z$
-contains no moment about the centroid. By symmetry and
-Eq.~\eqref{rbe3-force-transfer}, each corner receives
+To make the difference from RBE2 as direct as possible, consider exactly the
+same geometry used in the RBE2 worked example. The reference point is
 
 \begin{equation}
-    F_{z,i}=\frac{F_z}{4}.
+    \m{X}_r=\begin{bmatrix}1&1&1\end{bmatrix}^{T},
 \end{equation}
 
-A pure reference moment $M_z$ cannot be carried by a force at the centroid.
-Instead it is represented by a self-equilibrated set of in-plane nodal forces.
-Their resultant force is zero while their moment about the centroid is $M_z$.
-This example illustrates the important distinction between \textit{resultant
-equivalence} and a prescribed surface traction: many different nodal force
-patterns can have the same total force and moment.
+and the four attachment nodes are
+
+\begin{equation}
+\begin{aligned}
+    \m{X}_1&=\begin{bmatrix}0&0&0\end{bmatrix}^{T}, &
+    \m{X}_2&=\begin{bmatrix}2&0&0\end{bmatrix}^{T},\\
+    \m{X}_3&=\begin{bmatrix}2&2&0\end{bmatrix}^{T}, &
+    \m{X}_4&=\begin{bmatrix}0&2&0\end{bmatrix}^{T}.
+\end{aligned}
+\end{equation}
+
+Let all four nodes have unit weight. Their weighted centroid is
+
+\begin{equation}
+    \m{X}_c=\begin{bmatrix}1&1&0\end{bmatrix}^{T},
+\end{equation}
+
+and the centroidal position vectors are
+
+\begin{equation}
+\begin{aligned}
+    \m{r}_1&=\begin{bmatrix}-1&-1&0\end{bmatrix}^{T}, &
+    \m{r}_2&=\begin{bmatrix} 1&-1&0\end{bmatrix}^{T},\\
+    \m{r}_3&=\begin{bmatrix} 1& 1&0\end{bmatrix}^{T}, &
+    \m{r}_4&=\begin{bmatrix}-1& 1&0\end{bmatrix}^{T}.
+\end{aligned}
+\end{equation}
+
+For node 1, Eq.~\eqref{rbe3-rigid-fit-node} gives
+
+\begin{equation}
+\begin{bmatrix}u_1\\v_1\\w_1\end{bmatrix}^{\mathrm{fit}}
+=
+\underbrace{\begin{bmatrix}
+1&0&0& 0& 0& 1\\
+0&1&0& 0& 0&-1\\
+0&0&1&-1& 1& 0
+\end{bmatrix}}_{\m{A}_1}
+\begin{bmatrix}
+ u_c\\v_c\\w_c\\\varphi\\\psi\\\theta
+\end{bmatrix}.
+\end{equation}
+
+The remaining three geometric blocks are
+
+\begin{equation}
+\m{A}_2=
+\begin{bmatrix}
+1&0&0& 0& 0& 1\\
+0&1&0& 0& 0& 1\\
+0&0&1&-1&-1& 0
+\end{bmatrix},
+\qquad
+\m{A}_3=
+\begin{bmatrix}
+1&0&0& 0& 0&-1\\
+0&1&0& 0& 0& 1\\
+0&0&1& 1&-1& 0
+\end{bmatrix},
+\end{equation}
+
+\begin{equation}
+\m{A}_4=
+\begin{bmatrix}
+1&0&0& 0& 0&-1\\
+0&1&0& 0& 0&-1\\
+0&0&1& 1& 1& 0
+\end{bmatrix}.
+\end{equation}
+
+Stacking the four blocks produces the $12\times6$ matrix $\m{A}$. With equal
+weights, $\m{W}=\m{I}$ and the normal matrix is
+
+\begin{equation}\label{rbe3-example-normal-matrix}
+    \m{A}^T\m{A}
+    =\operatorname{diag}(4,4,4,4,4,8).
+\end{equation}
+
+The simple diagonal form is a direct consequence of choosing the weighted
+centroid as the origin of the rigid-motion fit. Inverting
+Eq.~\eqref{rbe3-example-normal-matrix} gives the centroidal interpolation matrix
+
+{\small
+\begin{equation}\label{rbe3-example-Hc}
+\underbrace{\begin{bmatrix}
+ u_c\\v_c\\w_c\\\varphi\\\psi\\\theta
+\end{bmatrix}}_{\m{q}_c}
+=
+\underbrace{\begin{bmatrix}
+ \tfrac14&0&0& \tfrac14&0&0& \tfrac14&0&0& \tfrac14&0&0\\
+ 0&\tfrac14&0& 0&\tfrac14&0& 0&\tfrac14&0& 0&\tfrac14&0\\
+ 0&0&\tfrac14& 0&0&\tfrac14& 0&0&\tfrac14& 0&0&\tfrac14\\
+ 0&0&-\tfrac14& 0&0&-\tfrac14& 0&0& \tfrac14& 0&0& \tfrac14\\
+ 0&0& \tfrac14& 0&0&-\tfrac14& 0&0&-\tfrac14& 0&0& \tfrac14\\
+ \tfrac18&-\tfrac18&0& \tfrac18& \tfrac18&0& -\tfrac18& \tfrac18&0& -\tfrac18&-\tfrac18&0
+\end{bmatrix}}_{\m{H}_c}
+\underbrace{\begin{bmatrix}
+ u_1\\v_1\\w_1\\
+ u_2\\v_2\\w_2\\
+ u_3\\v_3\\w_3\\
+ u_4\\v_4\\w_4
+\end{bmatrix}}_{\m{u}_a}.
+\end{equation}
+}
+
+Several rows can be read directly. For example,
+
+\begin{equation}
+\begin{aligned}
+ u_c&=\frac{u_1+u_2+u_3+u_4}{4},\\
+ w_c&=\frac{w_1+w_2+w_3+w_4}{4},\\
+ \varphi&=\frac{-w_1-w_2+w_3+w_4}{4},\\
+ \theta&=\frac{u_1-v_1+u_2+v_2-u_3+v_3-u_4-v_4}{8}.
+\end{aligned}
+\end{equation}
+
+The physical reference point lies one unit above the centroid,
+
+\begin{equation}
+    \m{d}=\m{X}_r-\m{X}_c
+    =\begin{bmatrix}0&0&1\end{bmatrix}^{T}.
+\end{equation}
+
+Therefore
+
+\begin{equation}
+    u_r=u_c+\psi,
+    \qquad
+    v_r=v_c-\varphi,
+    \qquad
+    w_r=w_c,
+\end{equation}
+
+and Eq.~\eqref{rbe3-reference-shift} yields the complete $6\times12$
+reference interpolation matrix
+
+{\small
+\begin{equation}\label{rbe3-example-full-interpolation}
+\underbrace{\begin{bmatrix}
+ u_r\\v_r\\w_r\\\varphi_r\\\psi_r\\\theta_r
+\end{bmatrix}}_{\m{q}_r}
+=
+\underbrace{\begin{bmatrix}
+ \tfrac14&0& \tfrac14& \tfrac14&0&-\tfrac14& \tfrac14&0&-\tfrac14& \tfrac14&0& \tfrac14\\
+ 0&\tfrac14& \tfrac14& 0&\tfrac14& \tfrac14& 0&\tfrac14&-\tfrac14& 0&\tfrac14&-\tfrac14\\
+ 0&0&\tfrac14& 0&0&\tfrac14& 0&0&\tfrac14& 0&0&\tfrac14\\
+ 0&0&-\tfrac14& 0&0&-\tfrac14& 0&0& \tfrac14& 0&0& \tfrac14\\
+ 0&0& \tfrac14& 0&0&-\tfrac14& 0&0&-\tfrac14& 0&0& \tfrac14\\
+ \tfrac18&-\tfrac18&0& \tfrac18& \tfrac18&0& -\tfrac18& \tfrac18&0& -\tfrac18&-\tfrac18&0
+\end{bmatrix}}_{\m{H}}
+\underbrace{\begin{bmatrix}
+ u_1\\v_1\\w_1\\
+ u_2\\v_2\\w_2\\
+ u_3\\v_3\\w_3\\
+ u_4\\v_4\\w_4
+\end{bmatrix}}_{\m{u}_a}.
+\end{equation}
+}
+
+This matrix is the RBE3 counterpart of the RBE2 coefficient matrix in
+Eq.~\eqref{rbe2-example-full-transformation}. The direction of the mapping is
+opposite: the twelve attachment translations determine six generalized
+reference motions.
+
+The transpose gives the corresponding load distribution. For a pure normal
+force $F_z$ applied at the reference point,
+
+\begin{equation}
+    \m{F}_1=\m{F}_2=\m{F}_3=\m{F}_4
+    =\begin{bmatrix}0&0&F_z/4\end{bmatrix}^{T}.
+\end{equation}
+
+For a pure reference moment $M_z$, Eq.~\eqref{rbe3-force-transfer} gives
+
+\begin{equation}\label{rbe3-example-mz-distribution}
+\begin{aligned}
+ \m{F}_1&=\begin{bmatrix} M_z/8&-M_z/8&0\end{bmatrix}^{T}, &
+ \m{F}_2&=\begin{bmatrix} M_z/8& M_z/8&0\end{bmatrix}^{T},\\
+ \m{F}_3&=\begin{bmatrix}-M_z/8& M_z/8&0\end{bmatrix}^{T}, &
+ \m{F}_4&=\begin{bmatrix}-M_z/8&-M_z/8&0\end{bmatrix}^{T}.
+\end{aligned}
+\end{equation}
+
+The four forces sum to zero, while
+
+\begin{equation}
+    \sum_i \m{r}_i\times\m{F}_i
+    =\begin{bmatrix}0&0&M_z\end{bmatrix}^{T}.
+\end{equation}
+
+The offset of the reference point is also handled automatically. A force
+$\m{F}_r=\begin{bmatrix}F_x&0&0\end{bmatrix}^{T}$ applied one unit above the
+surface produces
+
+\begin{equation}
+\begin{aligned}
+ \m{F}_1&=\begin{bmatrix}F_x/4&0& F_x/4\end{bmatrix}^{T}, &
+ \m{F}_2&=\begin{bmatrix}F_x/4&0&-F_x/4\end{bmatrix}^{T},\\
+ \m{F}_3&=\begin{bmatrix}F_x/4&0&-F_x/4\end{bmatrix}^{T}, &
+ \m{F}_4&=\begin{bmatrix}F_x/4&0& F_x/4\end{bmatrix}^{T}.
+\end{aligned}
+\end{equation}
+
+The nodal forces recover both the applied force and the moment generated by its
+one-unit lever arm about the surface centroid,
+
+\begin{equation}
+    \sum_i\m{F}_i
+    =\begin{bmatrix}F_x&0&0\end{bmatrix}^{T},
+    \qquad
+    \sum_i\m{r}_i\times\m{F}_i
+    =\begin{bmatrix}0&F_x&0\end{bmatrix}^{T}.
+\end{equation}
+
+Finally, the example also demonstrates what the RBE3 does \emph{not} constrain.
+Consider the local warping pattern
+
+\begin{equation}
+    w_1=\delta,
+    \qquad
+    w_2=-\delta,
+    \qquad
+    w_3=\delta,
+    \qquad
+    w_4=-\delta,
+\end{equation}
+
+with all other attachment translations zero. Substitution into
+Eq.~\eqref{rbe3-example-full-interpolation} gives
+
+\begin{equation}
+    \m{q}_r=\m{0}.
+\end{equation}
+
+The four nodes can therefore undergo this relative warping without moving the
+reference point. An RBE2 applied to the same four nodes would suppress this mode
+completely. This is the central mechanical distinction between a rigid coupling
+and an interpolation coupling.
 
 \subsection{RBE3 as a Deformable Distributed Support}
 
 One of the most useful applications is the connection of a spring or bushing to
-an extended deformable surface. Let an RBE3 reference point represent the average
-motion of a flange or shell patch and let a spring connect that reference point
-to ground. The spring stores the support energy,
+an extended deformable surface. Let an RBE3 reference point represent the
+weighted generalized motion of a flange or shell patch and let a spring connect
+that reference point to ground. The spring stores the support energy,
 
 \begin{equation}
-    \Pi_s=\frac{1}{2}(\m{u}_r-\m{u}_g)^T\m{K}_s(\m{u}_r-\m{u}_g),
+    \Pi_s=\frac{1}{2}(\m{q}_r-\m{q}_g)^T
+    \m{K}_s(\m{q}_r-\m{q}_g),
 \end{equation}
 
-while the RBE3 merely maps $\m{u}_r$ to the surface and distributes the reaction
-by Eq.~\eqref{rbe3-force-transfer}. Local deformation modes of the attachment
-surface that do not change the interpolated reference motion are not suppressed.
-The support is therefore distributed without turning the attached patch into a
-rigid plate.
+while the RBE3 only performs the interpolation and work-equivalent load transfer
+of Eqs.~\eqref{rbe3-interpolation-operator} and
+\eqref{rbe3-force-transfer}. Relative deformation modes of the attachment
+surface that do not change the selected generalized reference motion are not
+suppressed. The support reaction is therefore spread over an extended region
+without turning that region into a rigid plate.
 
-A particularly useful construction employs coincident reference nodes. One node
-belongs to the interpolation spider; another belongs to ground, another body or
-a second spider. Translational and rotational springs, a bushing, or a set of
-very stiff selected-direction springs between the coincident nodes can then
-prescribe the desired support behaviour. Even when a selected generalized DOF is
-made nearly rigid, the surface itself can still warp because the RBE3 does not
-force every leg node to undergo one rigid-body motion.
+A particularly useful construction uses two coincident reference nodes. One
+belongs to the RBE3 spider; the other belongs to ground, another body or a second
+spider. Translational and rotational springs, a bushing, or selected very stiff
+spring directions between the coincident points can then prescribe the desired
+support behaviour. Even when one generalized direction is made almost rigid,
+the attached surface can still warp because the spider legs do not impose
+pairwise rigid-body motion.
 
 \begin{bbox}
 \textbf{Engineering note -- ``Deformable support'' does not mean a soft RBE3.}
 
-The RBE3 has no support stiffness that is tuned to make it deformable. The
-compliance comes from the structural surface and from the spring or bushing. The
-RBE3 only defines how the generalized support motion and reaction are transferred.
+The RBE3 contains no support stiffness that is tuned to make it deformable. The
+compliance comes from the attached structure and from the spring, bushing or
+other support element. The RBE3 defines only which generalized motion the
+support sees and how its reaction is distributed back to the structure.
 \end{bbox}
 
 \subsection{RBE3 Is Not Automatically a Pressure Load}
 
-A common modelling shortcut is to connect an RBE3 to all nodes on a face and
+A common modelling shortcut is to connect an RBE3 to nodes on a surface and
 apply a force at the reference point. The resulting nodal force field should not
-be confused with a prescribed uniform pressure.
+be confused automatically with a prescribed uniform pressure.
 
-For a uniform pressure $p$ the consistent nodal resultant is governed by surface
-integration. In a simple tributary-area interpretation,
+For a true uniform pressure $p$, the consistent nodal resultant follows from
+surface integration. A useful engineering approximation is tributary-area
+weighting,
 
 \begin{equation}\label{rbe3-tributary-weight}
-    F_i \approx p A_i,
+    F_i\approx pA_i,
 \end{equation}
 
-where $A_i$ is the surface area represented by node $i$. An interior node of a
-regular mesh generally has a larger tributary area than an edge node, and a
-corner node a smaller one still. A surface-based coupling that derives its
-weights from area can therefore assign smaller nodal force to edge and corner
-nodes than to interior nodes.
+where $A_i$ is the surface area represented by node $i$. Consider, for example,
+a regular $2\times2$ patch of four equal bilinear quadrilateral elements. If the
+pressure contribution of each element is divided equally among its four corner
+nodes, a geometric corner node belongs to one element, a non-corner edge node
+to two, and the interior node to four. Their tributary areas, and therefore
+their nodal forces under uniform pressure, occur in the ratio
 
-An explicitly defined RBE3 with equal nodal weights behaves differently: the
-translational share associated with equal weights is equal, not area-consistent.
-On a regular surface this over-represents the edge and corner nodes per unit
-tributary area. Thus neither ``RBE3'' nor ``equal weights'' should be interpreted
-as synonymous with ``uniform pressure''. If the traction distribution matters,
-apply a true element surface load or construct weights from the appropriate
-surface integration.
+\begin{equation}\label{rbe3-tributary-ratio}
+    F_{\mathrm{corner}}:F_{\mathrm{edge}}:F_{\mathrm{interior}}
+    =1:2:4.
+\end{equation}
+
+Thus the smaller force obtained at the edge of a surface is not necessarily a
+poor distribution. It may simply reflect the fact that an edge node represents
+less loaded area than an interior node. Surface-generated distributing
+couplings often exploit this kind of geometric or integration-based weighting.
+
+An explicitly defined RBE3 with equal nodal weights is different. Its
+translational share is equal at every selected node, regardless of how much
+surface area that node represents. On a regular mesh, equal weights therefore
+over-represent corner and edge nodes per unit tributary area. Neither the name
+``RBE3'' nor the phrase ``equal weights'' is synonymous with ``uniform
+pressure''.
 
 \begin{bbox}
-\textbf{Common mistake -- Using an equal-weight RBE3 as a pressure replacement.}
+\textbf{Common mistake -- Judging an RBE3 distribution only by equal nodal forces.}
 
-The correct check is not only whether total force and moment are recovered. The
-analyst must also decide whether the local traction distribution is physically
-important. Saint-Venant-type arguments may make the difference irrelevant far
-from the load introduction, but local stresses near the spider can be strongly
-affected.
+The correct question is whether the chosen weights represent the intended load
+path. If a uniform traction is physically important, apply a true element
+surface load or construct weights from the surface integration or tributary
+areas. If only the remote resultant matters sufficiently far from the load
+introduction, a simpler distribution may be entirely adequate by Saint-Venant's
+principle.
 \end{bbox}
 
 \subsection{Choosing the Spider Legs}
 
 Connecting every available mesh node is rarely a goal in itself. In many
-industrial models the spider legs are attached to representative corner,
-perimeter or otherwise well-spaced nodes. There are several reasons.
+industrial models, engineers deliberately attach spider legs only to
+representative corner, perimeter or otherwise well-spaced nodes. The reason is
+not that corner nodes have a special mathematical status, but that a relatively
+small geometric skeleton can often span the generalized translations and
+rotations that the coupling must transmit.
+
+There are several practical reasons for such selections:
 
 \begin{enumerate}
-    \item The selected nodes should span the translations and rotations that the
-          coupling must transmit. Geometric coverage is more important than raw
-          node count.
-    \item With higher-order elements, corner nodes often already provide a
-          stable low-order geometric skeleton. Adding every midside node may add
-          many coefficients without adding an independent global motion.
-    \item Large spiders create long constraint equations. They can increase
-          assembly memory, matrix connectivity and solver work. The cost is
-          particularly noticeable for interpolation constraints because many
-          attachment DOFs contribute to each generalized reference DOF.
-    \item Excessive or poorly chosen legs can interact with other constraints,
-          contact definitions or neighbouring spiders and create redundant
-          relations.
+    \item \textbf{Geometric rank matters more than node count.}
+          The selected nodes must span the reference motions. Adding ten nodes
+          nearly on top of one another contributes less than adding one node in
+          a previously unrepresented direction.
+
+    \item \textbf{Higher-order meshes can contain many redundant interpolation
+          locations.}
+          Corner nodes often already define the low-order geometry of a face.
+          Including every midside or finely spaced node may add many constraint
+          coefficients while changing the recovered generalized motion very
+          little.
+
+    \item \textbf{The interpolation equations become long.}
+          In the translational formulation above, $n$ attachment nodes give a
+          matrix $\m{H}$ with $3n$ columns. Each generalized reference equation
+          can therefore couple a large part of the selected surface. Large
+          spiders increase assembly memory, matrix connectivity and the amount
+          of work required to process the constraints. This cost can be more
+          noticeable for RBE3 than for a simple rigid transformation because the
+          weighted interpolation involves many contributing DOFs in each
+          generalized relation.
+
+    \item \textbf{Large spiders interact more easily with other constraints.}
+          Contact, neighbouring spiders, symmetry conditions and prescribed
+          displacements may act on the same surface. A very broad interpolation
+          region can then create redundant or unintended load paths.
 \end{enumerate}
 
-There is no universal maximum number of legs. Some programs impose explicit
-limits; others are limited only by memory or the internal representation of a
-constraint equation. The practical rule is to use enough well-distributed nodes
-to represent the intended load path and interpolation, not the largest set that
-the preprocessor can select.
+There is no universal maximum number of RBE3 legs. Some implementations impose
+explicit coefficient or node-count limits, while others are constrained mainly
+by memory and solver architecture. The engineering rule is to use enough
+well-distributed attachment nodes to represent the intended generalized motion
+and load path, and no more merely because the mesh contains them.
+
+This recommendation does not mean that a coarse corner-only spider is always
+best. If the local traction field is important, or if a curved surface must be
+represented accurately, more attachment points and physically meaningful
+weights may be required. The appropriate number of legs is therefore a modelling
+convergence question, not a fixed recipe.
 
 \begin{bbox}
 \textbf{Engineering note -- More RBE3 legs do not monotonically improve a model.}
 
-Convergence of the surrounding finite element mesh and convergence of the
-coupling definition are separate questions. Once the spider adequately spans the
-intended region, adding hundreds of additional legs may change little physically
-while increasing assembly cost substantially.
+Mesh convergence and coupling convergence are separate questions. Once the
+selected legs adequately span the intended region and load path, adding hundreds
+of additional attachment nodes can change little physically while increasing
+the cost of constraint assembly and solution.
 \end{bbox}
 
 \section{Fixed-Distance and Other Geometric Constraints}
