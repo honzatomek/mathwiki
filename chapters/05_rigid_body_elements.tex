@@ -1248,32 +1248,188 @@ reference point. An RBE2 applied to the same four nodes would suppress this mode
 completely. This is the central mechanical distinction between a rigid coupling
 and an interpolation coupling.
 
-\subsection{RBE3 as a Deformable Distributed Support}
+\subsection{RBE3 as a Deformable Distributed Support}\label{sec:rbe3-deformable-support}
 
-One of the most useful applications is the connection of a spring or bushing to
-an extended deformable surface. Let an RBE3 reference point represent the
-weighted generalized motion of a flange or shell patch and let a spring connect
-that reference point to ground. The spring stores the support energy,
+One of the most useful applications of an interpolation coupling is to connect a
+spring, bushing or joint to an extended \emph{deformable} region. The reference
+point then acts as a generalized interface: it sees the weighted translation and
+rotation of the attachment patch, while the patch itself is not forced to move as
+a rigid body.
 
-\begin{equation}
-    \Pi_s=\frac{1}{2}(\m{q}_r-\m{q}_g)^T
-    \m{K}_s(\m{q}_r-\m{q}_g),
+Let the RBE3 interpolation be
+
+\begin{equation}\label{rbe3-support-interpolation}
+    \m{q}_r=\m{H}\m{u}_a,
 \end{equation}
 
-while the RBE3 only performs the interpolation and work-equivalent load transfer
-of Eqs.~\eqref{rbe3-interpolation-operator} and
-\eqref{rbe3-force-transfer}. Relative deformation modes of the attachment
-surface that do not change the selected generalized reference motion are not
-suppressed. The support reaction is therefore spread over an extended region
-without turning that region into a rigid plate.
+and let a six-degree-of-freedom spring or bushing connect the reference point to
+a support with generalized motion $\m{q}_g$. For a linear support stiffness
+$\m{K}_s$, the stored energy is
 
-A particularly useful construction uses two coincident reference nodes. One
-belongs to the RBE3 spider; the other belongs to ground, another body or a second
-spider. Translational and rotational springs, a bushing, or selected very stiff
-spring directions between the coincident points can then prescribe the desired
-support behaviour. Even when one generalized direction is made almost rigid,
-the attached surface can still warp because the spider legs do not impose
-pairwise rigid-body motion.
+\begin{equation}\label{rbe3-support-energy}
+    \Pi_s=\frac{1}{2}
+    (\m{H}\m{u}_a-\m{q}_g)^T
+    \m{K}_s
+    (\m{H}\m{u}_a-\m{q}_g).
+\end{equation}
+
+Differentiation with respect to the attachment DOFs gives the internal
+restoring-force contribution of the support (using the usual finite element
+internal-force sign convention),
+
+\begin{equation}\label{rbe3-support-force}
+    \m{f}_a^{(s)}
+    =\m{H}^T\m{K}_s
+    (\m{H}\m{u}_a-\m{q}_g),
+\end{equation}
+
+and, for a fixed support $\m{q}_g=\m{0}$, the corresponding contribution to the
+attachment stiffness is
+
+\begin{equation}\label{rbe3-distributed-support-stiffness}
+    \boxed{\m{K}_a^{(s)}=\m{H}^T\m{K}_s\m{H}}.
+\end{equation}
+
+Equation~\eqref{rbe3-distributed-support-stiffness} is the mathematical reason
+why an RBE3 can be used to create a deformable distributed support. The spring or
+bushing supplies the constitutive stiffness; the RBE3 only maps that stiffness
+onto the surrounding mesh. No fictitious plate stiffness is inserted between
+the attachment nodes.
+
+An especially important consequence follows immediately. If a local deformation
+mode $\m{u}_0$ satisfies
+
+\begin{equation}
+    \m{H}\m{u}_0=\m{0},
+\end{equation}
+
+then
+
+\begin{equation}
+    \m{u}_0^T\m{K}_a^{(s)}\m{u}_0=0.
+\end{equation}
+
+The support therefore stores no energy in this deformation mode. Only the
+generalized translations and rotations represented by $\m{H}$ are supported;
+local warping that does not change those generalized quantities remains governed
+by the stiffness of the actual structure.
+
+\subsubsection{Worked Example -- One Translational Spring on the Four-Node Patch}
+
+The four-node RBE3 example of Eq.~\eqref{rbe3-example-full-interpolation} gives
+for the normal translation of the reference point
+
+\begin{equation}
+    w_r=\frac{1}{4}(w_1+w_2+w_3+w_4).
+\end{equation}
+
+Attach a vertical spring of stiffness $k_z$ from the reference point to ground.
+Its energy is
+
+\begin{equation}
+    \Pi_s
+    =\frac{1}{2}k_z w_r^2
+    =\frac{k_z}{32}(w_1+w_2+w_3+w_4)^2.
+\end{equation}
+
+The spring therefore contributes the following internal force and stiffness to
+the four vertical attachment DOFs:
+
+\begin{equation}\label{rbe3-example-vertical-spring-matrix}
+    \begin{bmatrix}
+    F_{z1}\\F_{z2}\\F_{z3}\\F_{z4}
+    \end{bmatrix}
+    =
+    \underbrace{\frac{k_z}{16}
+    \begin{bmatrix}
+    1&1&1&1\\
+    1&1&1&1\\
+    1&1&1&1\\
+    1&1&1&1
+    \end{bmatrix}}_{\m{K}_{w}^{(s)}}
+    \begin{bmatrix}
+    w_1\\w_2\\w_3\\w_4
+    \end{bmatrix}.
+\end{equation}
+
+This matrix has rank one. It resists only the average normal displacement of the
+patch. The remaining three independent combinations of $w_i$ are invisible to
+this spring. For example, the checkerboard warping mode already considered in
+the RBE3 worked example,
+
+\begin{equation}
+    \m{w}=\delta\begin{bmatrix}1&-1&1&-1\end{bmatrix}^{T},
+\end{equation}
+
+satisfies
+
+\begin{equation}
+    \m{K}_{w}^{(s)}\m{w}=\m{0}.
+\end{equation}
+
+Thus even an extremely stiff vertical spring can restrain the \emph{mean} motion
+of the surface while leaving this local warping mode untouched. The structural
+shells or solids still determine the shape of the attachment patch. An RBE2
+connection to the same nodes would instead eliminate the relative warping by
+kinematic constraint before the spring stiffness was even considered.
+
+More generally, if $\m{K}_s$ contains stiffness in all six generalized
+directions, the distributed contribution $\m{H}^T\m{K}_s\m{H}$ has rank no
+greater than six, regardless of how many attachment nodes are used. The support
+can therefore restrain up to six generalized motions without turning an
+arbitrarily fine attachment mesh into a six-degree-of-freedom rigid plate.
+
+\subsubsection{Coincident Reference Nodes and Bushings}
+
+A practical construction uses two coincident reference nodes. One belongs to the
+RBE3 spider; the other belongs to ground, another flexible body, or a second
+spider. A spring or bushing between the coincident points then defines which
+relative generalized motions are compliant and which are nearly rigid.
+
+For two deformable attachment regions,
+
+\begin{equation}
+    \m{q}_1=\m{H}_1\m{u}_1,
+    \qquad
+    \m{q}_2=\m{H}_2\m{u}_2,
+\end{equation}
+
+and a bushing stiffness $\m{K}_b$ between the coincident reference points stores
+
+\begin{equation}
+    \Pi_b=\frac{1}{2}
+    (\m{H}_1\m{u}_1-\m{H}_2\m{u}_2)^T
+    \m{K}_b
+    (\m{H}_1\m{u}_1-\m{H}_2\m{u}_2).
+\end{equation}
+
+The corresponding interface stiffness is
+
+\begin{equation}\label{rbe3-two-sided-bushing-stiffness}
+\begin{bmatrix}
+\m{K}_{11}&\m{K}_{12}\\
+\m{K}_{21}&\m{K}_{22}
+\end{bmatrix}
+=
+\begin{bmatrix}
+\m{H}_1^T\m{K}_b\m{H}_1 & -\m{H}_1^T\m{K}_b\m{H}_2\\
+-\m{H}_2^T\m{K}_b\m{H}_1 & \m{H}_2^T\m{K}_b\m{H}_2
+\end{bmatrix}.
+\end{equation}
+
+This formulation is useful for bearings, elastomeric mounts, compliant joints,
+connector stiffnesses and condensed representations of detailed attachments.
+The two surrounding surfaces may deform independently; only their selected
+\emph{generalized relative motion} is seen by the bushing.
+
+If selected spring directions are chosen very stiff rather than exactly rigid,
+the construction becomes a penalty-like approximation to a constraint in those
+directions. The stiffness should be large enough that the unwanted relative
+motion is negligible, but not made arbitrarily enormous: excessive stiffness can
+worsen matrix conditioning and unnecessarily increase the difficulty of the
+linear or nonlinear solve. If a direction is physically intended to be exactly
+constrained, an exact kinematic constraint may be preferable to an artificially
+huge spring constant.
 
 \begin{bbox}
 \textbf{Engineering note -- ``Deformable support'' does not mean a soft RBE3.}
@@ -1281,7 +1437,9 @@ pairwise rigid-body motion.
 The RBE3 contains no support stiffness that is tuned to make it deformable. The
 compliance comes from the attached structure and from the spring, bushing or
 other support element. The RBE3 defines only which generalized motion the
-support sees and how its reaction is distributed back to the structure.
+support sees and how the corresponding reaction is distributed back to the
+structure. Equation~\eqref{rbe3-distributed-support-stiffness} makes this
+separation explicit.
 \end{bbox}
 
 \subsection{RBE3 Is Not Automatically a Pressure Load}
@@ -1438,31 +1596,114 @@ cylindrical joint leaves one translation and one rotation along a common axis.
 Dedicated joint elements merely package these relations, often with nonlinear
 updates, limits, friction or stiffness added.
 
-\section{Remote Couplings and Reference Points}
+\section{Remote Couplings and Reference Points}\label{sec:remote-couplings}
 
 Modern preprocessors commonly expose a \textit{remote point}, \textit{reference
 point} or \textit{remote coupling} rather than asking the analyst to construct a
-classical spider manually. Such an object normally consists of
+classical spider manually. The most useful solver-independent interpretation is
+to regard the remote point as a set of generalized interface coordinates
+$\m{q}_r$ through which loads, prescribed motions, springs or joints can be
+connected to an extended region of the finite element mesh.
+
+This interpretation separates two questions:
 
 \begin{enumerate}
-    \item a geometric reference point with selected generalized DOFs,
-    \item a region of mesh nodes to which it is coupled,
-    \item a kinematic choice such as rigid or deformable/distributing, and
-    \item an internal enforcement method chosen by the solver.
+    \item \textbf{How is the mesh region coupled to the generalized point?}
+          A rigid coupling may use a relation such as
+          $\m{u}_a=\m{D}\m{q}_r$, whereas a distributing coupling may use
+          $\m{q}_r=\m{H}\m{u}_a$.
+    \item \textbf{What is attached to that generalized point?}
+          It may carry a force or moment, a prescribed displacement, a point
+          mass, a spring or bushing, a joint, or another coupling.
 \end{enumerate}
 
-A remote point is therefore a modelling abstraction, not a universal finite
-element type. A rigid option commonly produces RBE2-like behaviour. A deformable
-or distributing option commonly produces RBE3-like interpolation. A nonlinear
-surface-based option may instead employ contact elements and an internal MPC
-algorithm. The analyst should determine which behaviour is actually generated,
-especially for finite rotations, thermal loading and modal analyses.
+The reference point is therefore best viewed as a \emph{generalized mechanical
+interface}, not as a particular finite element formulation. The same apparent
+GUI object may be implemented internally by direct constraint equations,
+surface-based MPCs, contact-style constraint elements, Lagrange multipliers or
+other methods depending on solver and analysis type.
+
+\subsection{Remote Loads}
+
+For an interpolation coupling
+
+\begin{equation}
+    \m{q}_r=\m{H}\m{u}_a,
+\end{equation}
+
+a generalized force and moment vector $\m{f}_r$ applied at the remote point is
+transferred by virtual work as
+
+\begin{equation}
+    \m{f}_a=\m{H}^T\m{f}_r.
+\end{equation}
+
+Thus a remote force is not merely a concentrated nodal force moved graphically
+away from the mesh. The coupling defines how its resultant force and moment are
+represented by nodal forces on the attachment region. If the remote point is
+offset from the surface, the lever-arm moment is automatically included in the
+mapping, as demonstrated by the RBE3 worked example.
+
+For a rigid coupling, the same virtual-work argument applies in the opposite
+kinematic direction: $\m{u}_a=\m{D}\m{q}_r$ gives generalized reactions
+$\m{f}_r=\m{D}^T\m{f}_a$. The important difference is not the ability to carry a
+resultant load; it is whether the attachment region is required to follow rigid
+body motion while doing so.
+
+\subsection{Remote Displacements}
+
+A prescribed remote displacement applies a boundary condition to selected
+components of $\m{q}_r$. With a rigid coupling this can rigidize the entire
+selected attachment region in the active directions. With an interpolation
+coupling it instead constrains only the generalized weighted motion represented
+by $\m{H}$; local modes belonging to the nullspace of the interpolation may
+remain free.
+
+This distinction is easy to miss in a graphical interface because both options
+may show the same reference-point symbol. A condition such as $w_r=0$ can mean
+``every attached point participates in a rigid plane whose reference translation
+is zero'' or merely ``the weighted average normal translation is zero'',
+depending on the coupling definition.
+
+Rotational remote constraints also require sufficient geometry. A collection of
+coincident or collinear translational attachment nodes cannot in general define
+all three average rotations. The issue is geometric rank, not a missing solver
+setting. The same rank condition appeared in the RBE3 least-squares matrix
+$\m{A}^T\m{W}\m{A}$.
+
+\subsection{Remote Springs, Bushings and Joints}
+
+Once the generalized coordinates $\m{q}_r$ have been defined, constitutive or
+kinematic objects may be attached to them without modifying the surrounding mesh.
+The deformable-support formulation of Section~\ref{sec:rbe3-deformable-support}
+is the simplest example. A six-degree-of-freedom bushing acts in generalized
+space and its stiffness is projected back to the attachment mesh through
+$\m{H}^T\m{K}_s\m{H}$.
+
+This is an important modelling pattern. A detailed bearing seat, rubber mount or
+bolted interface may be represented by a flexible FE region whose generalized
+motion is connected to a compact spring, bushing or joint law. The connection
+stiffness and the load-distribution rule remain separate modelling decisions.
+The analyst can therefore change the support law without replacing the local
+mesh by an artificial rigid plate.
+
+\begin{bbox}
+\textbf{Engineering note -- A remote point is not automatically an RBE2 or an RBE3.}
+
+``Rigid'' and ``deformable'' remote behaviours often resemble RBE2 and RBE3,
+respectively, but modern solvers may generate different internal formulations,
+especially for large rotations, surface-based constraints or alternative
+constraint-enforcement options. The engineering behaviour should be identified
+first; the solver manual is then used to determine how that behaviour is
+implemented in the selected analysis.
+\end{bbox}
 
 \subsection{Example Implementations in Commercial Solvers}
 
 The following names are included only to help map the solver-independent concepts
 onto familiar software. They are not a substitute for the respective solver
-manuals.
+manuals, and the exact formulation can depend on analysis type and selected
+options.
 
 \begin{center}
 \begin{tabular}{|p{0.24\textwidth}|p{0.30\textwidth}|p{0.34\textwidth}|}
@@ -1473,19 +1714,27 @@ General linear constraint & \texttt{CE} & \texttt{MPC\_GENERAL} \\
 \hline
 Equal/coupled DOF & \texttt{CP}, \texttt{CE} & \texttt{MPC\_SAME}, \texttt{MPC\_ASSIGN} \\
 \hline
-Rigid coupling & \texttt{CERIG}, rigid remote coupling & \texttt{MPC\_RIGID} \\
+Rigid coupling & \texttt{CERIG}, rigid remote behaviour & \texttt{MPC\_RIGID} \\
 \hline
-Interpolation coupling & \texttt{RBE3}, deformable remote coupling & \texttt{MPC\_WLSCON} \\
+Interpolation coupling & \texttt{RBE3}, deformable/distributing remote behaviour & \texttt{MPC\_WLSCON} \\
 \hline
-Other specialized couplings & contact-based MPCs, joint/constraint elements & \texttt{MPC\_JOIN} and other specialized MPCs \\
+Other specialized couplings & surface-based MPCs, joint/constraint elements & \texttt{MPC\_JOIN} and other specialized MPCs \\
 \hline
 \end{tabular}
 \end{center}
 
 The names illustrate a broader point: a mature solver usually contains several
 constraint families because equal DOFs, rigid-body kinematics, weighted
-least-squares interpolation and nonlinear geometric relations are not numerically
-identical problems.
+least-squares interpolation and nonlinear geometric relations are not the same
+mathematical problem. Higher-level remote coupling objects may deliberately use
+an implementation different from the classical command bearing the most similar
+name. This can be advantageous. For example, ANSYS Mechanical Remote Points are
+generally realized through surface-based MPC constraints rather than by simply
+issuing the classical \texttt{CERIG} or \texttt{RBE3} command; in a
+large-deflection analysis the underlying element-shape interpolation can be
+reformed as the configuration evolves. This is exactly why an engineering
+behaviour that is ``RBE3-like'' should not automatically be assumed to have the
+limitations of a particular classical RBE3 command.
 
 \section{Advanced Considerations}
 
