@@ -2085,19 +2085,475 @@ when its average thermal expansion is correct. In such cases the physical
 connection geometry, a more local coupling, or an explicitly deformable
 interface may be required.
 
-\subsection{Modal and Dynamic Analyses}
+\subsection{Modal and Dynamic Analyses}\label{sec:coupling-modal-dynamics}
 
-An RBE2 can raise natural frequencies because it removes deformation modes from
-the attached region. This is not an artificial effect if the physical connection
-is genuinely rigid; it is artificial if the spider merely stands in for load
-introduction to an otherwise flexible surface. RBE3 is often preferable in the
-latter case because it preserves local structural deformation.
+The phrase ``can this coupling be used in dynamics?'' is ambiguous. A
+constraint may be perfectly admissible in a full nonlinear transient analysis,
+where the equations are updated and solved incrementally in time, yet be
+unsuitable for a conventional eigenshape extraction. Conversely, a linear MPC
+that has no constitutive stiffness of its own fits naturally into a modal
+analysis because it can be imposed once on both the stiffness and mass matrices.
 
-Constraint treatment also affects mass and inertia. An ideal MPC has no mass of
-its own, but a reference node may carry lumped mass or rotary inertia, and
-eliminated dependent DOFs transfer the structural mass matrix through the same
-kinematic transformation used for stiffness. Dynamic models should therefore be
-checked for both stiffness and mass consequences.
+It is therefore useful to distinguish at least three questions:
+
+\begin{enumerate}
+    \item Can the coupling be represented by a \emph{fixed linear homogeneous}
+          relation for the vibration perturbations?
+    \item If not, can it be \emph{linearized about an equilibrium state} and
+          then frozen for the modal calculation?
+    \item Does the selected solver and mode-extraction algorithm support the
+          numerical enforcement method used by that particular implementation?
+\end{enumerate}
+
+The first question is mathematical, the second is physical, and the third is
+solver-specific.
+
+\subsubsection{Linear Homogeneous Constraints Fit Naturally into an Eigenproblem}
+
+For an undamped linear structure the free-vibration equations are
+
+\begin{equation}\label{coupling-modal-full-eom}
+    \m{M}\ddot{\m{u}}+\m{K}\m{u}=\m{0}.
+\end{equation}
+
+Assume that the admissible displacement field is restricted by a set of linear
+homogeneous constraints
+
+\begin{equation}\label{coupling-modal-linear-constraint}
+    \m{C}\m{u}=\m{0}.
+\end{equation}
+
+If the admissible displacement space is parameterized by
+
+\begin{equation}\label{coupling-modal-nullspace-transform}
+    \m{u}=\m{T}\m{q},
+    \qquad
+    \m{C}\m{T}=\m{0},
+\end{equation}
+
+then substitution into Eq.~\eqref{coupling-modal-full-eom} and premultiplication
+by $\m{T}^{T}$ gives
+
+\begin{equation}
+    \underbrace{\m{T}^{T}\m{M}\m{T}}_{\widehat{\m{M}}}
+    \ddot{\m{q}}
+    +
+    \underbrace{\m{T}^{T}\m{K}\m{T}}_{\widehat{\m{K}}}
+    \m{q}=\m{0}.
+\end{equation}
+
+The usual harmonic ansatz $\m{q}=\m{\phi}\exp(i\omega t)$ therefore yields
+
+\begin{equation}\label{coupling-modal-reduced-eigenproblem}
+    \boxed{
+    \left(
+    \widehat{\m{K}}-\omega^2\widehat{\m{M}}
+    \right)\m{\phi}=\m{0}
+    }.
+\end{equation}
+
+This is the same ordinary generalized eigenvalue problem as for an unconstrained
+finite element model, only expressed in a smaller admissible coordinate space.
+Consequently, a \emph{constant linear kinematic coupling imposed by exact DOF
+elimination} is not an obstacle to mode extraction. The same transformation must
+simply be applied consistently to both stiffness and mass.
+
+This category includes, in principle,
+
+\begin{itemize}
+    \item zero prescribed displacements and ordinary fixed supports,
+    \item equal-DOF couplings,
+    \item general linear homogeneous MPC equations,
+    \item linear RBE1- and RBE2-type rigid couplings,
+    \item linear RBE3-type interpolation couplings,
+    \item linear tied or interpolation constraints with a fixed topology and
+          fixed coefficients.
+\end{itemize}
+
+The important property is not the name of the coupling but the existence of a
+constant transformation $\m{T}$ for the perturbation DOFs.
+
+\paragraph{Nonzero prescribed values.}
+A stand-alone natural-frequency calculation is a free-vibration problem. A
+constraint
+
+\begin{equation}
+    \m{C}\m{u}=\m{d},
+    \qquad \m{d}\neq\m{0},
+\end{equation}
+
+therefore cannot simply be interpreted as a nonzero oscillatory boundary value
+in the eigensolution. If the imposed displacement creates stress or changes the
+geometry, the correct procedure is normally to solve the loaded equilibrium
+state first and then extract modes of the \emph{incremental} perturbation. The
+incremental constraint becomes homogeneous,
+
+\begin{equation}
+    \m{C}_{0}\,\delta\m{u}=\m{0},
+\end{equation}
+
+while the prestress and, where appropriate, geometric stiffness are carried into
+the tangent eigenproblem.
+
+\begin{bbox}
+\textbf{Engineering note -- Modal analysis acts on perturbations.}
+
+A prestressed body can be displaced, rotated, thermally expanded or otherwise
+far from its original configuration. The mode shapes are nevertheless small
+\emph{incremental} motions about that operating point. This is why a nonlinear
+base analysis and a linear modal perturbation are not contradictory.
+\end{bbox}
+
+\subsubsection{RBE2 and RBE3 in Modal Analysis}
+
+The RBE2 transformation derived in Section~\ref{sec:rbe2} is a direct example of
+Eq.~\eqref{coupling-modal-nullspace-transform}. Its kinematic reduction acts on
+the mass matrix as well as on the stiffness matrix,
+
+\begin{equation}
+    \widehat{\m{K}}=\m{T}^{T}\m{K}\m{T},
+    \qquad
+    \widehat{\m{M}}=\m{T}^{T}\m{M}\m{T}.
+\end{equation}
+
+The effect on natural frequencies therefore has two distinct sources. First,
+the rigid coupling removes local deformation from the admissible displacement
+space. Second, any mass associated with dependent DOFs is redistributed through
+the same rigid-body transformation. Raising a natural frequency is not
+intrinsically an RBE2 error: it is correct if the real connection is rigid. It
+becomes artificial when the spider is used only as a convenient load-introduction
+device over a region that should remain flexible.
+
+A linear RBE3 also fits naturally into an eigenproblem. If
+
+\begin{equation}
+    \m{q}_r=\m{H}\m{u}_a,
+\end{equation}
+
+and a mass or rotary inertia $\m{M}_r$ is attached at the remote point, its
+kinetic energy is
+
+\begin{equation}
+    T_r
+    =\frac{1}{2}\dot{\m{q}}_r^T\m{M}_r\dot{\m{q}}_r
+    =\frac{1}{2}\dot{\m{u}}_a^T
+    \underbrace{\m{H}^T\m{M}_r\m{H}}_{\m{M}_a^{(r)}}
+    \dot{\m{u}}_a.
+\end{equation}
+
+Thus the remote inertia is distributed consistently to the attachment patch as
+
+\begin{equation}\label{rbe3-remote-mass-projection}
+    \boxed{\m{M}_a^{(r)}=\m{H}^{T}\m{M}_r\m{H}}.
+\end{equation}
+
+Equation~\eqref{rbe3-remote-mass-projection} is the dynamic analogue of the
+support-stiffness projection in
+Eq.~\eqref{rbe3-distributed-support-stiffness}. Local deformation modes in the
+nullspace of $\m{H}$ remain available, while the generalized inertia associated
+with the reference point participates in the modes seen by the interpolation.
+
+This is one reason RBE3-type attachments are often preferred for accelerometers,
+shakers, concentrated equipment masses or elastic supports on flexible panels:
+the remote quantity can participate dynamically without converting the entire
+attachment patch into a rigid plate.
+
+\subsubsection{Penalty Couplings Can Be Used, but They Create Constraint Modes}
+
+A linear penalty enforcement replaces the exact constraint by a large artificial
+stiffness. For
+
+\begin{equation}
+    \m{C}\m{u}\approx\m{0},
+\end{equation}
+
+one obtains approximately
+
+\begin{equation}\label{coupling-modal-penalty-stiffness}
+    \m{K}_{p}
+    =\m{K}+\alpha\m{C}^{T}\m{C},
+\end{equation}
+
+where $\alpha$ is a large penalty parameter. The eigenproblem remains a standard
+displacement eigenproblem,
+
+\begin{equation}
+    \left(\m{K}_{p}-\omega^2\m{M}\right)\m{\phi}=\m{0},
+\end{equation}
+
+so mode extraction is mathematically possible. The price is that the constraint
+is no longer exact and the artificial stiffness creates very high-frequency
+\emph{constraint modes}. A characteristic penalty frequency scales roughly as
+
+\begin{equation}
+    \omega_p\sim\sqrt{\frac{\alpha}{m_{\mathrm{eff}}}}.
+\end{equation}
+
+If $\alpha$ is sufficiently high, these modes lie well above the frequency range
+of interest and the low modes approximate the exactly constrained system. If it
+is too small, the intended connection becomes visibly compliant. If it is made
+arbitrarily large, conditioning deteriorates and the artificial modes can enter
+the extracted frequency range or make iterative eigensolvers inefficient.
+
+Penalty-based RBE, tie, contact or joint formulations can therefore be used in
+modal analysis only with the understanding that the penalty stiffness is part of
+the eigenvalue problem. ``Rigid'' then means \emph{very stiff}, not exactly
+kinematically eliminated.
+
+\subsubsection{Lagrange-Multiplier Constraints Are Eigensolver Dependent}
+
+An exact constraint may instead be enforced by Lagrange multipliers. For the
+linear relation $\m{C}\m{u}=\m{0}$, the free-vibration equations become
+
+\begin{equation}\label{coupling-modal-lm-system}
+\begin{bmatrix}
+    \m{K} & \m{C}^{T}\\
+    \m{C} & \m{0}
+\end{bmatrix}
+\begin{bmatrix}
+    \m{\phi}\\
+    \m{\lambda}
+\end{bmatrix}
+=\omega^2
+\begin{bmatrix}
+    \m{M} & \m{0}\\
+    \m{0} & \m{0}
+\end{bmatrix}
+\begin{bmatrix}
+    \m{\phi}\\
+    \m{\lambda}
+\end{bmatrix}.
+\end{equation}
+
+The multiplier coordinates carry constraint force but no physical inertia, so
+the augmented mass matrix is singular. Equation~\eqref{coupling-modal-lm-system}
+is therefore not the ordinary positive-definite displacement eigenproblem
+assumed by many classical mode extractors.
+
+This does \emph{not} mean that Lagrange-multiplier couplings are physically
+forbidden in modal analysis. A solver may
+
+\begin{itemize}
+    \item eliminate or transform the multiplier equations internally,
+    \item use a mode extractor designed for the augmented saddle-point system,
+    \item support only selected multiplier elements or selected eigensolvers,
+    \item reject the formulation for eigenshape extraction even though the same
+          element is valid in static or transient analysis.
+\end{itemize}
+
+Consequently, the statement ``this joint uses Lagrange multipliers'' is not by
+itself enough to decide modal admissibility. The particular solver and extraction
+method must be checked.
+
+\subsubsection{Nonlinear Geometric Constraints Require Linearization}
+
+A fixed-distance constraint illustrates the difference particularly clearly.
+For two points with current separation
+
+\begin{equation}
+    \m{r}=\m{x}_2-\m{x}_1,
+\end{equation}
+
+an exact fixed length $L$ may be written as
+
+\begin{equation}\label{fixed-distance-modal-nonlinear}
+    g(\m{x})
+    =\m{r}^{T}\m{r}-L^2=0.
+\end{equation}
+
+This is a nonlinear geometric relation and cannot be inserted unchanged into an
+ordinary linear eigenproblem. Linearization about an equilibrium configuration
+$\m{r}_0$ gives
+
+\begin{equation}\label{fixed-distance-modal-tangent}
+    \delta g
+    =2\m{r}_0^{T}
+    (\delta\m{u}_2-\delta\m{u}_1)=0.
+\end{equation}
+
+Equation~\eqref{fixed-distance-modal-tangent} is now a linear homogeneous MPC for
+the modal perturbation. It restrains only the relative displacement component
+parallel to the current link direction. Transverse relative motion changes the
+link length only to second order and is therefore not constrained by the
+first-order tangent equation.
+
+This is not a defect. It is the correct local kinematics of an ideal pin-ended
+fixed-length link. If the link carries a finite axial reaction in the equilibrium
+state, the second variation of the constraint also contributes geometric
+stiffness. The prestressed tangent eigenproblem then contains both the linearized
+kinematic relation and the effect of the equilibrium constraint force.
+
+The same logic applies to finite-rotation joints, spherical constraints,
+point-on-line constraints and other nonlinear holonomic relations. A standard
+modal analysis can use their \emph{tangent} form about a specified operating
+point, provided the solver supports that linearization. It cannot follow a
+changing joint geometry during a single linear mode shape.
+
+\begin{bbox}
+\textbf{Engineering note -- A nonlinear joint may be valid in transient dynamics but not directly in modal dynamics.}
+
+In a full nonlinear transient analysis the joint equations can be updated every
+time step. In a conventional modal analysis the joint must be represented by one
+fixed tangent model. Modal superposition based on that eigenspace therefore also
+inherits the same fixed linearization and cannot reproduce opening, locking,
+sliding or other state changes without additional nonlinear treatment.
+\end{bbox}
+
+\subsubsection{Contact, Gaps and One-Sided Supports}
+
+Contact is even more restrictive because its topology is not only nonlinear but
+also conditional. The normal constraint from Chapter~\ref{chap:contact-formulations}
+contains an active-set decision: an open pair contributes no normal contact
+stiffness, while a closed pair does. Friction adds a further distinction between
+stick and slip.
+
+A conventional eigenshape extraction cannot repeatedly decide whether contact is
+open or closed as the eigenvector changes sign. Instead, it uses a \emph{frozen
+linearization}. Typical possibilities are
+
+\begin{itemize}
+    \item use the initial contact status in a stand-alone linear modal analysis,
+    \item solve a nonlinear static equilibrium first and carry the converged
+          contact status and tangent stiffness into a prestressed modal analysis,
+    \item deliberately replace the contact by a tied or MPC coupling when the
+          interface is physically known to remain closed over the vibration range.
+\end{itemize}
+
+The resulting mode shape is therefore a mode of the structure with that contact
+state held fixed. It does not mean that the real nonlinear interface will remain
+closed, sticking or bonded at arbitrary vibration amplitude.
+
+The same caveat applies to compression-only supports, gap springs, cable/slack
+conditions and unilateral stops. If their state changes with the sign or
+amplitude of motion, a single linear modal basis cannot reproduce that change.
+
+\subsubsection{Springs, Bushings, Dampers and Frequency-Dependent Couplings}
+
+A linear spring or bushing adds an ordinary stiffness matrix and is naturally
+compatible with eigenshape extraction. The RBE3-supported bushing of
+Section~\ref{sec:rbe3-deformable-support}, for example, contributes
+
+\begin{equation}
+    \m{K}_a^{(s)}=\m{H}^{T}\m{K}_s\m{H}
+\end{equation}
+
+and can be included directly in Eq.~\eqref{coupling-modal-reduced-eigenproblem}.
+
+A purely viscous damper is different. In the undamped real eigenproblem it does
+not affect the extracted frequencies or real mode shapes because no damping
+matrix is present. To include viscous damping explicitly one needs a damped or
+complex eigenvalue formulation, schematically
+
+\begin{equation}
+    \left(
+    \m{K}+i\omega\m{C}_d-\omega^2\m{M}
+    \right)\m{\phi}=\m{0}.
+\end{equation}
+
+If the support stiffness or damping itself depends strongly on frequency, the
+problem is no longer a simple linear generalized eigenproblem because the system
+matrix depends on the unknown eigenfrequency. Solvers may use special complex
+mode algorithms, evaluate the support at a reference frequency, or prohibit the
+feature in ordinary normal-mode extraction. The same issue occurs with active
+control laws and other frequency- or state-dependent couplings.
+
+\subsubsection{Which Coupling Classes Can Be Used for Eigenshape Extraction?}
+
+Tables~\ref{tab:coupling-modal-direct} and~\ref{tab:coupling-modal-special} summarize the general rule. They are
+intentionally organized by mathematical behaviour rather than by solver command.
+A particular commercial implementation may impose additional restrictions.
+
+\begin{center}
+\small
+\begin{tabular}{|p{0.25\textwidth}|p{0.20\textwidth}|p{0.43\textwidth}|}
+\hline
+\textbf{Coupling or support class} & \textbf{Ordinary linear modes} & \textbf{Reason / required treatment} \\
+\hline
+Zero displacement, equal DOF, linear homogeneous CE/MPC & Yes & Constant linear constraint; eliminate or transform the DOFs consistently in $\m{K}$ and $\m{M}$. \\
+\hline
+Linear RBE1/RBE2/RBE3 & Yes & Constant kinematic transformation. RBE2 removes local deformation; RBE3 preserves interpolation nullspace modes. \\
+\hline
+Linear spring or bushing & Yes & Adds ordinary stiffness; attached remote mass/inertia must also be mapped consistently. \\
+\hline
+Penalty rigid/tied coupling & Yes, with caution & Standard eigenproblem, but artificial high-frequency constraint modes and conditioning sensitivity remain. \\
+\hline
+Lagrange-multiplier MPC or joint & Solver dependent & Massless multiplier DOFs give a singular mass block; supported condensation or a compatible eigensolver is required. \\
+\hline
+\end{tabular}
+\captionof{table}{Couplings that can enter a linear eigenshape extraction directly, subject to the stated numerical caveats.}\label{tab:coupling-modal-direct}
+\end{center}
+
+The remaining classes require an operating-point linearization or a different
+eigenvalue formulation rather than direct insertion into the ordinary undamped
+normal-mode problem.
+
+\begin{center}
+\small
+\begin{tabular}{|p{0.25\textwidth}|p{0.20\textwidth}|p{0.43\textwidth}|}
+\hline
+\textbf{Coupling or support class} & \textbf{Ordinary linear modes} & \textbf{Reason / required treatment} \\
+\hline
+Nonzero prescribed displacement & Not directly & Solve the equilibrium/prestress state first; modal perturbations normally use homogeneous incremental constraints. \\
+\hline
+Fixed distance, finite-rotation joint, other nonlinear bilateral constraint & After linearization & Use the tangent constraint about equilibrium; include geometric stiffness from equilibrium reactions when relevant. \\
+\hline
+Contact, gap, compression-only support, stop & Not with changing status & Freeze/linearize the active state, preferably from a prestressed equilibrium when the operating contact condition matters. \\
+\hline
+Frictional contact with possible stick/slip change & Tangent only & A mode uses one fixed stick/slip tangent; changing friction state belongs to nonlinear dynamics. \\
+\hline
+Nonlinear spring/bushing & Tangent only & Linearize the force-displacement law at the operating point. \\
+\hline
+Pure viscous damper & Not in undamped real modes & Use a damped/complex eigensolution if its effect on modes is to be represented. \\
+\hline
+Frequency-dependent or active coupling & Special treatment & Leads to a frequency-dependent or state-space eigenproblem; ordinary normal-mode extraction is generally insufficient. \\
+\hline
+\end{tabular}
+\captionof{table}{Couplings requiring linearization, a fixed active state, or a nonstandard eigenvalue formulation.}\label{tab:coupling-modal-special}
+\end{center}
+
+\subsubsection{Examples of Solver-Specific Modal Restrictions}
+
+The previous tables state the governing principles. Commercial solvers then add
+implementation-specific restrictions that can change between element families
+and eigensolvers. Two examples illustrate why the manual still matters even when
+the underlying mechanics is clear.
+
+\paragraph{ANSYS.}
+Linear constraint equations are supported in modal systems and are normally
+handled by eliminating a suitable dependent DOF. The classical \texttt{CERIG}
+and \texttt{RBE3} commands generate linear constraint equations and are
+small-deflection formulations, which makes them conceptually compatible with a
+linear modal model about their reference configuration. ANSYS \texttt{MPC184}
+rigid link/beam elements using direct elimination are explicitly available for
+modal analysis. Lagrange-multiplier variants are more restrictive: selected
+\texttt{MPC184} rigid links, rigid beams and joint types are supported with the
+PCG Lanczos mode extractor through a dedicated treatment, but this should not be
+generalized to every multiplier element or every mode-extraction method.
+
+ANSYS contact in a linear modal analysis is not allowed to open and close during
+the eigensolution. Its stiffness is based on a fixed contact state. For a
+deformed or contact-loaded operating condition, a prestressed modal / linear
+perturbation analysis is therefore the appropriate interpretation: the nonlinear
+static solution determines the operating geometry, stress state and contact
+status, and the eigensolution acts on the tangent system about that state.
+
+\paragraph{PERMAS.}
+The ordinary linear MPC family belongs naturally to the displacement-reduction
+category described by Eq.~\eqref{coupling-modal-reduced-eigenproblem}. Thus
+linear uses of definitions such as \texttt{MPC\_RIGID}, \texttt{MPC\_WLSCON},
+\texttt{MPC\_GENERAL}, and the simpler assignment/joining MPCs are the kinds of
+constraints expected in a dynamic eigenvalue model. PERMAS documentation also
+describes explicit MPC handling in dynamic eigenvalue reduction and linear MPC
+surface couplings that are available for dynamic analyses. By contrast, contact
+or other state-dependent connections must first be represented by a fixed
+linearized state; PERMAS provides contact-locking concepts precisely to permit a
+transition from a contact solution to linear dynamics.
+
+These examples are deliberately not exhaustive command references. Their purpose
+is to reinforce the general engineering rule: determine whether the intended
+connection has a constant linear tangent for the modal perturbation, then verify
+that the chosen solver object and eigensolver support the numerical enforcement
+used to realize it.
 
 \subsection{Interaction with Contact and Other Constraints}
 
