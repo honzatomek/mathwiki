@@ -219,804 +219,552 @@ the surrounding region is made rigid, how the equations are enforced and whether
 the formulation is valid for the selected analysis type.
 \end{bbox}
 
-\section{RBE2 -- Rigid-Body Coupling}
+\section{RBE2 -- Rigid-Body Coupling}\label{sec:rbe2}
 
-\begin{bbox}[0.95]
-    The rigid freebody relations between \textbf{slave} and \textbf{master} node are:
-    \begin{eqarray}
-        \m{T}_s &= \m{T}_m + \m{R}_m \times \overline{\m{x}} \\
-        \m{R}_s &= \m{R}_m
-    \end{eqarray}
+\subsection{Engineering Meaning}
 
-    Where $ \overline{\m{x}} $ is a vector from \textbf{slave} to \textbf{master}:
-    \begin{equation}
-        \overline{\m{x}} =
-        \begin{bmatrix}
-            \overline{x} \\
-            \overline{y} \\
-            \overline{z}
-        \end{bmatrix} =
-        \begin{bmatrix}
-            x_s - x_m \\
-            y_s - y_m \\
-            z_s - z_m
-        \end{bmatrix}
-    \end{equation}
+An RBE2-type coupling imposes rigid-body compatibility between a reference node
+and one or more dependent nodes. In the traditional terminology the reference
+node is often called the \textit{master} and the coupled nodes \textit{slaves};
+in the following, \textit{reference} and \textit{dependent} are used where this
+makes the physical role clearer.
 
-    Then \textit{vector multiplication} (cross product) is defined as:
-    \begin{eqarray}
-        \m{R}_s \times \m{x}_s
-        &= \m{R}_m \times \m{x} = & \\
-        &= \begin{bmatrix}
-             \varphi_m \\
-             \psi_m \\
-             \theta_m
-           \end{bmatrix} \times \begin{bmatrix}
-             x_s - x_m \\
-             y_s - y_m \\
-             z_s - z_m
-           \end{bmatrix}
-        &= \begin{bmatrix}
-             \varphi_m \\
-             \psi_m \\
-             \theta_m
-           \end{bmatrix} \times \begin{bmatrix}
-             \overline{x} \\
-             \overline{y} \\
-             \overline{z}
-           \end{bmatrix} = \\
-        &= \begin{bmatrix}
-             \psi_m (z_s - z_m ) - \theta_m (y_s - y_m) \\
-             \theta_m (x_s - x_m) - \varphi_m (z_s - z_m) \\
-             \varphi_m (y_s - y_m) - \psi_m (x_s - x_m)
-           \end{bmatrix}
-        &= \begin{bmatrix}
-            \psi_m \overline{z} - \theta_m \overline{y} \\
-            \theta_m \overline{x} - \varphi_m \overline{z} \\
-            \varphi_m \overline{y} - \psi_m \overline{x}
-        \end{bmatrix} = \\
-        &= \begin{bmatrix}
-            \phantom{-}0 & \phantom{-}\overline{z} & -\overline{y} \\
-            -\overline{z} & \phantom{-}0 & \phantom{-}\overline{x} \\
-            \phantom{-}\overline{y} & -\overline{x} & \phantom{-}0
-        \end{bmatrix}
-        \begin{bmatrix}
-            \varphi_m \\
-            \psi_m \\
-            \theta_m
-        \end{bmatrix}
-    \end{eqarray}
-\end{bbox}
+The essential assumption is that the relative geometry of the coupled nodes
+cannot deform. A dependent node may translate because the reference node
+translates and because the rigid arm between the two nodes rotates, but it cannot
+move independently of that rigid-body motion in the coupled degrees of freedom.
+An RBE2 is therefore not a very stiff beam or spring. It is an exact kinematic
+restriction on the admissible displacement field.
 
-\begin{bbox}[0.95]
-    The \textbf{slave} equations can be written as:
-    \begin{equation}
-        \begin{bmatrix}
-            u_s \\
-            v_s \\
-            w_s \\
-            \varphi_s \\
-            \psi_s \\
-            \theta_s
-        \end{bmatrix}
-        = \begin{bmatrix}
-            1 & 0 & 0 & 0 & \phantom{-(}z_s - z_m & -(y_s - y_m) \\
-            0 & 1 & 0 & -(z_s - z_m) & 0 & \phantom{-(}x_s - x_m \\
-            0 & 0 & 1 & \phantom{-(}y_s - y_m & -(x_s - x_m) & 0 \\
-            0 & 0 & 0 & 1 & 0 & 0 \\
-            0 & 0 & 0 & 0 & 1 & 0 \\
-            0 & 0 & 0 & 0 & 0 & 1 \\
-        \end{bmatrix}
-        \begin{bmatrix}
-            u_m \\
-            v_m \\
-            w_m \\
-            \varphi_m \\
-            \psi_m \\
-            \theta_m
-        \end{bmatrix}
-    \end{equation}
-
-    or:
-    \begin{equation}
-        \begin{bmatrix}
-            u_s \\
-            v_s \\
-            w_s \\
-            \varphi_s \\
-            \psi_s \\
-            \theta_s
-        \end{bmatrix}
-        = \begin{bmatrix}
-            1 & 0 & 0 & \phantom{-}0 & \phantom{-}\overline{z} & -\overline{y} \\
-            0 & 1 & 0 & -\overline{z} & \phantom{-}0 & \phantom{-}\overline{x} \\
-            0 & 0 & 1 & \phantom{-}\overline{y} & -\overline{x} & \phantom{-}0 \\
-            0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
-            0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
-            0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
-        \end{bmatrix}
-        \begin{bmatrix}
-            u_m \\
-            v_m \\
-            w_m \\
-            \varphi_m \\
-            \psi_m \\
-            \theta_m
-        \end{bmatrix}
-    \end{equation}
-\end{bbox}
-
-\newpage
-\subsection{RBE2 Coefficients Example:}
-
-Master Node:
-\begin{equation}
-    \m{X}_m =
-    \begin{bmatrix}
-        1 & 1 & 1
-    \end{bmatrix}^T
-\end{equation}
-
-Slave Nodes:
-\begin{eqarray}
-    \m{X}_{s,1} =
-    \begin{bmatrix}
-        0 & 0 & 0
-    \end{bmatrix}^T \\
-    \m{X}_{s,1} =
-    \begin{bmatrix}
-        2 & 0 & 0
-    \end{bmatrix}^T \\
-    \m{X}_{s,1} =
-    \begin{bmatrix}
-        2 & 2 & 0
-    \end{bmatrix}^T \\
-    \m{X}_{s,1} =
-    \begin{bmatrix}
-        0 & 2 & 0
-    \end{bmatrix}^T \\
-\end{eqarray}
-
-Then Slave Node 1 equations are:
-\begin{eqarray}
-    \m{x}_1 &=
-    \begin{bmatrix}
-        x_{s,1} - x_m & y_{s,1} - y_m & z_{s,1} - z_m
-    \end{bmatrix}^T =
-    \begin{bmatrix}
-        -1 & -1 & -1
-    \end{bmatrix}^T
-\end{eqarray}
-
-Other Slave Nodes:
-\begin{eqarray}
-    \m{x}_2 &=
-    \begin{bmatrix}
-        2 - 1 & 0 - 1 & 0 - 1
-    \end{bmatrix}^T =
-    \begin{bmatrix}
-        \phantom{-}1 & -1 & -1
-    \end{bmatrix}^T \\
-    \m{x}_3 &=
-    \begin{bmatrix}
-        2 - 1 & 2 - 1 & 0 - 1
-    \end{bmatrix}^T =
-    \begin{bmatrix}
-        \phantom{-}1 & \phantom{-}1 & -1
-    \end{bmatrix}^T \\
-    \m{x}_4 &=
-    \begin{bmatrix}
-        0 - 1 & 2 - 1 & 0 - 1
-    \end{bmatrix}^T =
-    \begin{bmatrix}
-        -1 & \phantom{-}1 & -1
-    \end{bmatrix}^T
-\end{eqarray}
-
-Therefore, after filling in the coefficients:
-\renewcommand\arraystretch{1.6}
-\begin{eqarray}
-    \begin{bmatrix}
-        u_{s,1} \\
-        v_{s,1} \\
-        w_{s,1} \\
-        \varphi_{s,1} \\
-        \psi_{s,1} \\
-        \theta_{s,1}
-    \end{bmatrix}
-    &= \begin{bmatrix}
-        1 & 0 & 0 & \phantom{-}0 & -1 & \phantom{-}1 \\
-        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & -1 \\
-        0 & 0 & 1 & -1 & \phantom{-}1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        u_m \\
-        v_m \\
-        w_m \\
-        \varphi_m \\
-        \psi_m \\
-        \theta_m
-    \end{bmatrix} \\
-    \begin{bmatrix}
-        u_{s,2} \\
-        v_{s,2} \\
-        w_{s,2} \\
-        \varphi_{s,2} \\
-        \psi_{s,2} \\
-        \theta_{s,2}
-    \end{bmatrix}
-    &= \begin{bmatrix}
-        1 & 0 & 0 & \phantom{-}0 & -1 & \phantom{-}1 \\
-        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}1 \\
-        0 & 0 & 1 & -1 & -1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        u_m \\
-        v_m \\
-        w_m \\
-        \varphi_m \\
-        \psi_m \\
-        \theta_m
-    \end{bmatrix} \\
-    \begin{bmatrix}
-        u_{s,3} \\
-        v_{s,3} \\
-        w_{s,3} \\
-        \varphi_{s,3} \\
-        \psi_{s,3} \\
-        \theta_{s,3}
-    \end{bmatrix}
-    &= \begin{bmatrix}
-        1 & 0 & 0 & \phantom{-}0 & -1 & -1 \\
-        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}1 \\
-        0 & 0 & 1 & \phantom{-}1 & -1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        u_m \\
-        v_m \\
-        w_m \\
-        \varphi_m \\
-        \psi_m \\
-        \theta_m
-    \end{bmatrix} \\
-    \begin{bmatrix}
-        u_{s,4} \\
-        v_{s,4} \\
-        w_{s,4} \\
-        \varphi_{s,4} \\
-        \psi_{s,4} \\
-        \theta_{s,4}
-    \end{bmatrix}
-    &= \begin{bmatrix}
-        1 & 0 & 0 & \phantom{-}0 & -1 & -1 \\
-        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & -1 \\
-        0 & 0 & 1 & \phantom{-}1 & \phantom{-}1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        u_m \\
-        v_m \\
-        w_m \\
-        \varphi_m \\
-        \psi_m \\
-        \theta_m
-    \end{bmatrix}
-\end{eqarray}
-\renewcommand\arraystretch{1}
-
-When all put together:
-\begin{equation}
-    \begin{bmatrix}
-        u_{s,1} \\
-        v_{s,1} \\
-        w_{s,1} \\
-        \varphi_{s,1} \\
-        \psi_{s,1} \\
-        \theta_{s,1} \\
-        u_{s,2} \\
-        v_{s,2} \\
-        w_{s,2} \\
-        \varphi_{s,2} \\
-        \psi_{s,2} \\
-        \theta_{s,2} \\
-        u_{s,3} \\
-        v_{s,3} \\
-        w_{s,3} \\
-        \varphi_{s,3} \\
-        \psi_{s,3} \\
-        \theta_{s,3} \\
-        u_{s,4} \\
-        v_{s,4} \\
-        w_{s,4} \\
-        \varphi_{s,4} \\
-        \psi_{s,4} \\
-        \theta_{s,4}
-    \end{bmatrix}
-    = \begin{bmatrix}
-        1 & 0 & 0 & \phantom{-}0 & -1 & \phantom{-}1 \\
-        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & -1 \\
-        0 & 0 & 1 & -1 & \phantom{-}1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
-        1 & 0 & 0 & \phantom{-}0 & -1 & \phantom{-}1 \\
-        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}1 \\
-        0 & 0 & 1 & -1 & -1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
-        1 & 0 & 0 & \phantom{-}0 & -1 & -1 \\
-        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}1 \\
-        0 & 0 & 1 & \phantom{-}1 & -1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
-        1 & 0 & 0 & \phantom{-}0 & -1 & -1 \\
-        0 & 1 & 0 & \phantom{-}1 & \phantom{-}0 & -1 \\
-        0 & 0 & 1 & \phantom{-}1 & \phantom{-}1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}1 & \phantom{-}0 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}1 & \phantom{-}0 \\
-        0 & 0 & 0 & \phantom{-}0 & \phantom{-}0 & \phantom{-}1 \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        u_m \\
-        v_m \\
-        w_m \\
-        \varphi_m \\
-        \psi_m \\
-        \theta_m
-    \end{bmatrix}
-\end{equation}
-
-It can be read as:
-\begin{eqarray}
-    u_{s,1} &= u_m -\psi_m + \theta_m \\
-    v_{s,1} &= v_m + \varphi_m - \theta_m \\
-    \vdots \\
-    \theta_{s,4} &= \theta_m
-\end{eqarray}
-
-Or:
-\begin{equation}\label{rbe2-coefficients}
-    \m{u}_s = \m{\closure{T}} \m{u}_m
-\end{equation}
-
-
-\subsection{Editing the Master Stiffness Matrix}
-
-This equation should be then expanded to all DOFs, where in $ \m{T} $ the
-slave DOFs columns are missing and the DOFs that do not take part in RBEs have $ 1 $ on
-the diagonal. The resulting  matrix should have the same number of rows as
-the master stiffness matrix.
-
-Then the master stiffness equation is modified:
-\begin{eqarray}\label{rbe2-master-slave-modified}
-    \m{\hat{K}} &= \m{T}^T \m{K} \m{T} \\
-    \m{\hat{f}} &= \m{T}^T \m{f} \\
-    \m{\hat{K}} \m{\hat{u}} &= \m{\hat{f}} \\
-\end{eqarray}
-
-If we'd like to make the procedure more general, partition the master stiffness
-equations such that:
-\begin{equation}
-    \begin{bmatrix}
-        \m{K}_{uu} & \m{K}_{um} & \m{K}_{us} \\
-        \m{K}_{um}^T & \m{K}_{mm} & \m{K}_{ms} \\
-        \m{K}_{us}^T & \m{K}_{ms}^T & \m{K}_{ss}
-    \end{bmatrix}
-    \begin{bmatrix}
-        \m{u}_u \\
-        \m{u}_m \\
-        \m{u}_s
-    \end{bmatrix}
-    = \begin{bmatrix}
-        \m{f}_u \\
-        \m{f}_m \\
-        \m{f}_s
-    \end{bmatrix}
-\end{equation}
-
-Based on \eqref{rbe2-master-slave-modified} we could probably partition
-the matrices as:
-\begin{equation}\label{rbe2-partition-T-u-m-s}
-    \begin{matrix}
-        \begin{matrix}
-            \begin{matrix}
-                \ 
-            \end{matrix} \\
-            \left. \begin{matrix}
-                u \\
-                m \\
-                s \\
-            \end{matrix} \right|
-        \end{matrix}
-        & \begin{matrix}
-            \begin{matrix}
-                u & m \\
-                \hline
-            \end{matrix} \\
-            \begin{bmatrix}
-                \m{I} & \m{0} \\
-                \m{0} & \m{I} \\
-                \m{0} & \m{\closure{T}} \\
-            \end{bmatrix} \\
-        \end{matrix}
-    \end{matrix}
-\end{equation}
-
-If we expand \eqref{rbe2-coefficients} and partition the matrices
-based on \eqref{rbe2-partition-T-u-m-s} into independent or
-\textbf{unconstrained}, \textbf{master}
-and \textbf{slave} nodes, then the equation:
-\begin{equation}
-    \m{u} = \m{T} \m{\hat{u}}
-\end{equation}
-
-becomes:
-\begin{equation}
-    \begin{bmatrix}
-        \m{u}_u  \\
-        \m{u}_m \\
-        \m{u}_s \\
-    \end{bmatrix}
-    = \begin{bmatrix}
-        \m{I} & \m{0} \\
-        \m{0} & \m{I} \\
-        \m{0} & \m{\closure{T}} \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        \m{u}_u \\
-        \m{u}_m \\
-    \end{bmatrix}
-\end{equation}
-
-
-Finally the equation \eqref{rbe2-master-slave-modified} can be rewritten as:
-\begin{equation}
-    \begin{bmatrix}
-        \m{I} & \m{0} & \m{0} \\
-        \m{0} & \m{I} & \m{\closure{T}}^T \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        \m{K}_{uu} & \m{K}_{um} & \m{K}_{us} \\
-        \m{K}_{mu} & \m{K}_{mm} & \m{K}_{ms} \\
-        \m{K}_{su} & \m{K}_{sm} & \m{K}_{ss} \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        \m{I} & \m{0} \\
-        \m{0} & \m{I} \\
-        \m{0} & \m{\closure{T}} \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        \m{u}_u \\
-        \m{u}_m \\
-    \end{bmatrix}
-    = \begin{bmatrix}
-        \m{I} & \m{0} & \m{0} \\
-        \m{0} & \m{I} & \m{\closure{T}}^T \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        \m{f}_u \\
-        \m{f}_m \\
-        \m{f}_s \\
-    \end{bmatrix}
-\end{equation}
-
-Expanding and multiplying:
-\begin{equation}
-    \scalebox{0.92}{
-    $ \begin{bmatrix}
-        \m{K}_{uu} & \m{K}_{um} & \m{K}_{us} \\
-        \m{K}_{mu} + \m{\closure{T}}^T \m{K}_{su} &
-        \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{sm} &
-        \m{K}_{ms} + \m{\closure{T}}^T \m{K}_{ss} \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        \m{I} & \m{0} \\
-        \m{0} & \m{I} \\
-        \m{0} & \m{\closure{T}} \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        \m{u}_u \\
-        \m{u}_m \\
-    \end{bmatrix}
-    = \begin{bmatrix}
-        \m{f}_u \\
-        \m{f}_m + \m{\closure{T}}^T \m{f}_s \\
-    \end{bmatrix} $
-    }
-\end{equation}
-
-\begin{equation}
-    \scalebox{0.95}{
-    $ \begin{bmatrix}
-        \m{K}_{uu} & \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
-        \m{K}_{mu} + \m{\closure{T}}^T \m{K}_{su} &
-        \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{sm} +
-        \m{K}_{ms} \m{\closure{T}} + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}} \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        \m{u}_u \\
-        \m{u}_m \\
-    \end{bmatrix}
-    = \begin{bmatrix}
-        \m{f}_u \\
-        \m{f}_m + \m{\closure{T}}^T \m{f}_s \\
-    \end{bmatrix} $
-    }
-\end{equation}
-
-which is equal to:
-\begin{equation}
-    \scalebox{0.95}{
-    $ \begin{bmatrix}
-        \m{K}_{uu} & \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
-        (\m{K}_{um} + \m{K}_{us} \m{\closure{T}})^T &
-        \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{ms}^T +
-        \m{K}_{ms} \m{\closure{T}} + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}} \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        \m{u}_u \\
-        \m{u}_m \\
-    \end{bmatrix}
-    = \begin{bmatrix}
-        \m{f}_u \\
-        \m{f}_m + \m{\closure{T}}^T \m{f}_s \\
-    \end{bmatrix} $
-    }
-\end{equation}
-
-considering that $ \m{f}_s = \m{0} $ the equations reduce to:
-\begin{equation}
-    \begin{bmatrix}
-        \m{K}_{uu} & \m{\hat{K}}_{um} \\
-        \m{\hat{K}}_{um}^T & \m{\hat{K}}_{mm} \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        \m{u}_u \\
-        \m{u}_m \\
-    \end{bmatrix}
-    = \begin{bmatrix}
-        \m{f}_u \\
-        \m{f}_m \\
-    \end{bmatrix}
-\end{equation}
-
-where:
-\begin{eqarray}
-    \m{\hat{K}}_{um} &= \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
-    \m{\hat{K}}_{mm} &= \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{ms}^T
-                      + \m{K}_{ms} \m{\closure{T}}
-                      + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}} \\
-                     &= \m{K}_{mm} + \m{K}_{ms} \m{\closure{T}}
-                      + (\m{K}_{ms} \m{\closure{T}})^T
-                      + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}}
-\end{eqarray}
-
+This distinction explains both the usefulness and the most common misuse of an
+RBE2. If a flange, insert or attachment is physically much stiffer than the
+surrounding structure, replacing it by a rigid coupling can be an efficient and
+accurate idealization. If the spider is introduced merely to spread a load over a
+flexible sheet or flange, however, the same constraint suppresses local bending
+and warping and can make the model substantially too stiff.
 
 \begin{bbox}
+\textbf{Engineering note -- RBE2 stiffening is kinematic, not constitutive.}
 
-    Then if \textbf{master-slave} relations are written as (\textit{general case}):
-    \begin{equation}
-        \m{u}_s = \m{\closure{T}} \m{u}_m + \m{g}
-    \end{equation}
-
-    Inserting into the partitioned master stiffness equations:
-    \begin{equation}
-        \begin{bmatrix}
-            \m{K}_{uu} & \m{\hat{K}}_{um} \\
-            \m{\hat{K}}_{um}^T & \m{\hat{K}}_{mm}
-        \end{bmatrix}
-        \begin{bmatrix}
-            \m{u}_u \\
-            \m{u}_m
-        \end{bmatrix}
-        = \begin{bmatrix}
-            \m{f}_u - \m{K}_{us} \m{g} \\
-            \m{f}_m - \m{K}_{ms} \m{g}
-        \end{bmatrix}
-    \end{equation}
-
-    where:
-    \begin{eqarray}
-        \m{\hat{K}}_{um} &= \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
-        \m{\hat{K}}_{mm} &= \m{K}_{mm} + \m{\closure{T}}^T \m{K}_{ms}^T
-                            + \m{K}_{ms} \m{\closure{T}}
-                            + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}}
-    \end{eqarray}
-
+An ideal RBE2 does not need a Young's modulus and does not store elastic strain
+energy of its own. The apparent infinite stiffness results from removing all
+relative deformation modes that violate the rigid-body constraint. The
+surrounding structure therefore becomes stiffer because its admissible
+displacement space has been reduced.
 \end{bbox}
 
+\subsection{Small-Rotation Kinematics}
 
-\subsubsection{MPC Application}
+Let the reference node be located at $\m{X}_r$ and dependent node $i$ at
+$\m{X}_i$. The initial rigid arm is
 
-Afterwards the \textbf{MPCs} are applied:
-\begin{equation}
-    \m{u}_s = \m{\closure{T}} \m{u}_m
+\begin{equation}\label{rbe2-rigid-arm}
+    \m{r}_i = \m{X}_i-\m{X}_r
+    =
+    \begin{bmatrix}
+        r_{x,i} & r_{y,i} & r_{z,i}
+    \end{bmatrix}^{T}.
 \end{equation}
 
-This, when applied to the whole model:
+Thus $\m{r}_i$ points from the reference node to the dependent node. For a
+small reference rotation
+
 \begin{equation}
+    \m{\theta}_r =
     \begin{bmatrix}
-        \m{u}_u  \\
-        \m{u}_m \\
-        \m{u}_s \\
-    \end{bmatrix}
-    = \begin{bmatrix}
-        \m{I} & \m{0} \\
-        \m{0} & \m{I} \\
-        \m{0} & \m{\closure{T}} \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        \m{u}_u \\
-        \m{u}_m \\
-    \end{bmatrix}
+        \varphi_r & \psi_r & \theta_r
+    \end{bmatrix}^{T},
 \end{equation}
 
-with \textbf{transformation matrix} $ \m{T} $ being:
-\begin{equation}
-    \m{T} = \begin{bmatrix}
-        \m{I} & \m{0} \\
-        \m{0} & \m{I} \\
-        \m{0} & \m{\closure{T}} \\
-    \end{bmatrix}
+the rigid-body translation of the dependent node is
+
+\begin{equation}\label{rbe2-rigid-motion}
+    \m{u}_i = \m{u}_r + \m{\theta}_r\times\m{r}_i.
 \end{equation}
 
-Applying the transformation matrix to get \textbf{modified master equation system}:
-\begin{eqarray}
-    \m{T}^T \m{K}_g \m{T} \m{\hat{u}}_g &= \m{T}^T \m{f}_g \\
-    \m{\hat{K}}_g \m{\hat{u}}_g &= \m{\hat{f}}_g
-\end{eqarray}
+It is convenient to introduce the matrix that maps the reference rotation to the
+translational increment,
 
-Where $ \m{\hat{u}}_g = \begin{bmatrix} \m{u}_{g,u} & \m{u}_{g,m} \end{bmatrix}^T $.
-
-From now on, the subscript $ _g $ (\textit{as global}) is implied.
-
-
-\subsubsection{Rotated Nodal Basis}
-
-When a node or an SPC is defined as a \textbf{rotated}/\textbf{skewed} or in
-a different type of Coordinate system (e.g. cylindrical) a transformation matrix
-needs to be applied to such nodes.
-
-\textbf{Cartesian Coordinate system} definition by angle (2D):
-\begin{equation}
-    \m{u}_l = \m{T} \m{u}_g
+\begin{equation}\label{rbe2-B-matrix}
+    \m{B}(\m{r}_i)=
+    \begin{bmatrix}
+        0        & r_{z,i}  & -r_{y,i} \\
+        -r_{z,i}& 0         & r_{x,i} \\
+        r_{y,i} & -r_{x,i}  & 0
+    \end{bmatrix},
 \end{equation}
 
+so that
 
-\subsubsection{SPC Application}
-
-Then to solve the \textbf{master stiffness equations} for prescribed \textbf{BCs}
-partitioned to \textbf{unconstrained} and \textbf{master} DOFs such as:
 \begin{equation}
-    \begin{bmatrix}
-        \m{K}_{uu} & \m{\hat{K}}_{um} \\
-        \m{\hat{K}}_{um}^T & \m{\hat{K}}_{mm} \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        \m{u}_u \\
-        \m{u}_m \\
-    \end{bmatrix}
-    = \begin{bmatrix}
-        \m{f}_{u} \\
-        \m{f}_m \\
-    \end{bmatrix}
+    \m{\theta}_r\times\m{r}_i
+    = \m{B}(\m{r}_i)\m{\theta}_r.
 \end{equation}
 
-where:
-\begin{eqarray}
-    \m{\hat{K}}_{um} &= \m{K}_{um} + \m{K}_{us} \m{\closure{T}} \\
-    \m{\hat{K}}_{mm} &= \m{K}_{mm} + \m{K}_{ms} \m{\closure{T}}
-                      + (\m{K}_{ms} \m{\closure{T}})^T
-                      + \m{\closure{T}}^T \m{K}_{ss} \m{\closure{T}}
-\end{eqarray}
+If rotational DOFs exist at the dependent node and are included in the coupling,
+they follow the reference rotation,
 
-Any of these \textbf{DOFs} can be constrained, so this partitioning scheme looses
-all purposes. Therefore the matrix is repartitioned again into
-\textbf{independent} and \textbf{constrained} partitions:
 \begin{equation}
-    \begin{bmatrix}
-        \m{K}_{ii} & \m{K}_{ic} \\
-        \m{K}_{ic}^T & \m{K}_{cc} \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        \m{u}_i \\
-        \m{u}_c \\
-    \end{bmatrix}
-    = \begin{bmatrix}
-        \m{f}_{i} \\
-        \m{f}_c \\
-    \end{bmatrix}
+    \m{\theta}_i=\m{\theta}_r.
 \end{equation}
 
+The six-DOF relation can therefore be written
 
-\subsubsection{Solving Linear Equations}
+\begin{bbox}[0.92]
+\begin{equation}\label{rbe2-single-node-transformation}
+    \underbrace{
+    \begin{bmatrix}
+        \m{u}_i\\
+        \m{\theta}_i
+    \end{bmatrix}}_{\m{q}_i}
+    =
+    \underbrace{
+    \begin{bmatrix}
+        \m{I} & \m{B}(\m{r}_i)\\
+        \m{0} & \m{I}
+    \end{bmatrix}}_{\m{D}_i}
+    \underbrace{
+    \begin{bmatrix}
+        \m{u}_r\\
+        \m{\theta}_r
+    \end{bmatrix}}_{\m{q}_r}.
+\end{equation}
+\end{bbox}
 
-Where the \textbf{unknowns} are $ \m{u}_i $, $ \m{f}_c $:
-\begin{equation}
+For solid-element nodes, which ordinarily possess only translational DOFs, only
+the upper three rows are required. Likewise, an implementation may intentionally
+couple only selected translational or rotational components. The term RBE2
+therefore identifies the rigid-body \textit{kinematics}; the exact active DOF set
+still belongs to the element or solver definition.
+
+Equation~\eqref{rbe2-rigid-motion} is the linearized rigid-body relation. Its arm
+$\m{r}_i$ is taken from the configuration in which the constraint equations are
+constructed. The consequences for large rotations are discussed later in
+Section~\ref{sec:rbe-advanced-small-large}.
+
+\subsection{Several Dependent Nodes}
+
+For $n$ dependent nodes, the individual relations are stacked vertically,
+
+\begin{equation}\label{rbe2-stacked-transformation}
+    \m{q}_d = \m{D}\m{q}_r,
+    \qquad
+    \m{D}=
     \begin{bmatrix}
-        \m{K}_{ii} & \m{K}_{ic} \\
-        \m{K}_{ic}^T & \m{K}_{cc} \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        \boxed{\m{u}_i} \\
-        \m{u}_c \\
-    \end{bmatrix}
-    = \begin{bmatrix}
-        \m{f}_i \\
-        \boxed{\m{f}_c} \\
-    \end{bmatrix}
+        \m{D}_1\\
+        \m{D}_2\\
+        \vdots\\
+        \m{D}_n
+    \end{bmatrix}.
 \end{equation}
 
-Unpacking the equations:
-\begin{eqarray}
-    \m{K}_{ii} \boxed{\m{u}_i} &+ \m{K}_{ic} \m{u}_c &= \m{f}_i \\
-    \m{K}_{ic}^T \boxed{\m{u}_i} &+ \m{K}_{cc} \m{u}_c &= \boxed{\m{f}_c} \\
-\end{eqarray}
+The important asymmetry is immediately visible: the reference DOFs are retained,
+whereas the dependent DOFs are determined by them. The constraint consequently
+reduces the number of independent kinematic variables if it is imposed by the
+master--slave elimination procedure of
+Chapter~\ref{chap:multifreedom-constraints}.
 
-Then first solve for the \textbf{unknown displacements}:
-\begin{eqarray}
-    \m{K}_{ii} \boxed{\m{u}_i} &= \m{f}_u - \m{K}_{ic} \m{u}_c \\
-    \boxed{\m{u}_i} &= \m{K}_{ii}^{-1} \left( \m{f}_i - \m{K}_{ic} \m{u}_c \right) \\
-\end{eqarray}
+\subsection{Force and Moment Transfer}
 
-Lastly solve for the \textbf{unknown reaction forces}:
+The same transformation that maps displacements determines the statically
+equivalent load transfer. For virtual work of a force $\m{F}_i$ and, where
+applicable, a nodal moment $\m{M}_i$ at dependent node $i$,
+
 \begin{equation}
-    \boxed{\m{f}_c} = \m{K}_{ii} \m{u}_i + \m{K}_{ic} \m{u}_c
+    \delta W_i
+    = \m{F}_i^T\delta\m{u}_i
+      +\m{M}_i^T\delta\m{\theta}_i.
 \end{equation}
 
+Using Eq.~\eqref{rbe2-single-node-transformation} gives the equivalent reference
+resultants
 
-\subsubsection{Recovering Full Displacement Vector}
+\begin{equation}\label{rbe2-load-transfer-single}
+    \m{F}_{r,i}=\m{F}_i,
+    \qquad
+    \m{M}_{r,i}=\m{r}_i\times\m{F}_i+\m{M}_i.
+\end{equation}
 
-The full displacement vector is then recovered:
-\begin{eqarray}
-    \m{T} &= \begin{bmatrix}
-        \m{I} & \m{0} \\
-        \m{0} & \m{I} \\
-        \m{0} & \m{\closure{T}} \\
-    \end{bmatrix} \\
-    \m{\hat{u}} &= \begin{bmatrix}
-        \m{u}_i \\
-        \m{u}_c \\
-    \end{bmatrix}
-    = \begin{bmatrix}
-        \m{u}_u \\
-        \m{u}_m \\
-    \end{bmatrix} \\
-    \m{u}_g &= \m{T} \m{\hat{u}} \\
+For all dependent nodes,
+
+\begin{bbox}[0.90]
+\begin{equation}\label{rbe2-load-transfer-resultant}
+    \m{F}_r=\sum_i\m{F}_i,
+    \qquad
+    \m{M}_r=\sum_i\left(\m{r}_i\times\m{F}_i+\m{M}_i\right).
+\end{equation}
+\end{bbox}
+
+In matrix form this is simply the transpose rule
+
+\begin{equation}
+    \m{f}_r = \m{D}^{T}\m{f}_d.
+\end{equation}
+
+This result is sometimes misinterpreted as a prescribed load-distribution rule.
+It is not. An RBE2 prescribes rigid motion. If a load is applied at the reference
+node, the individual reactions that develop at the dependent nodes are determined
+by the stiffness and connectivity of the attached structure while satisfying the
+rigid kinematics and overall equilibrium. This is one of the key differences from
+the weighting concept used by an RBE3.
+
+\subsection{Worked Coefficient Example}
+
+The coefficient construction is sufficiently important that it is useful to work
+through one complete spider rather than showing only the compact matrix notation.
+Consider the reference node
+
+\begin{equation}
+    \m{X}_r=
     \begin{bmatrix}
-        \m{u}_u \\
-        \m{u}_m \\
-        \m{u}_s \\
-    \end{bmatrix}
-    &= \begin{bmatrix}
-        \m{I} & \m{0} \\
-        \m{0} & \m{I} \\
-        \m{0} & \m{\closure{T}} \\
-    \end{bmatrix}
+        1 & 1 & 1
+    \end{bmatrix}^{T},
+\end{equation}
+
+and four dependent nodes forming a square in the plane $z=0$,
+
+\begin{equation}
+\begin{aligned}
+    \m{X}_1&=\begin{bmatrix}0&0&0\end{bmatrix}^{T}, &
+    \m{X}_2&=\begin{bmatrix}2&0&0\end{bmatrix}^{T},\\
+    \m{X}_3&=\begin{bmatrix}2&2&0\end{bmatrix}^{T}, &
+    \m{X}_4&=\begin{bmatrix}0&2&0\end{bmatrix}^{T}.
+\end{aligned}
+\end{equation}
+
+The first step is purely geometric. For each spider leg, form the rigid arm from
+the reference node to the dependent node,
+
+\begin{equation}
+\begin{aligned}
+    \m{r}_1&=\m{X}_1-\m{X}_r
+       =\begin{bmatrix}-1&-1&-1\end{bmatrix}^{T}, &
+    \m{r}_2&=\m{X}_2-\m{X}_r
+       =\begin{bmatrix} 1&-1&-1\end{bmatrix}^{T},\\
+    \m{r}_3&=\m{X}_3-\m{X}_r
+       =\begin{bmatrix} 1& 1&-1\end{bmatrix}^{T}, &
+    \m{r}_4&=\m{X}_4-\m{X}_r
+       =\begin{bmatrix}-1& 1&-1\end{bmatrix}^{T}.
+\end{aligned}
+\end{equation}
+
+Substitution of each arm into Eq.~\eqref{rbe2-single-node-transformation}
+produces one $6\times6$ transformation for each dependent node. For node 1,
+
+\begin{equation}\label{rbe2-example-node1}
     \begin{bmatrix}
-        \m{u}_u \\
-        \m{u}_m \\
+        u_1\\v_1\\w_1\\\varphi_1\\\psi_1\\\theta_1
     \end{bmatrix}
-\end{eqarray}
+    =
+    \underbrace{\begin{bmatrix}
+        1&0&0& 0&-1& 1\\
+        0&1&0& 1& 0&-1\\
+        0&0&1&-1& 1& 0\\
+        0&0&0& 1& 0& 0\\
+        0&0&0& 0& 1& 0\\
+        0&0&0& 0& 0& 1
+    \end{bmatrix}}_{\m{D}_1}
+    \begin{bmatrix}
+        u_r\\v_r\\w_r\\\varphi_r\\\psi_r\\\theta_r
+    \end{bmatrix}.
+\end{equation}
 
+The other three legs are obtained in exactly the same way,
 
+\begin{equation}
+    \begin{bmatrix}
+        u_2\\v_2\\w_2\\\varphi_2\\\psi_2\\\theta_2
+    \end{bmatrix}
+    =
+    \underbrace{\begin{bmatrix}
+        1&0&0& 0&-1& 1\\
+        0&1&0& 1& 0& 1\\
+        0&0&1&-1&-1& 0\\
+        0&0&0& 1& 0& 0\\
+        0&0&0& 0& 1& 0\\
+        0&0&0& 0& 0& 1
+    \end{bmatrix}}_{\m{D}_2}
+    \begin{bmatrix}
+        u_r\\v_r\\w_r\\\varphi_r\\\psi_r\\\theta_r
+    \end{bmatrix},
+\end{equation}
 
+\begin{equation}
+    \begin{bmatrix}
+        u_3\\v_3\\w_3\\\varphi_3\\\psi_3\\\theta_3
+    \end{bmatrix}
+    =
+    \underbrace{\begin{bmatrix}
+        1&0&0& 0&-1&-1\\
+        0&1&0& 1& 0& 1\\
+        0&0&1& 1&-1& 0\\
+        0&0&0& 1& 0& 0\\
+        0&0&0& 0& 1& 0\\
+        0&0&0& 0& 0& 1
+    \end{bmatrix}}_{\m{D}_3}
+    \begin{bmatrix}
+        u_r\\v_r\\w_r\\\varphi_r\\\psi_r\\\theta_r
+    \end{bmatrix},
+\end{equation}
 
-\newpage
-\section{RBE3 -- Interpolation Coupling}
+and
+
+\begin{equation}
+    \begin{bmatrix}
+        u_4\\v_4\\w_4\\\varphi_4\\\psi_4\\\theta_4
+    \end{bmatrix}
+    =
+    \underbrace{\begin{bmatrix}
+        1&0&0& 0&-1&-1\\
+        0&1&0& 1& 0&-1\\
+        0&0&1& 1& 1& 0\\
+        0&0&0& 1& 0& 0\\
+        0&0&0& 0& 1& 0\\
+        0&0&0& 0& 0& 1
+    \end{bmatrix}}_{\m{D}_4}
+    \begin{bmatrix}
+        u_r\\v_r\\w_r\\\varphi_r\\\psi_r\\\theta_r
+    \end{bmatrix}.
+\end{equation}
+
+These four equations are the individual spider legs written explicitly. Stacking
+them gives the complete RBE2 coefficient matrix,
+
+{\small
+\renewcommand\arraystretch{1.08}
+\begin{equation}\label{rbe2-example-full-transformation}
+\underbrace{\begin{bmatrix}
+ u_1\\v_1\\w_1\\\varphi_1\\\psi_1\\\theta_1\\
+ u_2\\v_2\\w_2\\\varphi_2\\\psi_2\\\theta_2\\
+ u_3\\v_3\\w_3\\\varphi_3\\\psi_3\\\theta_3\\
+ u_4\\v_4\\w_4\\\varphi_4\\\psi_4\\\theta_4
+\end{bmatrix}}_{\m{q}_d}
+=
+\underbrace{\begin{bmatrix}
+1&0&0& 0&-1& 1\\
+0&1&0& 1& 0&-1\\
+0&0&1&-1& 1& 0\\
+0&0&0& 1& 0& 0\\
+0&0&0& 0& 1& 0\\
+0&0&0& 0& 0& 1\\
+1&0&0& 0&-1& 1\\
+0&1&0& 1& 0& 1\\
+0&0&1&-1&-1& 0\\
+0&0&0& 1& 0& 0\\
+0&0&0& 0& 1& 0\\
+0&0&0& 0& 0& 1\\
+1&0&0& 0&-1&-1\\
+0&1&0& 1& 0& 1\\
+0&0&1& 1&-1& 0\\
+0&0&0& 1& 0& 0\\
+0&0&0& 0& 1& 0\\
+0&0&0& 0& 0& 1\\
+1&0&0& 0&-1&-1\\
+0&1&0& 1& 0&-1\\
+0&0&1& 1& 1& 0\\
+0&0&0& 1& 0& 0\\
+0&0&0& 0& 1& 0\\
+0&0&0& 0& 0& 1
+\end{bmatrix}}_{\m{D}}
+\underbrace{\begin{bmatrix}
+ u_r\\v_r\\w_r\\\varphi_r\\\psi_r\\\theta_r
+\end{bmatrix}}_{\m{q}_r}.
+\end{equation}
+\renewcommand\arraystretch{1}
+}
+
+The full matrix is long, but it is useful because it makes the nature of an RBE2
+explicit: every dependent DOF is simply a linear combination of the six retained
+reference DOFs. For example,
+
+\begin{equation}
+\begin{aligned}
+    u_1 &= u_r-\psi_r+\theta_r,\\
+    v_1 &= v_r+\varphi_r-\theta_r,\\
+    w_1 &= w_r-\varphi_r+\psi_r,\\
+    &\ \vdots\\
+    \theta_4 &= \theta_r.
+\end{aligned}
+\end{equation}
+
+Thus the complete coefficient relation is simply the stacked form already
+introduced in Eq.~\eqref{rbe2-stacked-transformation},
+
+\begin{equation}
+    \m{q}_d=\m{D}\m{q}_r.
+\end{equation}
+
+A numerical motion provides a useful independent check of the signs. Let the
+reference node translate by $0.1$ in $x$ and rotate by
+$\theta_r=0.01\,\mathrm{rad}$ about the $z$ axis, with all other components
+zero. The four dependent translations become
+
+\begin{equation}
+\begin{aligned}
+    \m{u}_1&=\begin{bmatrix}0.11&-0.01&0\end{bmatrix}^{T}, &
+    \m{u}_2&=\begin{bmatrix}0.11& 0.01&0\end{bmatrix}^{T},\\
+    \m{u}_3&=\begin{bmatrix}0.09& 0.01&0\end{bmatrix}^{T}, &
+    \m{u}_4&=\begin{bmatrix}0.09&-0.01&0\end{bmatrix}^{T}.
+\end{aligned}
+\end{equation}
+
+The square therefore translates and rotates as one rigid object. No relative
+in-plane deformation of the four attachment nodes is admissible.
+
+The same geometry also gives a simple load-transfer check. A force
+$\m{F}_1=\begin{bmatrix}0&100&0\end{bmatrix}^{T}$ applied at node 1 is
+equivalent at the reference point to
+
+\begin{equation}
+    \m{F}_{r,1}=\begin{bmatrix}0&100&0\end{bmatrix}^{T},
+    \qquad
+    \m{M}_{r,1}=\m{r}_1\times\m{F}_1
+    =\begin{bmatrix}100&0&-100\end{bmatrix}^{T}.
+\end{equation}
+
+The example therefore illustrates both sides of the same transformation: rigid
+kinematics map reference motion to the dependent nodes, while the transpose maps
+dependent loads back to an equivalent force and moment at the reference point.
+
+\subsection{Elimination and Congruent Transformation}
+
+The algebraic reduction is exactly the master--slave transformation developed in
+Chapter~\ref{chap:multifreedom-constraints}. It is repeated here only in the form
+needed to show the structural consequence of the RBE2.
+
+Partition the complete displacement vector into unconstrained DOFs $\m{u}_u$,
+reference DOFs $\m{q}_r$ and dependent DOFs $\m{q}_d$. With
+Eq.~\eqref{rbe2-stacked-transformation},
+
+\begin{equation}\label{rbe2-global-transformation}
+    \underbrace{
+    \begin{bmatrix}
+        \m{u}_u\\
+        \m{q}_r\\
+        \m{q}_d
+    \end{bmatrix}}_{\m{u}}
+    =
+    \underbrace{
+    \begin{bmatrix}
+        \m{I}&\m{0}\\
+        \m{0}&\m{I}\\
+        \m{0}&\m{D}
+    \end{bmatrix}}_{\m{T}}
+    \underbrace{
+    \begin{bmatrix}
+        \m{u}_u\\
+        \m{q}_r
+    \end{bmatrix}}_{\m{\hat{u}}}.
+\end{equation}
+
+Substitution into the assembled equilibrium equations and preservation of virtual
+work gives the familiar congruent transformation
+
+\begin{bbox}[0.88]
+\begin{equation}\label{rbe2-congruent-transformation}
+    \m{\hat{K}}=\m{T}^{T}\m{K}\m{T},
+    \qquad
+    \m{\hat{f}}=\m{T}^{T}\m{f},
+    \qquad
+    \m{\hat{K}}\m{\hat{u}}=\m{\hat{f}}.
+\end{equation}
+\end{bbox}
+
+If
+
+\begin{equation}
+\m{K}=
+\begin{bmatrix}
+\m{K}_{uu}&\m{K}_{ur}&\m{K}_{ud}\\
+\m{K}_{ru}&\m{K}_{rr}&\m{K}_{rd}\\
+\m{K}_{du}&\m{K}_{dr}&\m{K}_{dd}
+\end{bmatrix},
+\qquad
+\m{f}=
+\begin{bmatrix}
+\m{f}_u\\\m{f}_r\\\m{f}_d
+\end{bmatrix},
+\end{equation}
+
+then the reduced blocks are
+
+\begin{equation}\label{rbe2-reduced-blocks}
+\begin{aligned}
+    \m{\hat{K}}_{ur}
+        &=\m{K}_{ur}+\m{K}_{ud}\m{D},\\
+    \m{\hat{K}}_{rr}
+        &=\m{K}_{rr}
+          +\m{K}_{rd}\m{D}
+          +\m{D}^{T}\m{K}_{dr}
+          +\m{D}^{T}\m{K}_{dd}\m{D},\\
+    \m{\hat{f}}_r
+        &=\m{f}_r+\m{D}^{T}\m{f}_d.
+\end{aligned}
+\end{equation}
+
+The final line is important: loads applied directly to dependent DOFs are not
+lost when those DOFs are eliminated. They are transformed to statically
+equivalent generalized loads at the retained reference DOFs.
+
+For a nonhomogeneous relation
+
+\begin{equation}
+    \m{q}_d=\m{D}\m{q}_r+\m{g},
+\end{equation}
+
+write
+
+\begin{equation}
+    \m{u}=\m{T}\m{\hat{u}}+\m{u}_0,
+    \qquad
+    \m{u}_0=\begin{bmatrix}\m{0}&\m{0}&\m{g}\end{bmatrix}^{T}.
+\end{equation}
+
+The correct reduced right-hand side is then
+
+\begin{equation}\label{rbe2-affine-transformation}
+    \m{\hat{K}}\m{\hat{u}}
+    =\m{T}^{T}\left(\m{f}-\m{K}\m{u}_0\right).
+\end{equation}
+
+This compact expression is preferable to deriving special load corrections case
+by case and is identical to the general nonhomogeneous master--slave result in
+Chapter~\ref{chap:multifreedom-constraints}.
+
+After solving for $\m{\hat{u}}$, the full displacement field is recovered from
+Eq.~\eqref{rbe2-global-transformation}. Prescribed single-point constraints,
+rotated nodal bases and reaction-force recovery are then handled by the general
+procedures already developed in Chapters~1--3; they are not specific to RBE2.
+
+\subsection{Modelling Consequences and Typical Uses}
+
+RBE2 is appropriate when the neglected deformation of the coupled region is
+small compared with the deformation modes of interest. Typical examples include
+an idealized rigid insert, a stiff end plate, a rigid test fixture, or a reference
+point used to represent an intentionally rigid attachment.
+
+The same coupling should be used cautiously for thin shells, compliant flanges,
+bearing seats and load-introduction regions. Coupling a large patch rigidly can
+remove precisely the local bending or ovalization that controls stresses and
+natural frequencies.
+
+\begin{bbox}
+\textbf{Common mistake -- Using RBE2 merely because a force is remote from the mesh.}
+
+A remote force does not by itself imply a rigid physical connection. If the
+attached surface should remain deformable, an interpolation coupling such as
+RBE3 is generally more appropriate. RBE2 should be selected because the
+\textit{kinematics are rigid}, not because the geometry happens to look like a
+spider.
+\end{bbox}
+
+Overlapping RBE2 regions also require care. If the same structural DOF is made
+dependent in more than one incompatible relation, or if a rigid spider duplicates
+a prescribed boundary condition, joint or bonded constraint, the resulting
+system may contain redundant or contradictory equations. The independence issues
+discussed in Chapter~\ref{chap:multifreedom-constraints} apply without change.
+
+\section{RBE3 -- Interpolation Coupling}\label{sec:rbe3}
 
 \subsection{Why RBE3 Is Different from RBE2}
 
@@ -1336,7 +1084,7 @@ identical problems.
 
 \section{Advanced Considerations}
 
-\subsection{Small-Displacement and Finite-Rotation Formulations}
+\subsection{Small-Displacement and Finite-Rotation Formulations}\label{sec:rbe-advanced-small-large}
 
 For an RBE2-type relation linearized in the initial configuration, the dependent
 translation is commonly written
