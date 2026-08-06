@@ -5563,33 +5563,1054 @@ this property.
 
 \subsection{Relation to Campbell Diagrams and Order Analysis}
 
-A single FFT describes the frequency content of one time record under
-approximately stationary operating conditions. A Campbell diagram describes
-how this content changes with rotational speed or time. It is commonly formed
-by dividing the signal into overlapping blocks, applying a window and an FFT to
-each block, and arranging the resulting spectra along the operating-speed
-axis.
+A single FFT describes one time record under approximately stationary operating
+conditions. A Campbell diagram repeats this local spectral calculation over a
+run-up, coast-down or sequence of operating points and retains rotational speed
+as a second coordinate. Order analysis then expresses frequency relative to the
+shaft rotational frequency. The following section develops both representations
+and explains when ordinary time blocks must be replaced by angular resampling.
 
-Order analysis uses rotational frequency rather than absolute frequency. For a
-shaft speed $ n_{\mathrm{rpm}} $, the first rotational order is:
+\section{Campbell Diagram and Order Analysis}
 
-\begin{equation}
-    f_{1\mathrm{x}} = \frac{n_{\mathrm{rpm}}}{60}
+Rotating machines rarely operate at only one constant speed. During a run-up or
+coast-down, excitation frequencies linked to the rotation move through the
+frequency range and may cross structural resonances. A single spectrum cannot
+show this development because it contains no operating-speed coordinate.
+Campbell diagrams and order maps retain that additional coordinate.
+
+Two different plots are commonly called a \textbf{Campbell diagram}:
+
+\begin{enumerate}
+    \item A \textit{modal Campbell diagram} plots calculated natural frequencies
+        against rotational speed. Gyroscopic systems may show separate forward-
+        and backward-whirl branches.
+
+    \item A \textit{response Campbell diagram} plots a measured or simulated
+        spectral amplitude against frequency and rotational speed. It is a field,
+        usually displayed as colour or contours.
+\end{enumerate}
+
+Both plots use the same geometrical idea. Structural frequencies form branches
+$ f_j(n_{\mathrm{rpm}}) $, while rotational excitations form \textbf{order lines}.
+Their intersections identify speeds at which a rotating excitation can excite a
+structural mode.
+
+\subsection{Rotational Frequency and Orders}
+
+For a shaft speed $ n_{\mathrm{rpm}} $ in revolutions per minute, the rotational
+frequency is:
+
+\begin{equation}\label{rotational-frequency-from-rpm}
+    f_{\mathrm{rot}} = \frac{n_{\mathrm{rpm}}}{60}.
 \end{equation}
 
-and order $ r $ occurs at:
+An excitation at $ o $ cycles per revolution has frequency:
 
-\begin{equation}
-    f_r = r\frac{n_{\mathrm{rpm}}}{60}
+\begin{bbox}
+    \begin{equation}\label{order-frequency-line}
+        f_o(n_{\mathrm{rpm}})
+        = o f_{\mathrm{rot}}
+        = o\frac{n_{\mathrm{rpm}}}{60}.
+    \end{equation}
+\end{bbox}
+
+The dimensionless quantity $ o $ is the \textbf{order}. The first order, written
+$ 1\mathrm{x} $, repeats once per revolution. The second order repeats twice per
+revolution. A rotor with $ z $ equally spaced blades produces a blade-passing
+component at order $ z $, and a gear with $ z $ teeth produces its mesh frequency
+at order $ z $ relative to that gear shaft.
+
+A constant order is a straight line through the origin in a frequency--speed
+Campbell diagram. A speed-independent structural resonance is approximately
+horizontal. If a natural frequency $ f_n $ is independent of speed, its
+intersection with order $ o $ occurs at the critical speed:
+
+\begin{equation}\label{constant-natural-frequency-critical-speed}
+    n_{\mathrm{critical}}
+    = \frac{60 f_n}{o}.
 \end{equation}
 
-Consequently, the FFT supplies the local frequency spectrum, while the Campbell
-or order map supplies the additional dependence on operating speed. During a
-rapid speed sweep, equally spaced time samples are not equally spaced in shaft
-angle. Accurate order tracking may then require angular resampling before the
-FFT rather than simply relabelling frequency bins.
+For a rotating structure, the natural frequency may itself depend on speed.
+Centrifugal stiffening, stress softening and gyroscopic terms can curve or split
+its branch. The critical speed must then satisfy:
 
-\section{Campbell Diagram, Order Analysis}
+\begin{equation}\label{general-critical-speed-intersection}
+    f_j(n_{\mathrm{critical}})
+    = o\frac{n_{\mathrm{critical}}}{60}.
+\end{equation}
+
+An intersection is a possible resonance condition, not a prediction of response
+amplitude by itself. The actual response also depends on excitation strength,
+damping, mode shape, measurement position and the time spent near the crossing.
+
+\subsection{Response Campbell Diagram from Block Spectra}
+
+Let $ x(t) $ be a measured response and let $ n_{\mathrm{rpm}}(t) $ be the
+corresponding shaft speed. The signal is divided into overlapping blocks. For
+block $ b $, a windowed FFT gives a local complex spectrum:
+
+\begin{equation}
+    X_b(f_k)
+    = \operatorname{DFT}\left\{w_m x_{b,m}\right\}.
+\end{equation}
+
+Each block is assigned a representative speed, commonly the mean speed in the
+block:
+
+\begin{equation}\label{campbell-block-speed}
+    \bar n_b
+    = \frac{1}{N_b}\sum_{m=0}^{N_b-1}n_{b,m}.
+\end{equation}
+
+The spectra are then arranged into the field:
+
+\begin{equation}\label{campbell-field-definition}
+    A(\bar n_b,f_k)=\abs{X_b(f_k)}.
+\end{equation}
+
+Frequency is one axis, speed is the other axis, and amplitude is represented by
+colour or contours. The complex spectrum may also be retained so that phase and
+complex order tracks can be extracted later.
+
+The speed slices should be sorted before constructing the plotted field. If
+several blocks have the same representative speed, their complex spectra may be
+averaged. Averaging magnitudes alone discards phase and generally gives a
+different result. A uniformly spaced speed axis can be produced afterwards by
+interpolating between the sorted slices. This \textit{rebinning} improves the
+regularity of the displayed field but does not create additional physical
+resolution.
+
+Run-up and coast-down data should normally be kept separate. Sorting both into
+one speed axis and averaging duplicate speeds can hide hysteresis, thermal drift,
+clearance changes or nonlinear jump phenomena that depend on sweep direction.
+
+\subsection{Frequency and Speed Resolution}
+
+For a block with $ N_b $ samples and sample rate $ f_s $, the block duration and
+frequency spacing are:
+
+\begin{equation}
+    T_b=\frac{N_b}{f_s},
+    \qquad
+    \Delta f=\frac{f_s}{N_b}=\frac{1}{T_b}.
+\end{equation}
+
+A longer block improves frequency resolution but includes a larger speed change.
+If the speed changes from $ n_{\min,b} $ to $ n_{\max,b} $ inside the block, the
+speed spread is:
+
+\begin{equation}
+    \Delta n_b=n_{\max,b}-n_{\min,b}.
+\end{equation}
+
+Order $ o $ consequently moves through approximately:
+
+\begin{equation}\label{order-smear-estimate}
+    \Delta f_{o,b}
+    \approx o\frac{\Delta n_b}{60}
+\end{equation}
+
+within the block. When $ \Delta f_{o,b} $ is comparable to or larger than a
+frequency bin, the order ridge is smeared even if the FFT itself is calculated
+correctly. Block length is therefore a compromise between frequency resolution
+and speed stationarity.
+
+Overlap creates more speed slices and a smoother-looking diagram, but it does
+not change $ \Delta f $. Strong overlap also means that neighbouring slices
+contain much of the same data and are not statistically independent.
+
+The amplitude convention must be stated. The implementations below return a
+one-sided \textit{peak-amplitude} spectrum corrected for the coherent gain of the
+Hann window. RMS amplitude would be smaller by $ \sqrt{2} $ for a sinusoid. A
+decibel plot additionally requires a clearly stated reference value.
+
+\subsection{Python Implementation of a Campbell Field}
+
+The following helper calculates the one-sided complex amplitude of one block.
+It uses the radix-2 FFT introduced in the previous section. Keeping the complex
+values permits subsequent amplitude, phase and order calculations.
+
+\begin{python}
+import numpy as np
+
+
+def One_Sided_Complex_Amplitude(x: np.ndarray,
+                                sample_rate: float,
+                                remove_mean: bool = True,
+                                hann_window: bool = True):
+    """Return frequency and one-sided complex peak amplitude."""
+    x = np.asarray(x, dtype=float).reshape(-1).copy()
+    n_samples = x.size
+
+    if n_samples < 2:
+        raise ValueError("at least two samples are required")
+    if n_samples & (n_samples - 1):
+        raise ValueError("the block length must be a power of two")
+    if sample_rate <= 0.0:
+        raise ValueError("sample_rate must be positive")
+
+    if remove_mean:
+        x -= np.sum(x) / n_samples
+
+    if hann_window:
+        index = np.arange(n_samples)
+        window = 0.5 - 0.5 * np.cos(
+            2.0 * np.pi * index / (n_samples - 1)
+        )
+    else:
+        window = np.ones(n_samples)
+
+    coherent_gain = np.sum(window) / n_samples
+    spectrum = FFT_Radix2(x * window)
+
+    n_positive = n_samples // 2 + 1
+    complex_amplitude = (
+        spectrum[:n_positive] / (n_samples * coherent_gain)
+    )
+
+    # Interior positive-frequency bins represent both members of a
+    # conjugate pair. DC and the Nyquist bin occur only once.
+    complex_amplitude[1:-1] *= 2.0
+
+    frequency = DFT_Frequencies(
+        n_samples,
+        sample_rate,
+        one_sided=True,
+    )
+    return frequency, complex_amplitude
+\end{python}
+
+Before optional rebinning, the slices are sorted and duplicate speed values are
+averaged. A positive tolerance may be used to combine nearly equal speed values.
+
+\begin{python}
+import numpy as np
+
+
+def Sort_And_Average_Speed_Slices(speed_rpm: np.ndarray,
+                                  field: np.ndarray,
+                                  speed_spread: np.ndarray,
+                                  tolerance_rpm: float = 0.0):
+    """Sort slices by speed and average duplicate or near-duplicate rows."""
+    speed_rpm = np.asarray(speed_rpm, dtype=float).reshape(-1)
+    field = np.asarray(field, dtype=complex)
+    speed_spread = np.asarray(speed_spread, dtype=float).reshape(-1)
+
+    if field.shape[0] != speed_rpm.size:
+        raise ValueError("one field row is required for each speed")
+    if speed_spread.size != speed_rpm.size:
+        raise ValueError("one speed spread is required for each speed")
+    if tolerance_rpm < 0.0:
+        raise ValueError("tolerance_rpm must be non-negative")
+
+    permutation = np.argsort(speed_rpm, kind="stable")
+    speed_sorted = speed_rpm[permutation]
+    field_sorted = field[permutation]
+    spread_sorted = speed_spread[permutation]
+
+    grouped_speed = []
+    grouped_field = []
+    grouped_spread = []
+
+    first = 0
+    while first < speed_sorted.size:
+        last = first + 1
+        while (last < speed_sorted.size
+               and speed_sorted[last] - speed_sorted[first]
+               <= tolerance_rpm):
+            last += 1
+
+        grouped_speed.append(np.mean(speed_sorted[first:last]))
+        grouped_field.append(np.mean(field_sorted[first:last], axis=0))
+        grouped_spread.append(np.max(spread_sorted[first:last]))
+        first = last
+
+    return (
+        np.asarray(grouped_speed),
+        np.asarray(grouped_field),
+        np.asarray(grouped_spread),
+    )
+
+
+def Interpolate_Field_Rows(x: np.ndarray,
+                           field: np.ndarray,
+                           x_new: np.ndarray) -> np.ndarray:
+    """Linearly interpolate every field column along its first axis."""
+    x = np.asarray(x, dtype=float).reshape(-1)
+    field = np.asarray(field)
+    x_new = np.asarray(x_new, dtype=float).reshape(-1)
+
+    if x.size < 2:
+        raise ValueError("at least two source rows are required")
+    if field.shape[0] != x.size:
+        raise ValueError("field.shape[0] must equal x.size")
+    if np.any(np.diff(x) <= 0.0):
+        raise ValueError("x must be strictly increasing")
+    if x_new[0] < x[0] or x_new[-1] > x[-1]:
+        raise ValueError("x_new must remain inside the source interval")
+
+    result = np.empty((x_new.size,) + field.shape[1:], dtype=field.dtype)
+
+    for row, value in enumerate(x_new):
+        right = np.searchsorted(x, value, side="right")
+        if right == 0:
+            result[row] = field[0]
+        elif right == x.size:
+            result[row] = field[-1]
+        else:
+            left = right - 1
+            fraction = (value - x[left]) / (x[right] - x[left])
+            result[row] = (
+                (1.0 - fraction) * field[left]
+                + fraction * field[right]
+            )
+
+    return result
+\end{python}
+
+The Campbell construction collects the local spectra, records the speed spread
+of every block, sorts the slices and optionally rebins them to a uniform speed
+axis. The argument \texttt{resample=N} requests $ N $ uniformly spaced speed
+bins.
+
+\begin{python}
+import numpy as np
+
+
+def Campbell_Diagram(signal: np.ndarray,
+                      speed_rpm: np.ndarray,
+                      sample_rate: float,
+                      block_size: int,
+                      overlap: float = 0.5,
+                      duplicate_tolerance_rpm: float = 0.0,
+                      resample: int | None = None):
+    """Construct a complex response Campbell field."""
+    signal = np.asarray(signal, dtype=float).reshape(-1)
+    speed_rpm = np.asarray(speed_rpm, dtype=float).reshape(-1)
+
+    if signal.size != speed_rpm.size:
+        raise ValueError("signal and speed_rpm must have equal length")
+    if block_size < 2 or block_size > signal.size:
+        raise ValueError("invalid block_size")
+    if block_size & (block_size - 1):
+        raise ValueError("block_size must be a power of two")
+    if not 0.0 <= overlap < 1.0:
+        raise ValueError("overlap must lie in [0, 1)")
+
+    hop_size = max(1, int(round(block_size * (1.0 - overlap))))
+    starts = range(0, signal.size - block_size + 1, hop_size)
+
+    block_speeds = []
+    speed_spreads = []
+    spectra = []
+    frequency = None
+
+    for start in starts:
+        stop = start + block_size
+        block_speed = speed_rpm[start:stop]
+
+        frequency, complex_amplitude = One_Sided_Complex_Amplitude(
+            signal[start:stop],
+            sample_rate,
+            remove_mean=True,
+            hann_window=True,
+        )
+
+        block_speeds.append(np.mean(block_speed))
+        speed_spreads.append(np.max(block_speed) - np.min(block_speed))
+        spectra.append(complex_amplitude)
+
+    block_speeds, spectra, speed_spreads = (
+        Sort_And_Average_Speed_Slices(
+            np.asarray(block_speeds),
+            np.asarray(spectra),
+            np.asarray(speed_spreads),
+            tolerance_rpm=duplicate_tolerance_rpm,
+        )
+    )
+
+    if resample is not None:
+        if resample < 2:
+            raise ValueError("resample must be at least two")
+        speed_uniform = np.linspace(
+            block_speeds[0],
+            block_speeds[-1],
+            resample,
+        )
+        spectra = Interpolate_Field_Rows(
+            block_speeds,
+            spectra,
+            speed_uniform,
+        )
+        speed_spreads = Interpolate_Field_Rows(
+            block_speeds,
+            speed_spreads[:, None],
+            speed_uniform,
+        )[:, 0]
+        block_speeds = speed_uniform
+
+    return {
+        "speed_rpm": block_speeds,
+        "frequency_hz": frequency,
+        "complex_amplitude": spectra,
+        "amplitude": np.abs(spectra),
+        "speed_spread_rpm": speed_spreads,
+    }
+\end{python}
+
+The returned speed-spread array is a useful diagnostic. A highly smeared region
+can be identified before interpreting broad spectral ridges as damping or as
+multiple physical components.
+
+\subsection{Example of a Response Campbell Diagram}
+
+The following synthetic run-up contains a first-order component, a second-order
+component amplified near a $ 100\,\mathrm{Hz} $ structural resonance, a sixth
+order and a stationary $ 140\,\mathrm{Hz} $ tone. The rotational angle is
+obtained by trapezoidal integration of the speed.
+
+\begin{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def Rotational_Angle(time: np.ndarray,
+                     speed_rpm: np.ndarray) -> np.ndarray:
+    """Integrate rotational speed to angle in radians."""
+    time = np.asarray(time, dtype=float).reshape(-1)
+    speed_rpm = np.asarray(speed_rpm, dtype=float).reshape(-1)
+
+    if time.size != speed_rpm.size:
+        raise ValueError("time and speed_rpm must have equal length")
+    if time.size < 2 or np.any(np.diff(time) <= 0.0):
+        raise ValueError("time must be strictly increasing")
+
+    angular_speed = 2.0 * np.pi * speed_rpm / 60.0
+    angle = np.zeros(time.size)
+    angle[1:] = np.cumsum(
+        0.5
+        * (angular_speed[1:] + angular_speed[:-1])
+        * np.diff(time)
+    )
+    return angle
+
+
+sample_rate = 2048.0
+duration = 8.0
+time = np.arange(int(sample_rate * duration)) / sample_rate
+speed_rpm = 600.0 + 3600.0 * time / duration
+angle = Rotational_Angle(time, speed_rpm)
+
+second_order_frequency = 2.0 * speed_rpm / 60.0
+natural_frequency = 100.0
+damping_ratio = 0.04
+frequency_ratio = second_order_frequency / natural_frequency
+resonance = 1.0 / np.sqrt(
+    (1.0 - frequency_ratio**2)**2
+    + (2.0 * damping_ratio * frequency_ratio)**2
+)
+resonance /= np.max(resonance)
+
+signal = (
+    0.45 * np.sin(angle)
+    + 1.20 * resonance * np.sin(2.0 * angle)
+    + 0.20 * np.sin(6.0 * angle)
+    + 0.12 * np.sin(2.0 * np.pi * 140.0 * time)
+)
+
+campbell = Campbell_Diagram(
+    signal,
+    speed_rpm,
+    sample_rate,
+    block_size=1024,
+    overlap=0.75,
+    resample=120,
+)
+
+reference = np.max(campbell["amplitude"])
+level_db = 20.0 * np.log10(
+    np.maximum(campbell["amplitude"] / reference, 1.0e-6)
+)
+
+plt.figure()
+plt.pcolormesh(
+    campbell["speed_rpm"],
+    campbell["frequency_hz"],
+    level_db.T,
+    shading="auto",
+)
+for order in (1.0, 2.0, 6.0):
+    plt.plot(
+        campbell["speed_rpm"],
+        order * campbell["speed_rpm"] / 60.0,
+        linewidth=1.0,
+    )
+plt.xlabel("Rotational speed [rpm]")
+plt.ylabel("Frequency [Hz]")
+plt.ylim(0.0, 180.0)
+plt.colorbar(label="Relative amplitude [dB]")
+plt.tight_layout()
+plt.show()
+\end{python}
+
+In the frequency--speed plane, the three shaft-synchronous components follow
+straight order lines. The fixed $ 140\,\mathrm{Hz} $ component remains
+horizontal. The second-order ridge becomes strongest near:
+
+\begin{equation}
+    n_{\mathrm{critical}}
+    = \frac{60\cdot100}{2}
+    = 3000\,\mathrm{rpm}.
+\end{equation}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{img/campbell_runup.png}
+    \caption{Synthetic response Campbell diagram. The first, second and sixth
+    orders rise linearly with speed. The second order is amplified where it
+    crosses the $ 100\,\mathrm{Hz} $ resonance, while the stationary
+    $ 140\,\mathrm{Hz} $ tone remains horizontal.}
+    \label{fig:campbell-runup-example}
+\end{figure}
+
+\subsection{Order Map Obtained from a Campbell Field}
+
+The order corresponding to frequency $ f $ at speed $ n_{\mathrm{rpm}} $ is:
+
+\begin{equation}\label{frequency-to-order-definition}
+    o = \frac{f}{f_{\mathrm{rot}}}
+      = \frac{60f}{n_{\mathrm{rpm}}}.
+\end{equation}
+
+A Campbell field can therefore be sampled along the frequency curves
+$ f=o n_{\mathrm{rpm}}/60 $ to form an order map:
+
+\begin{equation}\label{campbell-to-order-map}
+    A_o(n_{\mathrm{rpm}},o)
+    = A\left(
+        n_{\mathrm{rpm}},
+        o\frac{n_{\mathrm{rpm}}}{60}
+      \right).
+\end{equation}
+
+Because the required frequency usually lies between FFT bins, interpolation is
+necessary. Interpolating the complex spectrum retains amplitude and phase more
+consistently than separately interpolating magnitude and wrapped phase.
+
+This conversion changes coordinates but does not remove spectral smearing that
+already occurred inside the time blocks. It is suitable when speed is nearly
+constant within each block. Angular resampling, introduced later, is preferable
+for rapid speed changes.
+
+\begin{python}
+import numpy as np
+
+
+def Interpolate_Complex_Spectrum(frequency: np.ndarray,
+                                 spectrum: np.ndarray,
+                                 target_frequency: np.ndarray) -> np.ndarray:
+    """Interpolate a complex spectrum at requested frequencies."""
+    frequency = np.asarray(frequency, dtype=float).reshape(-1)
+    spectrum = np.asarray(spectrum, dtype=complex).reshape(-1)
+    target_frequency = np.asarray(target_frequency, dtype=float).reshape(-1)
+
+    if spectrum.size != frequency.size:
+        raise ValueError("spectrum and frequency must have equal length")
+    if np.any(np.diff(frequency) <= 0.0):
+        raise ValueError("frequency must be strictly increasing")
+
+    result = np.full(target_frequency.size, np.nan + 1.0j * np.nan)
+
+    for index, value in enumerate(target_frequency):
+        if value < frequency[0] or value > frequency[-1]:
+            continue
+
+        right = np.searchsorted(frequency, value, side="right")
+        if right == 0:
+            result[index] = spectrum[0]
+        elif right == frequency.size:
+            result[index] = spectrum[-1]
+        else:
+            left = right - 1
+            fraction = (
+                (value - frequency[left])
+                / (frequency[right] - frequency[left])
+            )
+            result[index] = (
+                (1.0 - fraction) * spectrum[left]
+                + fraction * spectrum[right]
+            )
+
+    return result
+
+
+def Campbell_To_Order_Map(campbell: dict,
+                           n_order_bins: int = 401,
+                           maximum_order: float | None = None):
+    """Interpolate a complex Campbell field onto a common order axis."""
+    speed_rpm = np.asarray(campbell["speed_rpm"], dtype=float)
+    frequency = np.asarray(campbell["frequency_hz"], dtype=float)
+    field = np.asarray(campbell["complex_amplitude"], dtype=complex)
+
+    if np.any(speed_rpm <= 0.0):
+        raise ValueError("order conversion requires positive speed")
+    if n_order_bins < 2:
+        raise ValueError("n_order_bins must be at least two")
+
+    common_limit = frequency[-1] / np.max(speed_rpm / 60.0)
+    if maximum_order is None:
+        maximum_order = common_limit
+    if maximum_order <= 0.0 or maximum_order > common_limit:
+        raise ValueError("maximum_order exceeds the common frequency range")
+
+    order = np.linspace(0.0, maximum_order, n_order_bins)
+    order_field = np.empty((speed_rpm.size, order.size), dtype=complex)
+
+    for row, speed in enumerate(speed_rpm):
+        target_frequency = order * speed / 60.0
+        order_field[row] = Interpolate_Complex_Spectrum(
+            frequency,
+            field[row],
+            target_frequency,
+        )
+
+    return {
+        "speed_rpm": speed_rpm,
+        "order": order,
+        "complex_amplitude": order_field,
+        "amplitude": np.abs(order_field),
+    }
+\end{python}
+
+In an order map, shaft-synchronous excitations become approximately horizontal.
+A speed-independent structural resonance follows:
+
+\begin{equation}
+    o_n(n_{\mathrm{rpm}})
+    = \frac{60 f_n}{n_{\mathrm{rpm}}},
+\end{equation}
+
+and therefore curves downward as speed increases. This is the complementary
+view of the frequency--speed Campbell diagram: orders are horizontal and fixed
+frequencies are curved.
+
+\begin{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+order_map = Campbell_To_Order_Map(
+    campbell,
+    n_order_bins=481,
+    maximum_order=8.0,
+)
+
+reference = np.nanmax(order_map["amplitude"])
+level_db = 20.0 * np.log10(
+    np.maximum(order_map["amplitude"] / reference, 1.0e-6)
+)
+
+plt.figure()
+plt.pcolormesh(
+    order_map["speed_rpm"],
+    order_map["order"],
+    level_db.T,
+    shading="auto",
+)
+plt.xlabel("Rotational speed [rpm]")
+plt.ylabel("Order [-]")
+plt.ylim(0.0, 8.0)
+plt.colorbar(label="Relative amplitude [dB]")
+plt.tight_layout()
+plt.show()
+\end{python}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{img/order_map_runup.png}
+    \caption{Order map obtained from the synthetic Campbell field. The first,
+    second and sixth orders are horizontal. The stationary $ 140\,\mathrm{Hz} $
+    component curves towards lower order as speed increases.}
+    \label{fig:order-map-runup-example}
+\end{figure}
+
+\subsection{Extraction of Individual Order Tracks}
+
+Often the full field is less useful than the amplitude and phase of selected
+orders. For each speed slice, the complex spectrum is interpolated at the order
+frequency from Equation~\eqref{order-frequency-line}. The resulting complex
+track contains both quantities:
+
+\begin{equation}
+    a_o(n)=\abs{X_o(n)},
+    \qquad
+    \varphi_o(n)=\arg X_o(n).
+\end{equation}
+
+\begin{python}
+import numpy as np
+
+
+def Extract_Order_Tracks(campbell: dict,
+                         orders: np.ndarray) -> dict:
+    """Extract complex order tracks from a Campbell field."""
+    speed_rpm = np.asarray(campbell["speed_rpm"], dtype=float)
+    frequency = np.asarray(campbell["frequency_hz"], dtype=float)
+    field = np.asarray(campbell["complex_amplitude"], dtype=complex)
+    orders = np.asarray(orders, dtype=float).reshape(-1)
+
+    tracks = np.empty((speed_rpm.size, orders.size), dtype=complex)
+
+    for row, speed in enumerate(speed_rpm):
+        target_frequency = orders * speed / 60.0
+        tracks[row] = Interpolate_Complex_Spectrum(
+            frequency,
+            field[row],
+            target_frequency,
+        )
+
+    return {
+        "speed_rpm": speed_rpm,
+        "order": orders,
+        "complex_amplitude": tracks,
+        "amplitude": np.abs(tracks),
+        "phase": np.angle(tracks),
+    }
+
+
+tracks = Extract_Order_Tracks(
+    campbell,
+    orders=np.array([1.0, 2.0, 6.0]),
+)
+\end{python}
+
+Phase is meaningful only relative to a consistent rotational reference. Speed
+obtained from a slowly varying analogue channel may be sufficient for amplitude
+tracking but not for absolute order phase. A once-per-revolution tachometer or
+encoder reference is required when phase relative to the shaft is important.
+
+\subsection{Angular Resampling for Order Tracking}
+
+During a rapid speed sweep, equal time increments do not correspond to equal
+shaft-angle increments. A time-domain sinusoid of constant order is therefore a
+chirp. A block FFT assumes approximately stationary frequency and smears the
+component if its frequency changes appreciably inside the block.
+
+Order tracking removes this motion by changing the independent variable from
+time to rotational angle. The angle is obtained from the rotational speed:
+
+\begin{equation}\label{angle-from-speed-integral}
+    \theta(t)
+    = \theta_0
+    + \int_{t_0}^{t}
+      2\pi\frac{n_{\mathrm{rpm}}(\tau)}{60}
+      \,\mathrm{d}\tau.
+\end{equation}
+
+The response is then interpolated at uniformly spaced angles:
+
+\begin{equation}
+    \theta_m=\theta_0+m\Delta\theta,
+    \qquad
+    x_m^{(\theta)}=x\left(t(\theta_m)\right).
+\end{equation}
+
+A component at order $ o $ becomes an ordinary sinusoid in angle:
+
+\begin{equation}
+    x^{(\theta)}(\theta)
+    = A\cos(o\theta+\varphi).
+\end{equation}
+
+The following implementation performs trapezoidal angle integration and linear
+interpolation onto a uniform angular grid. It requires monotonically increasing
+angle. Data containing a reversal or a prolonged zero-speed interval should be
+split into monotonic rotational segments.
+
+\begin{python}
+import numpy as np
+
+
+def Linear_Interpolate_Monotone(x: np.ndarray,
+                                y: np.ndarray,
+                                x_new: np.ndarray) -> np.ndarray:
+    """Linear interpolation for a strictly increasing source coordinate."""
+    x = np.asarray(x, dtype=float).reshape(-1)
+    y = np.asarray(y).reshape(-1)
+    x_new = np.asarray(x_new, dtype=float).reshape(-1)
+
+    if y.size != x.size:
+        raise ValueError("x and y must have equal length")
+    if np.any(np.diff(x) <= 0.0):
+        raise ValueError("x must be strictly increasing")
+    if x_new[0] < x[0] or x_new[-1] > x[-1]:
+        raise ValueError("x_new must remain inside the source interval")
+
+    result = np.empty(x_new.size, dtype=np.result_type(y, float))
+
+    for index, value in enumerate(x_new):
+        right = np.searchsorted(x, value, side="right")
+        if right == 0:
+            result[index] = y[0]
+        elif right == x.size:
+            result[index] = y[-1]
+        else:
+            left = right - 1
+            fraction = (value - x[left]) / (x[right] - x[left])
+            result[index] = (
+                (1.0 - fraction) * y[left]
+                + fraction * y[right]
+            )
+
+    return result
+
+
+def Angular_Resample(time: np.ndarray,
+                     signal: np.ndarray,
+                     speed_rpm: np.ndarray,
+                     samples_per_revolution: int):
+    """Resample a time signal at uniform shaft-angle increments."""
+    time = np.asarray(time, dtype=float).reshape(-1)
+    signal = np.asarray(signal, dtype=float).reshape(-1)
+    speed_rpm = np.asarray(speed_rpm, dtype=float).reshape(-1)
+
+    if signal.size != time.size or speed_rpm.size != time.size:
+        raise ValueError("time, signal and speed_rpm must have equal length")
+    if samples_per_revolution < 2:
+        raise ValueError("samples_per_revolution must be at least two")
+
+    angle = Rotational_Angle(time, speed_rpm)
+    if np.any(np.diff(angle) <= 0.0):
+        raise ValueError("rotational angle must be strictly increasing")
+
+    angle_step = 2.0 * np.pi / samples_per_revolution
+    first_index = int(np.ceil(angle[0] / angle_step))
+    last_index = int(np.floor(angle[-1] / angle_step))
+    angle_uniform = (
+        np.arange(first_index, last_index + 1) * angle_step
+    )
+
+    signal_angle = Linear_Interpolate_Monotone(
+        angle,
+        signal,
+        angle_uniform,
+    )
+    speed_angle = Linear_Interpolate_Monotone(
+        angle,
+        speed_rpm,
+        angle_uniform,
+    )
+
+    return angle_uniform, signal_angle, speed_angle
+\end{python}
+
+If the angular signal has $ M $ samples per revolution and a block spans $ R $
+revolutions, then:
+
+\begin{equation}
+    N_b=MR,
+    \qquad
+    \Delta o=\frac{1}{R},
+    \qquad
+    o_{\mathrm{Nyquist}}=\frac{M}{2}.
+\end{equation}
+
+Thus the number of revolutions per block controls order resolution, while the
+number of samples per revolution controls the highest representable order. This
+is the angular-domain counterpart of time-record duration and sample rate.
+
+\begin{python}
+import numpy as np
+
+
+def Angular_Order_Map(time: np.ndarray,
+                      signal: np.ndarray,
+                      speed_rpm: np.ndarray,
+                      samples_per_revolution: int,
+                      revolutions_per_block: int,
+                      overlap: float = 0.5,
+                      duplicate_tolerance_rpm: float = 0.0,
+                      resample: int | None = None):
+    """Construct an order map after uniform-angle resampling."""
+    _, signal_angle, speed_angle = Angular_Resample(
+        time,
+        signal,
+        speed_rpm,
+        samples_per_revolution,
+    )
+
+    block_size = samples_per_revolution * revolutions_per_block
+    if block_size < 2 or block_size & (block_size - 1):
+        raise ValueError(
+            "samples_per_revolution * revolutions_per_block "
+            "must be a power of two"
+        )
+    if block_size > signal_angle.size:
+        raise ValueError("the angular record is shorter than one block")
+    if not 0.0 <= overlap < 1.0:
+        raise ValueError("overlap must lie in [0, 1)")
+
+    hop_size = max(1, int(round(block_size * (1.0 - overlap))))
+    starts = range(0, signal_angle.size - block_size + 1, hop_size)
+
+    index = np.arange(block_size)
+    window = 0.5 - 0.5 * np.cos(
+        2.0 * np.pi * index / (block_size - 1)
+    )
+    coherent_gain = np.sum(window) / block_size
+
+    order = (
+        np.arange(block_size // 2 + 1)
+        / revolutions_per_block
+    )
+    block_speeds = []
+    speed_spreads = []
+    spectra = []
+
+    for start in starts:
+        stop = start + block_size
+        block = signal_angle[start:stop].copy()
+        block -= np.mean(block)
+
+        spectrum = FFT_Radix2(block * window)
+        complex_amplitude = (
+            spectrum[:block_size // 2 + 1]
+            / (block_size * coherent_gain)
+        )
+        complex_amplitude[1:-1] *= 2.0
+
+        local_speed = speed_angle[start:stop]
+        block_speeds.append(np.mean(local_speed))
+        speed_spreads.append(np.max(local_speed) - np.min(local_speed))
+        spectra.append(complex_amplitude)
+
+    block_speeds, spectra, speed_spreads = (
+        Sort_And_Average_Speed_Slices(
+            np.asarray(block_speeds),
+            np.asarray(spectra),
+            np.asarray(speed_spreads),
+            tolerance_rpm=duplicate_tolerance_rpm,
+        )
+    )
+
+    if resample is not None:
+        if resample < 2:
+            raise ValueError("resample must be at least two")
+        speed_uniform = np.linspace(
+            block_speeds[0],
+            block_speeds[-1],
+            resample,
+        )
+        spectra = Interpolate_Field_Rows(
+            block_speeds,
+            spectra,
+            speed_uniform,
+        )
+        speed_spreads = Interpolate_Field_Rows(
+            block_speeds,
+            speed_spreads[:, None],
+            speed_uniform,
+        )[:, 0]
+        block_speeds = speed_uniform
+
+    return {
+        "speed_rpm": block_speeds,
+        "order": order,
+        "complex_amplitude": spectra,
+        "amplitude": np.abs(spectra),
+        "speed_spread_rpm": speed_spreads,
+    }
+\end{python}
+
+For the synthetic run-up, choosing $ 64 $ samples per revolution and $ 16 $
+revolutions per block gives:
+
+\begin{equation}
+    N_b=1024,
+    \qquad
+    \Delta o=0.0625,
+    \qquad
+    o_{\mathrm{Nyquist}}=32.
+\end{equation}
+
+The first, second and sixth orders then remain at fixed order positions despite
+the changing speed.
+
+\begin{python}
+order_map_angular = Angular_Order_Map(
+    time,
+    signal,
+    speed_rpm,
+    samples_per_revolution=64,
+    revolutions_per_block=16,
+    overlap=0.75,
+    resample=120,
+)
+\end{python}
+
+\subsection{Tachometer Processing and Practical Limitations}
+
+Angular resampling is only as accurate as the estimated angle. Integrating a
+noisy speed signal accumulates phase error. A once-per-revolution tachometer
+provides discrete angular reference events and prevents long-term drift. An
+encoder with several pulses per revolution provides more local information, but
+missing or false pulses must be detected before interpolation.
+
+A practical procedure is:
+
+\begin{enumerate}
+    \item detect and validate tachometer edges;
+    \item assign a known angular increment to consecutive edges;
+    \item interpolate angle monotonically between the edges;
+    \item resample the response at uniform angular increments;
+    \item apply an angular-domain window and FFT;
+    \item associate each block with its mean speed and speed spread.
+\end{enumerate}
+
+The original time sampling must be high enough for the largest frequency present
+at the highest speed. Angular resampling cannot recover a component that was
+already aliased in the time-domain acquisition. Conversely, at low speed a fixed
+number of angular samples per revolution may correspond to a low effective time
+sample rate. Anti-alias filtering and the selected speed range must therefore be
+considered together.
+
+If two shafts rotate at different speeds, the stated order always refers to one
+chosen reference shaft. A component that is synchronous with another shaft may
+appear as a non-integer or speed-dependent order. Gear ratios, slip and variable
+transmission ratios should be applied explicitly rather than assuming that every
+ridge belongs to the reference shaft.
+
+\subsection{Interpretation and Validation}
+
+A Campbell or order map should be checked against the underlying time and speed
+data. Useful validation steps include:
+
+\begin{enumerate}
+    \item Verify the FFT frequency bins, amplitude convention and window gain on
+        a harmonic of known amplitude.
+
+    \item Plot the speed spread of every block. Broad ridges in blocks with large
+        $ \Delta n_b $ may be processing smear rather than physical damping.
+
+    \item Overlay expected order lines and known structural frequencies. A ridge
+        should follow the appropriate geometry in both frequency and order views.
+
+    \item Extract selected complex order tracks and compare them with direct
+        narrow-band or synchronous calculations.
+
+    \item Process run-up and coast-down separately before deciding whether they
+        can be combined.
+
+    \item Confirm that speed sorting, duplicate averaging and optional uniform
+        speed rebinning do not alter integrated amplitudes unexpectedly.
+\end{enumerate}
+
+The frequency--speed Campbell diagram and the speed--order map are not competing
+representations. They emphasize different structures. A constant order is easy
+to identify in the order map, while a speed-independent resonance is easy to
+identify in the frequency Campbell diagram. Interpreting both views together is
+usually more reliable than relying on either one alone.
+
 
 \section{Power Spectral Density, Cross Spectral Density and Coherence}
 
