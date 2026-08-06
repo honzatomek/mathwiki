@@ -6073,6 +6073,131 @@ horizontal. The second-order ridge becomes strongest near:
     \label{fig:campbell-runup-example}
 \end{figure}
 
+
+\subsection{Waterfall Representation of the Response Campbell Field}
+
+The response Campbell field in Equation~\eqref{campbell-field-definition} may
+also be displayed as a \textbf{waterfall diagram}. No new transform is
+performed. Each row of the Campbell field is drawn as an individual spectrum at
+its corresponding speed:
+
+\begin{equation}\label{campbell-waterfall-curve}
+    \mathcal{W}_b
+    =
+    \left\{
+        \left(f_k,\bar n_b,A(\bar n_b,f_k)\right)
+        \;\middle|\;
+        k=0,\ldots,N_f-1
+    \right\}.
+\end{equation}
+
+The frequency axis remains horizontal, the spectra are separated along the
+speed axis, and amplitude is shown by the height of each curve. A waterfall is
+therefore a three-dimensional perspective view of the same data that a response
+Campbell diagram displays by colour or contours. A time waterfall can be formed
+in exactly the same manner by replacing speed with block-centre time.
+
+The two views emphasise different properties. A colour map makes ridge geometry,
+order lines and weak components easier to compare quantitatively. A waterfall
+makes the individual spectra and the growth and decay of resonant peaks more
+intuitive. Perspective, curve overlap and the selected viewing angle can,
+however, hide weaker components behind stronger curves. Only every few speed
+slices are therefore commonly drawn.
+
+When amplitudes are converted to decibels, every slice should use the same global
+reference. Normalising each spectrum separately would make every speed slice
+appear equally strong and would remove the amplitude increase at a resonance.
+The chosen decibel floor also affects the visual appearance but not the
+underlying Campbell field.
+
+\begin{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+def Plot_Campbell_Waterfall(campbell: dict,
+                            maximum_frequency: float | None = None,
+                            stride: int = 5,
+                            decibel: bool = True,
+                            floor_db: float = -60.0):
+    """Plot selected speed slices of a response Campbell field."""
+    speed_rpm = np.asarray(campbell["speed_rpm"], dtype=float)
+    frequency = np.asarray(campbell["frequency_hz"], dtype=float)
+    amplitude = np.asarray(campbell["amplitude"], dtype=float)
+
+    if amplitude.shape != (speed_rpm.size, frequency.size):
+        raise ValueError("the Campbell field dimensions are inconsistent")
+    if stride < 1:
+        raise ValueError("stride must be positive")
+
+    if maximum_frequency is None:
+        maximum_frequency = frequency[-1]
+    frequency_mask = frequency <= maximum_frequency
+    frequency_plot = frequency[frequency_mask]
+    amplitude_plot = amplitude[:, frequency_mask]
+
+    if decibel:
+        reference = np.max(amplitude_plot)
+        if reference <= 0.0:
+            raise ValueError("the Campbell field contains no positive amplitude")
+        minimum_ratio = 10.0**(floor_db / 20.0)
+        ordinate = 20.0 * np.log10(
+            np.maximum(amplitude_plot / reference, minimum_ratio)
+        )
+        amplitude_label = "Relative amplitude [dB]"
+    else:
+        ordinate = amplitude_plot
+        amplitude_label = "Peak amplitude"
+
+    figure = plt.figure()
+    axis = figure.add_subplot(111, projection="3d")
+
+    rows = list(range(0, speed_rpm.size, stride))
+    if rows[-1] != speed_rpm.size - 1:
+        rows.append(speed_rpm.size - 1)
+
+    for row in rows:
+        speed_line = np.full(frequency_plot.size, speed_rpm[row])
+        axis.plot(
+            frequency_plot,
+            speed_line,
+            ordinate[row],
+            linewidth=0.8,
+        )
+
+    axis.set_xlabel("Frequency [Hz]")
+    axis.set_ylabel("Rotational speed [rpm]")
+    axis.set_zlabel(amplitude_label)
+    figure.tight_layout()
+    return figure, axis
+
+
+Plot_Campbell_Waterfall(
+    campbell,
+    maximum_frequency=180.0,
+    stride=6,
+    decibel=True,
+)
+plt.show()
+\end{python}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{img/campbell_waterfall_runup.png}
+    \caption{Waterfall representation of the synthetic response Campbell field.
+    Each line is one spectrum at one rotational speed. The order-related peaks
+    move in frequency, while the stationary $140\,\mathrm{Hz}$ component remains
+    at the same frequency.}
+    \label{fig:campbell-waterfall-runup-example}
+\end{figure}
+
+The response Campbell colour map in
+Figure~\ref{fig:campbell-runup-example} and the waterfall in
+Figure~\ref{fig:campbell-waterfall-runup-example} contain the same spectral
+slices. They should not be confused with rainflow cycle counting, which starts
+from a load or stress history and answers a fatigue question rather than a
+frequency-content question.
+
 \subsection{Order Map Obtained from a Campbell Field}
 
 The order corresponding to frequency $ f $ at speed $ n_{\mathrm{rpm}} $ is:
@@ -6610,6 +6735,299 @@ representations. They emphasize different structures. A constant order is easy
 to identify in the order map, while a speed-independent resonance is easy to
 identify in the frequency Campbell diagram. Interpreting both views together is
 usually more reliable than relying on either one alone.
+
+
+
+\section{Rainflow Cycle Counting}
+
+A \textbf{rainflow analysis} is not another representation of a Campbell
+field. Campbell and waterfall plots describe how spectral content varies with
+speed or time. Rainflow counting operates directly on a scalar load, strain or
+stress history and reduces it to fatigue cycles.
+
+\begin{center}
+\begin{tabular}{@{}p{0.18\textwidth}p{0.31\textwidth}p{0.39\textwidth}@{}}
+\textbf{Method} & \textbf{Coordinates or output} & \textbf{Main purpose} \\
+\hline
+Response Campbell & speed, frequency and amplitude & rotating-vibration diagnosis \\
+Waterfall & stacked spectra versus speed or time & perspective view of spectra \\
+Rainflow counting & range, mean and cycle count & fatigue-cycle description
+\end{tabular}
+\end{center}
+
+The conventional rainflow result does not retain frequency, phase or the exact
+time ordering of the cycles. If cycle counts must also be associated with speed,
+temperature or another operating state, the record must be divided or each
+counted cycle must be linked back to the relevant interval before this
+information is discarded.
+
+\subsection{Ranges, Means and Half Cycles}
+
+Let $s(t)$ be a scalar stress history. Consecutive equal values and samples that
+are not local extrema are first removed. The remaining reversal sequence is:
+
+\begin{equation}
+    r_0,r_1,\ldots,r_{N_r-1}.
+\end{equation}
+
+A counted excursion between reversal values $r_a$ and $r_b$ is described by its
+range, amplitude and mean:
+
+\begin{equation}\label{rainflow-cycle-quantities}
+    \Delta s = \abs{r_b-r_a},
+    \qquad
+    s_a=\frac{\Delta s}{2},
+    \qquad
+    s_m=\frac{r_a+r_b}{2}.
+\end{equation}
+
+A closed interior cycle has count $c=1$. An unclosed excursion at the beginning
+or end of a finite record has count $c=1/2$. Two identical half cycles therefore
+contribute the same total count as one full cycle. Whether residual half cycles
+should be retained, repeated to close a periodic record or treated by another
+record-specific convention must be stated.
+
+Rainflow counting is often explained by imagining rain flowing down a pagoda
+roof formed by the rotated stress history. Numerically, a stack of reversals is
+more direct. When a new reversal arrives, the two most recent ranges are
+compared:
+
+\begin{equation}
+    R_{\mathrm{old}}=\abs{r_{j-1}-r_{j-2}},
+    \qquad
+    R_{\mathrm{new}}=\abs{r_j-r_{j-1}}.
+\end{equation}
+
+If $R_{\mathrm{new}}<R_{\mathrm{old}}$, the older excursion remains open. If
+$R_{\mathrm{new}}\geq R_{\mathrm{old}}$, the older excursion is closed and
+counted. An excursion touching the beginning of the current stack is counted as
+a half cycle; an enclosed excursion is counted as a full cycle. After all
+reversals have been processed, the adjacent residual excursions are counted as
+half cycles.
+
+\subsection{Python Implementation of Rainflow Counting}
+
+The following implementation returns one row per counted cycle. The columns are
+cycle range, cycle mean and count. It deliberately retains half cycles rather
+than silently forcing the record to be periodic.
+
+\begin{python}
+import numpy as np
+
+
+def Reversal_Points(signal: np.ndarray) -> np.ndarray:
+    """Return endpoints and local extrema after removing plateaus."""
+    values = np.asarray(signal, dtype=float).reshape(-1)
+    if values.size < 2:
+        raise ValueError("at least two samples are required")
+
+    compact = [values[0]]
+    for value in values[1:]:
+        if value != compact[-1]:
+            compact.append(value)
+
+    compact = np.asarray(compact)
+    if compact.size == 1:
+        return compact.copy()
+
+    reversals = [compact[0]]
+    for index in range(1, compact.size - 1):
+        incoming = compact[index] - compact[index - 1]
+        outgoing = compact[index + 1] - compact[index]
+        if incoming * outgoing < 0.0:
+            reversals.append(compact[index])
+    reversals.append(compact[-1])
+    return np.asarray(reversals)
+
+
+def Rainflow_Cycles(signal: np.ndarray) -> np.ndarray:
+    """Return rows [range, mean, count] using a reversal stack."""
+    reversals = Reversal_Points(signal)
+    stack = []
+    cycles = []
+
+    for value in reversals:
+        stack.append(float(value))
+
+        while len(stack) >= 3:
+            old_range = abs(stack[-2] - stack[-3])
+            new_range = abs(stack[-1] - stack[-2])
+
+            if new_range < old_range:
+                break
+
+            cycle_mean = 0.5 * (stack[-3] + stack[-2])
+
+            if len(stack) == 3:
+                if old_range > 0.0:
+                    cycles.append([old_range, cycle_mean, 0.5])
+                stack.pop(0)
+            else:
+                if old_range > 0.0:
+                    cycles.append([old_range, cycle_mean, 1.0])
+                last = stack.pop()
+                stack.pop()
+                stack.pop()
+                stack.append(last)
+
+    for first, second in zip(stack[:-1], stack[1:]):
+        cycle_range = abs(second - first)
+        if cycle_range > 0.0:
+            cycles.append([
+                cycle_range,
+                0.5 * (first + second),
+                0.5,
+            ])
+
+    if not cycles:
+        return np.empty((0, 3), dtype=float)
+    return np.asarray(cycles, dtype=float)
+
+
+triangular_history = np.array([0.0, 10.0, 0.0])
+print(Rainflow_Cycles(triangular_history))
+# Two boundary half cycles of range 10; their total count is one.
+\end{python}
+
+A constant or monotonic record contains no closed interior cycles. Its total
+change appears only as a residual half cycle. This is appropriate because a
+single ramp has not completed a load reversal.
+
+\subsection{Rainflow Matrix}
+
+Individual cycles are commonly collected into a two-dimensional histogram. Let
+$\rho_i$ be cycle-range bin edges and $\mu_j$ mean-value bin edges. The
+rainflow-matrix entry is:
+
+\begin{equation}\label{rainflow-matrix-definition}
+    N_{ij}
+    =
+    \sum_c
+    c_c\,
+    \mathbf{1}\!\left(\rho_i\leq\Delta s_c<\rho_{i+1}\right)
+    \mathbf{1}\!\left(\mu_j\leq s_{m,c}<\mu_{j+1}\right),
+\end{equation}
+
+where $c_c$ is $1$ for a full cycle and $1/2$ for a half cycle. Summing the
+matrix gives the total number of equivalent full cycles, including the
+fractional contribution of residual excursions.
+
+\begin{python}
+import numpy as np
+
+
+def Rainflow_Matrix(cycles: np.ndarray,
+                    range_edges: np.ndarray,
+                    mean_edges: np.ndarray) -> np.ndarray:
+    """Bin rows [range, mean, count] into a rainflow matrix."""
+    cycles = np.asarray(cycles, dtype=float)
+    range_edges = np.asarray(range_edges, dtype=float).reshape(-1)
+    mean_edges = np.asarray(mean_edges, dtype=float).reshape(-1)
+
+    if cycles.ndim != 2 or cycles.shape[1] != 3:
+        raise ValueError("cycles must contain [range, mean, count] rows")
+    if np.any(np.diff(range_edges) <= 0.0):
+        raise ValueError("range_edges must be strictly increasing")
+    if np.any(np.diff(mean_edges) <= 0.0):
+        raise ValueError("mean_edges must be strictly increasing")
+
+    matrix = np.zeros((range_edges.size - 1, mean_edges.size - 1))
+
+    for cycle_range, cycle_mean, count in cycles:
+        range_bin = np.searchsorted(
+            range_edges,
+            cycle_range,
+            side="right",
+        ) - 1
+        mean_bin = np.searchsorted(
+            mean_edges,
+            cycle_mean,
+            side="right",
+        ) - 1
+
+        if cycle_range == range_edges[-1]:
+            range_bin = matrix.shape[0] - 1
+        if cycle_mean == mean_edges[-1]:
+            mean_bin = matrix.shape[1] - 1
+
+        if (0 <= range_bin < matrix.shape[0]
+                and 0 <= mean_bin < matrix.shape[1]):
+            matrix[range_bin, mean_bin] += count
+
+    return matrix
+\end{python}
+
+The example below contains oscillations with changing amplitude and mean value.
+Its time history and resulting rainflow matrix are shown together. The matrix
+contains cycle counts, not spectral amplitude.
+
+\begin{python}
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+time_rf = np.linspace(0.0, 20.0, 4001)
+envelope = 65.0 + 20.0 * np.sin(2.0 * np.pi * 0.08 * time_rf)
+mean_stress = 25.0 * np.sin(2.0 * np.pi * 0.03 * time_rf)
+stress = (
+    mean_stress
+    + envelope * np.sin(2.0 * np.pi * 1.4 * time_rf)
+    + 18.0 * np.sin(2.0 * np.pi * 0.37 * time_rf)
+)
+
+cycles = Rainflow_Cycles(stress)
+range_edges = np.linspace(0.0, 1.001 * np.max(cycles[:, 0]), 17)
+mean_edges = np.linspace(
+    np.min(cycles[:, 1]) - 1.0e-9,
+    np.max(cycles[:, 1]) + 1.0e-9,
+    17,
+)
+counts = Rainflow_Matrix(cycles, range_edges, mean_edges)
+
+figure, axes = plt.subplots(2, 1)
+axes[0].plot(time_rf, stress)
+axes[0].set_xlabel("Time [s]")
+axes[0].set_ylabel("Stress")
+
+mesh = axes[1].pcolormesh(
+    mean_edges,
+    range_edges,
+    counts,
+    shading="flat",
+)
+axes[1].set_xlabel("Cycle mean")
+axes[1].set_ylabel("Cycle range")
+figure.colorbar(mesh, ax=axes[1], label="Cycle count")
+figure.tight_layout()
+plt.show()
+\end{python}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.92\textwidth]{img/rainflow_counting_example.png}
+    \caption{Variable stress history and its rainflow matrix. Each matrix cell
+    accumulates full and half cycles having a similar range and mean value. The
+    result contains no frequency or rotational-speed coordinate.}
+    \label{fig:rainflow-counting-example}
+\end{figure}
+
+\subsection{Relation to Fatigue Damage}
+
+Rainflow counting supplies the cycle ranges, means and counts required by a
+fatigue model; it does not calculate damage by itself. For a stress-life curve
+that assigns an allowable life $N_c$ to each corrected cycle amplitude, linear
+Palmgren--Miner accumulation is:
+
+\begin{equation}\label{miner-damage-from-rainflow}
+    D=\sum_c\frac{c_c}{N_c}.
+\end{equation}
+
+Before looking up $N_c$, a mean-stress correction may be required because two
+cycles with the same range but different means need not cause the same damage.
+Material data, surface condition, stress concentration, multiaxial state and the
+chosen fatigue model remain separate modelling inputs. The rainflow matrix is
+therefore an economical description of the load history, not a complete fatigue
+assessment.
 
 
 \section{Power Spectral Density, Cross Spectral Density and Coherence}
