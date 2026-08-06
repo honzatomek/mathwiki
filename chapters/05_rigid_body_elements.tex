@@ -2555,18 +2555,515 @@ connection has a constant linear tangent for the modal perturbation, then verify
 that the chosen solver object and eigensolver support the numerical enforcement
 used to realize it.
 
-\subsection{Interaction with Contact and Other Constraints}
+\subsection{Interaction with Contact and Other Constraints}\label{sec:constraint-interaction}
 
-Overlapping rigid spiders, prescribed boundary conditions, bonded contact and
-joint constraints can describe the same motion more than once. The result may be
-redundant equations, singular multiplier blocks or unintended locking. A warning
-about redundant constraints should therefore be treated as a modelling diagnostic,
-not merely a solver nuisance.
+A kinematic coupling is rarely the only constraint in an industrial FE model.
+The same region may also contain supports, joints, contact definitions, symmetry
+conditions, other spiders, or prescribed motions. Each individual definition may
+be correct in isolation and still become incorrect when combined with the others.
+The resulting problem is commonly called \emph{overconstraint}, although three
+different situations should be distinguished:
 
-RBE couplings should also not replace contact where separation or sliding is
-physical. As emphasized in Chapter~\ref{chap:contact-formulations}, contact must
-decide whether the constraint is active. An RBE remains a bilateral relation for
-as long as it exists.
+\begin{enumerate}
+    \item \textbf{Independent constraints:} every additional equation removes an
+          additional admissible motion. This may be exactly what the physical
+          connection requires.
+    \item \textbf{Redundant constraints:} an added equation repeats information
+          already contained in the existing set. The admissible displacement
+          space does not become smaller, but some numerical enforcement methods
+          become singular or ill-conditioned.
+    \item \textbf{Incompatible constraints:} two or more equations prescribe
+          mutually inconsistent motion. No displacement field can satisfy them
+          simultaneously.
+\end{enumerate}
+
+This distinction is more useful than the informal rule that ``too many
+constraints are bad''. A structure may legitimately require many independent
+constraint equations, while only two equations are sufficient to create a
+singularity if one is an exact duplicate of the other.
+
+\subsubsection{Constraint Rank and Compatibility}
+
+Consider the linear constraint system introduced in
+Chapter~\ref{chap:multifreedom-constraints},
+
+\begin{equation}\label{constraint-interaction-general}
+    \m{C}\m{u}=\m{d},
+\end{equation}
+
+with $n$ structural DOFs and $m$ scalar constraint equations. Let
+
+\begin{equation}
+    r=\operatorname{rank}(\m{C}).
+\end{equation}
+
+Only $r$ of the $m$ equations are independent. If the constraints are
+compatible, the dimension of the admissible displacement space is
+
+\begin{equation}\label{constraint-nullity}
+    n_{\mathrm{free}}=n-r.
+\end{equation}
+
+Redundancy is therefore present whenever
+
+\begin{equation}
+    r<m.
+\end{equation}
+
+For nonhomogeneous constraints, rank alone is not sufficient. The equations are
+compatible only when
+
+\begin{equation}\label{constraint-compatibility-rank}
+    \operatorname{rank}(\m{C})
+    =
+    \operatorname{rank}
+    \begin{bmatrix}
+        \m{C} & \m{d}
+    \end{bmatrix}.
+\end{equation}
+
+Equation~\eqref{constraint-compatibility-rank} is the algebraic statement that
+there exists at least one displacement vector satisfying all prescribed
+relations. In FE practice the solver seldom performs this textbook rank test
+explicitly on the complete constraint set, but zero pivots, singular multiplier
+blocks, repeated dependent-DOF messages and inconsistent boundary-condition
+warnings are numerical manifestations of the same issue.
+
+\subsubsection{Worked Example -- One Physical Constraint Written Twice}
+
+Let two scalar DOFs be required to move together,
+
+\begin{equation}
+    u_2-u_1=0.
+\end{equation}
+
+Suppose the same relation is accidentally entered a second time, merely scaled
+by a factor of two:
+
+\begin{equation}
+    2u_2-2u_1=0.
+\end{equation}
+
+The assembled constraint matrix is
+
+\begin{equation}\label{redundant-c-matrix}
+    \m{C}
+    =
+    \begin{bmatrix}
+        -1 & 1\\
+        -2 & 2
+    \end{bmatrix},
+    \qquad
+    \operatorname{rank}(\m{C})=1.
+\end{equation}
+
+The two equations therefore impose only one independent kinematic condition.
+The displacement solution may still be perfectly well defined, but the
+numerical consequences depend strongly on how the equations are enforced.
+
+\paragraph{Elimination.}
+One equation is sufficient to write
+
+\begin{equation}
+    u_2=u_1.
+\end{equation}
+
+The second equation adds no information. A global constraint-reduction
+algorithm may detect and discard it. A simpler sequential elimination scheme,
+however, may report that the selected dependent DOF has already been used, or
+may fail when it encounters a cyclic dependency. This is why many solver
+manuals impose apparently restrictive rules on which DOFs may be selected as
+dependent variables: the rules ensure that a unique acyclic transformation can
+be constructed.
+
+\paragraph{Lagrange multipliers.}
+With one multiplier for each entered equation, the equilibrium equations have
+the saddle-point form
+
+\begin{equation}\label{redundant-lm-system}
+    \begin{bmatrix}
+        \m{K} & \m{C}^{T}\\
+        \m{C} & \m{0}
+    \end{bmatrix}
+    \begin{bmatrix}
+        \m{u}\\
+        \m{\lambda}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        \m{f}\\
+        \m{0}
+    \end{bmatrix}.
+\end{equation}
+
+Because the rows of $\m{C}$ are linearly dependent, the augmented matrix is
+singular. More importantly, the individual constraint reactions are not unique.
+The structural equilibrium contains
+
+\begin{equation}
+    \m{C}^{T}\m{\lambda}
+    =
+    \begin{bmatrix}
+        -\lambda_1-2\lambda_2\\
+         \lambda_1+2\lambda_2
+    \end{bmatrix},
+\end{equation}
+
+so only the combination $\lambda_1+2\lambda_2$ has physical effect. Infinitely
+many pairs $(\lambda_1,\lambda_2)$ produce the same nodal reaction. The
+structural displacement can therefore be unique while the reactions assigned to
+the individual redundant constraints are indeterminate.
+
+\paragraph{Penalty enforcement.}
+For the elementary penalty functional
+
+\begin{equation}
+    \Pi_p
+    =
+    \frac{\alpha}{2}
+    (\m{C}\m{u})^T(\m{C}\m{u}),
+\end{equation}
+
+the additional stiffness is
+
+\begin{equation}
+    \m{K}_p=\alpha\m{C}^{T}\m{C}.
+\end{equation}
+
+Using Eq.~\eqref{redundant-c-matrix},
+
+\begin{equation}
+    \m{K}_p
+    =
+    5\alpha
+    \begin{bmatrix}
+         1 & -1\\
+        -1 &  1
+    \end{bmatrix}.
+\end{equation}
+
+Had the first equation been entered only once, the coefficient would be
+$\alpha$ rather than $5\alpha$. Thus a raw penalty formulation is not invariant
+to duplicating or even rescaling the same constraint equation. Practical
+implementations may normalize the constraint rows or use more sophisticated
+penalty scaling, but the example explains why redundant penalty definitions can
+silently change the stiffness and conditioning instead of producing an obvious
+singularity.
+
+\begin{bbox}
+\textbf{Engineering note -- Redundant constraints are not numerically neutral.}
+
+An exact duplicate may be harmless after an ideal global elimination, singular
+with Lagrange multipliers, and artificially stiffer under a penalty formulation.
+The engineering relation is the same; the numerical symptom depends on the
+enforcement method discussed in Chapter~\ref{chap:multifreedom-constraints}.
+\end{bbox}
+
+If the second equation were instead
+
+\begin{equation}
+    u_2-u_1=\Delta,\qquad \Delta\neq0,
+\end{equation}
+
+while the first still required $u_2-u_1=0$, the constraints would be
+incompatible rather than redundant. Exact elimination or multiplier methods
+would have no admissible solution. A penalty method could still return a
+numerical displacement by compromising between the two requirements, but the
+large artificial reactions and penalty energy would represent a modelling
+conflict rather than a physical deformation mode.
+
+\subsubsection{Overlapping RBE2 Spiders}
+
+Overlapping RBE2 spiders are one of the most common ways of creating a hidden
+constraint. Suppose a node $P$ is included as a dependent node of two rigid
+spiders with reference coordinates $\m{q}_A$ and $\m{q}_B$. The two RBE2
+relations require simultaneously
+
+\begin{equation}
+    \m{q}_P=\m{D}_A\m{q}_A,
+    \qquad
+    \m{q}_P=\m{D}_B\m{q}_B.
+\end{equation}
+
+Eliminating $\m{q}_P$ gives the hidden relation
+
+\begin{equation}\label{overlapping-rbe2-hidden}
+    \m{D}_A\m{q}_A-\m{D}_B\m{q}_B=\m{0}.
+\end{equation}
+
+The shared node has therefore coupled the two reference points directly. One
+shared translational DOF removes one relative motion between the spiders. A
+sufficiently rich set of shared non-collinear nodes can force the two reference
+frames to behave as one larger rigid body even though no explicit RBE was drawn
+between them.
+
+This may be intentional, for example when two rigid idealizations are genuinely
+part of the same stiff component. More often it occurs accidentally where two
+bolt-head spiders, flange couplings or bearing spiders overlap on a fine mesh.
+The consequences are then not limited to a solver warning. The overlap can
+suppress structural deformation, alter the load path and raise natural
+frequencies.
+
+\begin{bbox}
+\textbf{Common mistake -- ``A node can belong to both spiders because both are rigid.''}
+
+If the same dependent motion is prescribed by two different reference systems,
+the node does not merely receive two equivalent descriptions. It creates an
+additional relation between the reference systems themselves. Check the implied
+constraint of Eq.~\eqref{overlapping-rbe2-hidden} before allowing rigid spiders
+to overlap.
+\end{bbox}
+
+A related problem is a chain or loop of elimination constraints. Relations such
+as
+
+\begin{equation}
+    u_2=u_1,\qquad
+    u_3=u_2,\qquad
+    u_1=u_3
+\end{equation}
+
+contain only two independent equations; the third closes a redundant cycle. If
+one relation contains a different offset or transformation, the cycle may
+instead become inconsistent. General constraint solvers can sometimes resolve
+such graphs globally, whereas simple dependent-DOF elimination requires an
+acyclic ordering. A good modelling rule is therefore to keep the dependency
+hierarchy obvious even when the solver is capable of more general algebra.
+
+\subsubsection{Overlapping RBE3 Couplings Are Different}
+
+The same geometric overlap does not automatically have the same meaning for an
+RBE3. In the interpolation form
+
+\begin{equation}
+    \m{q}_{r1}=\m{H}_1\m{u},
+    \qquad
+    \m{q}_{r2}=\m{H}_2\m{u},
+\end{equation}
+
+an attachment-node displacement is not prescribed by either RBE3; it
+contributes to the generalized motion of the reference point. A physical mesh
+node may therefore participate in two load-distribution interpolations without
+being rigidly assigned two different motions.
+
+However, overlap is not automatically harmless. If both reference-point motions
+are subsequently prescribed, joined, or made dependent in other MPCs, the two
+relations become constraints on overlapping weighted averages of the same mesh
+DOFs. Those constraints may be independent, redundant or incompatible depending
+on $\m{H}_1$, $\m{H}_2$ and the prescribed generalized motions. Large overlapping
+RBE3 regions can also create unintended parallel load paths even when no formal
+rank deficiency exists.
+
+The useful distinction is therefore not ``RBE2 overlap is bad, RBE3 overlap is
+good''. The distinction is that RBE2 directly prescribes attachment-node
+kinematics, whereas RBE3 defines generalized coordinates from them. The complete
+constraint graph must still be considered.
+
+\subsubsection{Coupling Plus Prescribed Boundary Conditions}
+
+A prescribed DOF on a node that already participates in a coupling deserves the
+same rank-based interpretation. For an RBE2 dependent node,
+
+\begin{equation}
+    \m{q}_i=\m{D}_i\m{q}_r.
+\end{equation}
+
+Prescribing one component of $\m{q}_i$ therefore imposes a corresponding linear
+condition on the reference coordinates $\m{q}_r$. This is mathematically valid
+if it represents the intended support. It becomes redundant if the same
+reference motion has already been prescribed elsewhere, and incompatible if the
+two prescriptions disagree.
+
+Many elimination-based implementations prohibit or restrict direct boundary
+conditions on dependent DOFs because a DOF that has already been removed cannot
+also serve as an independently prescribed variable. The underlying engineering
+condition can usually be expressed instead at the reference point or by choosing
+a different independent/dependent assignment.
+
+For an RBE3 reference point the situation is almost the mirror image. Prescribing
+
+\begin{equation}
+    \m{q}_r=\bar{\m{q}}_r,
+    \qquad
+    \m{q}_r=\m{H}\m{u}_a
+\end{equation}
+
+constrains a weighted generalized motion of the attachment patch. It does not,
+by itself, fix every attachment node. This can be exactly the desired
+``deformable remote support'' discussed in
+Section~\ref{sec:rbe3-deformable-support}. If the attachment nodes are also
+individually fixed, however, the generalized constraint may become redundant.
+
+\subsubsection{Coupling and Contact}
+
+Contact and kinematic couplings are frequently used in the same region, but they
+play fundamentally different roles. Contact from
+Chapter~\ref{chap:contact-formulations} determines whether a unilateral
+constraint is active. An RBE or MPC remains bilateral as long as it exists.
+Combining them requires asking which motions are being controlled by each
+formulation.
+
+Several common situations should be distinguished.
+
+\begin{itemize}
+    \item \textbf{Rigid platen or rigid tool.} Coupling all nodes of a contact
+          surface by an RBE2 may be exactly correct if that surface is intended to
+          behave as a rigid body. The resulting contact-pressure distribution is
+          then the pressure under a rigid surface, not under a deformable one.
+    \item \textbf{Flexible contact surface with remote loading.} An RBE3-type
+          interpolation can introduce the resultant load or connect a support
+          while leaving local contact deformation available. This is often more
+          appropriate than rigidizing the whole patch.
+    \item \textbf{Bonded/tied contact plus rigid coupling.} If both definitions
+          enforce the same relative motion, they create redundant parallel
+          constraints. If one rigidizes a region that the tied interface was
+          intended to let deform, the model is overconstrained even if the
+          algebra remains nonsingular.
+    \item \textbf{Frictional contact plus rigid spider.} Rigidly tying tangential
+          motion over a large patch can suppress local slip and change the
+          stick/slip distribution. The contact law may be correct while the
+          surrounding kinematics make the physical interface too stiff.
+    \item \textbf{Active contact against an incompatible prescribed motion.}
+          The contact algorithm may generate very large reactions, repeated
+          active-set changes or convergence failure if a permanent coupling
+          drives the same normal DOF through an impenetrable surface.
+\end{itemize}
+
+The interaction also matters numerically. Some contact formulations themselves
+use MPCs or multiplier equations when the interface is closed. If a user-defined
+constraint already consumes the same dependent DOF, the solver may need special
+constraint ordering or may reject the combination. Such restrictions are
+implementation details, but they reflect the same underlying requirement that
+the active constraint Jacobian have the required rank.
+
+\subsubsection{Couplings, Joints, Springs and Parallel Load Paths}
+
+A particularly useful modelling pattern is
+
+\begin{equation}
+\begin{aligned}
+    \text{flexible surface}
+    &\;\longrightarrow\;
+    \text{RBE2/RBE3 reference point}\\
+    &\;\longrightarrow\;
+    \text{joint, spring or bushing}
+    \;\longrightarrow\;
+    \text{second interface}.
+\end{aligned}
+\end{equation}
+
+There is no redundancy merely because several constraint objects appear in the
+chain. The surface coupling defines how a distributed FE region maps to a small
+set of generalized interface coordinates; the joint or bushing then defines the
+relative motion or constitutive relation between those interface coordinates.
+The two objects perform different tasks.
+
+Redundancy appears when the same relative motion is also constrained by a second
+parallel path. For example, connecting two surfaces by a bushing and at the same
+time rigidly tying them with an RBE2 leaves the bushing no deformation with which
+to generate its intended force. Similarly, a revolute joint followed by an SPC
+that fixes its permitted rotation is no longer a revolute connection; it has
+become fixed in that coordinate.
+
+Parallel paths are not inherently wrong. Real structures often have several
+bolts, mounts or bearings sharing a load. The important point is that \emph{load
+sharing requires compliance}. Two mathematically perfect rigid constraints in
+parallel may produce a unique displacement field while the split of reaction
+forces between the ideal constraints is indeterminate. If the force in each
+physical attachment matters, represent the relevant stiffness, contact or local
+geometry rather than expecting exact rigid MPCs to determine a unique load
+share.
+
+\begin{bbox}
+\textbf{Engineering note -- Exact constraints determine motion better than load sharing.}
+
+A rigid MPC is an excellent way to state that a motion is forbidden. It is a
+poor model of two parallel physical connectors when the engineering quantity of
+interest is how much load each connector carries. Without relative compliance,
+that load split may be numerically arbitrary or formally indeterminate.
+\end{bbox}
+
+\subsubsection{Consequences in Modal and Dynamic Analysis}
+
+The modal discussion in Section~\ref{sec:coupling-modal-dynamics} makes
+constraint interaction especially easy to diagnose physically. Every
+\emph{independent} exact kinematic constraint removes an admissible perturbation
+motion. An accidental RBE2 bridge or redundant support can therefore make modes
+disappear or move frequencies upward because the model has been made
+kinematically stiffer than intended.
+
+The numerical symptom again depends on enforcement:
+
+\begin{itemize}
+    \item elimination may simply remove the accidentally constrained mode,
+    \item a penalty relation may replace it by an artificial very-high-frequency
+          constraint mode,
+    \item redundant Lagrange multipliers may introduce a singular augmented
+          eigenproblem, or algebraic zero-energy modes that require special handling.
+\end{itemize}
+
+Thus an unexpectedly high natural frequency is not always caused by material or
+mesh stiffness. It may be the first visible symptom of an unintended constraint
+path.
+
+\subsubsection{Practical Diagnostics}
+
+Constraint problems are easier to find when solver messages are interpreted as
+information about the model rather than obstacles to be suppressed.
+Table~\ref{tab:constraint-interaction-diagnostics} summarizes several common
+symptoms.
+
+\begin{center}
+\small
+\begin{tabular}{|p{0.30\textwidth}|p{0.58\textwidth}|}
+\hline
+\textbf{Observed symptom} & \textbf{Typical constraint-related cause to investigate} \\
+\hline
+Dependent DOF already constrained / already eliminated & The same DOF is used as dependent in more than one elimination relation, or an SPC is applied after the DOF has been eliminated. \\
+\hline
+Zero pivot or singular constraint/multiplier block & Redundant constraint rows, a closed dependency cycle, or insufficiently independent geometry in a coupling. \\
+\hline
+No exact equilibrium / very large constraint reactions & Incompatible nonhomogeneous constraints or a prescribed motion competing with contact/support conditions. \\
+\hline
+Displacements look reasonable but individual MPC reactions are unstable or nonunique & Compatible but redundant exact constraints; only the resultant reaction may be determined. \\
+\hline
+Natural frequencies unexpectedly high or local modes disappear & Accidental rigidization, overlapping RBE2 regions, excessive penalty stiffness, or duplicated supports. \\
+\hline
+Very high artificial modes and poor conditioning & Penalty constraints that are too stiff, duplicated penalty relations, or near-rigid springs used as substitutes for exact constraints. \\
+\hline
+Unexpected contact pressure, sticking or convergence difficulty & Rigid coupling has changed local contact kinematics, or contact and permanent constraints compete for the same motion. \\
+\hline
+Reaction/load split changes strongly with modelling details while deformation barely changes & Multiple nearly rigid parallel load paths; individual load sharing is not physically resolved by compliance. \\
+\hline
+\end{tabular}
+\captionof{table}{Typical numerical symptoms of interacting or redundant constraints.}\label{tab:constraint-interaction-diagnostics}
+\end{center}
+
+A useful debugging procedure is to reason from the constraint graph before
+changing solver tolerances:
+
+\begin{enumerate}
+    \item Identify every DOF or generalized coordinate constrained by more than
+          one modelling object.
+    \item Ask whether the equations control the same motion or genuinely
+          different motions.
+    \item Temporarily remove one path and observe whether the structural response
+          or problematic reaction changes.
+    \item For linear MPCs, inspect the expected rank and the number of remaining
+          admissible motions using Eq.~\eqref{constraint-nullity}.
+    \item For contact or nonlinear joints, inspect the active tangent constraint
+          set at the operating point rather than only the nominal definitions.
+    \item If individual connector forces matter, verify that the model contains
+          physical compliance capable of determining their load share.
+\end{enumerate}
+
+\begin{bbox}
+\textbf{Final rule for interacting constraints.}
+
+Do not count modelling objects; count independent restrictions on motion. Two
+objects may be perfectly complementary, while one badly chosen overlap can
+silently remove a real deformation mode.
+\end{bbox}
 
 \section{Engineering Selection Guidelines}
 
@@ -2600,6 +3097,10 @@ A practical selection can be organized around a few questions.
     \item \textbf{How many spider legs are really required?}
           Choose a well-spaced set that spans the intended motion. Avoid huge
           spiders unless their additional resolution has a demonstrated purpose.
+    \item \textbf{Does another modelling object already restrict the same motion?}
+          Trace the constraint path through supports, spiders, joints, contact and
+          prescribed DOFs. Complementary objects are useful; duplicated or
+          incompatible restrictions create hidden stiffness or numerical singularity.
 \end{enumerate}
 
 \begin{bbox}
