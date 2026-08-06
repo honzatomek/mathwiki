@@ -1738,56 +1738,352 @@ limitations of a particular classical RBE3 command.
 
 \section{Advanced Considerations}
 
+The equations developed in the preceding sections describe the intended
+kinematic relation, but they do not by themselves determine how that relation
+behaves when the geometry changes. Two effects are particularly easy to miss in
+industrial models: finite rotation and thermal expansion. Both change the
+geometry that a coupling is supposed to relate. A coupling that is perfectly
+reasonable in a linear mechanical analysis can therefore become an unintended
+source of stiffness or reaction load in a geometrically nonlinear or
+thermomechanical analysis.
+
 \subsection{Small-Displacement and Finite-Rotation Formulations}\label{sec:rbe-advanced-small-large}
 
-For an RBE2-type relation linearized in the initial configuration, the dependent
-translation is commonly written
-
-\begin{equation}\label{rbe-small-rotation-relation}
-    \m{u}_s=\m{u}_m+\m{\theta}_m\times\m{r}_0,
-\end{equation}
-
-where $\m{r}_0$ is the initial arm. Equation~\eqref{rbe-small-rotation-relation}
-is the tangent approximation to rigid-body motion. If a large rotation is imposed
-while the equation remains unchanged, the slave point follows the initial tangent
-rather than the exact circular trajectory.
-
-A finite-rotation constraint must instead use the current rotation tensor,
-
-\begin{equation}\label{rbe-finite-rotation-relation}
-    \m{x}_s=\m{x}_m+\m{R}\m{r}_0,
-\end{equation}
-
-and be relinearized as the configuration changes. Small strain does not rescue a
-small-rotation constraint: a structure may undergo tiny strains while rotating
-through many degrees.
-
-The distinction is formulation-specific. Turning on geometric nonlinearity in a
-model does not guarantee that every legacy constraint object is upgraded to
-Eq.~\eqref{rbe-finite-rotation-relation}. Some classical command-based RBE
-implementations are explicitly restricted to small-deflection analysis, whereas
-other contact-based or dedicated constraint elements update the relation in the
-current configuration.
-
-\subsection{Thermal Expansion of Rigid Couplings}
-
-An ideal rigid spider defined only by mechanical kinematics preserves its initial
-relative distances. During a uniform temperature change the surrounding material
-may instead require
+Consider a reference point at initial position $\m{x}_{m0}$ and a dependent
+point at
 
 \begin{equation}
-    L(T) \approx L_0\left(1+\alpha\Delta T\right).
+    \m{x}_{s0}=\m{x}_{m0}+\m{r}_0,
 \end{equation}
 
-If the coupling itself does not admit this expansion, it can restrain an otherwise
-free thermal strain and generate artificial reactions and stresses. Some rigid
-or constraint-element implementations therefore permit a thermal expansion
-coefficient or an equivalent temperature-dependent reference geometry.
+where $\m{r}_0$ is the initial rigid arm. If the reference point undergoes a
+translation $\m{u}_m$ and a finite rotation represented by the orthogonal
+rotation tensor $\m{R}$, the exact rigid-body relation is
 
-The correct choice depends on what the rigid region represents. A truly rigid
-insert with different thermal expansion may intentionally restrain the
-surrounding structure. A spider used only as a numerical load-transfer device
-usually should not create such an unintended thermal restraint.
+\begin{equation}\label{rbe-finite-rotation-relation}
+    \boxed{\m{x}_s=\m{x}_m+\m{R}\m{r}_0}.
+\end{equation}
+
+Since $\m{x}_m=\m{x}_{m0}+\m{u}_m$, the corresponding dependent displacement is
+
+\begin{equation}\label{rbe-finite-displacement-relation}
+    \m{u}_s
+    =\m{u}_m+(\m{R}-\m{I})\m{r}_0.
+\end{equation}
+
+The familiar linear RBE2 equation follows by linearizing the rotation tensor
+about the initial configuration,
+
+\begin{equation}
+    \m{R}\approx\m{I}+[\m{\theta}]_{\times},
+\end{equation}
+
+which gives
+
+\begin{equation}\label{rbe-small-rotation-relation}
+    \boxed{\m{u}_s\approx\m{u}_m+\m{\theta}\times\m{r}_0}.
+\end{equation}
+
+Equation~\eqref{rbe-small-rotation-relation} is not the exact rigid-body motion;
+it is its tangent at the initial configuration. The rigid arm $\m{r}_0$ remains
+fixed in the constraint coefficients. Consequently, a point subjected to a
+large rotation follows the \emph{initial tangent} rather than the circular path
+implied by Eq.~\eqref{rbe-finite-rotation-relation}.
+
+Pure translation does not cause this error: a translation contains no changing
+orientation and Eq.~\eqref{rbe-small-rotation-relation} reproduces it exactly.
+The limitation is specifically associated with finite rotation and other
+configuration-dependent geometry.
+
+\subsubsection{Worked Example: A Rigid Arm Rotated Through $90^\circ$}
+
+Consider a planar rigid arm of length
+
+\begin{equation}
+    L=100~\mathrm{mm}
+\end{equation}
+
+with its reference point at the origin and its dependent point initially at
+
+\begin{equation}
+    \m{r}_0=
+    \begin{bmatrix}
+        100 & 0 & 0
+    \end{bmatrix}^{T}\mathrm{mm}.
+\end{equation}
+
+Let the reference point rotate about the global $z$ axis while remaining fixed
+in translation. The exact position after a rotation $\theta$ is
+
+\begin{equation}\label{rbe-rotation-example-exact}
+    \m{x}_{s,\mathrm{exact}}
+    =
+    \begin{bmatrix}
+        L\cos\theta\\
+        L\sin\theta\\
+        0
+    \end{bmatrix},
+\end{equation}
+
+whereas the small-rotation constraint predicts
+
+\begin{equation}\label{rbe-rotation-example-linear}
+    \m{x}_{s,\mathrm{lin}}
+    =\m{r}_0+\m{\theta}\times\m{r}_0
+    =
+    \begin{bmatrix}
+        L\\
+        L\theta\\
+        0
+    \end{bmatrix},
+\end{equation}
+
+with $\theta$ expressed in radians. Equation~\eqref{rbe-rotation-example-linear}
+is literally the tangent line to the circular trajectory at $\theta=0$.
+
+For $\theta=90^\circ=\pi/2$, the exact rigid-body motion gives
+
+\begin{equation}
+    \m{x}_{s,\mathrm{exact}}
+    =
+    \begin{bmatrix}
+        0\\100\\0
+    \end{bmatrix}\mathrm{mm},
+    \qquad
+    \m{u}_{s,\mathrm{exact}}
+    =
+    \begin{bmatrix}
+        -100\\100\\0
+    \end{bmatrix}\mathrm{mm}.
+\end{equation}
+
+The linearized RBE instead gives
+
+\begin{equation}
+    \m{x}_{s,\mathrm{lin}}
+    =
+    \begin{bmatrix}
+        100\\157.08\\0
+    \end{bmatrix}\mathrm{mm},
+    \qquad
+    \m{u}_{s,\mathrm{lin}}
+    =
+    \begin{bmatrix}
+        0\\157.08\\0
+    \end{bmatrix}\mathrm{mm}.
+\end{equation}
+
+The predicted point is therefore not merely slightly misplaced: it remains on
+the vertical tangent through the initial end point rather than rotating around
+the reference node. The distance between the exact and tangent predictions is
+approximately $115.1~\mathrm{mm}$, greater than the original arm length.
+
+The growth of this purely geometric error is summarized below. The error is the
+distance between Eqs.~\eqref{rbe-rotation-example-exact} and
+\eqref{rbe-rotation-example-linear} for $L=100~\mathrm{mm}$.
+
+\begin{center}
+\begin{tabular}{|c|c|c|}
+\hline
+\textbf{Rotation} & \textbf{Position error} & \textbf{Error / arm length} \\
+\hline
+$1^\circ$  & $0.015~\mathrm{mm}$ & $0.015\%$ \\
+$5^\circ$  & $0.381~\mathrm{mm}$ & $0.381\%$ \\
+$10^\circ$ & $1.522~\mathrm{mm}$ & $1.522\%$ \\
+$30^\circ$ & $13.604~\mathrm{mm}$ & $13.604\%$ \\
+$90^\circ$ & $115.144~\mathrm{mm}$ & $115.144\%$ \\
+\hline
+\end{tabular}
+\end{center}
+
+There is no universal rotation angle at which a small-displacement model becomes
+``invalid.'' The acceptable error depends on the geometry and on what quantity
+is important. The table is intended only to show how rapidly the tangent
+approximation deteriorates once rotations cease to be small.
+
+\paragraph{Engineering note --- small strain is not small rotation.}
+A thin or otherwise flexible structure can experience very small strains while
+undergoing a large rigid-body rotation. Material linearity and small strain do
+not justify Eq.~\eqref{rbe-small-rotation-relation} if the orientation of the
+coupling changes substantially. Geometric linearity and material linearity are
+separate assumptions.
+
+\subsubsection{Updated Constraints in a Geometrically Nonlinear Analysis}
+
+A finite-rotation formulation evaluates the constraint in the current
+configuration. Conceptually, the current arm is
+
+\begin{equation}
+    \m{r}=\m{R}\m{r}_0,
+\end{equation}
+
+and the constraint is relinearized about the current equilibrium iterate. The
+incremental tangent therefore follows the rotating arm rather than remaining
+attached to the initial direction. The precise tangent matrix depends on the
+rotation parametrization and on the solver implementation, but the essential
+point is independent of those details: the constraint coefficients become
+configuration dependent.
+
+This distinction also affects remote loads. If a force $\m{F}$ acts at an offset
+point, the moment transferred to the reference point contains the current lever
+arm,
+
+\begin{equation}
+    \m{M}=\m{r}\times\m{F}.
+\end{equation}
+
+In a geometrically linear formulation $\m{r}$ is the initial arm $\m{r}_0$.
+In a finite-rotation formulation it is the rotated arm. Whether the force
+\emph{direction} also rotates is a separate question: a follower force rotates
+with the structure, whereas a force prescribed in a fixed global direction does
+not. Lever-arm update and follower-load definition should therefore not be
+confused.
+
+Turning on geometric nonlinearity does not necessarily upgrade every legacy
+constraint object automatically. A solver may contain both classical linear
+RBE commands and newer surface-based, joint or constraint formulations capable
+of finite rotation. The analyst must therefore distinguish the engineering
+concept --- for example, ``rigid coupling'' --- from the numerical formulation
+used by the chosen solver object.
+
+\subsection{Thermal Expansion of Rigid Couplings}\label{sec:rbe-thermal-expansion}
+
+Thermal loading creates a second geometry-related issue. Consider again a rigid
+arm $\m{r}_0$ connecting a reference point to a point on a structure. If the
+surrounding material has coefficient of thermal expansion $\alpha_s$, a uniform
+temperature change $\Delta T$ produces the free thermal change
+
+\begin{equation}\label{rbe-free-thermal-arm-growth}
+    \Delta\m{r}_{\mathrm{free}}
+    \approx \alpha_s\Delta T\,\m{r}_0
+\end{equation}
+
+for isotropic expansion and constant $\alpha_s$. An ordinary rigid-body
+constraint that preserves the initial arm length corresponds, in this sense, to
+a coupling with zero thermal expansion. It can therefore suppress the free
+thermal change in Eq.~\eqref{rbe-free-thermal-arm-growth} and generate reactions
+that originate only from the numerical coupling.
+
+Some implementations avoid this problem by allowing the rigid or constraint
+entity to carry its own coefficient of thermal expansion $\alpha_r$. The target
+arm then changes approximately according to
+
+\begin{equation}\label{rbe-thermal-arm}
+    \m{r}_T
+    =\left(1+\alpha_r\Delta T\right)\m{r}_0.
+\end{equation}
+
+In a small-rotation formulation this appears as a nonhomogeneous constraint,
+
+\begin{equation}\label{rbe-thermal-nonhomogeneous}
+    \m{u}_s-\m{u}_m-\m{\theta}_m\times\m{r}_0
+    =\alpha_r\Delta T\,\m{r}_0.
+\end{equation}
+
+Equation~\eqref{rbe-thermal-nonhomogeneous} connects directly to the
+nonhomogeneous multifreedom constraints discussed in Chapter~\ref{chap:multifreedom-constraints}:
+the thermal expansion changes the right-hand side of the kinematic relation
+rather than adding an ordinary elastic stiffness to the rigid element.
+
+For temperature-dependent expansion, the scalar factor in
+Eq.~\eqref{rbe-thermal-arm} is more generally obtained from
+
+\begin{equation}
+    \lambda_T
+    =1+\int_{T_0}^{T}\alpha_r(\vartheta)\,\mathrm{d}\vartheta,
+    \qquad
+    \m{r}_T=\lambda_T\m{r}_0.
+\end{equation}
+
+A finite-rotation thermomechanical coupling combines both effects,
+
+\begin{equation}\label{rbe-thermal-finite-rotation}
+    \boxed{\m{x}_s=\m{x}_m+\m{R}\m{r}_T}.
+\end{equation}
+
+Thus rotation changes the \emph{direction} of the arm while thermal expansion
+changes its stress-free \emph{length}.
+
+\subsubsection{Worked Example: Artificial Thermal Restraint}
+
+Consider an idealized steel member for which a numerical rigid coupling spans
+
+\begin{equation}
+    L_0=100~\mathrm{mm}.
+\end{equation}
+
+Let
+
+\begin{equation}
+    E=210~\mathrm{GPa},
+    \qquad
+    \alpha_s=12\times10^{-6}~\mathrm{K}^{-1},
+    \qquad
+    \Delta T=100~\mathrm{K}.
+\end{equation}
+
+The surrounding material would freely increase the $100~\mathrm{mm}$ distance by
+
+\begin{equation}
+    \Delta L_{\mathrm{free}}
+    =\alpha_s\Delta T L_0
+    =0.12~\mathrm{mm}.
+\end{equation}
+
+If a rigid coupling forces the distance to remain exactly $100~\mathrm{mm}$,
+then in the corresponding one-dimensional idealization the actual axial strain
+is zero while the free thermal strain is
+
+\begin{equation}
+    \varepsilon_{\mathrm{th}}
+    =\alpha_s\Delta T
+    =1.2\times10^{-3}.
+\end{equation}
+
+The resulting mechanical strain is therefore
+
+\begin{equation}
+    \varepsilon_{\mathrm{mech}}
+    =-1.2\times10^{-3},
+\end{equation}
+
+and the artificial compressive stress would be
+
+\begin{equation}
+    \sigma
+    =E\varepsilon_{\mathrm{mech}}
+    \approx -252~\mathrm{MPa}.
+\end{equation}
+
+The numerical value is intentionally simple and should not be interpreted as the
+stress state of a real two- or three-dimensional spider. It demonstrates the
+scale of the error that can arise when a coupling intended only to transfer load
+accidentally suppresses thermal expansion.
+
+If instead the coupling is assigned the same thermal expansion coefficient as
+the surrounding steel, $\alpha_r=\alpha_s$, its stress-free length becomes
+$100.12~\mathrm{mm}$ and this artificial one-dimensional restraint disappears.
+Conversely, if the rigid region represents a real insert with a different
+coefficient of thermal expansion, choosing $\alpha_r\neq\alpha_s$ may be exactly
+the intended physical model.
+
+\paragraph{Engineering note --- an RBE3 is different.}
+An interpolation coupling does not generally preserve all pairwise distances of
+the attachment patch and therefore does not rigidly suppress local in-plane
+thermal expansion in the same manner as an RBE2 spider. Nevertheless, thermal
+expansion can still generate generalized translation or rotation of the remote
+point, and any restraint attached to that point can react those generalized
+motions. Thermal behaviour must therefore be assessed from the complete
+coupling-plus-boundary-condition system rather than from the element name alone.
+
+\paragraph{Engineering note --- nonuniform temperature fields.}
+A single thermal expansion coefficient and a single representative temperature
+cannot reproduce arbitrary differential expansion over a large attachment
+region. If the connected surface experiences a strong temperature gradient, a
+rigid coupling may still impose an unrealistic kinematic simplification even
+when its average thermal expansion is correct. In such cases the physical
+connection geometry, a more local coupling, or an explicitly deformable
+interface may be required.
 
 \subsection{Modal and Dynamic Analyses}
 
