@@ -176,14 +176,21 @@ alternative GUI labels.
 \begin{bbox}
 \textbf{Python examples in this chapter.}
 
-The short Python examples deliberately mirror the equations rather than hiding
-operations behind numerical libraries. \texttt{numpy} is used only for storing
-vectors and matrices and for elementary array arithmetic and matrix products.
-No \texttt{numpy.linalg}, eigensolver, sparse-solver or other NumPy submodule is
-used. Whenever an inverse is needed in a worked example, it is formed from the
-scalar or diagonal expression already derived analytically. The examples are
-therefore intended as executable checks of the mathematics, not as replacements
-for a finite element solver.
+The Python examples are written as small reusable functions rather than as
+one-off calculations. \texttt{numpy} is used only for storing vectors and
+matrices and for elementary array arithmetic and matrix products. No
+\texttt{numpy.linalg}, eigensolver, sparse-solver or other NumPy submodule is
+used. Where a small linear system is unavoidable, the elimination steps are
+written explicitly in the example code rather than delegated to a numerical
+library.
+
+The examples use the common structural-analysis DOF numbering
+$1=u_x$, $2=u_y$, $3=u_z$, $4=\theta_x$, $5=\theta_y$, $6=\theta_z$.
+The RBE builders accept node IDs and coordinates together with the selected
+independent/dependent or master/slave DOFs, so changing the coupling geometry
+does not require rewriting its coefficient matrix by hand. The functions are
+intended as transparent executable forms of the derivations, not as production
+finite element utilities.
 \end{bbox}
 
 \section{Mathematical Background}
@@ -400,36 +407,132 @@ three independent scalar DOFs in this two-dimensional example play the same role
 as the six independent scalar components required to span a general rigid-body
 motion in three dimensions.
 
-The complete calculation can be reproduced directly with the transformation
-matrix. NumPy only stores the arrays and performs the matrix product:
+The calculation can also be generated from node coordinates and a list of
+independent and dependent scalar DOFs. The first listing introduces three small
+utilities reused by the later examples: node lookup, one rigid-body coefficient
+row, and an explicit Gauss--Jordan solver for small dense systems. The RBE1
+builder then constructs $\m{T}_{DI}$ from the selected components rather than
+hard-coding the matrix of Eq.~\eqref{rbe1-planar-transformation}:
 
 \begin{python}
 import numpy as np
 
-L = 100.0  # mm
 
-T_DI = np.array([
-    [1.0, 0.0,  0.0],
-    [1.0, 1.0, -1.0],
-    [0.0, 1.0,  0.0],
-    [1.0, 1.0, -1.0],
-    [0.0, 0.0,  1.0],
+def node_position(node_ids, coordinates, node_id):
+    for i, nid in enumerate(node_ids):
+        if int(nid) == int(node_id):
+            return coordinates[i]
+    raise ValueError("node ID not found")
+
+
+def rigid_dof_row(r, dof):
+    rx, ry, rz = r
+    B = np.array([
+        [1, 0, 0,   0,  rz, -ry],
+        [0, 1, 0, -rz,   0,  rx],
+        [0, 0, 1,  ry, -rx,   0],
+        [0, 0, 0,   1,   0,   0],
+        [0, 0, 0,   0,   1,   0],
+        [0, 0, 0,   0,   0,   1],
+    ], dtype=float)
+    if dof < 1 or dof > 6:
+        raise ValueError("DOF must be in 1..6")
+    return B[dof - 1]
+
+
+def solve_small_system(A, b, tol=1e-12):
+    A = np.array(A, dtype=float, copy=True)
+    b = np.array(b, dtype=float, copy=True)
+
+    vector_rhs = (b.ndim == 1)
+    if vector_rhs:
+        b = b.reshape(-1, 1)
+
+    n = A.shape[0]
+    if A.shape[1] != n or b.shape[0] != n:
+        raise ValueError("incompatible dimensions")
+
+    aug = np.hstack((A, b))
+    for col in range(n):
+        pivot = col
+        for row in range(col + 1, n):
+            if abs(aug[row, col]) > abs(aug[pivot, col]):
+                pivot = row
+
+        if abs(aug[pivot, col]) < tol:
+            raise ValueError("singular or rank-deficient system")
+
+        if pivot != col:
+            tmp = aug[col].copy()
+            aug[col] = aug[pivot]
+            aug[pivot] = tmp
+
+        aug[col] = aug[col] / aug[col, col]
+        for row in range(n):
+            if row != col:
+                aug[row] -= aug[row, col] * aug[col]
+
+    x = aug[:, n:]
+    return x[:, 0] if vector_rhs else x
+
+
+def build_rbe1(node_ids, coordinates, independent_dofs,
+               dependent_dofs, rigid_dofs, origin_id):
+    x0 = node_position(node_ids, coordinates, origin_id)
+    columns = [dof - 1 for dof in rigid_dofs]
+
+    A_I = np.vstack([
+        rigid_dof_row(
+            node_position(node_ids, coordinates, nid) - x0, dof
+        )[columns]
+        for nid, dof in independent_dofs
+    ])
+    A_D = np.vstack([
+        rigid_dof_row(
+            node_position(node_ids, coordinates, nid) - x0, dof
+        )[columns]
+        for nid, dof in dependent_dofs
+    ])
+
+    if A_I.shape[0] != A_I.shape[1]:
+        raise ValueError("independent DOFs do not span rigid motion")
+
+    # T_DI = A_D A_I^-1 without calling an inverse routine.
+    T_DI = solve_small_system(A_I.T, A_D.T).T
+    return T_DI
+
+
+L = 100.0
+node_ids = np.array([1, 2, 3, 4], dtype=int)
+coordinates = np.array([
+    [0.0, 0.0, 0.0],  # A
+    [L,   0.0, 0.0],  # B
+    [0.0, L,   0.0],  # C
+    [L,   L,   0.0],  # D
 ])
 
-q_I = np.array([1.0, 2.0, 3.0])  # [u_A, v_A, v_B] mm
+independent = [(1, 1), (1, 2), (2, 2)]  # u_A, v_A, v_B
+dependent = [(2, 1), (3, 1), (3, 2), (4, 1), (4, 2)]
+
+T_DI = build_rbe1(
+    node_ids, coordinates,
+    independent, dependent,
+    rigid_dofs=(1, 2, 6),
+    origin_id=1,
+)
+
+q_I = np.array([1.0, 2.0, 3.0])
 q_D = T_DI @ q_I
 
-theta_z = (q_I[2] - q_I[1]) / L
-
-print("theta_z =", theta_z, "rad")
-print("q_D =", q_D, "mm")
-# theta_z = 0.01 rad
-# q_D = [1. 0. 2. 0. 3.] mm
+print(T_DI)
+print(q_D)
+# q_D = [1. 0. 2. 0. 3.]
 \end{python}
 
-The code contains no special RBE routine: the entire RBE1 example is the
-coefficient matrix of Eq.~\eqref{rbe1-planar-transformation} multiplied by the
-chosen independent coordinates.
+The function interface exposes the actual RBE1 definition: geometry,
+independent scalar components, dependent scalar components and the rigid-body
+modes that are to be represented. The rank test is performed by the explicit
+elimination routine; no matrix-rank or inversion function is hidden in NumPy.
 
 \subsection{Modelling Consequences}
 
@@ -863,56 +966,68 @@ The example therefore illustrates both sides of the same transformation: rigid
 kinematics map reference motion to the dependent nodes, while the transpose maps
 dependent loads back to an equivalent force and moment at the reference point.
 
-The same spider can be assembled from its coordinates in a few lines of Python.
-The function below is only the matrix form of
-Eq.~\eqref{rbe2-single-node-transformation}; no constraint or linear-system
-solver is called.
+The same spider can be assembled from the data normally used to define it:
+a node-coordinate table, one master/reference node ID and its retained DOFs,
+and the slave/dependent node IDs with their selected DOFs. The variable names
+\texttt{master} and \texttt{slave} are used here because they mirror common
+solver input syntax; the chapter terminology remains reference and dependent.
+The returned
+\texttt{slave\_map} records the row ordering of the transformation, so loads can
+be assigned by node ID and DOF rather than by hard-coded vector indices.
 
 \begin{python}
 import numpy as np
 
 
-def rbe2_block(r):
-    rx, ry, rz = r
-    return np.array([
-        [1, 0, 0,   0,  rz, -ry],
-        [0, 1, 0, -rz,   0,  rx],
-        [0, 0, 1,  ry, -rx,   0],
-        [0, 0, 0,   1,   0,   0],
-        [0, 0, 0,   0,   1,   0],
-        [0, 0, 0,   0,   0,   1],
-    ], dtype=float)
+def build_rbe2(node_ids, coordinates, master_id, master_dofs,
+               slave_ids, slave_dofs):
+    x_master = node_position(node_ids, coordinates, master_id)
+    columns = [dof - 1 for dof in master_dofs]
+
+    rows = []
+    slave_map = []
+    for nid, dofs in zip(slave_ids, slave_dofs):
+        r = node_position(node_ids, coordinates, nid) - x_master
+        for dof in dofs:
+            rows.append(rigid_dof_row(r, dof)[columns])
+            slave_map.append((nid, dof))
+
+    return np.vstack(rows), slave_map
 
 
-X_r = np.array([1.0, 1.0, 1.0])
-X = np.array([
+node_ids = np.array([100, 1, 2, 3, 4], dtype=int)
+coordinates = np.array([
+    [1.0, 1.0, 1.0],  # master/reference node 100
     [0.0, 0.0, 0.0],
     [2.0, 0.0, 0.0],
     [2.0, 2.0, 0.0],
     [0.0, 2.0, 0.0],
 ])
 
-D = np.vstack([rbe2_block(x - X_r) for x in X])
+D, slave_map = build_rbe2(
+    node_ids, coordinates,
+    master_id=100,
+    master_dofs=(1, 2, 3, 4, 5, 6),
+    slave_ids=(1, 2, 3, 4),
+    slave_dofs=[(1, 2, 3, 4, 5, 6)] * 4,
+)
 
-q_r = np.array([0.1, 0.0, 0.0, 0.0, 0.0, 0.01])
-q_d = D @ q_r
-print(q_d.reshape(4, 6)[:, :3])
-# [[ 0.11 -0.01  0.  ]
-#  [ 0.11  0.01  0.  ]
-#  [ 0.09  0.01  0.  ]
-#  [ 0.09 -0.01  0.  ]]
+q_master = np.array([0.1, 0.0, 0.0, 0.0, 0.0, 0.01])
+q_slave = D @ q_master
+print(q_slave.reshape(4, 6)[:, :3])
 
-# Apply Fy = 100 N at dependent node 1.
-f_d = np.zeros(24)
-f_d[1] = 100.0
-f_r = D.T @ f_d
-print(f_r)
+# Apply Fy = 100 N at slave node 1.
+f_slave = np.zeros(len(slave_map))
+f_slave[slave_map.index((1, 2))] = 100.0
+f_master = D.T @ f_slave
+print(f_master)
 # [   0.  100.    0.  100.    0. -100.]
 \end{python}
 
-The two products \texttt{D @ q\_r} and \texttt{D.T @ f\_d} are the kinematic
-and virtual-work sides of the same transformation. The second result contains
-the reference force and the moment $\m{r}_1\times\m{F}_1$ derived above.
+The two products \texttt{D @ q\_master} and \texttt{D.T @ f\_slave} are the
+kinematic and virtual-work sides of the same transformation. The matrix itself
+is constructed entirely from the supplied IDs, coordinates and DOF lists;
+changing the spider geometry therefore requires changing only those inputs.
 
 \subsection{Elimination and Congruent Transformation}
 
@@ -1541,70 +1656,113 @@ reference point. An RBE2 applied to the same four nodes would suppress this mode
 completely. This is the central mechanical distinction between a rigid coupling
 and an interpolation coupling.
 
-The following Python example reconstructs the interpolation from the same
-geometry. Because Eq.~\eqref{rbe3-example-normal-matrix} is diagonal, its inverse
-is formed component by component. A general matrix inversion routine is neither
-needed nor used.
+The following function turns the engineering definition directly into an
+interpolation matrix. The inputs are a node-coordinate table, the slave/reference
+node ID and retained DOFs, the master/attachment node IDs and selected DOFs, and
+one weight per master node. From these it constructs the weighted centroid,
+rigid-fit matrix, normal equations and final interpolation $\m{H}$. To remain
+consistent with the derivation above, this compact function permits only
+translational master DOFs 1--3; solver-specific RBE3 definitions may support
+additional component choices. The small normal system is solved by the explicit
+elimination routine introduced in the RBE1 example rather than by
+\texttt{numpy.linalg}.
 
 \begin{python}
 import numpy as np
 
 
-def rigid_fit_block(r):
-    rx, ry, rz = r
-    return np.array([
-        [1, 0, 0,   0,  rz, -ry],
-        [0, 1, 0, -rz,   0,  rx],
-        [0, 0, 1,  ry, -rx,   0],
-    ], dtype=float)
+def build_rbe3(node_ids, coordinates, slave_id, slave_dofs,
+               master_ids, master_dofs, master_weights):
+    if not (len(master_ids) == len(master_dofs) == len(master_weights)):
+        raise ValueError("master arrays must have the same length")
+
+    # One scalar weight per master node; it is applied to every
+    # selected DOF of that node in this compact implementation.
+    x_centroid = np.zeros(3)
+    weight_sum = 0.0
+    for nid, weight in zip(master_ids, master_weights):
+        x_centroid += weight * node_position(
+            node_ids, coordinates, nid
+        )
+        weight_sum += weight
+    if weight_sum == 0.0:
+        raise ValueError("sum of master weights must be non-zero")
+    x_centroid /= weight_sum
+
+    rows = []
+    scalar_weights = []
+    master_map = []
+    for nid, dofs, weight in zip(
+        master_ids, master_dofs, master_weights
+    ):
+        if weight <= 0.0:
+            raise ValueError("master weights must be positive")
+        r = node_position(node_ids, coordinates, nid) - x_centroid
+        for dof in dofs:
+            if dof not in (1, 2, 3):
+                raise ValueError("this RBE3 example uses master DOFs 1..3")
+            rows.append(rigid_dof_row(r, dof))
+            scalar_weights.append(weight)
+            master_map.append((nid, dof))
+
+    A = np.vstack(rows)
+    w = np.array(scalar_weights, dtype=float)
+
+    normal = A.T @ (w[:, None] * A)
+    rhs = A.T * w
+    H_centroid = solve_small_system(normal, rhs)
+
+    r_slave = (
+        node_position(node_ids, coordinates, slave_id) - x_centroid
+    )
+    S = np.vstack([
+        rigid_dof_row(r_slave, dof) for dof in slave_dofs
+    ])
+
+    H = S @ H_centroid
+    return H, master_map, x_centroid
 
 
-X_c = np.array([1.0, 1.0, 0.0])
-X = np.array([
+node_ids = np.array([100, 1, 2, 3, 4], dtype=int)
+coordinates = np.array([
+    [1.0, 1.0, 1.0],  # slave/reference node 100
     [0.0, 0.0, 0.0],
     [2.0, 0.0, 0.0],
     [2.0, 2.0, 0.0],
     [0.0, 2.0, 0.0],
 ])
 
-A = np.vstack([rigid_fit_block(x - X_c) for x in X])
-normal = A.T @ A
-
-# Here A.T @ A is diagonal, as derived in the text.
-normal_inv = np.zeros((6, 6))
-for i in range(6):
-    normal_inv[i, i] = 1.0 / normal[i, i]
-
-H_c = normal_inv @ A.T
-
-# Shift the fitted motion one unit from the centroid to the reference point.
-S = np.array([
-    [1, 0, 0,  0,  1, 0],
-    [0, 1, 0, -1,  0, 0],
-    [0, 0, 1,  0,  0, 0],
-    [0, 0, 0,  1,  0, 0],
-    [0, 0, 0,  0,  1, 0],
-    [0, 0, 0,  0,  0, 1],
-], dtype=float)
-H = S @ H_c
+H, master_map, x_centroid = build_rbe3(
+    node_ids, coordinates,
+    slave_id=100,
+    slave_dofs=(1, 2, 3, 4, 5, 6),
+    master_ids=(1, 2, 3, 4),
+    master_dofs=[(1, 2, 3)] * 4,
+    master_weights=(1.0, 1.0, 1.0, 1.0),
+)
 
 # Pure normal force: 400 N becomes four 100 N nodal forces.
-f_r = np.array([0.0, 0.0, 400.0, 0.0, 0.0, 0.0])
-f_a = H.T @ f_r
-print(f_a.reshape(4, 3))
+f_slave = np.array([0.0, 0.0, 400.0, 0.0, 0.0, 0.0])
+f_master = H.T @ f_slave
+print(f_master.reshape(4, 3))
 
-# Checkerboard warping: the generalized reference motion is zero.
-u_a = np.zeros(12)
-u_a[[2, 5, 8, 11]] = [1.0, -1.0, 1.0, -1.0]
-q_r = H @ u_a
-print(q_r)
+# Checkerboard warping does not move the slave/reference node.
+u_master = np.zeros(len(master_map))
+warp = {1: 1.0, 2: -1.0, 3: 1.0, 4: -1.0}
+for i, (nid, dof) in enumerate(master_map):
+    if dof == 3:
+        u_master[i] = warp[nid]
+
+q_slave = H @ u_master
+print(q_slave)
 # [0. 0. 0. 0. 0. 0.]
 \end{python}
 
-The code exposes the two essential RBE3 operations directly: the attachment
-motion is projected into generalized coordinates by \texttt{H @ u\_a}, and a
-generalized load is distributed back by the transpose
-\texttt{H.T @ f\_r}. The zero result for the checkerboard field is the numerical
+The returned \texttt{master\_map} makes the column ordering of $\m{H}$
+explicit. The two essential RBE3 operations then remain visible:
+\texttt{H @ u\_master} interpolates attachment motion to the slave/reference
+coordinates, while \texttt{H.T @ f\_slave} distributes a generalized load back
+to the selected master DOFs. The zero checkerboard result is the numerical
 counterpart of the interpolation null space discussed above.
 
 \subsection{RBE3 as a Deformable Distributed Support}\label{sec:rbe3-deformable-support}
@@ -2060,29 +2218,57 @@ current tangent. The example therefore illustrates why a fixed-distance link can
 be perfectly appropriate in a nonlinear transient analysis while its ordinary
 eigenshape extraction requires a frozen, linearized operating configuration.
 
-The geometry can again be checked without a nonlinear solver. The scalar square
-root below is simply the exact circle equation written in Python:
+The same comparison can be wrapped in a reusable geometric check. The function
+accepts a coordinate table, the two node IDs and trial nodal displacement
+vectors, and returns both the initial-tangent residual and the exact change of
+length. A second scalar helper evaluates the exact axial correction for the
+planar example:
 
 \begin{python}
 import numpy as np
 
-L = 100.0      # mm
-uy = 20.0      # mm
 
-x_exact = (L * L - uy * uy) ** 0.5
-ux_exact = x_exact - L
+def fixed_distance_trial(node_ids, coordinates, node_1, node_2,
+                         du_1, du_2):
+    x1 = node_position(node_ids, coordinates, node_1)
+    x2 = node_position(node_ids, coordinates, node_2)
 
-x_linear = np.array([L, uy])
-L_linear = (x_linear @ x_linear) ** 0.5
+    r0 = x2 - x1
+    dr = np.array(du_2, dtype=float) - np.array(du_1, dtype=float)
 
-r0 = np.array([L, 0.0])
-du_linear = np.array([0.0, uy])
-tangent_constraint = r0 @ du_linear
+    L0 = (r0 @ r0) ** 0.5
+    r_trial = r0 + dr
+    L_trial = (r_trial @ r_trial) ** 0.5
+
+    linear_residual = r0 @ dr
+    exact_length_error = L_trial - L0
+    return L0, L_trial, linear_residual, exact_length_error
+
+
+def exact_planar_axial_correction(length, transverse_motion):
+    x_new = (length * length - transverse_motion**2) ** 0.5
+    return x_new - length
+
+
+node_ids = np.array([1, 2], dtype=int)
+coordinates = np.array([
+    [0.0,   0.0, 0.0],
+    [100.0, 0.0, 0.0],
+])
+
+L0, L_trial, linear_residual, length_error = fixed_distance_trial(
+    node_ids, coordinates,
+    node_1=1,
+    node_2=2,
+    du_1=(0.0, 0.0, 0.0),
+    du_2=(0.0, 20.0, 0.0),
+)
+ux_exact = exact_planar_axial_correction(L0, 20.0)
 
 print("exact ux =", ux_exact, "mm")
-print("linearized length =", L_linear, "mm")
-print("length error =", L_linear - L, "mm")
-print("initial tangent residual =", tangent_constraint)
+print("linearized length =", L_trial, "mm")
+print("length error =", length_error, "mm")
+print("initial tangent residual =", linear_residual)
 # exact ux = -2.020410... mm
 # length error = 1.980390... mm
 # initial tangent residual = 0.0
@@ -2325,49 +2511,77 @@ $w_r$, $\theta_y$ or the bushing force. The local flange stiffness determines
 that warping; the bushing acts only on the generalized interface coordinates.
 This is the mathematical content of a \emph{deformable remote support}.
 
-A compact Python version keeps the generalized interface and the bushing law
-visibly separate. Since the bushing matrix is diagonal, its two generalized
-displacements are obtained by scalar division rather than by a matrix solver.
+A compact function keeps the generalized interface and the bushing law visibly
+separate. Rather than hard-coding $\m{H}_{w\theta}$, the example reuses the
+general \texttt{build\_rbe3} function with the flange coordinates, master IDs,
+master DOFs and weights. The bushing response is then evaluated from the
+resulting interpolation and the supplied bushing matrix.
 
 \begin{python}
 import numpy as np
 
-a = 50.0  # mm
 
-H = np.array([
-    [0.25, 0.25, 0.25, 0.25],
-    [1/(4*a), -1/(4*a), -1/(4*a), 1/(4*a)],
+def remote_bushing_response(H, K_bushing, remote_load):
+    q_remote = solve_small_system(K_bushing, remote_load)
+    f_master = H.T @ remote_load
+    K_master = H.T @ K_bushing @ H
+    return q_remote, f_master, K_master
+
+
+a = 50.0  # mm
+node_ids = np.array([100, 1, 2, 3, 4], dtype=int)
+coordinates = np.array([
+    [ 0.0,  0.0, 0.0],  # remote/slave node 100
+    [-a,   -a,   0.0],
+    [ a,   -a,   0.0],
+    [ a,    a,   0.0],
+    [-a,    a,   0.0],
 ])
 
-k_z = 40_000.0          # N/mm
-k_theta_y = 100e6       # Nmm/rad
-F = np.array([8_000.0, 200_000.0])
+# Reuse the general RBE3 builder; retain only w and theta_y
+# at the remote point while the master nodes use translations.
+H, master_map, _ = build_rbe3(
+    node_ids, coordinates,
+    slave_id=100,
+    slave_dofs=(3, 5),
+    master_ids=(1, 2, 3, 4),
+    master_dofs=[(1, 2, 3)] * 4,
+    master_weights=(1.0, 1.0, 1.0, 1.0),
+)
 
-# Diagonal bushing: q = K^-1 F, written explicitly.
-q = np.array([F[0] / k_z, F[1] / k_theta_y])
-f_a = H.T @ F
+K_bushing = np.array([
+    [40_000.0, 0.0],
+    [0.0, 100e6],
+])
+remote_load = np.array([8_000.0, 200_000.0])
 
-print("[w_r, theta_y] =", q)
-print("nodal forces =", f_a)
-# [w_r, theta_y] = [0.2   0.002]
-# nodal forces = [3000. 1000. 1000. 3000.]
+q_remote, f_master, K_master = remote_bushing_response(
+    H, K_bushing, remote_load
+)
+print("[w_r, theta_y] =", q_remote)
 
-# A local warping mode does not move the generalized interface.
-warp = np.array([1.0, -1.0, 1.0, -1.0])
-print("H @ warp =", H @ warp)
+z_forces = []
+for i, (nid, dof) in enumerate(master_map):
+    if dof == 3:
+        z_forces.append((nid, float(f_master[i])))
+print("nodal z forces =", z_forces)
+# [(1, 3000.), (2, 1000.), (3, 1000.), (4, 3000.)]
+
+# A local warping mode remains invisible to the generalized interface.
+warp_master = np.zeros(len(master_map))
+warp = {1: 1.0, 2: -1.0, 3: 1.0, 4: -1.0}
+for i, (nid, dof) in enumerate(master_map):
+    if dof == 3:
+        warp_master[i] = warp[nid]
+print("H @ warp =", H @ warp_master)
 # [0. 0.]
-
-# Project the bushing stiffness back to the four flange DOFs.
-K_b = np.array([[k_z, 0.0], [0.0, k_theta_y]])
-K_a = H.T @ K_b @ H
-print(K_a)
 \end{python}
 
-The last product is exactly the projected support stiffness
+The returned \texttt{K\_master} is exactly the projected support stiffness
 $\m{H}^T\m{K}_b\m{H}$ derived in
-Section~\ref{sec:rbe3-deformable-support}. Nothing in the code changes the
-finite element stiffness of the flange itself; it only maps the two-coordinate
-bushing law onto the four attachment DOFs.
+Section~\ref{sec:rbe3-deformable-support}. The same general RBE3 builder is
+therefore used for both load interpolation and the deformable support; only the
+selected slave DOFs and the attached bushing law change.
 
 \begin{bbox}
 \textbf{Engineering note -- Separate the interface kinematics from the support law.}
@@ -3227,9 +3441,10 @@ status, and the eigensolution acts on the tangent system about that state.
 \medskip\noindent\textbf{PERMAS.}\par\noindent
 The ordinary linear MPC family belongs naturally to the displacement-reduction
 category described by Eq.~\eqref{coupling-modal-reduced-eigenproblem}. Thus
-linear uses of definitions such as \texttt{MPC\_\allowbreak RIGID}, \texttt{MPC\_\allowbreak WLSCON},
-\texttt{MPC\_\allowbreak GENERAL}, and the simpler assignment/joining MPCs are the kinds of
-constraints expected in a dynamic eigenvalue model. PERMAS documentation also
+linear definitions such as \texttt{MPC\_\allowbreak RIGID},
+\texttt{MPC\_\allowbreak WLSCON} and \texttt{MPC\_\allowbreak GENERAL} are natural
+candidates for a dynamic eigenvalue model. The same is true of simpler
+assignment or joining MPCs. PERMAS documentation also
 describes explicit MPC handling in dynamic eigenvalue reduction and linear MPC
 surface couplings that are available for dynamic analyses. By contrast, contact
 or other state-dependent connections must first be represented by a fixed
