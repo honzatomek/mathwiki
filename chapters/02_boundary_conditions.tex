@@ -1,469 +1,1208 @@
 \newpage
-\chapter{Boundary conditions not in GCS}
+\chapter[Boundary Conditions]{Boundary Conditions and Single-DOF Constraints}\label{chap:boundary-conditions}
 
-\section{Skew boundary conditions}
-\textit{Skew boundary conditions}, also known as \textbf{Rotated BCs} are implemented
-after assembling the global stiffness matrix $ \m{K} $.
+A finite element model is not defined by its elements alone. The governing
+field equations admit many possible solutions until sufficient information is
+provided at the boundary, at supports and, for transient problems, at the
+initial time. In engineering language this information may be called a fixed
+support, roller, imposed displacement, pressure, elastic foundation or base
+motion. In mathematical language the same definitions appear under names such
+as \textit{Dirichlet}, \textit{Neumann}, \textit{Robin}, \textit{holonomic} or
+\textit{rheonomic}. The terminology can sound more exotic than the underlying
+engineering idea.
 
-Basic equation:
+This chapter starts from the simplest case: one prescribed discrete degree of
+freedom (DOF). It then develops directional or \textit{skew} constraints, where
+one scalar motion is prescribed in a local direction that is not aligned with
+the global coordinate system. General relations involving several independent
+DOFs are postponed to Chapter~\ref{chap:multifreedom-constraints}; unilateral
+contact conditions are treated in Chapter~\ref{chap:contact-formulations}; and
+rigid, interpolating and remote couplings are developed in
+Chapter~\ref{chap:kinematic-constraints}.
+
+As in the following chapters, the same idea will be viewed at three levels:
+
+\begin{center}
+\textbf{engineering meaning}
+$\longleftrightarrow$
+\textbf{mathematical formulation}
+$\longleftrightarrow$
+\textbf{discrete algorithm}.
+\end{center}
+
+The first tells us what the support or load means physically. The second makes
+work conjugacy, admissible motion and linearization visible. The third shows
+what the finite element program must actually index, transform, eliminate and
+assemble.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.93\textwidth]{img/bc_constraint_classification.png}
+    \caption{Boundary conditions can be classified along several independent
+    axes. Dirichlet/Neumann/Robin describe how boundary data enter the field
+    problem, while holonomic/non-holonomic, bilateral/unilateral and
+    scleronomic/rheonomic describe different properties of the kinematic
+    relation. The classifications should not be mixed into a single list.}
+    \label{fig:bc-constraint-classification}
+\end{figure}
+
+\begin{bbox}
+\textbf{Python examples in this chapter.}
+
+The examples use \texttt{numpy} for arrays, indexing, elementary arithmetic and
+matrix products only. No \texttt{numpy.linalg}, sparse solver, eigensolver or
+other numerical submodule is used. Small dense systems are solved by explicit
+Gaussian elimination when a numerical solution is required. The purpose is to
+show how the matrix equations become indexing, loops and array operations, not
+to hide the mechanics behind a library call.
+\end{bbox}
+
+\section{What Is a Boundary Condition?}
+
+Consider the displacement form of the structural equilibrium equations in a
+domain $\Omega$ with boundary $\Gamma$,
 
 \begin{equation}
-    \m{M} \ddot{\m{u}} + \m{C} \dot{\m{u}} + \m{K} \m{u}
-    = \m{f}
+    \nabla\!\cdot\m{\sigma}+\m{b}=\rho\ddot{\m{u}}
+    \qquad \text{in }\Omega.
 \end{equation}
 
-First we need to identify all prescribed BCs that do not correspond to the
-defined assemblage DOFs and transform the finite equilibrium equations to
-correspond to the prescribed BCs. Thus we write:
+For the standard displacement formulation, two fundamental kinds of boundary
+data appear:
 
-\begin{equation}\label{skew-bcs}
-    \m{u} = \m{T} \closure{\m{u}}
+\begin{equation}\label{eq:bc-dirichlet-continuum}
+    \m{u}=\closure{\m{u}}
+    \qquad \text{on }\Gamma_u,
 \end{equation}
 
-where $ \closure{\m{u}} $ is the vector of nodal point DOFs in the required
-directions. The transformation matrix $ \m{T} $ is an identity matrix
-that has been altered by the directional sines and cosines of the components
-$ \closure{\m{u}} $ measured in the original displacement directions.
-Using \eqref{skew-bcs}, we obtain:
+and
+
+\begin{equation}\label{eq:bc-neumann-continuum}
+    \m{\sigma}\m{n}=\closure{\m{t}}
+    \qquad \text{on }\Gamma_t.
+\end{equation}
+
+The first prescribes the primary solution variable itself; the second prescribes
+its work-conjugate boundary traction. Normally
+$\Gamma_u\cup\Gamma_t=\Gamma$ and the two parts do not overlap except at their
+boundaries.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.96\textwidth]{img/bc_dirichlet_neumann_robin.png}
+    \caption{Engineering interpretation of the classical boundary-condition
+    names for displacement-based structural mechanics. Dirichlet prescribes
+    motion, Neumann prescribes load, and Robin relates load to motion.}
+    \label{fig:bc-dirichlet-neumann-robin}
+\end{figure}
+
+\subsection{Dirichlet or Essential Boundary Conditions}
+
+A \textit{Dirichlet} boundary condition prescribes the value of the primary
+unknown. In structural mechanics this usually means displacement or rotation,
+for example
 
 \begin{equation}
-    \closure{\m{M}} \closure{\ddot{\m{u}}}
-    + \closure{\m{C}} \closure{\dot{\m{u}}}
-    + \closure{\m{K}} \closure{\m{u}}
-    = \closure{\m{f}}
+    u_x=0,
+    \qquad
+    u_y=2\ \mathrm{mm},
+    \qquad
+    \varphi_z=0.
 \end{equation}
 
-where:
+The term \textit{essential} comes from the variational formulation: the trial
+and test spaces must satisfy these kinematic restrictions. In everyday
+engineering language this is simply a \textbf{support or imposed motion}.
 
-\begin{eqarray}\label{skew-eq-of-motion}
-    \closure{\m{M}} & = \m{T}^T \m{M} \m{T} \\
-    \closure{\m{C}} & = \m{T}^T \m{C} \m{T} \\
-    \closure{\m{K}} & = \m{T}^T \m{K} \m{T} \\
-    \closure{\m{f}} & = \m{T}^T \m{f}
+A zero prescribed value is called \textit{homogeneous},
+
+\begin{equation}
+    u_i=0,
+\end{equation}
+
+while a nonzero value is \textit{nonhomogeneous},
+
+\begin{equation}
+    u_i=\closure{u}_i.
+\end{equation}
+
+The mathematical name therefore does not imply a special type of physical
+support. A fixed support and a prescribed actuator stroke are both Dirichlet
+conditions; only the prescribed value differs.
+
+\subsection{Neumann or Natural Boundary Conditions}
+
+A \textit{Neumann} boundary condition prescribes the work-conjugate flux. For
+structural mechanics this is traction,
+
+\begin{equation}
+    \m{t}=\m{\sigma}\m{n}=\closure{\m{t}},
+\end{equation}
+
+which generates the finite element load contribution
+
+\begin{equation}\label{eq:neumann-load-vector}
+    \m{f}_{\Gamma}
+    =
+    \int_{\Gamma_t}\m{N}^{T}\closure{\m{t}}\,d\Gamma.
+\end{equation}
+
+In engineering language these are \textbf{forces, moments, tractions and
+pressures}. They are called \textit{natural} because they arise automatically
+from integration by parts in the weak form and enter the right-hand side of the
+finite element equations.
+
+A mechanically free surface usually means the homogeneous natural condition
+
+\begin{equation}
+    \m{\sigma}\m{n}=\m{0}.
+\end{equation}
+
+Thus ``no explicitly applied boundary load'' is itself the zero-Neumann case;
+it is not the same statement as ``no boundary condition exists.''
+
+\subsection{Robin Boundary Conditions and Elastic Supports}
+
+A \textit{Robin} condition relates the primary variable to its conjugate flux.
+A simple structural example is an elastic support,
+
+\begin{equation}\label{eq:robin-structural}
+    t+k\left(u-u_0\right)=\closure{t},
+\end{equation}
+
+where $k$ is a boundary stiffness and $u_0$ is the support reference position.
+After discretization, a distributed version contributes both stiffness and
+load,
+
+\begin{eqarray}
+    \m{K}_{\Gamma}
+    &=&
+    \int_{\Gamma}\m{N}^{T}k\m{N}\,d\Gamma,\\
+    \m{f}_{\Gamma}
+    &=&
+    \int_{\Gamma}\m{N}^{T}\left(\closure{t}+ku_0\right)\,d\Gamma.
 \end{eqarray}
 
-We should note that the matrix multiplications in \eqref{skew-eq-of-motion}
-involve changes only in those columns and rows of $ \m{M} $, $ \m{C} $,
-$ \m{K} $ and $ \m{f} $ that are actually affected. In practice,
-the transformation is carried out effectively on the element level just prior
-to adding the element matrices to the global matrices.
+In engineering language this is a \textbf{spring, foundation, impedance or
+elastic support}. It does not prescribe the displacement exactly; instead the
+reaction depends on the displacement that the solution produces.
 
+The word \textit{mixed} is unfortunately used in two ways. It may refer to a
+Robin relation that mixes value and flux, or simply to a boundary-value problem
+where different portions of the boundary carry different condition types. The
+meaning should therefore be inferred from context rather than from the word
+alone.
 
-\newpage
-\section{Cartesian CSYS}
+\begin{bbox}
+\textbf{Engineering note -- The names belong to the formulation, not to the
+hardware.}
 
-When a node or an SPC is defined as a \textbf{rotated}/\textbf{skewed} or in
-a different type of Coordinate system (e.g. cylindrical) a transformation matrix
-needs to be applied to such nodes.
+For the standard displacement-based structural formulation, displacement is an
+essential/Dirichlet quantity and traction is a natural/Neumann quantity. In a
+mixed finite element formulation with additional primary fields, the same
+physical quantity may enter the mathematics differently. The engineering
+support does not change; the choice of primary unknowns does.
+\end{bbox}
 
-\textbf{Cartesian Coordinate system} definition by angle (2D):
+\subsection{Initial Conditions Are a Different Requirement}
+
+A transient problem also needs an initial state, for example
+
 \begin{equation}
-    \m{u}_l = \m{T} \m{u}_g
+    \m{u}(\m{x},0)=\m{u}_0(\m{x}),
+    \qquad
+    \dot{\m{u}}(\m{x},0)=\m{v}_0(\m{x}).
 \end{equation}
 
-Unpacked:
+These are \textit{initial conditions}, not spatial boundary conditions. A base
+motion $\closure{u}(t)$ may be time-dependent boundary data, while
+$u(0),\dot u(0)$ define the starting state of the evolution problem.
+
+\section{Constraint Classifications}
+
+Terms such as Dirichlet and Neumann answer a different question from terms such
+as holonomic or unilateral. The latter describe the nature of the admissible
+motion itself. Several labels may therefore apply to the same engineering
+constraint at once.
+
+\subsection{Holonomic Constraints}
+
+A constraint is \textit{holonomic} if it can be written as a relation between
+configuration variables and, possibly, time,
+
+\begin{equation}\label{eq:holonomic-constraint}
+    c\left(\m{q},t\right)=0.
+\end{equation}
+
+Examples include a prescribed displacement
+
+\begin{equation}
+    q_i-\closure{q}_i(t)=0,
+\end{equation}
+
+and a fixed distance between two points,
+
+\begin{equation}
+    \left(\m{x}_2-\m{x}_1\right)^T
+    \left(\m{x}_2-\m{x}_1\right)-L^2=0.
+\end{equation}
+
+Most ordinary structural supports, rigid links and joint relations used in
+finite element statics are holonomic. The term sounds abstract, but the
+engineering translation is simple:
+
+\begin{center}
+\textit{the admissible geometry can be described directly from the current
+configuration.}
+\end{center}
+
+\subsection{Non-Holonomic Constraints}
+
+A \textit{non-holonomic} constraint generally involves velocities and cannot be
+integrated into a configuration-only relation of the form
+\eqref{eq:holonomic-constraint}. A classical example is the no-lateral-slip
+condition of a rolling wheel with heading angle $\psi$,
+
+\begin{equation}\label{eq:nonholonomic-wheel}
+    -\sin\psi\,\dot{x}
+    +\cos\psi\,\dot{y}=0.
+\end{equation}
+
+The wheel may move in the direction in which it points but may not have an
+instantaneous velocity perpendicular to that direction. Because the allowed
+direction itself changes with $\psi$, the condition is not in general reducible
+to one fixed relation among $x$, $y$ and $\psi$.
+
+Non-holonomic constraints are common in multibody dynamics, vehicle models and
+robotics but much less common in conventional structural finite element statics.
+They are mentioned here mainly to prevent the word \textit{constraint} from
+being interpreted as synonymous with a displacement equation.
+
+\subsection{Scleronomic and Rheonomic Constraints}
+
+A holonomic constraint with no explicit time dependence,
+
+\begin{equation}
+    c(\m{q})=0,
+\end{equation}
+
+is called \textit{scleronomic}. A constraint with an explicit prescribed time
+law,
+
+\begin{equation}
+    c(\m{q},t)=0,
+\end{equation}
+
+is called \textit{rheonomic}. Engineering examples are respectively a fixed
+support and a prescribed shaker/base displacement. The intimidating terminology
+therefore amounts to the practical distinction
+
+\begin{center}
+\textbf{fixed in time} $\quad$ versus $\quad$ \textbf{driven by a time law}.
+\end{center}
+
+\subsection{Bilateral and Unilateral Constraints}
+
+A bilateral equality constraint remains active in both directions,
+
+\begin{equation}
+    c(\m{q})=0.
+\end{equation}
+
+A unilateral constraint restricts only one side of the admissible domain, for
+example the contact gap
+
+\begin{equation}
+    g_n(\m{q})\ge0.
+\end{equation}
+
+The latter requires an active-set or equivalent state logic and is the subject
+of Chapter~\ref{chap:contact-formulations}. A fixed support is therefore a
+bilateral holonomic constraint, while frictionless contact is unilateral and
+state-dependent.
+
+\subsection{Linear and Nonlinear Constraints}
+
+A simple support component
+
+\begin{equation}
+    u_x=0
+\end{equation}
+
+is linear in the discrete unknowns. A fixed-distance relation is nonlinear in
+Cartesian coordinates. This distinction controls whether the constraint
+coefficients can be built once or must be updated during nonlinear iterations.
+The same idea reappears in Chapters~\ref{chap:multifreedom-constraints} and
+\ref{chap:kinematic-constraints}.
+
+\begin{bbox}
+\textbf{Engineering note -- Classification is multi-dimensional.}
+
+A prescribed sinusoidal base displacement is simultaneously Dirichlet,
+essential, holonomic, bilateral, rheonomic and possibly linear. These words are
+not competing names for one list of boundary-condition types; they answer
+different questions about the same definition.
+\end{bbox}
+
+\section{Single-DOF Essential Constraints}\label{sec:single-dof-bc}
+
+After discretization, the simplest essential boundary condition prescribes one
+scalar degree of freedom,
+
+\begin{equation}\label{eq:single-dof-constraint}
+    u_p=\closure{u}_p.
+\end{equation}
+
+The DOF may be a translation, rotation, temperature, electric potential or any
+other primary nodal unknown. In structural solver terminology such definitions
+are often called \textit{single-point constraints} (SPCs).
+
+\subsection{Partitioned Equilibrium Equations}
+
+For static structural equilibrium,
+
+\begin{equation}
+    \m{K}\m{u}=\m{f},
+\end{equation}
+
+partition the unknowns into free $f$ and prescribed $p$ components,
+
 \begin{equation}
     \begin{bmatrix}
-        u_l \\
-        w_l \\
-        \psi_l \\
-    \end{bmatrix}
-    = \begin{bmatrix}
-        \phantom{-}\cos \alpha & \sin \alpha & 0 \\
-        -\sin \alpha & \cos \alpha & 0 \\
-        0 & 0 & 1 \\
+        \m{K}_{ff} & \m{K}_{fp}\\
+        \m{K}_{pf} & \m{K}_{pp}
     \end{bmatrix}
     \begin{bmatrix}
-        u_g \\
-        w_g \\
-        \psi_g \\
+        \m{u}_f\\
+        \closure{\m{u}}_p
     \end{bmatrix}
+    =
+    \begin{bmatrix}
+        \m{f}_f\\
+        \m{f}_p
+    \end{bmatrix}.
 \end{equation}
 
-%TODO: \textbf{Cartesian Coordinate system} definition by angle (3D):
+The free equations become
 
+\begin{equation}\label{eq:sdof-reduced-equilibrium}
+    \boxed{
+    \m{K}_{ff}\m{u}_f
+    =
+    \m{f}_f-\m{K}_{fp}\closure{\m{u}}_p
+    }.
+\end{equation}
 
-\textbf{Cartesian Coordinate system} definition by vectors (3D):
+The support reactions are recovered only after the displacement solution is
+known,
 
-when a \textbf{CSYS} is defined by an \textbf{origin} and \textbf{two vectors}
-$ \m{x} = \begin{pmatrix} x_1 & x_2 & x_3 \end{pmatrix} $
-and $ \m{y} = \begin{pmatrix} y_1 & y_2 & y_3 \end{pmatrix} $,
-then for a Cartesian CSYS it suffices to:
-\begin{eqarray}
-    \m{\closure{x}} &= \frac{\m{x}}{||\m{x}||} \\
-    \m{\closure{y}} &= \frac{\m{y}}{||\m{y}||} \\
-    \m{\closure{z}} &= \m{\closure{x}} \times \m{\closure{y}} \\
-\end{eqarray}
+\begin{equation}\label{eq:sdof-reaction}
+    \boxed{
+    \m{r}_p
+    =
+    \m{K}_{pf}\m{u}_f
+    +\m{K}_{pp}\closure{\m{u}}_p
+    -\m{f}_p
+    }.
+\end{equation}
 
-The transformation relation:
+Equation~\eqref{eq:sdof-reduced-equilibrium} contains an important practical
+point: a nonzero prescribed displacement generates an equivalent load on the
+free equations through $-\m{K}_{fp}\closure{\m{u}}_p$. It is therefore not
+correct to ``set the displacement after solving.'' The prescribed motion must
+participate in the equilibrium equations.
+
+\subsection{Worked Example: Two-Node Spring}
+
+Consider a spring of stiffness $k=1000~\mathrm{N/mm}$,
+
 \begin{equation}
-    \m{u}_l = \m{T} \m{u}_g
+    \m{K}
+    =
+    \begin{bmatrix}
+        1000&-1000\\
+        -1000&1000
+    \end{bmatrix}\ \mathrm{N/mm},
+    \qquad
+    \m{f}
+    =
+    \begin{bmatrix}
+        0\\100
+    \end{bmatrix}\ \mathrm{N}.
 \end{equation}
 
-when unpacked:
+Prescribing $u_1=0$ leaves
+
 \begin{equation}
-    \begin{bmatrix}
-        u_l \\
-        v_l \\
-        w_l \\
-        \phi_l \\
-        \psi_l \\
-        \rho_l \\
-    \end{bmatrix}
-    = \begin{bmatrix}
-        \m{x} & \m{0} \\
-        \m{y} & \m{0} \\
-        \m{z} & \m{0} \\
-        \m{0} & \m{x} \\
-        \m{0} & \m{y} \\
-        \m{0} & \m{z} \\
-    \end{bmatrix}
-    \begin{bmatrix}
-        u_g \\
-        v_g \\
-        w_g \\
-        \phi_g \\
-        \psi_g \\
-        \rho_g \\
-    \end{bmatrix}
+    1000u_2=100,
 \end{equation}
 
-Where $ \m{0} $ is a $ 3 \times 1 $ zero vector.
+so
 
-For a \textbf{2D case} just \textbf{one vector} is enough, the
-$ \m{\closure{z}} = \begin{pmatrix} 0 & 0 & 1 \end{pmatrix} $ and following relations
-apply:
-\begin{eqarray}
-    \m{\closure{x}} &= \m{\closure{y}} \times \m{\closure{z}} \\
-    \m{\closure{y}} &= \m{\closure{z}} \times \m{\closure{x}} \\
-    \m{\closure{z}} &= \m{\closure{x}} \times \m{\closure{y}} \\
+\begin{equation}
+    u_2=0.1~\mathrm{mm}.
+\end{equation}
+
+The reaction follows from the original equation,
+
+\begin{equation}
+    r_1=-100~\mathrm{N}.
+\end{equation}
+
+The following reusable implementation constructs the reduced system from an
+arbitrary list of prescribed global DOF indices. The matrix is not altered in
+place; instead the free/prescribed partitions are returned explicitly.
+
+\begin{python}
+import numpy as np
+
+
+def solve_dense(A, b):
+    """Gaussian elimination with partial pivoting."""
+    A = np.array(A, dtype=float, copy=True)
+    b = np.array(b, dtype=float, copy=True)
+    n = len(b)
+
+    for k in range(n - 1):
+        pivot = k
+        for i in range(k + 1, n):
+            if abs(A[i, k]) > abs(A[pivot, k]):
+                pivot = i
+        if abs(A[pivot, k]) < 1.0e-14:
+            raise ValueError("singular matrix")
+        if pivot != k:
+            A[[k, pivot]] = A[[pivot, k]]
+            b[[k, pivot]] = b[[pivot, k]]
+
+        for i in range(k + 1, n):
+            factor = A[i, k] / A[k, k]
+            A[i, k:] -= factor * A[k, k:]
+            b[i] -= factor * b[k]
+
+    x = np.zeros(n, dtype=float)
+    for i in range(n - 1, -1, -1):
+        rhs = b[i]
+        for j in range(i + 1, n):
+            rhs -= A[i, j] * x[j]
+        x[i] = rhs / A[i, i]
+    return x
+
+
+def reduce_dirichlet(K, f, prescribed):
+    """
+    prescribed = [(global_dof_index, value), ...]
+    """
+    n = len(f)
+    prescribed_ids = [int(item[0]) for item in prescribed]
+    prescribed_values = np.array([item[1] for item in prescribed], dtype=float)
+
+    free_ids = []
+    for i in range(n):
+        if i not in prescribed_ids:
+            free_ids.append(i)
+
+    Kff = K[np.ix_(free_ids, free_ids)]
+    Kfp = K[np.ix_(free_ids, prescribed_ids)]
+    ff = f[free_ids] - Kfp @ prescribed_values
+    return Kff, ff, free_ids, prescribed_ids, prescribed_values
+
+
+def recover_dirichlet_solution(K, f, reduced):
+    Kff, ff, free_ids, prescribed_ids, prescribed_values = reduced
+    uf = solve_dense(Kff, ff)
+
+    u = np.zeros(len(f), dtype=float)
+    u[free_ids] = uf
+    u[prescribed_ids] = prescribed_values
+    reactions = K @ u - f
+    return u, reactions
+
+
+K = np.array([[1000.0, -1000.0],
+              [-1000.0, 1000.0]])
+f = np.array([0.0, 100.0])
+
+reduced = reduce_dirichlet(K, f, prescribed=[(0, 0.0)])
+u, reactions = recover_dirichlet_solution(K, f, reduced)
+
+print("u =", u)
+print("reaction at prescribed DOF =", reactions[0])
+\end{python}
+
+The code makes the continuum phrase ``impose a Dirichlet boundary condition''
+concrete. The program must identify equation numbers, create free and prescribed
+index sets, form the reduced matrix and effective right-hand side, solve the
+free equations, scatter the prescribed values back and finally recover the
+reaction from the original equilibrium equations.
+
+\subsection{Alternative Numerical Treatments}
+
+Direct elimination is not the only way to impose
+\eqref{eq:single-dof-constraint}. A solver may modify matrix rows and columns,
+use a penalty coefficient, introduce a Lagrange multiplier or internally build
+a transformation. These alternatives are developed for the general case in
+Chapter~\ref{chap:multifreedom-constraints}. For a simple SDOF boundary
+condition, elimination is usually the clearest reference formulation because it
+removes exactly the inadmissible motion without introducing an artificial
+stiffness parameter.
+
+\section{Natural Loads and Elastic Boundary Supports}
+
+The discrete distinction between an imposed motion and an applied load is worth
+making explicit. A nodal Neumann load simply contributes to the right-hand side,
+
+\begin{equation}
+    f_i\eqp F_i,
+\end{equation}
+
+whereas a linear elastic Robin support contributes both stiffness and load. For
+a scalar spring of stiffness $k_s$ connected to a prescribed support position
+$u_0$,
+
+\begin{equation}
+    f_s=-k_s(u-u_0),
+\end{equation}
+
+so the equilibrium equations receive
+
+\begin{equation}
+    K_{ii}\eqp k_s,
+    \qquad
+    f_i\eqp k_su_0.
+\end{equation}
+
+The implementation is correspondingly simple:
+
+\begin{python}
+def add_boundary_spring(K, f, dof, stiffness, reference_displacement=0.0):
+    """Add one scalar Robin/elastic-support contribution."""
+    K[dof, dof] += stiffness
+    f[dof] += stiffness * reference_displacement
+
+
+K = np.zeros((2, 2), dtype=float)
+f = np.zeros(2, dtype=float)
+
+add_boundary_spring(K, f, dof=1, stiffness=500.0,
+                    reference_displacement=0.2)
+
+print(K)
+print(f)
+\end{python}
+
+The spring is therefore not a ``soft Dirichlet condition'' in a mathematical
+sense; it is an additional constitutive relation that stores energy and changes
+the structural stiffness. Only in the limiting penalty-like case of an
+extremely large stiffness does it approximate a prescribed displacement, with
+the usual conditioning consequences.
+
+\section{Directional or Skew Single-DOF Constraints}\label{sec:skew-boundary-conditions}
+
+A roller support is the simplest example of a boundary condition that is easy to
+describe physically but awkward if one insists on global Cartesian components.
+The support restrains motion normal to the supporting surface while allowing
+tangential motion. It is still only \textbf{one scalar prescribed DOF}; that DOF
+simply belongs to a local basis.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.72\textwidth]{img/bc_skew_support.png}
+    \caption{A skew roller support. In the local $n$--$t$ basis only the normal
+    displacement is constrained. Written in global $x$--$y$ components, the
+    same scalar condition contains two displacement coefficients.}
+    \label{fig:bc-skew-support}
+\end{figure}
+
+Let the unit normal and tangent directions in two dimensions be
+
+\begin{equation}
+    \m{n}
+    =
+    \begin{bmatrix}
+        n_x\\n_y
+    \end{bmatrix},
+    \qquad
+    \m{t}
+    =
+    \begin{bmatrix}
+        -n_y\\n_x
+    \end{bmatrix}.
+\end{equation}
+
+The local displacement components are
+
+\begin{equation}\label{eq:skew-local-transform}
+    \begin{bmatrix}
+        u_n\\u_t
+    \end{bmatrix}
+    =
+    \underbrace{
+    \begin{bmatrix}
+        n_x&n_y\\
+        -n_y&n_x
+    \end{bmatrix}}_{\m{Q}}
+    \begin{bmatrix}
+        u_x\\u_y
+    \end{bmatrix}.
+\end{equation}
+
+A normal roller condition is simply
+
+\begin{equation}\label{eq:skew-normal-constraint}
+    u_n=\closure{u}_n.
+\end{equation}
+
+In global components the same relation is
+
+\begin{equation}
+    \boxed{
+    n_xu_x+n_yu_y=\closure{u}_n
+    }.
+\end{equation}
+
+This is an important bridge to Chapter~\ref{chap:multifreedom-constraints}:
+what is a single-DOF condition in a rotated nodal basis becomes a two-coefficient
+constraint equation when written directly in the global basis.
+
+\subsection{Transforming the Equilibrium Equations}
+
+From \eqref{eq:skew-local-transform},
+
+\begin{equation}
+    \m{u}_l=\m{Q}\m{u}_g,
+    \qquad
+    \m{u}_g=\m{Q}^{T}\m{u}_l,
+\end{equation}
+
+because $\m{Q}$ is orthonormal. With
+
+\begin{equation}
+    \m{T}=\m{Q}^{T},
+    \qquad
+    \m{u}_g=\m{T}\m{u}_l,
+\end{equation}
+
+work preservation gives
+
+\begin{eqarray}\label{eq:skew-transformed-system}
+    \m{K}_l&=&\m{T}^{T}\m{K}_g\m{T},\\
+    \m{M}_l&=&\m{T}^{T}\m{M}_g\m{T},\\
+    \m{C}_l&=&\m{T}^{T}\m{C}_g\m{T},\\
+    \m{f}_l&=&\m{T}^{T}\m{f}_g.
 \end{eqarray}
 
-This means that a \textbf{CSYS} defined by an \textbf{origin} point
-$ \m{O} = \begin{pmatrix} x_O & y_O & z_O \end{pmatrix} $,
-point laying on \textbf{x axis}
-$ \m{P}_x = \begin{pmatrix} x_{P_x} & y_{P_x} & z_{P_x} \end{pmatrix} $ and a
-point laying in \textbf{xy plane}
-$ \m{P}_{xy} = \begin{pmatrix} x_{P_{xy}} & y_{P_{xy}} & z_{P_{xy}} \end{pmatrix} $
-define a CSYS followingly:
+Only the rows and columns associated with nodes whose basis is changed need to
+be transformed. Depending on the solver architecture, this may be performed on
+an element contribution before global assembly, as a nodal transformation of
+the assembled system, or by generating an equivalent MFC row. None of these is
+a universal requirement of the formulation.
+
+\subsection{Worked Example: Roller at 30 Degrees}
+
+Consider a two-component nodal stiffness and load
+
+\begin{equation}
+    \m{K}_g
+    =
+    \begin{bmatrix}
+        1200&300\\
+        300&800
+    \end{bmatrix},
+    \qquad
+    \m{f}_g
+    =
+    \begin{bmatrix}
+        100\\50
+    \end{bmatrix}.
+\end{equation}
+
+Let the support tangent make $30^\circ$ with the global $x$ axis. Then
+
+\begin{equation}
+    \m{t}
+    =
+    \begin{bmatrix}
+        \cos30^\circ\\\sin30^\circ
+    \end{bmatrix},
+    \qquad
+    \m{n}
+    =
+    \begin{bmatrix}
+        -\sin30^\circ\\\cos30^\circ
+    \end{bmatrix}.
+\end{equation}
+
+Using the local ordering $(u_n,u_t)$ gives approximately
+
+\begin{equation}
+    \m{K}_l
+    =
+    \begin{bmatrix}
+        640.192&-23.205\\
+        -23.205&1359.808
+    \end{bmatrix},
+    \qquad
+    \m{f}_l
+    =
+    \begin{bmatrix}
+        -6.699\\111.603
+    \end{bmatrix}.
+\end{equation}
+
+With $u_n=0$, the one remaining equation gives
+
+\begin{equation}
+    u_t=0.08207,
+\end{equation}
+
+and transformation back to global components gives
+
+\begin{equation}
+    \m{u}_g
+    =
+    \begin{bmatrix}
+        0.07108\\0.04104
+    \end{bmatrix}.
+\end{equation}
+
+The support has therefore removed only the motion normal to the roller while
+retaining tangential compliance.
+
+The following function constructs the basis and performs the same operation:
+
+\begin{python}
+def normalize2(v):
+    length = np.sqrt(v[0] * v[0] + v[1] * v[1])
+    if length < 1.0e-14:
+        raise ValueError("zero direction vector")
+    return np.array([v[0] / length, v[1] / length])
+
+
+def skew_basis_2d(normal):
+    n = normalize2(np.array(normal, dtype=float))
+    t = np.array([n[1], -n[0]])
+    Q = np.array([[n[0], n[1]],
+                  [t[0], t[1]]])
+    return Q
+
+
+def solve_skew_node(K_global, f_global, normal,
+                    prescribed_normal=0.0):
+    Q = skew_basis_2d(normal)       # local = Q @ global
+    T = Q.T                         # global = T @ local
+    K_local = T.T @ K_global @ T
+    f_local = T.T @ f_global
+
+    # Local DOF 0 is prescribed; local DOF 1 remains free.
+    rhs_t = f_local[1] - K_local[1, 0] * prescribed_normal
+    u_t = rhs_t / K_local[1, 1]
+
+    u_local = np.array([prescribed_normal, u_t])
+    u_global = T @ u_local
+    reaction_local = K_local @ u_local - f_local
+    return u_global, u_local, reaction_local, K_local, f_local
+
+
+angle = np.deg2rad(30.0)
+normal = np.array([-np.sin(angle), np.cos(angle)])
+K_global = np.array([[1200.0, 300.0],
+                     [300.0, 800.0]])
+f_global = np.array([100.0, 50.0])
+
+u_global, u_local, reaction_local, K_local, f_local = \
+    solve_skew_node(K_global, f_global, normal)
+
+print("u_local =", u_local)
+print("u_global =", u_global)
+print("normal reaction =", reaction_local[0])
+\end{python}
+
+\begin{bbox}
+\textbf{Engineering note -- Skew does not automatically mean multi-DOF.}
+
+A roller with one restrained local direction is a one-DOF essential condition
+from the engineering viewpoint. It becomes a multi-coefficient equation only if
+we insist on expressing it in the global basis. This distinction is useful when
+reading solver input: a rotated nodal coordinate system and an explicit MPC may
+represent exactly the same linear kinematics by different numerical routes.
+\end{bbox}
+
+\section{Three-Dimensional Local Cartesian Bases}
+
+For a three-dimensional node, a local Cartesian basis should be orthonormal.
+Simply normalizing two arbitrary user vectors independently is not sufficient,
+because those vectors need not be perpendicular. A robust construction uses a
+Gram--Schmidt step.
+
+Let $\m{a}$ define the desired local $x$ direction and $\m{b}$ approximately
+define the local $xy$ plane. Then
+
 \begin{eqarray}
-    \m{x} &= \begin{pmatrix} x_{P_x} - x_O & y_{P_x} - y_O & z_{P_x} - z_O \end{pmatrix} \\
-    \m{\closure{x}} &= \frac{\m{x}}{||\m{x}||} \\
-    \m{\hat{y}} &= \begin{pmatrix} x_{P_{xy}} - x_O & y_{P_{xy}} - y_O & z_{P_{xy}} - z_O \end{pmatrix} \\
-    \m{\closure{\hat{y}}} &= \frac{\m{\hat{y}}}{||\m{\hat{y}}||} \\
-    \m{\closure{z}} &= \m{\closure{x}} \times \m{\closure{\hat{y}}} \\
-    \m{\closure{y}} &= \m{\closure{z}} \times \m{\closure{x}} \\
+    \m{e}_x
+    &=&
+    \frac{\m{a}}{\norm{\m{a}}},\\
+    \m{b}_{\perp}
+    &=&
+    \m{b}-\left(\m{e}_x^T\m{b}\right)\m{e}_x,\\
+    \m{e}_y
+    &=&
+    \frac{\m{b}_{\perp}}{\norm{\m{b}_{\perp}}},\\
+    \m{e}_z
+    &=&
+    \m{e}_x\times\m{e}_y.
 \end{eqarray}
 
+The global-to-local transformation is
 
-\newpage
-\section{Cylindrical CSYS}
+\begin{equation}\label{eq:cartesian-local-Q}
+    \m{Q}
+    =
+    \begin{bmatrix}
+        \m{e}_x^T\\
+        \m{e}_y^T\\
+        \m{e}_z^T
+    \end{bmatrix},
+    \qquad
+    \m{u}_l=\m{Q}\m{u}_g.
+\end{equation}
 
-The basic relation between a point in \textbf{cartesian} and \textbf{cylindrical}
-CSYS is (when the cartesian CSYS has the same origin as the cylindrical one
-and both CSYS $ z $ axes overlay):
+For a node carrying three translations and three small rotations, the same
+basis change is used for both vector blocks,
+
+\begin{equation}
+    \m{Q}_6
+    =
+    \begin{bmatrix}
+        \m{Q}&\m{0}\\
+        \m{0}&\m{Q}
+    \end{bmatrix}.
+\end{equation}
+
+The detailed theory of coordinate transformations is developed in
+Chapter~\ref{chap:coordinate-transformations}; here the matrix is used only to
+define the local directions in which boundary conditions are applied.
+
+\begin{python}
+def dot3(a, b):
+    value = 0.0
+    for i in range(3):
+        value += a[i] * b[i]
+    return value
+
+
+def cross3(a, b):
+    return np.array([
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0],
+    ])
+
+
+def normalize3(v):
+    length = np.sqrt(dot3(v, v))
+    if length < 1.0e-14:
+        raise ValueError("zero or degenerate direction")
+    return v / length
+
+
+def cartesian_basis_3d(x_direction, xy_direction):
+    ex = normalize3(np.array(x_direction, dtype=float))
+    b = np.array(xy_direction, dtype=float)
+    b_perp = b - dot3(ex, b) * ex
+    ey = normalize3(b_perp)
+    ez = normalize3(cross3(ex, ey))
+    return np.vstack([ex, ey, ez])
+
+
+def six_dof_basis(Q):
+    Q6 = np.zeros((6, 6), dtype=float)
+    Q6[0:3, 0:3] = Q
+    Q6[3:6, 3:6] = Q
+    return Q6
+
+
+Q = cartesian_basis_3d(
+    x_direction=[1.0, 1.0, 0.0],
+    xy_direction=[0.0, 1.0, 1.0],
+)
+Q6 = six_dof_basis(Q)
+
+print(Q)
+print(Q @ Q.T)   # identity to roundoff
+\end{python}
+
+\section{Cylindrical Boundary Bases}
+
+A cylindrical boundary condition is often misunderstood as a transformation of
+the displacement vector into the coordinate values $(r,\varphi,z)$. For
+small displacement structural analysis the practical operation is simpler: at
+each node, construct a local Cartesian basis whose axes point in the radial,
+tangential and axial directions, and impose ordinary local DOF constraints in
+that basis.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.69\textwidth]{img/bc_cylindrical_basis.png}
+    \caption{A cylindrical boundary basis is position-dependent. Each node on
+    the circumference has a different radial and tangential direction even
+    though all nodes refer to the same cylindrical coordinate system.}
+    \label{fig:bc-cylindrical-basis}
+\end{figure}
+
+Let $\m{x}$ be the nodal position, $\m{x}_0$ a point on the cylinder axis, and
+$\m{a}$ the axis direction. First normalize the axis,
+
+\begin{equation}
+    \m{e}_z=\frac{\m{a}}{\norm{\m{a}}}.
+\end{equation}
+
+Remove the axial component from the position vector,
+
+\begin{equation}
+    \m{p}=\m{x}-\m{x}_0,
+    \qquad
+    \m{r}=\m{p}-\left(\m{p}^T\m{e}_z\right)\m{e}_z.
+\end{equation}
+
+The local directions are
+
 \begin{eqarray}
-    x &= r \cos \varphi \\
-    y &= r \sin \varphi \\
-    z &= z \\
+    \m{e}_r
+    &=&
+    \frac{\m{r}}{\norm{\m{r}}},\\
+    \m{e}_{\varphi}
+    &=&
+    \m{e}_z\times\m{e}_r,\\
+    \m{Q}_{cyl}
+    &=&
+    \begin{bmatrix}
+        \m{e}_r^T\\
+        \m{e}_{\varphi}^T\\
+        \m{e}_z^T
+    \end{bmatrix}.
 \end{eqarray}
 
- in one direction and:
- \begin{eqarray}
-     r &= \sqrt{x^2 + y^2} \\
-     \varphi &= \left\{ \begin{array}{cc}
-                indeterminate & if\ x = 0\ and\ y = 0 \\
-                \arcsin \frac{y}{r} & if\ x \ge 0 \\
-                -\arcsin \frac{y}{r} + \pi & if\ x < 0\ and\ y \ge 0 \\
-                -\arcsin \frac{y}{r} + \pi & if\ x < 0\ and\ y < 0 \\
-             \end{array} \right.
- \end{eqarray}
+A radial support is then simply
 
- in the other. One can also use the $ \arctan $ function to compute $ \varphi $:
- \begin{equation}
-     \varphi = \left\{ \begin{array}{cc}
-             indeterminate & if\ x = 0\ and\ y = 0 \\
-             \frac{\pi}{2}\frac{y}{|y|} & if\ x = 0\ and\ y \ne 0 \\
-             \arctan \frac{y}{x} & if\ x > 0 \\
-             \arctan \frac{y}{x} + \pi & if\ x < 0\ and\ y \ge 0 \\
-             \arctan \frac{y}{x} - \pi & if\ x < 0\ and\ y < 0 \\
-         \end{array} \right.
- \end{equation}
+\begin{equation}
+    u_r=0,
+\end{equation}
 
- This is also called the $ \atantwo (y, x) $ function!
+while circumferential and axial motion may remain free.
 
- To transform node coordinates from \textbf{cartesian} to \textbf{cylindrical},
- three transforms are in order:
+\begin{python}
+def cylindrical_basis(point, origin, axis):
+    point = np.array(point, dtype=float)
+    origin = np.array(origin, dtype=float)
+    ez = normalize3(np.array(axis, dtype=float))
 
- \begin{enumerate}
-     \item translate the coordinates so that \textbf{origin} of the new
-         CSYS conforms to the \textbf{origin} of the \textbf{cylidrical}
-         CSYS.
+    p = point - origin
+    axial = dot3(p, ez) * ez
+    radial_vector = p - axial
 
-         \begin{equation}
-             \m{x}_1 = \m{T}_T \m{x}_0
-         \end{equation}
+    if np.sqrt(dot3(radial_vector, radial_vector)) < 1.0e-14:
+        raise ValueError("radial direction undefined on cylinder axis")
 
-         \begin{equation}
-             \begin{bmatrix}
-                 x_1 \\
-                 y_1 \\
-                 z_1 \\
-                 1 \\
-             \end{bmatrix}
-             = \begin{bmatrix}
-                 1 & 0 & 0 & -x_O^c \\
-                 0 & 1 & 0 & -y_O^c \\
-                 0 & 0 & 1 & -z_O^c \\
-                 0 & 0 & 0 & \phantom{-}1 \\
-             \end{bmatrix}
-             \begin{bmatrix}
-                 x_0 \\
-                 y_0 \\
-                 z_0 \\
-                 1 \\
-             \end{bmatrix}
-         \end{equation}
-
-         where $ \m{x}_O^c $ denotes the \textbf{cylindrical} CSYS origin
-         and $ \m{T}_T $ denotes the translation matrix.
-
-    \item \textbf{rotate} the node to a new \textbf{cartesian} CSYS so that
-        the new CSYS \textbf{x-axis} conforms to the cylindrical CSYS
-        \textbf{r-axis} and the new CSYS \textbf{z-axis} conforms to the
-        cylindrical \textbf{z-axis}.
-
-        \begin{equation}
-            \m{x}_2 = \m{T}_R \m{x}_1
-        \end{equation}
-
-        When the cylindrical CSYS is defined by three points - \textbf{origin}
-         $ \m{x}_O^c = \begin{bmatrix} x_O^C & y_O^c & z_O^c \end{bmatrix}^T $,
-         point on \textbf{r-axis} $ \m{x}_{R}^c $
-        and a point in \textbf{rz-plane} $ \m{x}_{RZ}^c $, then:
-
-        \begin{equation}
-            \vec{\m{r}} = \frac{\m{x}_R^c - \m{x}_O^c}{||\m{x}_R^c - \m{x}_O^c||}
-        \end{equation}
-
-        \begin{equation}
-            \hat{\m{z}} = \frac{\m{x}_{RZ}^c - \m{x}_O^c}{||\m{x}_{RZ}^c - \m{x}_O^c||}
-        \end{equation}
-
-        \begin{equation}
-            \vec{\m{y}} = \hat{\m{z}} \times \vec{\m{r}}
-        \end{equation}
-
-        \begin{equation}
-            \vec{\m{z}} = \vec{\m{r}} \times \vec{\m{y}}
-        \end{equation}
-
-        then the transformation can be written:
-        \begin{equation}
-            \begin{bmatrix}
-                x_2 \\
-                y_2 \\
-                z_2 \\
-                1 \\
-            \end{bmatrix}
-            = \begin{bmatrix}
-                \vec{\m{r}}^T & 0 \\
-                \vec{\m{y}}^T & 0 \\
-                \vec{\m{z}}^T & 0 \\
-                \vec{\m{0}}^T & 1 \\
-            \end{bmatrix}
-            \begin{bmatrix}
-                x_1 \\
-                y_1 \\
-                z_1 \\
-                1 \\
-            \end{bmatrix}
-        \end{equation}
-
-         where $ \vec{\m{0}} = \begin{bmatrix} 0 & 0 & 0 \end{bmatrix}^T $
-
-         Combining $ \m{T}_R $ and $ \m{T}_T $ together:
-         \begin{equation}
-             \m{T} = \m{T}_R \m{T}_T
-         \end{equation}
-
-         \begin{equation}
-             \m{T} = \begin{bmatrix}
-                 r_1 & r_2 & r_3 & 0 \\
-                 y_1 & y_2 & y_3 & 0 \\
-                 z_1 & z_2 & z_3 & 0 \\
-             \end{bmatrix}
-             \begin{bmatrix}
-                 1 & 0 & 0 & -x_O^c \\
-                 0 & 1 & 0 & -y_O^c \\
-                 0 & 0 & 1 & -z_O^c \\
-                 0 & 0 & 0 & \phantom{-}1 \\
-             \end{bmatrix}
-         \end{equation}
-
-         \begin{equation}
-             \m{T} = \begin{bmatrix}
-                 r_1 & r_2 & r_3 & -r_1 x_O^c -r_2 y_O^c -r_3 z_O^c  \\
-                 y_1 & y_2 & y_3 & -y_1 x_O^c -y_2 y_O^c -y_3 z_O^c  \\
-                 z_1 & z_2 & z_3 & -z_1 x_O^c -z_2 y_O^c -z_3 z_O^c  \\
-             \end{bmatrix}
-         \end{equation}
+    er = normalize3(radial_vector)
+    ephi = normalize3(cross3(ez, er))
+    return np.vstack([er, ephi, ez])
 
 
-    \item transform the coordinates to the \textbf{cylindrical} CSYS.
-        \begin{equation}
-            \begin{bmatrix}
-                r \\
-                \varphi \\
-                z \\
-            \end{bmatrix}
-            = \begin{bmatrix}
-                \sqrt{x_2^2 + y_2^2} \\
-                \atantwo \left(y_2, x_2\right) \\
-                z_2 \\
-            \end{bmatrix}
-        \end{equation}
+points = np.array([
+    [2.0, 0.0, 1.0],
+    [0.0, 2.0, 1.0],
+    [-2.0, 0.0, 1.0],
+])
 
+for point in points:
+    Qcyl = cylindrical_basis(point, origin=[0.0, 0.0, 0.0],
+                             axis=[0.0, 0.0, 1.0])
+    print("point", point)
+    print(Qcyl)
+\end{python}
+
+The radial direction is undefined for a node exactly on the cylinder axis. A
+solver must therefore detect this geometric singularity and either reject the
+radial/tangential definition or apply an explicitly supplied local Cartesian
+basis. This is an implementation issue that disappears completely in the
+compact mathematical notation.
+
+\subsection{Initial Versus Updated Local Directions}
+
+In a geometrically linear analysis, the local basis is normally constructed
+from the initial nodal coordinates and then kept fixed. A radial support at a
+node therefore constrains motion along the \textit{initial} radial direction.
+If large motion is permitted and the support direction is intended to follow
+the current geometry, the basis must instead be updated,
+
+\begin{equation}
+    \m{Q}_{cyl}=\m{Q}_{cyl}(\m{x}+\m{u}).
+\end{equation}
+
+The latter is a nonlinear constraint because its coefficients depend on the
+unknown configuration. Whether a particular solver's ``cylindrical support''
+is frozen in the initial basis or updated as a follower definition is therefore
+a formulation detail that should be checked when rotations become large.
+
+\section{Prescribed Base Motion}
+
+A rheonomic Dirichlet condition has the form
+
+\begin{equation}
+    \m{u}_p=\closure{\m{u}}_p(t).
+\end{equation}
+
+For the dynamic equilibrium equations
+
+\begin{equation}
+    \m{M}\ddot{\m{u}}
+    +\m{C}\dot{\m{u}}
+    +\m{K}\m{u}
+    =\m{f},
+\end{equation}
+
+partitioning into free and prescribed DOFs gives the free equations
+
+\begin{equation}\label{eq:base-excitation-partition}
+\boxed{
+    \m{M}_{ff}\ddot{\m{u}}_f
+    +\m{C}_{ff}\dot{\m{u}}_f
+    +\m{K}_{ff}\m{u}_f
+    =
+    \m{f}_f
+    -\m{M}_{fp}\ddot{\closure{\m{u}}}_p
+    -\m{C}_{fp}\dot{\closure{\m{u}}}_p
+    -\m{K}_{fp}\closure{\m{u}}_p
+}.
+\end{equation}
+
+Thus a prescribed base displacement, velocity and acceleration appear as
+\textit{effective forcing} of the free coordinates. This is why support motion
+cannot be represented merely by overwriting a displacement after a time step.
+The kinematic history participates in inertia, damping and stiffness coupling.
+The broader dynamics implications are developed later in the book; here the
+important point is that a time-dependent essential condition is still a
+Dirichlet condition, just a rheonomic one.
+
+\section[Implementation View]{Implementation View: From Support Definition to Algebra}
+
+A graphical finite element interface may present a support as a symbol on a
+face or node, but the solver eventually needs discrete information. A typical
+preprocessing path is
+
+\begin{enumerate}
+    \item identify the geometric entity and the attached nodes;
+    \item determine which field components are constrained;
+    \item construct any required local basis;
+    \item map node/DOF identities to global equation numbers;
+    \item generate prescribed values or constraint coefficients;
+    \item choose the numerical enforcement route;
+    \item solve the reduced or augmented equations;
+    \item recover reactions and transform them to the requested output basis.
 \end{enumerate}
 
-\newpage
-\begin{bbox}
-    A \textbf{cylindrical} coordinate system in FEM in the range of \textbf{small}
-    \textbf{displacements} is basically a Cartesian one, just skewed for each
-    node separately so that its \textbf{x} axis coincides with \textbf{r} axis.
-
-    Then the cylindrical to global coordinate transformation is such that:
-    \begin{equation}
-        \begin{bmatrix}
-            x \\
-            y \\
-            z \\
-        \end{bmatrix}_{global}
-        = \begin{bmatrix}
-            r_{11} & r_{12} & r_{13} \\
-            r_{21} & r_{22} & r_{23} \\
-            r_{31} & r_{32} & r_{33} \\
-        \end{bmatrix}
-        \begin{bmatrix}
-            r \cos \varphi \\
-            r \sin \varphi \\
-            z \\
-        \end{bmatrix}_{local}
-        + \begin{bmatrix}
-            x \\
-            y \\
-            z \\
-        \end{bmatrix}_{origin}
-    \end{equation}
-
-    Therefore the Cartesian CSYS transformation matrix for definition of
-    boundary conditions is:
-
-    \begin{enumerate}
-        \item first subtract the cylindrical coordinate origin from the global
-            coordinates:
-            \begin{equation}
-                \begin{bmatrix}
-                    x \\
-                    y \\
-                    z \\
-                \end{bmatrix}_{local}
-                = \begin{bmatrix}
-                    x \\
-                    y \\
-                    z \\
-                \end{bmatrix}_{global}
-                - \begin{bmatrix}
-                    x \\
-                    y \\
-                    z \\
-                \end{bmatrix}_{origin}
-            \end{equation}
-
-        \item then create a transformation matrix that maps the global csys
-            to rotated one such that the \textbf{r} axis coincides with the
-            \textbf{x} axis, $ \M{\varphi} $ axis coincides with the new
-            \textbf{y} axis and \textbf{z} is the same:
-
-            \begin{equation}
-                \m{r}' = \frac{\m{x}_{local}}{|| \m{x}_{local} ||}
-            \end{equation}
-
-            \begin{equation}
-                \m{z} = \frac{\m{z}_{cyl}}{|| \m{z}_{cyl} ||}
-            \end{equation}
-
-            \begin{equation}
-                \M{\varphi} = \m{z} \times \m{r}'
-            \end{equation}
-
-            \begin{equation}
-                \m{r} = \M{\varphi} \times \m{z}
-            \end{equation}
-
-            the transformation matrix is then:
-            \begin{equation}
-                \m{T} = \begin{bmatrix}
-                    r_1 & r_2 & r_3 \\
-                    \varphi_1 & \varphi_2 & \varphi_3 \\
-                    z_1 & z_2 & z_3 \\
-                \end{bmatrix}
-            \end{equation}
-
-        \item This transformation matrix $ \m{T} $ is finally applied and
-            \textbf{BC}s are imposed.
-            \begin{equation}
-                \m{T}^T \m{K} \m{T} \m{\closure{u}} = \m{T}^T \m{f}
-            \end{equation}
-
-    \end{enumerate}
-
-\end{bbox}
+For an axis-aligned fixed displacement, steps 3 and 5 are trivial. For a skew
+roller, step 3 creates a local basis. For a cylindrical support, the basis must
+be created separately at every node. For a general node-to-surface relation,
+geometry additionally determines interpolation coefficients, as shown in
+Chapter~\ref{chap:multifreedom-constraints}. Contact adds repeated search,
+projection and state classification in Chapter~\ref{chap:contact-formulations}.
 
 \begin{bbox}
-    If there already is a transformation matrix for the cylindrical system
-    prepared, such that:
-    \begin{equation}
-        \m{x}_{local} = \m{T}_{cyl} \left( \m{x}_{global} - \m{x}_{origin} \right)
-    \end{equation}
+\textbf{Engineering note -- The support icon is not the formulation.}
 
-    or:
-    \begin{equation}
-        \m{x}_{global} = \m{T}_{cyl}^T \m{x}_{local} + \m{x}_{origin}
-    \end{equation}
-
-    then:
-    \begin{equation}
-        r = \sqrt{x_{local}^2 + y_{local}^2}
-    \end{equation}
-
-    \begin{equation}
-        \varphi = \atantwo \frac{y_{local}}{x_{local}}
-    \end{equation}
-
-    \begin{equation}
-        z = z_{local}
-    \end{equation}
-
-    because $ \cos \varphi = x / r $ and $ \sin \varphi = y / r $,
-    then the new transformation matrix is composed:
-    \begin{equation}
-        \m{T} = \begin{bmatrix}
-            \cos & -\sin & 0 \\
-            \sin & \cos & 0 \\
-            0 & 0 & 1\\
-        \end{bmatrix}
-        = \begin{bmatrix}
-            x / r & -y/r & 0 \\
-            y/r & x/r & 0 \\
-            0 & 0 & 1 \\
-        \end{bmatrix}
-    \end{equation}
-
-    and finally displacements are transformed from global to local:
-    \begin{equation}
-        \m{u}_{local} = \m{T} \m{T}_{cyl} \m{u}_{global}
-    \end{equation}
+Two solver features can display the same roller or cylindrical-support symbol
+while constructing the algebra differently: one may rotate nodal DOFs, another
+may generate explicit constraint equations, and a third may use an internal
+multiplier object. For linear orthonormal kinematics these routes can represent
+the same admissible motion, but they may differ in reaction recovery, nonlinear
+updating, modal compatibility and solver restrictions.
 \end{bbox}
 
+\section{Common Modelling Caveats}
 
+\subsection{Do Not Confuse Force and Displacement Boundary Data}
+
+A force-controlled and displacement-controlled test may load the same physical
+specimen, but they define different mathematical problems. Prescribing both the
+force and the displacement of the same scalar boundary component generally
+over-specifies the problem unless one quantity is intended only for reaction
+measurement.
+
+\subsection{A Free DOF Is Not the Same as a Zero DOF}
+
+Leaving $u_x$ unconstrained means the solver determines $u_x$ from equilibrium.
+Setting $u_x=0$ removes that admissible motion. This simple distinction is a
+frequent source of unintended stiffness when symmetry, rollers or local support
+directions are defined too aggressively.
+
+\subsection{Check the Direction Basis}
+
+A skew constraint is only as correct as its local basis. Nearly parallel input
+vectors can make a three-dimensional basis ill-conditioned; cylindrical radial
+directions are singular on the axis; and inconsistent axis conventions can
+reverse tangential directions. Basis construction should therefore include
+normalization, orthogonality and degeneracy checks rather than only formulas.
+
+\subsection{Large Rotation Changes the Meaning of ``Direction''}
+
+A direction fixed in the global frame, a direction fixed in the initial local
+frame and a direction that follows the deforming structure are three different
+constraints. They coincide only for sufficiently small rotations. This issue is
+revisited for rigid and remote couplings in
+Chapter~\ref{chap:kinematic-constraints}.
+
+\subsection{Reactions Belong to the Enforced Basis}
+
+If a support is imposed in a local normal direction, the most direct reaction
+is the work-conjugate force in that local direction. Transforming reactions to
+global components is straightforward, but the basis must be the same one used
+for the kinematic constraint. Mixing local displacements with global reactions
+can obscure equilibrium checks.
+
+\section{Engineering Selection Guide}
+
+\begin{center}
+\small
+\renewcommand{\arraystretch}{1.08}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.28\textwidth} >{\raggedright\arraybackslash}p{0.25\textwidth} >{\raggedright\arraybackslash}p{0.31\textwidth}}
+\hline
+\textbf{Engineering requirement} & \textbf{Natural formulation} & \textbf{Main check}\\
+\hline
+Prescribe one global component & SDOF Dirichlet/SPC & Homogeneous or imposed value?\\
+Apply force or traction & Neumann/natural load & Correct work-conjugate component?\\
+Elastic support & Robin/spring relation & Physical stiffness and reference position?\\
+Roller in arbitrary direction & Skew/local SDOF & Correct normalized local basis?\\
+Radial or circumferential support & Position-dependent cylindrical basis & Singular axis and initial/updated direction?\\
+Prescribed support history & Rheonomic Dirichlet condition & Displacement, velocity and acceleration consistency?\\
+Relate several independent DOFs & MFC/MPC, Chapter~\ref{chap:multifreedom-constraints} & Rank, scaling and enforcement method?\\
+Allow opening or one-sided motion & Contact, Chapter~\ref{chap:contact-formulations} & Active state and gap definition?\\
+\hline
+\end{tabular}
+\end{center}
+
+\section{Summary}
+
+Boundary conditions are the information that turns a field equation into a
+specific engineering problem. In the standard displacement formulation,
+Dirichlet conditions prescribe motion, Neumann conditions prescribe force or
+traction, and Robin conditions relate the two through a boundary constitutive
+law such as an elastic support. These mathematical names are best understood as
+compact descriptions of familiar engineering definitions rather than as
+separate physical phenomena.
+
+Kinematic constraints can simultaneously be classified as holonomic or
+non-holonomic, bilateral or unilateral, scleronomic or rheonomic, and linear or
+nonlinear. These classification axes answer different questions and should not
+be collapsed into one vocabulary list.
+
+At the discrete level, the simplest essential boundary condition prescribes one
+DOF. A skew boundary condition remains one scalar restriction if expressed in
+its natural local basis; only its global representation contains several
+coefficients. Three-dimensional Cartesian and cylindrical support directions
+are therefore primarily problems of constructing a reliable orthonormal basis
+before imposing an otherwise ordinary SDOF condition.
+
+The next chapter generalizes this idea. Instead of prescribing one local DOF,
+Chapter~\ref{chap:multifreedom-constraints} constructs relations among several
+discrete DOFs and examines the numerical methods used to enforce them.
