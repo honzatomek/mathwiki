@@ -37,7 +37,16 @@ summarized as
 \end{equation}
 
 with the contact reaction additionally governed by the complementarity conditions
-introduced in Chapter~\ref{chap:contact-formulations}.
+introduced in Chapter~\ref{chap:contact-formulations}. Figure~\ref{fig:kinematic-constraint-classification}
+places these relations in a common engineering framework and also emphasizes that
+the choice of numerical enforcement remains a separate question.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{img/kinematic_constraint_classification.png}
+\caption{Classification of engineering relative-motion constraints used throughout this chapter. General multifreedom constraints, rigid couplings, RBE3 interpolation and geometric constraints are bilateral equality relations; contact is the complementary unilateral case discussed in Chapter~\ref{chap:contact-formulations}. Remote or reference coupling objects are higher-level modelling definitions that may generate or combine several of these relations. The enforcement technique is a separate numerical choice treated in Chapter~\ref{chap:multifreedom-constraints}.}
+\label{fig:kinematic-constraint-classification}
+\end{figure}
 
 \section{From General Constraints to Engineering Couplings}
 
@@ -76,7 +85,7 @@ algorithm. The physical definition should therefore be selected first; the
 numerical enforcement method is a second decision.
 \end{bbox}
 
-\section{Evolution of the Rigid-Element Family}
+\section{Evolution of Kinematic Coupling Definitions}
 
 Early finite element programs exposed general multipoint or constraint equations
 directly. This remains the most general representation: any linear relation that
@@ -105,7 +114,16 @@ remote points, reference points, surface-based constraints, joints and coupling
 objects. Such objects may internally generate classical constraint equations,
 interpolation relations, contact-based MPCs or dedicated constraint elements.
 The GUI object is consequently not the theory. The engineering behaviour of the
-underlying relation is what matters.
+underlying relation is what matters. Figure~\ref{fig:kinematic-coupling-evolution}
+summarizes this development from explicit constraint coefficients toward
+increasingly specialized and higher-level engineering definitions.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=\textwidth]{img/kinematic_coupling_evolution.png}
+\caption{Schematic evolution of commonly used kinematic coupling definitions. The sequence emphasizes the engineering progression from explicit general constraints, through the familiar RBE family, toward higher-level coupling objects. It is not intended as a solver-specific command or release chronology.}
+\label{fig:kinematic-coupling-evolution}
+\end{figure}
 
 \section{Classification of Kinematic Constraints}
 
