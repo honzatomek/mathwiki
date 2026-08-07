@@ -48,7 +48,7 @@ the choice of numerical enforcement remains a separate question.
 \label{fig:kinematic-constraint-classification}
 \end{figure}
 
-\section{From General Constraints to Engineering Couplings}
+\section{From General Constraints to Couplings}
 
 A general linear multifreedom constraint may be written in the form used in
 Chapter~\ref{chap:multifreedom-constraints},
@@ -85,7 +85,7 @@ algorithm. The physical definition should therefore be selected first; the
 numerical enforcement method is a second decision.
 \end{bbox}
 
-\section{Evolution of Kinematic Coupling Definitions}
+\section{Evolution of Kinematic Couplings}
 
 Early finite element programs exposed general multipoint or constraint equations
 directly. This remains the most general representation: any linear relation that
@@ -147,9 +147,9 @@ RBE3 & Weighted interpolation of reference motion & Load distribution, remote su
 \hline
 Fixed distance & Constant distance between geometric points & Links, rods, mechanism constraints \\
 \hline
-Fixed angle / joint & Selected relative rotations or translations suppressed & Revolute, cylindrical, spherical and other joints \\
+Fixed angle or joint & Selected relative rotations or translations suppressed & Revolute, cylindrical, spherical and other joints \\
 \hline
-Remote/reference coupling & Higher-level interface coordinates combined with a rigid, interpolating or other coupling law & Remote loads, displacements, springs, bushings and joints \\
+Remote or reference coupling & Higher-level interface coordinates combined with a rigid, interpolating or other coupling law & Remote loads, displacements, springs, bushings and joints \\
 \hline
 Contact & Inequality and complementarity conditions & Separation, sliding, impact and friction \\
 \hline
@@ -273,7 +273,7 @@ among several nodes. Both describe rigid-body compatibility; RBE1 simply offers
 more freedom in how the independent and dependent components are selected.
 \end{bbox}
 
-\subsection{Worked Planar Example}
+\subsection{Worked Example -- Planar RBE1}
 
 The three-dimensional definition is easiest to understand through its planar
 analogue. A rigid body moving in the $x$--$y$ plane has three rigid-body degrees
@@ -601,7 +601,7 @@ by the stiffness and connectivity of the attached structure while satisfying the
 rigid kinematics and overall equilibrium. This is one of the key differences from
 the weighting concept used by an RBE3.
 
-\subsection{Worked Coefficient Example}
+\subsection{Worked Example -- RBE2 Coefficients}
 
 The coefficient construction is sufficiently important that it is useful to work
 through one complete spider rather than showing only the compact matrix notation.
@@ -951,11 +951,10 @@ RBE3 is generally more appropriate. RBE2 should be selected because the
 spider.
 \end{bbox}
 
-Overlapping RBE2 regions also require care. If the same structural DOF is made
-dependent in more than one incompatible relation, or if a rigid spider duplicates
-a prescribed boundary condition, joint or bonded constraint, the resulting
-system may contain redundant or contradictory equations. The independence issues
-discussed in Chapter~\ref{chap:multifreedom-constraints} apply without change.
+Interactions between RBE2 regions, prescribed boundary conditions, joints and
+contact are treated together in Section~\ref{sec:constraint-interaction}, where
+the distinction between independent, redundant and incompatible constraints is
+made explicit.
 
 \section{RBE3 -- Interpolation Coupling}\label{sec:rbe3}
 
@@ -974,14 +973,12 @@ reference point are then transferred back to the attachment nodes by work
 equivalence. The interpolation therefore introduces kinematic relations, but no
 material stiffness of its own.
 
-The detailed definition of an RBE3 varies between finite element programs. Some
-implementations allow several groups of attachment DOFs, different weighting
-factors and selected reference DOFs. The derivation below considers the most
-important and most transparent case: three translational DOFs at each attachment
-node are used to recover the six generalized translations and rotations of a
-reference point. This formulation already contains the main governing
-principles and corresponds closely to the common engineering interpretation of
-an RBE3 spider.
+RBE3 details vary between finite element programs: implementations may allow
+multiple attachment-DOF groups, different weights and selected reference DOFs.
+The derivation below uses the clearest common case, in which three translational
+DOFs at each attachment node recover six generalized reference translations and
+rotations. It contains the governing principles of the usual engineering RBE3
+spider.
 
 Figure~\ref{fig:rbe2-rbe3-deformation} summarizes this reversal visually.
 
@@ -1202,7 +1199,7 @@ the work-equivalent load distribution. No spring stiffness has been introduced
 and no rigid plate has been imposed. The attachment nodes are coupled only
 through the selected generalized reference motion.
 
-\subsection{Worked Coefficient Example}
+\subsection{Worked Example -- RBE3 Coefficients}
 
 To make the difference from RBE2 as direct as possible, consider exactly the
 same geometry used in the RBE2 worked example. The reference point is
@@ -1370,10 +1367,9 @@ reference interpolation matrix
 \end{equation}
 }
 
-This matrix is the RBE3 counterpart of the RBE2 coefficient matrix in
-Eq.~\eqref{rbe2-example-full-transformation}. The direction of the mapping is
-opposite: the twelve attachment translations determine six generalized
-reference motions.
+This is the RBE3 counterpart of the RBE2 matrix in
+Eq.~\eqref{rbe2-example-full-transformation}, but the mapping is reversed:
+twelve attachment translations determine six generalized reference motions.
 
 The transpose gives the corresponding load distribution. For a pure normal
 force $F_z$ applied at the reference point,
@@ -1816,7 +1812,7 @@ cylindrical joint leaves one translation and one rotation along a common axis.
 Dedicated joint elements merely package these relations, often with nonlinear
 updates, limits, friction or stiffness added.
 
-\subsection{Worked Example: Exact Distance versus the Initial Tangent}
+\subsection{Worked Example -- Exact Distance versus the Initial Tangent}
 
 Consider a two-dimensional link of prescribed length
 
@@ -2007,7 +2003,7 @@ stiffness and the load-distribution rule remain separate modelling decisions.
 The analyst can therefore change the support law without replacing the local
 mesh by an artificial rigid plate.
 
-\subsection{Worked Example: Deformable Remote Flange on a Bushing}
+\subsection{Worked Example -- Deformable Remote Flange on a Bushing}
 
 Consider a square flange represented by four attachment nodes at
 
@@ -2098,10 +2094,10 @@ nodes at $x=-a$ and $-1{,}000~\mathrm{N}$ to the two nodes at $x=+a$. Hence
     \end{bmatrix}^{T}\mathrm{N}}.
 \end{equation}
 
-The resultant is $8~\mathrm{kN}$ and the nodal-force couple recovers exactly
-$M_y=200~\mathrm{kNmm}$. The bushing therefore sees a compact two-coordinate
-interface while the finite element mesh receives a statically equivalent
-distributed load.
+The resultant force is $8~\mathrm{kN}$. The nodal-force couple recovers the
+applied moment, $M_y=200~\mathrm{kN\,mm}$. The bushing therefore sees a
+compact two-coordinate interface while the finite element mesh receives a
+statically equivalent distributed load.
 
 The crucial distinction from a rigid remote coupling appears in the kinematics.
 If the four nodes were rigidly tied to the remote point, their normal
@@ -2137,24 +2133,14 @@ that warping; the bushing acts only on the generalized interface coordinates.
 This is the mathematical content of a \emph{deformable remote support}.
 
 \begin{bbox}
-\textbf{Engineering note -- Coupling law and support law are separate.}
+\textbf{Engineering note -- Separate the interface kinematics from the support law.}
 
-Changing the RBE3-like interpolation to a rigid attachment changes the flange
-kinematics even if the same bushing matrix is retained. Changing the bushing
+Changing an interpolating attachment to a rigid one changes the flange
+kinematics even if the same bushing matrix is retained; changing the bushing
 stiffness changes the support compliance without changing how flange motion is
-measured. Keeping these two decisions separate is one of the main advantages of
-a reference-point formulation.
-\end{bbox}
-
-\begin{bbox}
-\textbf{Engineering note -- A remote point is not automatically an RBE2 or an RBE3.}
-
-``Rigid'' and ``deformable'' remote behaviours often resemble RBE2 and RBE3,
-respectively, but modern solvers may generate different internal formulations,
-especially for large rotations, surface-based constraints or alternative
-constraint-enforcement options. The engineering behaviour should be identified
-first; the solver manual is then used to determine how that behaviour is
-implemented in the selected analysis.
+measured. A higher-level remote-point object may realize either behaviour using
+solver-specific equations, so ``rigid'' or ``deformable'' should be interpreted
+from the generated kinematics rather than assumed to be literally RBE2 or RBE3.
 \end{bbox}
 
 \subsection{Example Implementations in Commercial Solvers}
@@ -2198,36 +2184,36 @@ limitations of a particular classical RBE3 command.
 \section{Advanced Considerations}
 
 The equations developed in the preceding sections describe the intended
-kinematic relation, but they do not by themselves determine how that relation
-behaves when the geometry changes. Two effects are particularly easy to miss in
-industrial models: finite rotation and thermal expansion. Both change the
-geometry that a coupling is supposed to relate. A coupling that is perfectly
-reasonable in a linear mechanical analysis can therefore become an unintended
-source of stiffness or reaction load in a geometrically nonlinear or
-thermomechanical analysis.
+kinematic relation, but practical behaviour also depends on the analysis in
+which that relation is used. Finite rotation changes the geometry of the
+constraint, thermal expansion can change its stress-free dimensions, eigenshape
+extraction requires a fixed linear tangent, and neighbouring constraints can
+remove motions that neither definition was intended to suppress on its own.
+These effects are considered together below because they determine whether a
+formally correct coupling remains a correct engineering model.
 
 \subsection{Small-Displacement and Finite-Rotation Formulations}\label{sec:rbe-advanced-small-large}
 
-Consider a reference point at initial position $\m{x}_{m0}$ and a dependent
+Consider a reference point at initial position $\m{x}_{r0}$ and a dependent
 point at
 
 \begin{equation}
-    \m{x}_{s0}=\m{x}_{m0}+\m{r}_0,
+    \m{x}_{s0}=\m{x}_{r0}+\m{r}_0,
 \end{equation}
 
 where $\m{r}_0$ is the initial rigid arm. If the reference point undergoes a
-translation $\m{u}_m$ and a finite rotation represented by the orthogonal
+translation $\m{u}_r$ and a finite rotation represented by the orthogonal
 rotation tensor $\m{R}$, the exact rigid-body relation is
 
 \begin{equation}\label{rbe-finite-rotation-relation}
-    \boxed{\m{x}_s=\m{x}_m+\m{R}\m{r}_0}.
+    \boxed{\m{x}_s=\m{x}_r+\m{R}\m{r}_0}.
 \end{equation}
 
-Since $\m{x}_m=\m{x}_{m0}+\m{u}_m$, the corresponding dependent displacement is
+Since $\m{x}_r=\m{x}_{r0}+\m{u}_r$, the corresponding dependent displacement is
 
 \begin{equation}\label{rbe-finite-displacement-relation}
     \m{u}_s
-    =\m{u}_m+(\m{R}-\m{I})\m{r}_0.
+    =\m{u}_r+(\m{R}-\m{I})\m{r}_0.
 \end{equation}
 
 The familiar linear RBE2 equation follows by linearizing the rotation tensor
@@ -2240,7 +2226,7 @@ about the initial configuration,
 which gives
 
 \begin{equation}\label{rbe-small-rotation-relation}
-    \boxed{\m{u}_s\approx\m{u}_m+\m{\theta}\times\m{r}_0}.
+    \boxed{\m{u}_s\approx\m{u}_r+\m{\theta}\times\m{r}_0}.
 \end{equation}
 
 Equation~\eqref{rbe-small-rotation-relation} is not the exact rigid-body motion;
@@ -2255,7 +2241,7 @@ The limitation is specifically associated with finite rotation and other
 configuration-dependent geometry.
 
 
-\subsubsection{Worked Example: A Rigid Arm Rotated Through $90^\circ$}
+\subsubsection{Worked Example -- A Rigid Arm Rotated Through $90^\circ$}
 
 Consider a planar rigid arm of length
 
@@ -2445,7 +2431,7 @@ arm then changes approximately according to
 In a small-rotation formulation this appears as a nonhomogeneous constraint,
 
 \begin{equation}\label{rbe-thermal-nonhomogeneous}
-    \m{u}_s-\m{u}_m-\m{\theta}_m\times\m{r}_0
+    \m{u}_s-\m{u}_r-\m{\theta}_r\times\m{r}_0
     =\alpha_r\Delta T\,\m{r}_0.
 \end{equation}
 
@@ -2467,13 +2453,13 @@ Eq.~\eqref{rbe-thermal-arm} is more generally obtained from
 A finite-rotation thermomechanical coupling combines both effects,
 
 \begin{equation}\label{rbe-thermal-finite-rotation}
-    \boxed{\m{x}_s=\m{x}_m+\m{R}\m{r}_T}.
+    \boxed{\m{x}_s=\m{x}_r+\m{R}\m{r}_T}.
 \end{equation}
 
 Thus rotation changes the \emph{direction} of the arm while thermal expansion
 changes its stress-free \emph{length}.
 
-\subsubsection{Worked Example: Artificial Thermal Restraint}
+\subsubsection{Worked Example -- Artificial Thermal Restraint}
 
 Consider an idealized steel member for which a numerical rigid coupling spans
 
@@ -2536,23 +2522,17 @@ Conversely, if the rigid region represents a real insert with a different
 coefficient of thermal expansion, choosing $\alpha_r\neq\alpha_s$ may be exactly
 the intended physical model.
 
-\paragraph{Engineering note --- an RBE3 is different.}
-An interpolation coupling does not generally preserve all pairwise distances of
-the attachment patch and therefore does not rigidly suppress local in-plane
-thermal expansion in the same manner as an RBE2 spider. Nevertheless, thermal
-expansion can still generate generalized translation or rotation of the remote
-point, and any restraint attached to that point can react those generalized
-motions. Thermal behaviour must therefore be assessed from the complete
-coupling-plus-boundary-condition system rather than from the element name alone.
+\begin{bbox}
+\textbf{Engineering note -- Thermal compatibility is a system property.}
 
-\paragraph{Engineering note --- nonuniform temperature fields.}
-A single thermal expansion coefficient and a single representative temperature
-cannot reproduce arbitrary differential expansion over a large attachment
-region. If the connected surface experiences a strong temperature gradient, a
-rigid coupling may still impose an unrealistic kinematic simplification even
-when its average thermal expansion is correct. In such cases the physical
-connection geometry, a more local coupling, or an explicitly deformable
-interface may be required.
+An interpolation coupling does not rigidly preserve every pairwise distance of
+the attachment patch, but a restrained reference point can still react the
+generalized thermal motion it measures. Conversely, assigning one expansion
+coefficient to a rigid coupling cannot reproduce an arbitrary temperature
+gradient over a large region. Assess the coupling together with its supports and
+temperature field; use a more local or explicitly deformable connection when
+differential expansion is important.
+\end{bbox}
 
 \subsection{Modal and Dynamic Analyses}\label{sec:coupling-modal-dynamics}
 
@@ -2675,9 +2655,10 @@ base analysis and a linear modal perturbation are not contradictory.
 
 \subsubsection{RBE2 and RBE3 in Modal Analysis}
 
-The RBE2 transformation derived in Section~\ref{sec:rbe2} is a direct example of
-Eq.~\eqref{coupling-modal-nullspace-transform}. Its kinematic reduction acts on
-the mass matrix as well as on the stiffness matrix,
+The RBE2 transformation is a direct example of
+Eq.~\eqref{coupling-modal-nullspace-transform}. As derived in
+Section~\ref{sec:rbe2}, its kinematic reduction acts on the mass matrix as well
+as on the stiffness matrix,
 
 \begin{equation}
     \widehat{\m{K}}=\m{T}^{T}\m{K}\m{T},
@@ -3476,8 +3457,8 @@ The numerical symptom again depends on enforcement:
     \item elimination may simply remove the accidentally constrained mode,
     \item a penalty relation may replace it by an artificial very-high-frequency
           constraint mode,
-    \item redundant Lagrange multipliers may introduce a singular augmented
-          eigenproblem, or algebraic zero-energy modes that require special handling.
+    \item multiplier redundancy may produce a singular augmented eigenproblem
+          or algebraic modes requiring special treatment.
 \end{itemize}
 
 Thus an unexpectedly high natural frequency is not always caused by material or
@@ -3543,42 +3524,52 @@ objects may be perfectly complementary, while one badly chosen overlap can
 silently remove a real deformation mode.
 \end{bbox}
 
-\section{Engineering Selection Guidelines}
+\clearpage
+\section{Engineering Selection Guidelines}\label{sec:coupling-selection-guidelines}
 
-A practical selection can be organized around a few questions.
+The most useful first question is not which solver command to choose, but which
+relative motion the physical connection should permit. Table~\ref{tab:coupling-decision-guide}
+collects the main choices developed in this chapter.
+
+\begin{center}
+\footnotesize
+\begin{tabular}{|>{\raggedright\arraybackslash}p{0.22\textwidth}|>{\raggedright\arraybackslash}p{0.22\textwidth}|>{\raggedright\arraybackslash}p{0.38\textwidth}|}
+\hline
+\textbf{Engineering requirement} & \textbf{Natural starting formulation} & \textbf{Main modelling check} \\
+\hline
+Attached region is intentionally rigid & RBE2-type rigid coupling & Local bending, ovalization and warping are deliberately removed. \\
+\hline
+Transfer a resultant force, moment or generalized motion while retaining local deformation & RBE3-type interpolation coupling & Choose attachment nodes and weights to represent the intended load path; do not assume equal weights imply uniform traction. \\
+\hline
+Extended flexible region connected through finite translational and rotational compliance & Interpolation coupling plus spring or bushing & Keep coupling kinematics and support stiffness separate; include real compliance when connector load sharing matters. \\
+\hline
+Exact constant distance, angle or joint motion & Geometric constraint or dedicated joint & Verify nonlinear updating for finite motion and use the operating-point tangent for linear modes. \\
+\hline
+Interface may open, close, slide or change state & Contact or other unilateral/nonlinear connection & A permanent RBE/MPC cannot represent changing active status. \\
+\hline
+Remote load, mass, support or joint needs generalized interface coordinates & Remote/reference coupling & Inspect the underlying rigid/interpolating formulation rather than inferring behaviour from the GUI object name. \\
+\hline
+\end{tabular}
+\captionof{table}{Solver-independent decision guide for the main coupling classes discussed in this chapter.}\label{tab:coupling-decision-guide}
+\end{center}
+
+After selecting the physical relation, four cross-cutting checks remain:
 
 \begin{enumerate}
-    \item \textbf{Must the attached region itself remain rigid?}
-          If yes, an RBE2-type rigid coupling is appropriate. If no, do not use a
-          rigid spider merely to distribute a load.
-    \item \textbf{Is the objective to transmit a resultant force, moment or
-          generalized support motion while preserving local deformation?}
-          An RBE3-type interpolation coupling is usually the natural starting
-          point.
-    \item \textbf{Does the connection possess finite compliance?}
-          Model that compliance with a spring, bushing, beam, cohesive law or
-          explicit geometry. An RBE3 may be used to distribute its endpoint
-          reaction, but it does not replace the constitutive component.
-    \item \textbf{Can the connection open, slide or change status?}
-          Use contact or an appropriate nonlinear joint rather than a permanent
-          RBE constraint.
-    \item \textbf{Are large rotations expected?}
-          Verify that the chosen implementation updates its constraint geometry.
-          Do not infer finite-rotation capability from the RBE name alone.
-    \item \textbf{Is thermal expansion important?}
-          Check whether the coupling expands consistently with the represented
-          physical part or introduces an unintended restraint.
-    \item \textbf{Does the local traction distribution matter?}
-          A resultant-equivalent RBE3 load is not automatically a uniform
-          pressure. Use area-consistent weights or an actual surface load when
-          necessary.
-    \item \textbf{How many spider legs are really required?}
-          Choose a well-spaced set that spans the intended motion. Avoid huge
-          spiders unless their additional resolution has a demonstrated purpose.
-    \item \textbf{Does another modelling object already restrict the same motion?}
-          Trace the constraint path through supports, spiders, joints, contact and
-          prescribed DOFs. Complementary objects are useful; duplicated or
-          incompatible restrictions create hidden stiffness or numerical singularity.
+    \item \textbf{Geometry:} if large rotations are expected, verify that the
+          implementation updates the constraint geometry rather than retaining
+          the initial tangent.
+    \item \textbf{Thermal behaviour:} if thermal expansion matters, verify that
+          the coupling does not suppress the stress-free motion of the represented
+          connection.
+    \item \textbf{Dynamics and load distribution:} for modal analysis, verify
+          that a fixed linear tangent exists and is supported by the eigensolver;
+          for distributed loading, distinguish resultant equivalence from the
+          local traction field.
+    \item \textbf{Constraint interaction and size:} trace other supports,
+          contact, joints and spiders acting on the same DOFs, and use only as
+          many well-spaced spider legs as are needed to span the intended motion
+          and load path.
 \end{enumerate}
 
 \begin{bbox}
@@ -3591,27 +3582,18 @@ wrong physical constraint is still the wrong model.
 
 \section{Summary}
 
-Kinematic couplings are best understood as engineering definitions of admissible
-relative motion. Chapter~\ref{chap:multifreedom-constraints} established the
-numerical methods by which equality constraints can be enforced; this chapter
-has focused on constructing the constraints themselves.
+Kinematic couplings define admissible relative motion; Chapter~\ref{chap:multifreedom-constraints}
+covers how such constraints are enforced. RBE1 distributes retained rigid-body
+coordinates among nodal components. RBE2 maps reference translation and rotation
+to dependent nodes and removes their relative deformation. RBE3 instead
+interpolates generalized reference motion from attachment nodes and returns loads
+by virtual work, allowing local deformation to remain.
 
-RBE1 represents a general rigid-coupling concept in which the retained rigid-body
-coordinates may be distributed among several nodal components. RBE2 collects the
-retained translation and rotation at a reference node and maps them to dependent
-nodes, thereby creating a rigid region.
-RBE3 reverses that logic: it interpolates generalized reference motion from a set
-of attachment nodes and transfers forces back by virtual-work equivalence,
-thereby preserving local deformation of the attached surface.
-
-Fixed-distance and joint constraints show why the RBE family is only one part of
-a broader subject. Their exact equations are geometric and generally nonlinear,
-and they may be enforced by multipliers, penalty methods or other algorithms.
-Contact, treated in Chapter~\ref{chap:contact-formulations}, extends the same
-constraint viewpoint to inequalities and changing active sets.
-
-Finally, the practical behaviour of a coupling depends on details that are easy
-to overlook: small- versus finite-rotation kinematics, thermal expansion, local
-load weighting, interaction with other constraints, and the number and placement
-of spider legs. These details determine whether a convenient modelling shortcut
-represents the intended engineering connection or silently changes the structure.
+Fixed-distance relations and joints are geometric equality constraints, while
+contact (Chapter~\ref{chap:contact-formulations}) adds unilateral relations with
+changing active sets. Remote/reference objects provide generalized interfaces
+above these formulations. Finite rotation, thermal expansion, modal
+linearization, load weighting and neighbouring constraints can all alter their
+practical behaviour. The durable rule of Section~\ref{sec:coupling-selection-guidelines}
+is therefore to define the permitted relative motion first, then choose the
+formulation and finally its software implementation.
