@@ -243,7 +243,7 @@ Both operations preserve the Euclidean norm,
 
 \begin{python}
 import numpy as np
-from math import cos, sin, pi, sqrt
+from math import cos, sin, pi, sqrt, atan2
 
 
 def norm(v):
@@ -389,7 +389,7 @@ print(np.array([[Q[0,0], Q[0,1], Q[0,2]]]))
 The printed product $\m{Q}\m{Q}^{T}$ should be the identity to roundoff.
 No matrix inverse is needed because orthogonality supplies it analytically.
 
-\section{Constructing a Local Frame from Engineering Geometry}
+\section[Local Frames from Engineering Geometry]{Constructing a Local Frame from Engineering Geometry}
 
 Finite element inputs rarely define a local frame by three perfect orthonormal
 vectors. More commonly the analyst supplies a point-to-point direction and a
@@ -469,7 +469,7 @@ this chapter maps global components into local components. If a code stores basi
 vectors as columns instead, the corresponding transformation appears transposed.
 The geometry is the same; the storage convention is different.
 
-\section{Composing Rotations and Rotation Parameterizations}
+\section[Rotation Composition and Parameterizations]{Composing Rotations and Rotation Parameterizations}
 
 \subsection{Rotation order matters}
 
@@ -498,46 +498,439 @@ specified.
 \subsection{Euler and Tait--Bryan angles}
 
 Three-angle parameterizations are compact and intuitive, but they are
-sequence-dependent. The six sequences that use three different axes are often
+sequence-dependent. The six sequences that use three different axes are usually
 called \textit{Tait--Bryan} sequences,
 
 \begin{equation}
     XYZ,\ XZY,\ YXZ,\ YZX,\ ZXY,\ ZYX,
 \end{equation}
 
-while the six proper Euler sequences repeat the first axis,
+while the six \textit{proper Euler} sequences repeat the first axis,
 
 \begin{equation}
     XYX,\ XZX,\ YXY,\ YZY,\ ZXZ,\ ZYZ.
 \end{equation}
 
-For the common active fixed-axis composition
+The compact overview is useful for understanding the parameterizations, but in
+engineering work the complete equations are often needed as a reference when
+reading solver output, reconstructing an orientation from a rotation matrix, or
+checking an implementation. For that reason all twelve sequences are collected in a single reference
+table below.
 
-\begin{equation}
-    \m{Q}=\m{Q}_z(\psi)\m{Q}_y(\theta)\m{Q}_x(\varphi),
+\subsubsection{Convention used in the reference equations}
+
+The equations in this section use \textbf{active rotations about fixed global
+axes}. A sequence $ABC$ means: rotate first about axis $A$ through $\alpha$,
+then about $B$ through $\beta$, and finally about $C$ through $\gamma$. Thus,
+
+\begin{equation}\label{eq:coord-euler-sequence-convention}
+    \boxed{
+    \m{Q}_{ABC}(\alpha,\beta,\gamma)
+    =\m{Q}_{C}(\gamma)\m{Q}_{B}(\beta)\m{Q}_{A}(\alpha)
+    }.
 \end{equation}
 
-and away from the singular configuration $\cos\theta=0$,
+The rightmost rotation acts first. Intrinsic rotations about moving axes can be
+represented by the same matrix using the reversed sequence, but the angle names
+must then be interpreted accordingly. This is why a bare statement such as
+``XYZ Euler angles'' is incomplete unless the convention is also stated.
+
+For compactness, define
+
+\begin{equation}
+\begin{aligned}
+    c_\alpha&=\cos\alpha, & s_\alpha&=\sin\alpha,\\
+    c_\beta&=\cos\beta,  & s_\beta&=\sin\beta,\\
+    c_\gamma&=\cos\gamma,& s_\gamma&=\sin\gamma.
+\end{aligned}
+\end{equation}
+
+For the reconstruction equations below, $Q_{ij}$ denotes row $i$, column $j$
+of the active rotation matrix $\m{Q}$. The formulas return the principal branch
 
 \begin{eqarray}
-    \theta&=&\arcsin(-Q_{31}),\\
-    \varphi&=&\atantwo(Q_{32},Q_{33}),\\
-    \psi&=&\atantwo(Q_{21},Q_{11}).
+\alpha,\gamma&\in&(-\pi,\pi],\\
+\beta&\in&[-\pi/2,\pi/2] \qquad \text{for Tait--Bryan sequences},\\
+\beta&\in&[0,\pi] \qquad \text{for proper Euler sequences}.
 \end{eqarray}
 
-At $\theta=\pm90^\circ$, two rotation axes align and the individual values of
-$\varphi$ and $\psi$ are no longer unique. This is \textbf{gimbal lock}: the
-physical orientation still exists, but this particular three-angle coordinate
-chart becomes singular.
+The use of $\atantwo$ rather than a single-argument arctangent is deliberate: it
+retains quadrant information and behaves much better near sign changes.
+
+\subsubsection{Complete Euler/Tait--Bryan reference table}
+
+Table~\ref{tab:coord-euler-reference} collects all twelve sequences in one
+lookup table. For a sequence $ABC$, $\alpha$ is the first rotation angle about
+$A$, $\beta$ the second rotation angle about $B$, and $\gamma$ the third
+rotation angle about $C$. Defining
+$\m{Q}_1=\m{Q}_A(\alpha)$,
+$\m{Q}_2=\m{Q}_B(\beta)$, and
+$\m{Q}_3=\m{Q}_C(\gamma)$, the active fixed-axis convention used here is
+$\m{Q}=\m{Q}_3\m{Q}_2\m{Q}_1$ because the rightmost matrix acts first.
+The table therefore needs to list only the resulting matrix and the principal
+nonsingular reconstruction formulas.
+
+\begingroup
+\setlength{\LTleft}{0pt}
+\setlength{\LTright}{0pt}
+\setlength{\tabcolsep}{3pt}
+\setlength{\LTcapwidth}{\textwidth}
+\renewcommand{\arraystretch}{1.22}
+\footnotesize
+\refstepcounter{table}\label{tab:coord-euler-reference}
+\noindent\textbf{\tablename~\thetable: Complete Euler and Tait--Bryan angle reference for active fixed-axis rotations.}\par\smallskip
+\begin{longtable}{@{}>{\raggedright\arraybackslash}p{0.07\textwidth}>{\centering\arraybackslash}p{0.61\textwidth}>{\raggedright\arraybackslash}p{0.26\textwidth}@{}}
+\hline
+\multicolumn{3}{@{}p{0.98\textwidth}@{}}{\raggedright\textbf{Angle/composition convention:} $\alpha$ = first rotation, $\beta$ = second rotation, $\gamma$ = third rotation; $\m{Q}=\m{Q}_3(\gamma)\m{Q}_2(\beta)\m{Q}_1(\alpha)$ (rightmost matrix acts first).}\\[0.7ex]
+\textbf{Seq.} & \textbf{Rotation matrix $\m{Q}$} & \shortstack{\textbf{Principal}\\\textbf{reconstruction}}\\
+\hline
+\endfirsthead
+\multicolumn{3}{c}{\tablename~\ref{tab:coord-euler-reference} -- continued from previous page}\\
+\hline
+\multicolumn{3}{@{}p{0.98\textwidth}@{}}{\raggedright\textbf{Angle/composition convention:} $\alpha$ = first rotation, $\beta$ = second rotation, $\gamma$ = third rotation; $\m{Q}=\m{Q}_3(\gamma)\m{Q}_2(\beta)\m{Q}_1(\alpha)$ (rightmost matrix acts first).}\\[0.7ex]
+\textbf{Seq.} & \textbf{Rotation matrix $\m{Q}$} & \shortstack{\textbf{Principal}\\\textbf{reconstruction}}\\
+\hline
+\endhead
+\hline
+\multicolumn{3}{r}{continued on next page}\\
+\endfoot
+\hline
+\endlastfoot
+\multicolumn{3}{@{}l}{\textbf{Tait--Bryan sequences:} $\beta\in[-\pi/2,\pi/2]$; singular when $|c_\beta|\rightarrow0$.}\\[0.5ex]\hline
+\textbf{XYZ} &
+\resizebox{\linewidth}{!}{\(\displaystyle \begin{bmatrix}
+ c_\beta c_\gamma & s_\alpha s_\beta c_\gamma-c_\alpha s_\gamma & c_\alpha s_\beta c_\gamma+s_\alpha s_\gamma\\
+ c_\beta s_\gamma & s_\alpha s_\beta s_\gamma+c_\alpha c_\gamma & c_\alpha s_\beta s_\gamma-s_\alpha c_\gamma\\
+ -s_\beta & s_\alpha c_\beta & c_\alpha c_\beta
+\end{bmatrix}\)} &
+\resizebox{\linewidth}{!}{\(\displaystyle\begin{aligned}
+\alpha&=\atantwo(Q_{32},Q_{33})\\
+\beta&=\atantwo\!\left(-Q_{31},\sqrt{Q_{32}^{2}+Q_{33}^{2}}\right)\\
+\gamma&=\atantwo(Q_{21},Q_{11})
+\end{aligned}\)}
+\\[1.0ex]\hline
+\textbf{XZY} &
+\resizebox{\linewidth}{!}{\(\displaystyle \begin{bmatrix}
+ c_\beta c_\gamma & s_\alpha s_\gamma-c_\alpha s_\beta c_\gamma & s_\alpha s_\beta c_\gamma+c_\alpha s_\gamma\\
+ s_\beta & c_\alpha c_\beta & -s_\alpha c_\beta\\
+ -c_\beta s_\gamma & s_\alpha c_\gamma+c_\alpha s_\beta s_\gamma & c_\alpha c_\gamma-s_\alpha s_\beta s_\gamma
+\end{bmatrix}\)} &
+\resizebox{\linewidth}{!}{\(\displaystyle\begin{aligned}
+\alpha&=\atantwo(-Q_{23},Q_{22})\\
+\beta&=\atantwo\!\left(Q_{21},\sqrt{Q_{22}^{2}+Q_{23}^{2}}\right)\\
+\gamma&=\atantwo(-Q_{31},Q_{11})
+\end{aligned}\)}
+\\[1.0ex]\hline
+\textbf{YXZ} &
+\resizebox{\linewidth}{!}{\(\displaystyle \begin{bmatrix}
+ c_\alpha c_\gamma-s_\alpha s_\beta s_\gamma & -c_\beta s_\gamma & s_\alpha c_\gamma+c_\alpha s_\beta s_\gamma\\
+ c_\alpha s_\gamma+s_\alpha s_\beta c_\gamma & c_\beta c_\gamma & s_\alpha s_\gamma-c_\alpha s_\beta c_\gamma\\
+ -s_\alpha c_\beta & s_\beta & c_\alpha c_\beta
+\end{bmatrix}\)} &
+\resizebox{\linewidth}{!}{\(\displaystyle\begin{aligned}
+\alpha&=\atantwo(-Q_{31},Q_{33})\\
+\beta&=\atantwo\!\left(Q_{32},\sqrt{Q_{31}^{2}+Q_{33}^{2}}\right)\\
+\gamma&=\atantwo(-Q_{12},Q_{22})
+\end{aligned}\)}
+\\[1.0ex]\hline
+\textbf{YZX} &
+\resizebox{\linewidth}{!}{\(\displaystyle \begin{bmatrix}
+ c_\alpha c_\beta & -s_\beta & s_\alpha c_\beta\\
+ s_\alpha s_\gamma+c_\alpha s_\beta c_\gamma & c_\beta c_\gamma & s_\alpha s_\beta c_\gamma-c_\alpha s_\gamma\\
+ -s_\alpha c_\gamma+c_\alpha s_\beta s_\gamma & c_\beta s_\gamma & c_\alpha c_\gamma+s_\alpha s_\beta s_\gamma
+\end{bmatrix}\)} &
+\resizebox{\linewidth}{!}{\(\displaystyle\begin{aligned}
+\alpha&=\atantwo(Q_{13},Q_{11})\\
+\beta&=\atantwo\!\left(-Q_{12},\sqrt{Q_{11}^{2}+Q_{13}^{2}}\right)\\
+\gamma&=\atantwo(Q_{32},Q_{22})
+\end{aligned}\)}
+\\[1.0ex]\hline
+\textbf{ZXY} &
+\resizebox{\linewidth}{!}{\(\displaystyle \begin{bmatrix}
+ c_\alpha c_\gamma+s_\alpha s_\beta s_\gamma & -s_\alpha c_\gamma+c_\alpha s_\beta s_\gamma & c_\beta s_\gamma\\
+ s_\alpha c_\beta & c_\alpha c_\beta & -s_\beta\\
+ s_\alpha s_\beta c_\gamma-c_\alpha s_\gamma & c_\alpha s_\beta c_\gamma+s_\alpha s_\gamma & c_\beta c_\gamma
+\end{bmatrix}\)} &
+\resizebox{\linewidth}{!}{\(\displaystyle\begin{aligned}
+\alpha&=\atantwo(Q_{21},Q_{22})\\
+\beta&=\atantwo\!\left(-Q_{23},\sqrt{Q_{21}^{2}+Q_{22}^{2}}\right)\\
+\gamma&=\atantwo(Q_{13},Q_{33})
+\end{aligned}\)}
+\\[1.0ex]\hline
+\textbf{ZYX} &
+\resizebox{\linewidth}{!}{\(\displaystyle \begin{bmatrix}
+ c_\alpha c_\beta & -s_\alpha c_\beta & s_\beta\\
+ s_\alpha c_\gamma+c_\alpha s_\beta s_\gamma & c_\alpha c_\gamma-s_\alpha s_\beta s_\gamma & -c_\beta s_\gamma\\
+ s_\alpha s_\gamma-c_\alpha s_\beta c_\gamma & c_\alpha s_\gamma+s_\alpha s_\beta c_\gamma & c_\beta c_\gamma
+\end{bmatrix}\)} &
+\resizebox{\linewidth}{!}{\(\displaystyle\begin{aligned}
+\alpha&=\atantwo(-Q_{12},Q_{11})\\
+\beta&=\atantwo\!\left(Q_{13},\sqrt{Q_{11}^{2}+Q_{12}^{2}}\right)\\
+\gamma&=\atantwo(-Q_{23},Q_{33})
+\end{aligned}\)}
+\\[1.0ex]\hline
+\multicolumn{3}{@{}l}{\textbf{Proper Euler sequences:} $\beta\in[0,\pi]$; singular when $|s_\beta|\rightarrow0$.}\\[0.5ex]\hline
+\textbf{XYX} &
+\resizebox{\linewidth}{!}{\(\displaystyle \begin{bmatrix}
+ c_\beta & s_\alpha s_\beta & c_\alpha s_\beta\\
+ s_\beta s_\gamma & c_\alpha c_\gamma-s_\alpha c_\beta s_\gamma & -s_\alpha c_\gamma-c_\alpha c_\beta s_\gamma\\
+ -s_\beta c_\gamma & c_\alpha s_\gamma+s_\alpha c_\beta c_\gamma & c_\alpha c_\beta c_\gamma-s_\alpha s_\gamma
+\end{bmatrix}\)} &
+\resizebox{\linewidth}{!}{\(\displaystyle\begin{aligned}
+\alpha&=\atantwo(Q_{12},Q_{13})\\
+\beta&=\atantwo\!\left(\sqrt{Q_{12}^{2}+Q_{13}^{2}},Q_{11}\right)\\
+\gamma&=\atantwo(Q_{21},-Q_{31})
+\end{aligned}\)}
+\\[1.0ex]\hline
+\textbf{XZX} &
+\resizebox{\linewidth}{!}{\(\displaystyle \begin{bmatrix}
+ c_\beta & -c_\alpha s_\beta & s_\alpha s_\beta\\
+ s_\beta c_\gamma & c_\alpha c_\beta c_\gamma-s_\alpha s_\gamma & -s_\alpha c_\beta c_\gamma-c_\alpha s_\gamma\\
+ s_\beta s_\gamma & c_\alpha c_\beta s_\gamma+s_\alpha c_\gamma & c_\alpha c_\gamma-s_\alpha c_\beta s_\gamma
+\end{bmatrix}\)} &
+\resizebox{\linewidth}{!}{\(\displaystyle\begin{aligned}
+\alpha&=\atantwo(Q_{13},-Q_{12})\\
+\beta&=\atantwo\!\left(\sqrt{Q_{12}^{2}+Q_{13}^{2}},Q_{11}\right)\\
+\gamma&=\atantwo(Q_{31},Q_{21})
+\end{aligned}\)}
+\\[1.0ex]\hline
+\textbf{YXY} &
+\resizebox{\linewidth}{!}{\(\displaystyle \begin{bmatrix}
+ c_\alpha c_\gamma-s_\alpha c_\beta s_\gamma & s_\beta s_\gamma & s_\alpha c_\gamma+c_\alpha c_\beta s_\gamma\\
+ s_\alpha s_\beta & c_\beta & -c_\alpha s_\beta\\
+ -c_\alpha s_\gamma-s_\alpha c_\beta c_\gamma & s_\beta c_\gamma & c_\alpha c_\beta c_\gamma-s_\alpha s_\gamma
+\end{bmatrix}\)} &
+\resizebox{\linewidth}{!}{\(\displaystyle\begin{aligned}
+\alpha&=\atantwo(Q_{21},-Q_{23})\\
+\beta&=\atantwo\!\left(\sqrt{Q_{21}^{2}+Q_{23}^{2}},Q_{22}\right)\\
+\gamma&=\atantwo(Q_{12},Q_{32})
+\end{aligned}\)}
+\\[1.0ex]\hline
+\textbf{YZY} &
+\resizebox{\linewidth}{!}{\(\displaystyle \begin{bmatrix}
+ c_\alpha c_\beta c_\gamma-s_\alpha s_\gamma & -s_\beta c_\gamma & s_\alpha c_\beta c_\gamma+c_\alpha s_\gamma\\
+ c_\alpha s_\beta & c_\beta & s_\alpha s_\beta\\
+ -s_\alpha c_\gamma-c_\alpha c_\beta s_\gamma & s_\beta s_\gamma & c_\alpha c_\gamma-s_\alpha c_\beta s_\gamma
+\end{bmatrix}\)} &
+\resizebox{\linewidth}{!}{\(\displaystyle\begin{aligned}
+\alpha&=\atantwo(Q_{23},Q_{21})\\
+\beta&=\atantwo\!\left(\sqrt{Q_{21}^{2}+Q_{23}^{2}},Q_{22}\right)\\
+\gamma&=\atantwo(Q_{32},-Q_{12})
+\end{aligned}\)}
+\\[1.0ex]\hline
+\textbf{ZXZ} &
+\resizebox{\linewidth}{!}{\(\displaystyle \begin{bmatrix}
+ c_\alpha c_\gamma-s_\alpha c_\beta s_\gamma & -s_\alpha c_\gamma-c_\alpha c_\beta s_\gamma & s_\beta s_\gamma\\
+ c_\alpha s_\gamma+s_\alpha c_\beta c_\gamma & c_\alpha c_\beta c_\gamma-s_\alpha s_\gamma & -s_\beta c_\gamma\\
+ s_\alpha s_\beta & c_\alpha s_\beta & c_\beta
+\end{bmatrix}\)} &
+\resizebox{\linewidth}{!}{\(\displaystyle\begin{aligned}
+\alpha&=\atantwo(Q_{31},Q_{32})\\
+\beta&=\atantwo\!\left(\sqrt{Q_{31}^{2}+Q_{32}^{2}},Q_{33}\right)\\
+\gamma&=\atantwo(Q_{13},-Q_{23})
+\end{aligned}\)}
+\\[1.0ex]\hline
+\textbf{ZYZ} &
+\resizebox{\linewidth}{!}{\(\displaystyle \begin{bmatrix}
+ c_\alpha c_\beta c_\gamma-s_\alpha s_\gamma & -s_\alpha c_\beta c_\gamma-c_\alpha s_\gamma & s_\beta c_\gamma\\
+ c_\alpha c_\beta s_\gamma+s_\alpha c_\gamma & -s_\alpha c_\beta s_\gamma+c_\alpha c_\gamma & s_\beta s_\gamma\\
+ -c_\alpha s_\beta & s_\alpha s_\beta & c_\beta
+\end{bmatrix}\)} &
+\resizebox{\linewidth}{!}{\(\displaystyle\begin{aligned}
+\alpha&=\atantwo(Q_{32},-Q_{31})\\
+\beta&=\atantwo\!\left(\sqrt{Q_{31}^{2}+Q_{32}^{2}},Q_{33}\right)\\
+\gamma&=\atantwo(Q_{23},Q_{13})
+\end{aligned}\)}
+\\[1.0ex]\hline
+\end{longtable}
+\endgroup
+
+\subsubsection{Singular cases and non-uniqueness}
+
+For every Tait--Bryan sequence the reconstruction becomes singular when
+$|c_\beta|\rightarrow0$, corresponding to $\beta=\pm90^\circ$. For every
+proper Euler sequence it becomes singular when $|s_\beta|\rightarrow0$,
+corresponding to $\beta=0$ or $\pi$. At those configurations the first and last
+rotation axes become aligned, so $\alpha$ and $\gamma$ cannot be recovered
+individually; only a combination of them is observable.
+
+This is \textbf{gimbal lock}: the physical orientation remains perfectly valid,
+but the chosen three-angle coordinate chart loses uniqueness. A numerical
+implementation must therefore define a convention for the singular branch, for
+example fixing one outer angle to zero and recovering the remaining combined
+angle from the nonsingular matrix entries.
 
 \begin{bbox}
-\textbf{Engineering note -- A singular parameterization is not a singular
-physical orientation.}
+\textbf{Engineering note -- Matrix-to-angle reconstruction is not unique.}
 
-Gimbal lock is a failure of the chosen angle coordinates, not a physical loss of
-one rotational degree of freedom. Rotation matrices and unit quaternions still
-represent the same orientation without that coordinate singularity.
+Even away from exact gimbal lock, a rotation matrix generally admits equivalent
+angle triples outside the principal ranges listed above. Solver documentation,
+measurement systems, CAD tools and multibody programs may also use intrinsic
+rather than extrinsic sequences, passive rather than active matrices, degrees
+rather than radians, or different branch conventions. When transferring angles
+between programs, compare the reconstructed rotation matrix, not only the three
+reported numbers.
 \end{bbox}
+
+\subsubsection{A reusable implementation for the twelve sequences}
+
+The following implementation mirrors the reference equations directly. It uses
+NumPy only for array storage and matrix multiplication; the trigonometric
+functions come from the Python standard library. The nonsingular reconstruction
+formulas are intentionally written out sequence by sequence so that the program
+can be compared directly with the equations above.
+
+\begin{python}
+def rotation_axis(axis, angle):
+    c = cos(angle)
+    s = sin(angle)
+
+    if axis == "X":
+        return np.array([[1.0, 0.0, 0.0],
+                         [0.0,   c,  -s],
+                         [0.0,   s,   c]])
+    if axis == "Y":
+        return np.array([[  c, 0.0,   s],
+                         [0.0, 1.0, 0.0],
+                         [ -s, 0.0,   c]])
+    if axis == "Z":
+        return np.array([[  c,  -s, 0.0],
+                         [  s,   c, 0.0],
+                         [0.0, 0.0, 1.0]])
+    raise ValueError("axis must be X, Y or Z")
+
+
+def rotation_from_angles(sequence, alpha, beta, gamma):
+    if sequence not in (
+        "XYZ", "XZY", "YXZ", "YZX", "ZXY", "ZYX",
+        "XYX", "XZX", "YXY", "YZY", "ZXZ", "ZYZ",
+    ):
+        raise ValueError("unsupported Euler/Tait-Bryan sequence")
+
+    A, B, C = sequence
+    return (rotation_axis(C, gamma)
+            @ rotation_axis(B, beta)
+            @ rotation_axis(A, alpha))
+
+
+def angles_from_rotation(Q, sequence, tol=1.0e-10):
+    Q = np.array(Q, dtype=float)
+
+    # Tait-Bryan sequences: principal beta in [-pi/2, pi/2].
+    if sequence == "XYZ":
+        cb = sqrt(Q[2, 1]**2 + Q[2, 2]**2)
+        if cb < tol:
+            raise ValueError("XYZ reconstruction is at gimbal lock")
+        return (atan2(Q[2, 1], Q[2, 2]),
+                atan2(-Q[2, 0], cb),
+                atan2(Q[1, 0], Q[0, 0]))
+
+    if sequence == "XZY":
+        cb = sqrt(Q[1, 1]**2 + Q[1, 2]**2)
+        if cb < tol:
+            raise ValueError("XZY reconstruction is at gimbal lock")
+        return (atan2(-Q[1, 2], Q[1, 1]),
+                atan2(Q[1, 0], cb),
+                atan2(-Q[2, 0], Q[0, 0]))
+
+    if sequence == "YXZ":
+        cb = sqrt(Q[2, 0]**2 + Q[2, 2]**2)
+        if cb < tol:
+            raise ValueError("YXZ reconstruction is at gimbal lock")
+        return (atan2(-Q[2, 0], Q[2, 2]),
+                atan2(Q[2, 1], cb),
+                atan2(-Q[0, 1], Q[1, 1]))
+
+    if sequence == "YZX":
+        cb = sqrt(Q[0, 0]**2 + Q[0, 2]**2)
+        if cb < tol:
+            raise ValueError("YZX reconstruction is at gimbal lock")
+        return (atan2(Q[0, 2], Q[0, 0]),
+                atan2(-Q[0, 1], cb),
+                atan2(Q[2, 1], Q[1, 1]))
+
+    if sequence == "ZXY":
+        cb = sqrt(Q[1, 0]**2 + Q[1, 1]**2)
+        if cb < tol:
+            raise ValueError("ZXY reconstruction is at gimbal lock")
+        return (atan2(Q[1, 0], Q[1, 1]),
+                atan2(-Q[1, 2], cb),
+                atan2(Q[0, 2], Q[2, 2]))
+
+    if sequence == "ZYX":
+        cb = sqrt(Q[0, 0]**2 + Q[0, 1]**2)
+        if cb < tol:
+            raise ValueError("ZYX reconstruction is at gimbal lock")
+        return (atan2(-Q[0, 1], Q[0, 0]),
+                atan2(Q[0, 2], cb),
+                atan2(-Q[1, 2], Q[2, 2]))
+
+    # Proper Euler sequences: principal beta in [0, pi].
+    if sequence == "XYX":
+        sb = sqrt(Q[0, 1]**2 + Q[0, 2]**2)
+        if sb < tol:
+            raise ValueError("XYX reconstruction is at Euler singularity")
+        return (atan2(Q[0, 1], Q[0, 2]),
+                atan2(sb, Q[0, 0]),
+                atan2(Q[1, 0], -Q[2, 0]))
+
+    if sequence == "XZX":
+        sb = sqrt(Q[0, 1]**2 + Q[0, 2]**2)
+        if sb < tol:
+            raise ValueError("XZX reconstruction is at Euler singularity")
+        return (atan2(Q[0, 2], -Q[0, 1]),
+                atan2(sb, Q[0, 0]),
+                atan2(Q[2, 0], Q[1, 0]))
+
+    if sequence == "YXY":
+        sb = sqrt(Q[1, 0]**2 + Q[1, 2]**2)
+        if sb < tol:
+            raise ValueError("YXY reconstruction is at Euler singularity")
+        return (atan2(Q[1, 0], -Q[1, 2]),
+                atan2(sb, Q[1, 1]),
+                atan2(Q[0, 1], Q[2, 1]))
+
+    if sequence == "YZY":
+        sb = sqrt(Q[1, 0]**2 + Q[1, 2]**2)
+        if sb < tol:
+            raise ValueError("YZY reconstruction is at Euler singularity")
+        return (atan2(Q[1, 2], Q[1, 0]),
+                atan2(sb, Q[1, 1]),
+                atan2(Q[2, 1], -Q[0, 1]))
+
+    if sequence == "ZXZ":
+        sb = sqrt(Q[2, 0]**2 + Q[2, 1]**2)
+        if sb < tol:
+            raise ValueError("ZXZ reconstruction is at Euler singularity")
+        return (atan2(Q[2, 0], Q[2, 1]),
+                atan2(sb, Q[2, 2]),
+                atan2(Q[0, 2], -Q[1, 2]))
+
+    if sequence == "ZYZ":
+        sb = sqrt(Q[2, 0]**2 + Q[2, 1]**2)
+        if sb < tol:
+            raise ValueError("ZYZ reconstruction is at Euler singularity")
+        return (atan2(Q[2, 1], -Q[2, 0]),
+                atan2(sb, Q[2, 2]),
+                atan2(Q[1, 2], Q[0, 2]))
+
+    raise ValueError("unsupported Euler/Tait-Bryan sequence")
+
+
+# Verification: reconstruct the same matrix for all twelve sequences.
+sequences = (
+    "XYZ", "XZY", "YXZ", "YZX", "ZXY", "ZYX",
+    "XYX", "XZX", "YXY", "YZY", "ZXZ", "ZYZ",
+)
+
+for sequence in sequences:
+    beta = 0.4 if sequence[0] != sequence[2] else 1.0
+    Q = rotation_from_angles(sequence, 0.3, beta, -0.5)
+    angles = angles_from_rotation(Q, sequence)
+    Q_check = rotation_from_angles(sequence, *angles)
+    error = np.max(np.abs(Q_check - Q))
+    print(sequence, angles, error)
+\end{python}
 
 \subsection{Axis-angle and rotation vector}
 
@@ -838,7 +1231,7 @@ constraint that relates the physical motions of different finite element nodes.
 Both use rotation and lever-arm geometry, but they solve different problems.
 \end{bbox}
 
-\section{Position-Dependent Bases: Cylindrical and Spherical Directions}
+\section[Position-Dependent Bases]{Position-Dependent Bases: Cylindrical and Spherical Directions}
 
 A local basis need not be constant over space. Cylindrical and spherical systems
 are particularly useful examples because the local directions depend on the
