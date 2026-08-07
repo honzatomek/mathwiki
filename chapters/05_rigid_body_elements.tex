@@ -790,6 +790,15 @@ reference point. This formulation already contains the main governing
 principles and corresponds closely to the common engineering interpretation of
 an RBE3 spider.
 
+Figure~\ref{fig:rbe2-rbe3-deformation} summarizes this reversal visually.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{img/rbe2_rbe3_deformation.png}
+\caption{Conceptual difference between RBE2 and RBE3. The RBE2 prescribes the attachment-node motion from the reference motion and therefore suppresses relative deformation in the coupled DOFs. The RBE3 obtains a generalized reference motion from the attachment nodes, so local deformation modes can remain. The sketches are schematic rather than a literal depiction of a particular solver implementation.}
+\label{fig:rbe2-rbe3-deformation}
+\end{figure}
+
 \subsection{Weighted Least-Squares Interpolation}
 
 Let attachment node $i$ have initial position $\m{x}_i$, translational
@@ -1296,6 +1305,15 @@ bushing supplies the constitutive stiffness; the RBE3 only maps that stiffness
 onto the surrounding mesh. No fictitious plate stiffness is inserted between
 the attachment nodes.
 
+The mechanical picture corresponding to this projection is shown in Figure~\ref{fig:rbe3-deformable-support}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{img/rbe3_deformable_support.png}
+\caption{RBE3 used as a deformable distributed support. The interpolation maps the generalized motion of the flexible patch to a reference point; the spring or bushing supplies the actual stiffness. Modes lying in the null space of the interpolation are not directly stiffened by the support.}
+\label{fig:rbe3-deformable-support}
+\end{figure}
+
 An especially important consequence follows immediately. If a local deformation
 mode $\m{u}_0$ satisfies
 
@@ -1472,6 +1490,15 @@ Thus the smaller force obtained at the edge of a surface is not necessarily a
 poor distribution. It may simply reflect the fact that an edge node represents
 less loaded area than an interior node. Surface-generated distributing
 couplings often exploit this kind of geometric or integration-based weighting.
+
+Figure~\ref{fig:rbe3-tributary-area} illustrates this tributary-area effect for the same $2\times2$ patch.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{img/rbe3_tributary_area.png}
+\caption{Uniform pressure on a regular $2\times2$ quadrilateral patch does not produce equal nodal resultants. Corner, edge and interior nodes represent different tributary areas; the arrows show their relative resultant magnitudes. An equal-weight RBE3 is therefore not, in general, equivalent to a uniform pressure load.}
+\label{fig:rbe3-tributary-area}
+\end{figure}
 
 An explicitly defined RBE3 with equal nodal weights is different. Its
 translational share is equal at every selected node, regardless of how much
@@ -1795,6 +1822,7 @@ orientation and Eq.~\eqref{rbe-small-rotation-relation} reproduces it exactly.
 The limitation is specifically associated with finite rotation and other
 configuration-dependent geometry.
 
+
 \subsubsection{Worked Example: A Rigid Arm Rotated Through $90^\circ$}
 
 Consider a planar rigid arm of length
@@ -1872,6 +1900,15 @@ The linearized RBE instead gives
         0\\157.08\\0
     \end{bmatrix}\mathrm{mm}.
 \end{equation}
+
+The geometric difference between the exact and tangent trajectories is shown in Figure~\ref{fig:rbe-initial-tangent}.
+
+\begin{figure}[ht]
+\centering
+\includegraphics{img/rbe_initial_tangent.png}
+\caption{Finite rotation versus the small-rotation tangent approximation for a rigid arm. The exact dependent point follows a circular arc, whereas a constraint linearized in the initial configuration moves along the initial tangent. At $90^\circ$ the two positions are radically different.}
+\label{fig:rbe-initial-tangent}
+\end{figure}
 
 The predicted point is therefore not merely slightly misplaced: it remains on
 the vertical tangent through the initial end point rather than rotating around
@@ -2796,6 +2833,15 @@ shared translational DOF removes one relative motion between the spiders. A
 sufficiently rich set of shared non-collinear nodes can force the two reference
 frames to behave as one larger rigid body even though no explicit RBE was drawn
 between them.
+
+This hidden coupling is illustrated in Figure~\ref{fig:overlapping-rbe2}.
+
+\begin{figure}[htbp]
+\centering
+\includegraphics{img/overlapping_rbe2_spiders.png}
+\caption{Overlapping RBE2 spiders. A node that is dependent on both reference systems must satisfy both rigid-body relations simultaneously. The overlap therefore introduces an implicit relation between reference points $A$ and $B$; enough shared nodes can effectively merge the two spiders into one rigid region.}
+\label{fig:overlapping-rbe2}
+\end{figure}
 
 This may be intentional, for example when two rigid idealizations are genuinely
 part of the same stiff component. More often it occurs accidentally where two
