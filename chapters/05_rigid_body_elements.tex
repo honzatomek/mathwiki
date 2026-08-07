@@ -173,6 +173,19 @@ primarily when discussing a particular preprocessor abstraction. These words are
 not interchangeable: they describe different mathematical roles, not merely
 alternative GUI labels.
 
+\begin{bbox}
+\textbf{Python examples in this chapter.}
+
+The short Python examples deliberately mirror the equations rather than hiding
+operations behind numerical libraries. \texttt{numpy} is used only for storing
+vectors and matrices and for elementary array arithmetic and matrix products.
+No \texttt{numpy.linalg}, eigensolver, sparse-solver or other NumPy submodule is
+used. Whenever an inverse is needed in a worked example, it is formed from the
+scalar or diagonal expression already derived analytically. The examples are
+therefore intended as executable checks of the mathematics, not as replacements
+for a finite element solver.
+\end{bbox}
+
 \section{Mathematical Background}
 
 For a bilateral nonlinear constraint the most general notation used in this
@@ -386,6 +399,37 @@ so the selected components lie on one planar rigid-body displacement field. The
 three independent scalar DOFs in this two-dimensional example play the same role
 as the six independent scalar components required to span a general rigid-body
 motion in three dimensions.
+
+The complete calculation can be reproduced directly with the transformation
+matrix. NumPy only stores the arrays and performs the matrix product:
+
+\begin{python}
+import numpy as np
+
+L = 100.0  # mm
+
+T_DI = np.array([
+    [1.0, 0.0,  0.0],
+    [1.0, 1.0, -1.0],
+    [0.0, 1.0,  0.0],
+    [1.0, 1.0, -1.0],
+    [0.0, 0.0,  1.0],
+])
+
+q_I = np.array([1.0, 2.0, 3.0])  # [u_A, v_A, v_B] mm
+q_D = T_DI @ q_I
+
+theta_z = (q_I[2] - q_I[1]) / L
+
+print("theta_z =", theta_z, "rad")
+print("q_D =", q_D, "mm")
+# theta_z = 0.01 rad
+# q_D = [1. 0. 2. 0. 3.] mm
+\end{python}
+
+The code contains no special RBE routine: the entire RBE1 example is the
+coefficient matrix of Eq.~\eqref{rbe1-planar-transformation} multiplied by the
+chosen independent coordinates.
 
 \subsection{Modelling Consequences}
 
@@ -818,6 +862,57 @@ equivalent at the reference point to
 The example therefore illustrates both sides of the same transformation: rigid
 kinematics map reference motion to the dependent nodes, while the transpose maps
 dependent loads back to an equivalent force and moment at the reference point.
+
+The same spider can be assembled from its coordinates in a few lines of Python.
+The function below is only the matrix form of
+Eq.~\eqref{rbe2-single-node-transformation}; no constraint or linear-system
+solver is called.
+
+\begin{python}
+import numpy as np
+
+
+def rbe2_block(r):
+    rx, ry, rz = r
+    return np.array([
+        [1, 0, 0,   0,  rz, -ry],
+        [0, 1, 0, -rz,   0,  rx],
+        [0, 0, 1,  ry, -rx,   0],
+        [0, 0, 0,   1,   0,   0],
+        [0, 0, 0,   0,   1,   0],
+        [0, 0, 0,   0,   0,   1],
+    ], dtype=float)
+
+
+X_r = np.array([1.0, 1.0, 1.0])
+X = np.array([
+    [0.0, 0.0, 0.0],
+    [2.0, 0.0, 0.0],
+    [2.0, 2.0, 0.0],
+    [0.0, 2.0, 0.0],
+])
+
+D = np.vstack([rbe2_block(x - X_r) for x in X])
+
+q_r = np.array([0.1, 0.0, 0.0, 0.0, 0.0, 0.01])
+q_d = D @ q_r
+print(q_d.reshape(4, 6)[:, :3])
+# [[ 0.11 -0.01  0.  ]
+#  [ 0.11  0.01  0.  ]
+#  [ 0.09  0.01  0.  ]
+#  [ 0.09 -0.01  0.  ]]
+
+# Apply Fy = 100 N at dependent node 1.
+f_d = np.zeros(24)
+f_d[1] = 100.0
+f_r = D.T @ f_d
+print(f_r)
+# [   0.  100.    0.  100.    0. -100.]
+\end{python}
+
+The two products \texttt{D @ q\_r} and \texttt{D.T @ f\_d} are the kinematic
+and virtual-work sides of the same transformation. The second result contains
+the reference force and the moment $\m{r}_1\times\m{F}_1$ derived above.
 
 \subsection{Elimination and Congruent Transformation}
 
@@ -1446,6 +1541,72 @@ reference point. An RBE2 applied to the same four nodes would suppress this mode
 completely. This is the central mechanical distinction between a rigid coupling
 and an interpolation coupling.
 
+The following Python example reconstructs the interpolation from the same
+geometry. Because Eq.~\eqref{rbe3-example-normal-matrix} is diagonal, its inverse
+is formed component by component. A general matrix inversion routine is neither
+needed nor used.
+
+\begin{python}
+import numpy as np
+
+
+def rigid_fit_block(r):
+    rx, ry, rz = r
+    return np.array([
+        [1, 0, 0,   0,  rz, -ry],
+        [0, 1, 0, -rz,   0,  rx],
+        [0, 0, 1,  ry, -rx,   0],
+    ], dtype=float)
+
+
+X_c = np.array([1.0, 1.0, 0.0])
+X = np.array([
+    [0.0, 0.0, 0.0],
+    [2.0, 0.0, 0.0],
+    [2.0, 2.0, 0.0],
+    [0.0, 2.0, 0.0],
+])
+
+A = np.vstack([rigid_fit_block(x - X_c) for x in X])
+normal = A.T @ A
+
+# Here A.T @ A is diagonal, as derived in the text.
+normal_inv = np.zeros((6, 6))
+for i in range(6):
+    normal_inv[i, i] = 1.0 / normal[i, i]
+
+H_c = normal_inv @ A.T
+
+# Shift the fitted motion one unit from the centroid to the reference point.
+S = np.array([
+    [1, 0, 0,  0,  1, 0],
+    [0, 1, 0, -1,  0, 0],
+    [0, 0, 1,  0,  0, 0],
+    [0, 0, 0,  1,  0, 0],
+    [0, 0, 0,  0,  1, 0],
+    [0, 0, 0,  0,  0, 1],
+], dtype=float)
+H = S @ H_c
+
+# Pure normal force: 400 N becomes four 100 N nodal forces.
+f_r = np.array([0.0, 0.0, 400.0, 0.0, 0.0, 0.0])
+f_a = H.T @ f_r
+print(f_a.reshape(4, 3))
+
+# Checkerboard warping: the generalized reference motion is zero.
+u_a = np.zeros(12)
+u_a[[2, 5, 8, 11]] = [1.0, -1.0, 1.0, -1.0]
+q_r = H @ u_a
+print(q_r)
+# [0. 0. 0. 0. 0. 0.]
+\end{python}
+
+The code exposes the two essential RBE3 operations directly: the attachment
+motion is projected into generalized coordinates by \texttt{H @ u\_a}, and a
+generalized load is distributed back by the transpose
+\texttt{H.T @ f\_r}. The zero result for the checkerboard field is the numerical
+counterpart of the interpolation null space discussed above.
+
 \subsection{RBE3 as a Deformable Distributed Support}\label{sec:rbe3-deformable-support}
 
 One of the most useful applications of an interpolation coupling is to connect a
@@ -1899,6 +2060,38 @@ current tangent. The example therefore illustrates why a fixed-distance link can
 be perfectly appropriate in a nonlinear transient analysis while its ordinary
 eigenshape extraction requires a frozen, linearized operating configuration.
 
+The geometry can again be checked without a nonlinear solver. The scalar square
+root below is simply the exact circle equation written in Python:
+
+\begin{python}
+import numpy as np
+
+L = 100.0      # mm
+uy = 20.0      # mm
+
+x_exact = (L * L - uy * uy) ** 0.5
+ux_exact = x_exact - L
+
+x_linear = np.array([L, uy])
+L_linear = (x_linear @ x_linear) ** 0.5
+
+r0 = np.array([L, 0.0])
+du_linear = np.array([0.0, uy])
+tangent_constraint = r0 @ du_linear
+
+print("exact ux =", ux_exact, "mm")
+print("linearized length =", L_linear, "mm")
+print("length error =", L_linear - L, "mm")
+print("initial tangent residual =", tangent_constraint)
+# exact ux = -2.020410... mm
+# length error = 1.980390... mm
+# initial tangent residual = 0.0
+\end{python}
+
+The final zero is precisely the point: the transverse displacement satisfies the
+\emph{initial linear tangent} even though it violates the exact fixed-distance
+constraint by almost $2~\mathrm{mm}$.
+
 \begin{bbox}
 \textbf{Engineering note -- A fixed-distance link is not a very stiff spring.}
 
@@ -2131,6 +2324,50 @@ It can therefore be superposed on the flange deformation without changing
 $w_r$, $\theta_y$ or the bushing force. The local flange stiffness determines
 that warping; the bushing acts only on the generalized interface coordinates.
 This is the mathematical content of a \emph{deformable remote support}.
+
+A compact Python version keeps the generalized interface and the bushing law
+visibly separate. Since the bushing matrix is diagonal, its two generalized
+displacements are obtained by scalar division rather than by a matrix solver.
+
+\begin{python}
+import numpy as np
+
+a = 50.0  # mm
+
+H = np.array([
+    [0.25, 0.25, 0.25, 0.25],
+    [1/(4*a), -1/(4*a), -1/(4*a), 1/(4*a)],
+])
+
+k_z = 40_000.0          # N/mm
+k_theta_y = 100e6       # Nmm/rad
+F = np.array([8_000.0, 200_000.0])
+
+# Diagonal bushing: q = K^-1 F, written explicitly.
+q = np.array([F[0] / k_z, F[1] / k_theta_y])
+f_a = H.T @ F
+
+print("[w_r, theta_y] =", q)
+print("nodal forces =", f_a)
+# [w_r, theta_y] = [0.2   0.002]
+# nodal forces = [3000. 1000. 1000. 3000.]
+
+# A local warping mode does not move the generalized interface.
+warp = np.array([1.0, -1.0, 1.0, -1.0])
+print("H @ warp =", H @ warp)
+# [0. 0.]
+
+# Project the bushing stiffness back to the four flange DOFs.
+K_b = np.array([[k_z, 0.0], [0.0, k_theta_y]])
+K_a = H.T @ K_b @ H
+print(K_a)
+\end{python}
+
+The last product is exactly the projected support stiffness
+$\m{H}^T\m{K}_b\m{H}$ derived in
+Section~\ref{sec:rbe3-deformable-support}. Nothing in the code changes the
+finite element stiffness of the flange itself; it only maps the two-coordinate
+bushing law onto the four attachment DOFs.
 
 \begin{bbox}
 \textbf{Engineering note -- Separate the interface kinematics from the support law.}
