@@ -1,2849 +1,1295 @@
 \newpage
 \chapter{Coordinate Transformations}\label{chap:coordinate-transformations}
 
-% \localtableofcontents*
-
-\newpage
-
-\section{Constructing Transformation Matrix}
-
-\subsection{Rotation Matrix}
-
-From: \href{https://mathworld.wolfram.com/RotationMatrix.html}{wolfram}
-
-\begin{enumerate}
-    \item 2-D (in $\mathbb{R}^{2}$):
-
-        Rotating an object to a new coordinate system:
-
-        \begin{figure}[ht]
-            \centering
-            \includegraphics[width=0.35\textwidth]{img/RotationMatrix_1000}
-            \caption{Rotating object}
-            \label{fig:RotationMatrix_1000-png}
-        \end{figure}
-
-        In $\mathbb{R}^{2}$, consider the matrix that rotates a given
-        vector $\mathbf{v}_{0}$ by a counterclockwise angle $\theta$ in
-        a fixed coordinate system. Then
-
-        \begin{equation}
-            \mathbf{T}_{\theta} = \begin{bmatrix}
-                \cos \theta & -\sin \theta \\
-                \sin \theta & \cos \theta
-            \end{bmatrix}
-        ,\end{equation}
-
-        so
-
-        \begin{equation}
-            \mathbf{v}^{'} = \mathbf{T}_{\theta}\mathbf{v}_{0}
-        .\end{equation}
-
-        \begin{figure}[ht]
-            \centering
-            \includegraphics[width=0.5\textwidth]{img/RotationMatrixAxes_1000}
-            \caption{Rotating Axes}
-            \label{fig:RotationMatrixAxes_1000-png}
-        \end{figure}
-
-        On the other hand, consider the matrix that rotates the
-        \textit{coordinate system} through a counterclockwise angle $\theta$.
-        The coordinates of the fixed vector $\mathbf{v}$ in the rotated
-        coordinate system are now given by a rotation matrix which is the
-        \textit{transpose} of the fixed-axis matrix, as can be seen on the
-        second figure, is equivalent to rotating the vector by
-        a counterclockwise angle $-\theta$ relative to a fixed set of axes,
-        giving:
-
-        \begin{equation}
-            \mathbf{T}_{\theta}^{'} = \begin{bmatrix}
-                \cos \theta & \sin \theta \\
-                -\sin \theta & \cos \theta
-            \end{bmatrix}
-        .\end{equation}
-
-        This is the convention commonly used in textbooks.
-
-    \item 3-D ($\mathbb{R}^{3}$):
-
-        In $\mathbb{R}^{3}$, coordinate system rotations of the
-        \textit{x-}, \textit{y-} and \textit{z-axis} in a counterclockwise
-        direction when looking towards the origin give the matrices:
-
-        \begin{equation}
-            \mathbf{R}_{x}(\varphi) =
-            \begin{bmatrix}
-                1 & 0 & 0 \\
-                0 & \cos \varphi & \sin \varphi \\
-                0 & -\sin \varphi & \cos \varphi
-            \end{bmatrix}
-        .\end{equation}
-
-        \begin{equation}
-            \mathbf{R}_{y}(\theta) =
-            \begin{bmatrix}
-                \cos \theta & 0 & -\sin \theta \\
-                0 & 1 & 0 \\
-                \sin \theta & 0 & \cos \theta
-            \end{bmatrix}
-        .\end{equation}
-
-        \begin{equation}
-            \mathbf{R}_{z}(\psi) =
-            \begin{bmatrix}
-                \cos \psi & \sin \psi & 0 \\
-                -\sin \psi & \cos \psi & 0 \\
-                0 & 0 & 1
-            \end{bmatrix}
-        .\end{equation}
-
-        \begin{bbox}[0.85]
-            It is best to think about a rotation around axis as about a \textbf{rotation in a plane}.
-            Therefore rotation around $ \mathbf{x} $ is rotation in $ \mathbf{yz} $ plane,
-            rotaton around $ \mathbf{y} $ is a rotation in $ \mathbf{zx} $ plane and
-            a rotaton around $ \mathbf{z} $ is a rotation in $ \mathbf{xy} $ plane.
-
-            The defining the index of the axes such that $ \mathbf{x} = 0 $, $ \mathbf{y} = 1 $
-            and $ \mathbf{z} = 2 $ we can define the rotation matrix so that:
-
-            \begin{equation}
-                \mathbf{R} = \begin{bmatrix}
-                    1 & 0 & 0 \\
-                    0 & 1 & 0 \\
-                    0 & 0 & 1
-                \end{bmatrix}
-            \end{equation}
-
-            then
-            \begin{eqarray}
-                \mathbf{R}_{i,i} &= \cos \theta  \\
-                \mathbf{R}_{i,j} &= \sin \theta  \\
-                \mathbf{R}_{j,i} &= -\sin \theta  \\
-                \mathbf{R}_{j,j} &= \cos \theta  \\
-            \end{eqarray}
-
-            where $ i $ is index of first plane axis and $ j $ is the index of the second
-            plane axis.
-
-            The plane axes always cycle in the following manner: $ xy, yz, zx, xy, ... $.
-
-        \end{bbox}
-
-        Any \textbf{rotation} can be given as a composition of rotations
-        about three axes (\textbf{Euler's rotation theorem}), and thus
-        be represented by a $3 \times 3$ matrix operating on a vector.
-
-        \begin{equation}
-            \begin{bmatrix}
-                x_{1}^{'} \\ x_{2}^{'} \\ x_{3}^{'}
-            \end{bmatrix}
-            =
-            \begin{bmatrix}
-                t_{11} & t_{12} & t_{13} \\
-                t_{21} & t_{22} & t_{23} \\
-                t_{31} & t_{32} & t_{33}
-            \end{bmatrix}
-            \begin{bmatrix}
-                x_{1} \\ x_{2} \\ x_{3}
-            \end{bmatrix}
-        .\end{equation}
-
-        An \textbf{arbitrary rotation} around a unit vector $ \mathbf{U} = \left( U_x, U_y, U_z \right) $
-        by an angle $ \theta $ is given by:
-
-        \begin{equation}
-            R_U(\theta) = \mathbf{I} + (sin \theta)S + (1 - cos \theta)S^2
-        \end{equation}
-
-        where $ \mathbf{I} $ is an identity matrix,
-
-        \begin{equation}
-            \mathbf{S} =
-            \begin{bmatrix}
-                0 & -U_x & U_y \\
-                U_z & 0 & -U_x \\
-                -U_y & U_x & 0
-            \end{bmatrix}
-        \end{equation}
-
-        and $ \theta > 0 $ indicates a counterclockwise rotation in the plane normal
-        to $ \mathbf{U} $. The observer is positioned on the side of the plane to
-        which the vector points and looking back at the origin.
-
-    \item Alternate way of constructing \textbf{Rotation matrix} without specifying
-        angles:
-
-        The rotation matrix to a new coordinate system can be constructed from
-        its axes, where the rotation matrix can be defined as:
-
-        \begin{equation}
-            \mathbf{T}_{R} = \begin{bmatrix}
-                x_1 & x_2 & x_3 \\
-                y_1 & y_2 & y_3 \\
-                z_1 & z_2 & z_3 \\
-            \end{bmatrix}
-        ,\end{equation}
-
-        where $\mathbf{x} = [x_1, x_2, x_3]^{T}$, $\mathbf{y} = [y_1, y_2, y_3]^{T}$
-        and  $\mathbf{z} = [z_1, z_2, z_3]^{T}$ are unit vectors in the direction
-        of \textit{x-}, \textit{y-} and \textit{z-axis} of the new coordinate
-        system.
-
-
-        \begin{bbox}[0.85]
-            The \textbf{transformation matrix} can be defined by any two vectors
-            $\mathbf{u}$ and $\mathbf{v}$, where $\mathbf{u}$ defines the direction
-            of \textit{x-axis} and $\mathbf{v}$ defines the \textit{xy-plane}.
-            To construct the \textbf{rotation matrix} use the following steps:
-
-            \begin{enumerate}
-                \item create x-axis of unit lenght
-
-                    \begin{equation}
-                        \mathbf{x} = \frac{\mathbf{u}}{||\mathbf{u}||}
-                    .\end{equation}
-
-                \item create z-axis of unit lenght
-
-                    \begin{equation}
-                        \mathbf{z}
-                        = \frac{\mathbf{u} \times \mathbf{v}}{||\mathbf{u} \times \mathbf{v}||}
-                    .\end{equation}
-
-                \item create y-axis of unit lenght
-
-                    \begin{equation}
-                        \mathbf{y}
-                        = \frac{\mathbf{z} \times \mathbf{x}}{||\mathbf{z} \times \mathbf{x}||}
-                    .\end{equation}
-
-                \item compose \textbf{rotation matrix}
-
-                    \begin{equation}
-                        \mathbf{T}_{R} = \begin{bmatrix}
-                            \mathbf{x}^{T} \\
-                            \mathbf{y}^{T} \\
-                            \mathbf{z}^{T}
-                        \end{bmatrix}
-                    .\end{equation}
-            \end{enumerate}
-
-            The creation of the \textbf{rotation matrix} by any two other vectors is
-            analogic, as \textbf{orthogonal} base must be constructed first, then
-            the matrix is composed of its vectors.
-        \end{bbox}
-
-        \begin{bbox}[0.85]
-
-            To test, whether the transformation matrix is correct, one can use
-            the orthogonality criterion:
-
-            \begin{equation}
-                \mathbf{T}^{T} = \mathbf{T}^{-1}
-            \end{equation}
-
-            \begin{equation}
-                \mathbf{T}\mathbf{T}^{T} = \mathbf{T}^{T}\mathbf{T} = \mathbf{I}
-            \end{equation}
-
-            or
-
-            \begin{equation}
-                \det(\mathbf{T}) = 1
-            \end{equation}
-
-        \end{bbox}
-
-\end{enumerate}
-
-
-
-\subsection{Euler's angles of \textbf{XYZ} rotation}
-
-    With the order of \textit{xyz} rotation the rotation matrix is
-    composed as:
-
-    \begin{equation}
-        \scalebox{0.85}{
-            $ \begin{array}{ll}
-                \mathbf{T}
-                &= \mathbf{R}_{z}(\psi)\mathbf{R}_{y}(\theta)\mathbf{R}_{x}(\varphi) \\
-                &=
-                \begin{bmatrix}
-                    \cos \psi & \sin \psi & 0 \\
-                    -\sin \psi & \cos \psi & 0 \\
-                    0 & 0 & 1
-                \end{bmatrix}
-                \begin{bmatrix}
-                    \cos \theta & 0 & -\sin \theta \\
-                    0 & 1 & 0 \\
-                    \sin \theta & 0 & \cos \theta
-                \end{bmatrix}
-                \begin{bmatrix}
-                    1 & 0 & 0 \\
-                    0 & \cos \varphi & \sin \varphi \\
-                    0 & -\sin \varphi & \cos \varphi
-                \end{bmatrix} \\
-                &=
-                \begin{bmatrix}
-                    \cos \theta \cos \psi
-                    & \cos \psi \sin \theta \sin \varphi - \cos \varphi \sin \psi
-                    & \cos \varphi \cos \psi \sin \theta + \sin \varphi \sin \psi \\
-                    \cos \theta \sin \psi
-                    & \cos \varphi \cos \psi + \sin \theta \sin \varphi \sin \psi
-                    & \cos \varphi \sin \theta \sin \psi - \cos \psi \sin \varphi \\
-                    -\sin \theta
-                    & \cos \theta \sin \varphi
-                    & \cos \theta \cos \varphi
-                \end{bmatrix}
-            \end{array} $
-        }
-    \end{equation}
-
-    Then the three \textit{Euler angles} for a \textit{xyz} rotation
-    can be obtained:
-
-    \begin{equation}
-        \varphi = \atantwo(t_{32}, t_{33})
-    ,\end{equation}
-
-    \begin{equation}
-        \theta = \atantwo \left(-t_{31}, \sqrt{ t_{32}^{2} + t_{33}^{2}} \right)
-    ,\end{equation}
-
-    \begin{equation}
-        \psi = \atantwo(t_{21}, t_{11})
-    ,\end{equation}
-
-    where $\atantwo(y, x)$ definition is:
-
-    \begin{equation}
-        \atantwo(y, x) = \left\{
-            \begin{array}{ll}
-                \arctan\left(\frac{y}{x}\right) & if \quad (x > 0),\\
-                \arctan\left(\frac{y}{x}\right) + \pi & if \quad (x < 0) \land (y \ge 0),\\
-                \arctan\left(\frac{y}{x}\right) - \pi & if \quad (x < 0) \land  (y < 0),\\
-                \frac{\pi}{2} & if \quad (x = 0) \land  (y > 0),\\
-                -\frac{\pi}{2} & if \quad (x = 0) \land  (y < 0),\\
-                undefined & if \quad (x = 0) \land (y = 0)
-            \end{array}
-        \right\}
-    .\end{equation}
-
-    \textbf{Note} the angle limitation for values returned while doing
-    an Euler angle decomposition of a \textbf{rotation} matrix:
-
-    \begin{equation}
-        \begin{array}{l}
-            \varphi \in (-\pi, \pi) \\
-            \theta \in (-\frac{\pi}{2}, \frac{\pi}{2}) \\
-            \psi \in (-\pi, \pi)
-        \end{array}
-    .\end{equation}
-
-    Alternative way to obtain the angles:
-    \begin{equation}
-        \left\{ \begin{array}{l}
-            \varphi = \atantwo(-t_{21}, t_{22}) \\
-            \theta = \arcsin(t_{20}) \\
-            \psi = \atantwo(-t_{10}, t_{00})
-        \end{array} \right.
-    \end{equation}
-
-    A python implementation with alternative components used to obtain the angles
-
-\begin{python}
-import numpy as np
-
-def EulerXYZ(R: np.ndarray) -> tuple:
-    if R[2,0] < 1.:
-        if R[2,0] > -1.:
-            b = np.arcsin(R[2,0])
-            a = np.arctan2(-R[2,1], R[2,2])
-            c = np.arctan2(-R[1,0], R[0,0])
-        else:
-            b = -np.pi / 2.
-            a = -np.arctan2(R[0,1], R[1,1])
-            c = 0.
-    else:
-        b = np.pi / 2.
-        a = np.arctan2(R[0,1], R[1,1])
-        c = 0.
-
-    return a, b, c
-\end{python}
-
-
-\subsection{Euler's angles of \textbf{ZYX} rotation}
-
-    For a rotation defined in \textit{zyx} order the rotation matrix is:
-
-    \begin{equation}
-        \scalebox{0.85}{
-            $ \begin{array}{ll}
-                \mathbf{T}
-                &= \mathbf{R}_{x}(\varphi)\mathbf{R}_{y}(\theta)\mathbf{R}_{z}(\psi) \\
-                &=
-                \begin{bmatrix}
-                    1 & 0 & 0 \\
-                    0 & \cos \varphi & \sin \varphi \\
-                    0 & -\sin \varphi & \cos \varphi
-                \end{bmatrix}
-                \begin{bmatrix}
-                    \cos \theta & 0 & -\sin \theta \\
-                    0 & 1 & 0 \\
-                    \sin \theta & 0 & \cos \theta
-                \end{bmatrix}
-                \begin{bmatrix}
-                    \cos \psi & \sin \psi & 0 \\
-                    -\sin \psi & \cos \psi & 0 \\
-                    0 & 0 & 1
-                \end{bmatrix} \\
-                &=
-                \begin{bmatrix}
-                    \cos \theta \cos \varphi
-                    & - \cos \theta \sin \varphi
-                    & \sin \varphi \\
-                    \cos \psi \sin \varphi + \cos \varphi \sin \theta \sin \psi
-                    & \cos \varphi \cos \psi - \sin \theta \sin \varphi \sin \psi
-                    & -\cos \theta \sin \psi \\
-                    \sin \varphi \sin \psi - \cos \varphi \cos \psi \sin \theta
-                    & \cos \psi \sin \theta \sin \varphi + \cos \varphi \sin \psi
-                    & \cos \theta \cos \psi
-                \end{bmatrix}
-            \end{array} $
-        }
-    .\end{equation}
-
-    \textbf{Note that the angles $\varphi$, $\theta$ and $\psi$ defined here are
-    different from the \textit{XYZ} rotation defined above!} The rotation
-    is performed by first rotating around \textit{z-axis} counterclockwise
-    by an angle $\psi$, then around \textit{y-axis} counterclockwise
-    by an angle $\theta$ and finaly around \textit{x-axis}, counterclockwise,
-    by an angle $\varphi$.
-
-    Then the \textit{Euler's angles} can be obtained as:
-
-    \begin{equation}
-        \left\{ \begin{array}{l}
-            \varphi = \arctan \left( \frac{-t_{12}}{t_{11}} \right)\\
-            \theta = \arcsin \left( t_{13} \right) \\
-            \psi = \arctan \left( \frac{-t_{23}}{t_{33}} \right)
-        \end{array} \right.
-    .\end{equation}
-
-    Alternative way to obtain the angles:
-
-    \begin{equation}
-        \left\{ \begin{array}{l}
-            \varphi = \atantwo(t_{12}, t_{22}) \\
-            \theta = \arcsin(-t_{02}) \\
-            \psi = \atantwo(t_{01}, t_{00})
-        \end{array} \right.
-    \end{equation}
-
-    A python implementation with alternative components used to obtain the angles
-
-\begin{python}
-import numpy as np
-
-def EulerZYX(R: np.ndarray) -> tuple:
-    if R[0,2] < 1.:
-        if R[0,2] > -1.:
-            b = np.arcsin(-R[0,2])
-            a = np.arctan2(R[0,1], R[0,0])
-            c = np.arctan2(R[1,2], R[2,2])
-        else:
-            b = np.pi / 2.
-            a = -np.arctan2(-R[2,1], R[1,1])
-            c = 0.
-    else:
-        b = -np.pi / 2.
-        a = np.arctan2(-R[2,1], R[1,1])
-        c = 0.
-
-    return a, b, c
-\end{python}
-
-
-\subsection{Euler's angles of \textbf{XZY} rotation}
-
-    For a rotation defined in \textit{xzy} order the rotation matrix is:
-
-    \begin{equation}
-        \scalebox{0.85}{
-            $ \begin{array}{ll}
-                \mathbf{T}
-                &= \mathbf{R}_{x}(\varphi)\mathbf{R}_{z}(\psi)\mathbf{R}_{y}(\theta) \\
-                &=
-                \begin{bmatrix}
-                    1 & 0 & 0 \\
-                    0 & \cos \varphi & \sin \varphi \\
-                    0 & -\sin \varphi & \cos \varphi
-                \end{bmatrix}
-                \begin{bmatrix}
-                    \cos \psi & \sin \psi & 0 \\
-                    -\sin \psi & \cos \psi & 0 \\
-                    0 & 0 & 1
-                \end{bmatrix}
-                \begin{bmatrix}
-                    \cos \theta & 0 & -\sin \theta \\
-                    0 & 1 & 0 \\
-                    \sin \theta & 0 & \cos \theta
-                \end{bmatrix} \\
-                &=
-                \begin{bmatrix}
-                    \cos \theta \cos \psi
-                    &  \sin \varphi \sin \theta + \cos \varphi \cos \theta \sin \psi
-                    & -\cos \varphi \sin \theta + \cos \theta \sin \varphi \sin \psi \\
-                    -\sin \psi
-                    & \cos \varphi \cos \psi
-                    & \cos \psi \sin \varphi \\
-                    \cos \psi \sin \theta
-                    & -\cos \theta \sin \varphi + \cos \varphi \sin \theta \sin \psi
-                    & \cos \varphi \cos \theta + \sin \varphi \sin \theta \sin \psi
-                \end{bmatrix}
-            \end{array} $
-        }
-    .\end{equation}
-
-    The the angles are:
-
-    \begin{equation}
-        \left\{ \begin{array}{l}
-            \varphi = \atantwo(t_{12}, t_{11}) \\
-            \theta = \atantwo(t_{20}, t_{00}) \\
-            \psi = \arcsin(-t_{10})
-        \end{array} \right.
-    \end{equation}
-
-    A python implementation used to obtain the angles
-
-\begin{python}
-import numpy as np
-
-def EulerXZY(R: np.ndarray) -> tuple:
-    if R[1,0] < 1.:
-        if R[1,0] > -1.:
-            b = np.arcsin(-R[1,0])
-            a = np.arctan2(R[1,2], R[1,1])
-            c = np.arctan2(R[2,0], R[0,0])
-        else:
-            b = np.pi / 2.
-            a = -np.arctan2(-R[0,2], R[2,2])
-            c = 0.
-    else:
-        b = -np.pi / 2.
-        a = np.arctan2(-R[0,2], R[2,2])
-        c = 0.
-
-    return a, b, c
-\end{python}
-
-
-\subsection{Euler's angles of \textbf{ZXY} rotation}
-
-    For a rotation defined in \textit{zxy} order the rotation matrix is:
-
-    \begin{equation}
-        \scalebox{0.85}{
-            $ \begin{array}{ll}
-                \mathbf{T}
-                &= \mathbf{R}_{z}(\psi)\mathbf{R}_{x}(\varphi)\mathbf{R}_{y}(\theta) \\
-                &=
-                \begin{bmatrix}
-                    \cos \psi & \sin \psi & 0 \\
-                    -\sin \psi & \cos \psi & 0 \\
-                    0 & 0 & 1
-                \end{bmatrix}
-                \begin{bmatrix}
-                    1 & 0 & 0 \\
-                    0 & \cos \varphi & \sin \varphi \\
-                    0 & -\sin \varphi & \cos \varphi
-                \end{bmatrix}
-                \begin{bmatrix}
-                    \cos \theta & 0 & -\sin \theta \\
-                    0 & 1 & 0 \\
-                    \sin \theta & 0 & \cos \theta
-                \end{bmatrix} \\
-                &=
-                \begin{bmatrix}
-                    \cos \theta \cos \psi - \sin \varphi \sin \theta \sin \psi
-                    &  \cos \psi \sin \varphi \sin \theta + \cos \theta \sin \psi
-                    & -\cos \varphi \sin \theta \\
-                    -\cos \varphi \sin \psi
-                    & \cos \varphi \cos \psi
-                    & \sin \varphi \\
-                    \cos \psi \sin \theta + \cos \theta \sin \varphi \sin \psi
-                    & -\cos \theta \cos \psi \sin \theta + \sin \theta \sin \psi
-                    & \cos \varphi \cos \theta
-                \end{bmatrix}
-            \end{array} $
-        }
-    .\end{equation}
-
-    The the angles are:
-
-    \begin{equation}
-        \left\{ \begin{array}{l}
-            \varphi = \atantwo(t_{12}, t_{11}) \\
-            \theta = \atantwo(t_{20}, t_{00}) \\
-            \psi = \arcsin(-t_{10})
-        \end{array} \right.
-    \end{equation}
-
-    Python example of algorithm:
-
-\begin{python}
-import numpy as np
-
-def EulerZXY(R: np.ndarray) -> tuple:
-    if R[1,2] < 1.:
-        if R[1,2] > -1.:
-            b = np.arcsin(R[1,2])
-            a = np.arctan2(-R[1,0], R[1,1])
-            c = np.arctan2(-R[0,2], R[2,2])
-        else:
-            b = -np.pi / 2.
-            a = -np.arctan2(R[2,0], R[0,0])
-            c = 0.
-    else:
-        b = np.pi / 2.
-        a = np.arctan2(R[2,0], R[0,0])
-        c = 0.
-
-    return a, b, c
-\end{python}
-
-\subsection{Euler's angles of \textbf{YXZ} rotation}
-
-    For a rotation defined in \textit{yxz} order the rotation matrix is:
-
-    \begin{equation}
-        \scalebox{0.85}{
-            $ \begin{array}{ll}
-                \mathbf{T}
-                &= \mathbf{R}_{y}(\theta)\mathbf{R}_{x}(\varphi)\mathbf{R}_{z}(\psi) \\
-                &=
-                \begin{bmatrix}
-                    \cos \theta & 0 & -\sin \theta \\
-                    0 & 1 & 0 \\
-                    \sin \theta & 0 & \cos \theta
-                \end{bmatrix}
-                \begin{bmatrix}
-                    1 & 0 & 0 \\
-                    0 & \cos \varphi & \sin \varphi \\
-                    0 & -\sin \varphi & \cos \varphi
-                \end{bmatrix}
-                \begin{bmatrix}
-                    \cos \psi & \sin \psi & 0 \\
-                    -\sin \psi & \cos \psi & 0 \\
-                    0 & 0 & 1
-                \end{bmatrix} \\
-                &=
-                \begin{bmatrix}
-                    \cos \theta \cos \psi + \sin \varphi \sin \theta \sin \psi
-                    &  \cos \varphi \sin \psi
-                    & -\cos \psi \sin \theta + \cos \theta \sin \varphi \sin \psi \\
-                    \cos \psi \sin \varphi \sin \theta - \cos \theta \sin \psi
-                    & \cos \varphi \cos \psi
-                    & \cos \theta \cos \psi \sin \varphi + \sin \theta \sin \psi \\
-                    \cos \varphi \sin \theta
-                    & -\sin \varphi
-                    & \cos \varphi \cos \theta
-                \end{bmatrix}
-            \end{array} $
-        }
-    .\end{equation}
-
-    The the angles are:
-
-    \begin{equation}
-        \left\{ \begin{array}{l}
-            \varphi = \arcsin(-t_{21}) \\
-            \theta = \atantwo(t_{20}, t_{22}) \\
-            \psi = \atantwo(t_{01}, t_{11})
-        \end{array} \right.
-    \end{equation}
-
-    Python example of algorithm:
-
-\begin{python}
-
-import numpy as np
-
-def EulerYXZ(R: np.ndarray) -> tuple:
-    if R[2,1] < 1.:
-        if R[2,1] > -1.:
-            b = np.arcsin(-R[2,1])
-            a = np.arctan2(R[2,0], R[2,2])
-            c = np.arctan2(R[0,1], R[1,1])
-        else:
-            b = np.pi / 2.
-            a = -np.arctan2(-R[1,0], R[0,0])
-            c = 0.
-    else:
-        b = -np.pi / 2.
-        a = np.arctan2(-R[1,0], R[0,0])
-        c = 0.
-
-    return a, b, c
-\end{python}
-
-\subsection{Euler's angles of \textbf{YZX} rotation}
-
-    For a rotation defined in \textit{yzx} order the rotation matrix is:
-
-    \begin{equation}
-        \scalebox{0.85}{
-            $ \begin{array}{ll}
-                \mathbf{T}
-                &= \mathbf{R}_{y}(\theta)\mathbf{R}_{x}(\varphi)\mathbf{R}_{z}(\psi) \\
-                &=
-                \begin{bmatrix}
-                    \cos \theta & 0 & -\sin \theta \\
-                    0 & 1 & 0 \\
-                    \sin \theta & 0 & \cos \theta
-                \end{bmatrix}
-                \begin{bmatrix}
-                    \cos \psi & \sin \psi & 0 \\
-                    -\sin \psi & \cos \psi & 0 \\
-                    0 & 0 & 1
-                \end{bmatrix}
-                \begin{bmatrix}
-                    1 & 0 & 0 \\
-                    0 & \cos \varphi & \sin \varphi \\
-                    0 & -\sin \varphi & \cos \varphi
-                \end{bmatrix} \\
-                &=
-                \begin{bmatrix}
-                    \cos \theta \cos \psi
-                    &  \sin \psi
-                    & -\cos \psi \sin \theta \\
-                    \sin \varphi \sin \theta - \cos \varphi \cos \theta \sin \psi
-                    & \cos \varphi \cos \psi
-                    & \cos \theta \sin \varphi + \cos \varphi \sin \theta \sin \psi \\
-                    \cos \varphi \sin \theta + \cos \theta \sin \varphi \sin \psi
-                    & -\cos \psi \sin \varphi
-                    & \cos \varphi \cos \theta - \sin \varphi \sin \theta \sin \psi
-                \end{bmatrix}
-            \end{array} $
-        }
-    .\end{equation}
-
-    The the angles are:
-
-    \begin{equation}
-        \left\{ \begin{array}{l}
-            \varphi = \atantwo(-t_{12}, t_{11}) \\
-            \theta = \atantwo(-t_{02}, t_{00}) \\
-            \psi = \arcsin(t_{01})
-        \end{array} \right.
-    \end{equation}
-
-    Python example of algorithm:
-
-\begin{python}
-import numpy as np
-
-def EulerYZX(R: np.ndarray) -> tuple:
-    if R[0,1] < 1.:
-        if R[0,1] > -1.:
-            b = np.arcsin(R[0,1])
-            a = np.arctan2(-R[0,2], R[0,0])
-            c = np.arctan2(-R[2,1], R[1,1])
-        else:
-            b = -np.pi / 2.
-            a = -np.arctan2(R[1,2], R[2,2])
-            c = 0.
-    else:
-        b = np.pi / 2.
-        a = np.arctan2(R[1,2], R[2,2])
-        c = 0.
-
-    return a, b, c
-\end{python}
-
-\subsection{Euler's angles of \textbf{XYX} rotation}
-
-    For a rotation defined in \textit{xyx} order the rotation matrix is:
-
-    \begin{equation}
-        \scalebox{0.85}{
-            $ \begin{array}{ll}
-                \mathbf{T}
-                &= \mathbf{R}_{x}(\varphi_1)\mathbf{R}_{y}(\theta)\mathbf{R}_{x}(\varphi_0) \\
-                &=
-                \begin{bmatrix}
-                    1 & 0 & 0 \\
-                    0 & \cos \varphi_1 & \sin \varphi_1 \\
-                    0 & -\sin \varphi_1 & \cos \varphi_1
-                \end{bmatrix}
-                \begin{bmatrix}
-                    \cos \psi & \sin \psi & 0 \\
-                    -\sin \psi & \cos \psi & 0 \\
-                    0 & 0 & 1
-                \end{bmatrix}
-                \begin{bmatrix}
-                    1 & 0 & 0 \\
-                    0 & \cos \varphi_0 & \sin \varphi_0 \\
-                    0 & -\sin \varphi_0 & \cos \varphi_0
-                \end{bmatrix} \\
-                &=
-                \begin{bmatrix}
-                    \cos \psi
-                    &  \sin \psi \cos \varphi_1
-                    & \sin \psi \sin \varphi_1 \\
-                    -\sin \psi \cos \varphi_0
-                    & \cos \psi \cos \varphi_0 \cos \varphi_1 - \sin \varphi_0 \sin \varphi_1
-                    & \cos \psi \cos \varphi_0 \sin \varphi_1 + \cos \varphi_1 \sin \varphi_0 \\
-                    \sin \psi \sin \varphi_0
-                    & -\cos \varphi_0 \sin \varphi_1 - \cos \psi \cos \varphi_1 \sin \varphi_0
-                    & \cos \varphi_0 \cos \varphi_1 - \cos \psi \sin \varphi_0 \sin \varphi_1
-                \end{bmatrix}
-            \end{array} $
-        }
-    .\end{equation}
-
-    The the angles are:
-
-    \begin{equation}
-        \left\{ \begin{array}{l}
-            \varphi_0 = \atantwo(t_{02}, -t_{10}) \\
-            \psi = \arccos(t_{00}) \\
-            \varphi_1 = \atantwo(t_{02}, t_{01})
-        \end{array} \right.
-    \end{equation}
-
-    Python example of algorithm:
-
-\begin{python}
-import numpy as np
-
-def EulerXYX(R: np.ndarray) -> tuple:
-    if R[0,0] < 1.:
-        if R[0,0] > -1.:
-            b = np.arccos(R[0,0])
-            a = np.arctan2(R[0,1], -R[0,2])
-            c = np.arctan2(R[1,0], R[2,0])
-        else:
-            b = np.pi
-            a = -np.arctan2(-R[2,1], R[1,1])
-            c = 0.
-    else:
-        b = 0.
-        a = np.arctan2(-R[2,1], R[1,1])
-        c = 0.
-
-    return a, b, c
-\end{python}
-
-\subsection{Euler's angles of \textbf{XZX} rotation}
-
-    For a rotation defined in \textit{xzx} order the rotation matrix is:
-
-    \begin{equation}
-        \scalebox{0.85}{
-            $ \begin{array}{ll}
-                \mathbf{T}
-                &= \mathbf{R}_{x}(\varphi_1)\mathbf{R}_{z}(\psi)\mathbf{R}_{x}(\varphi_0) \\
-                &=
-                \begin{bmatrix}
-                    1 & 0 & 0 \\
-                    0 & \cos \varphi_1 & \sin \varphi_1 \\
-                    0 & -\sin \varphi_1 & \cos \varphi_1
-                \end{bmatrix}
-                \begin{bmatrix}
-                    \cos \theta & 0 & -\sin \theta \\
-                    0 & 1 & 0 \\
-                    \sin \theta & 0 & \cos \theta
-                \end{bmatrix}
-                \begin{bmatrix}
-                    1 & 0 & 0 \\
-                    0 & \cos \varphi_0 & \sin \varphi_0 \\
-                    0 & -\sin \varphi_0 & \cos \varphi_0
-                \end{bmatrix} \\
-                &=
-                \begin{bmatrix}
-                    \cos \theta
-                    &  \sin \theta \sin \varphi_1
-                    & -\sin \theta \cos \varphi_1 \\
-                    \sin \theta \sin \varphi_0
-                    & \cos \varphi_0 \cos \varphi_1 - \cos \theta \sin \varphi_0 \sin \varphi_1
-                    & \cos \varphi_0 \sin \varphi_1 + \cos \theta \cos \varphi_1 \sin \varphi_0 \\
-                    \sin \theta \cos \varphi_0
-                    & -\cos \theta \cos \varphi_0 \sin \varphi_1 - \cos \varphi_1 \sin \varphi_0
-                    & \cos \theta \cos \varphi_0 \cos \varphi_1 - \sin \varphi_0 \sin \varphi_1
-                \end{bmatrix}
-            \end{array} $
-        }
-    .\end{equation}
-
-    The the angles are:
-
-    \begin{equation}
-        \left\{ \begin{array}{l}
-            \varphi_0 = \atantwo(t_{10}, t_{20}) \\
-            \theta = \arccos(t_{00}) \\
-            \varphi_1 = \atantwo(t_{01}, -t_{02})
-        \end{array} \right.
-    \end{equation}
-
-    Python example of algorithm:
-
-\begin{python}
-import numpy as np
-
-def EulerXZX(R: np.ndarray) -> tuple:
-    if R[0,0] < 1.:
-        if R[0,0] > -1.:
-            b = np.arccos(R[0,0])
-            a = np.arctan2(R[0,2], R[0,1])
-            c = np.arctan2(R[2,0], -R[1,0])
-        else:
-            b = np.pi
-            a = -np.arctan2(R[1,2], R[2,2])
-            c = 0.
-    else:
-        b = 0.
-        a = np.arctan2(R[1,2], R[2,2])
-        c = 0.
-
-    return a, b, c
-\end{python}
-
-\subsection{Euler's angles of \textbf{YXY} rotation}
-
-\begin{python}
-import numpy as np
-
-def EulerYXY(R: np.ndarray) -> tuple:
-    if R[1,1] < 1.:
-        if R[1,1] > -1.:
-            b = np.arccos(R[1,1])
-            a = np.arctan2(R[1,0], R[1,2])
-            c = np.arctan2(R[0,1], -R[2,1])
-        else:
-            b = np.pi
-            a = -np.arctan2(R[2,0], R[0,0])
-            c = 0.
-    else:
-        b = 0.
-        a = np.arctan2(R[2,0], R[0,0])
-        c = 0.
-
-    return a, b, c
-\end{python}
-
-\subsection{Euler's angles of \textbf{YZY} rotation}
-
-\begin{python}
-import numpy as np
-
-def EulerYZY(R: np.ndarray) -> tuple:
-    if R[1,1] < 1.:
-        if R[1,1] > -1.:
-            b = np.arccos(R[1,1])
-            a = np.arctan2(R[1,2], -R[1,0])
-            c = np.arctan2(R[2,1], R[0,1])
-        else:
-            b = np.pi
-            a = -np.arctan2(-R[0,2], R[2,2])
-            c = 0.
-    else:
-        b = 0.
-        a = np.arctan2(-R[0,2], R[2,2])
-        c = 0.
-
-    return a, b, c
-\end{python}
-
-\subsection{Euler's angles of \textbf{ZXZ} rotation}
-
-        \textbf{Note:} One of the most used forms of the \textbf{Euler} angles.
-
-\begin{python}
-import numpy as np
-
-def EulerZXZ(R: np.ndarray) -> tuple:
-    if R[2,2] < 1.:
-        if R[2,2] > -1.:
-            b = np.arccos(R[2,2])
-            a = np.arctan2(R[2,0], -R[2,1])
-            c = np.arctan2(R[0,2], R[1,2])
-        else:
-            b = np.pi
-            a = -np.arctan2(-R[1,0], R[0,0])
-            c = 0.
-    else:
-        b = 0.
-        a = np.arctan2(-R[1,0], R[0,0])
-        c = 0.
-
-    return a, b, c
-\end{python}
-
-\subsection{Euler's angles of \textbf{ZYZ} rotation}
-
-\begin{python}
-import numpy as np
-
-def EulerZYZ(R: np.ndarray) -> tuple:
-    if R[2,2] < 1.:
-        if R[2,2] > -1.:
-            b = np.arccos(R[2,2])
-            a = np.arctan2(R[2,1], R[2,0])
-            c = np.arctan2(R[1,2], -R[0,2])
-        else:
-            b = np.pi
-            a = -np.arctan2(R[0,1], R[1,1])
-            c = 0.
-    else:
-        b = 0.
-        a = np.arctan2(R[0,1], R[1,1])
-        c = 0.
-
-    return a, b, c
-\end{python}
-
-
-\section{Coordinate Transformation}
-
-\begin{itemize}
-    \item \textbf{Rotation:}
-
-        Let $\mathbf{A}^{T} = [a_{x}, a_{y}, a_{z}]$ be the original coordinates,
-        $\mathbf{B}^{T} = [b_{x}, b_{y}, b_{z}]$ be the transformed coordinates, and
-        $\mathbf{T}$ a tranformation matrix in the form:
-
-        \begin{equation}
-            \mathbf{T} = \begin{bmatrix}
-                x_1 & x_2 & x_3 \\
-                y_1 & y_2 & y_3 \\
-                z_1 & z_2 & z_3
-            \end{bmatrix} = \begin{bmatrix}
-                \mathbf{x} \\
-                \mathbf{y} \\
-                \mathbf{z}
-            \end{bmatrix}
-        ,\end{equation}
-
-        where $\mathbf{x} = [x_1, x_2, x_3]$, $\mathbf{y} = [y_1, y_2, y_3]$ and
-        $\mathbf{z} = [z_1, z_2, z_3]$ are the \textit{x-axis}, \textit{y-axis} and
-        \textit{z-axis} \textbf{unit vectors}, respectively, of the new coordinate
-        system defined in the original one, while sharing their origin.
-
-        The following applies:
-
-        \begin{equation}
-            \mathbf{T} \times \mathbf{A} = \mathbf{B}
-        ,\end{equation}
-
-        and
-
-        \begin{equation}
-            \mathbf{T}^{T} \times \mathbf{B} = \mathbf{A}
-        .\end{equation}
-
-        \textbf{Note:} Perpendicular vector is  created using \textit{cross-product}.
-\end{itemize}
-
-
-\section{Tensor Transformation}
-
-From:
-\href{https://wp.optics.arizona.edu/optomech/wp-content/uploads/sites/53/2016/10/OPTI_222_W21.pdf}{source 1},
-\href{https://www.continuummechanics.org/principalstressesandstrains.html}{source 2},
-\href{https://www.ecourses.ou.edu/cgi-bin/eBook.cgi?doc=&topic=me&chap_sec=07.2&page=theory}{source 3}
-
-Let real symmetric matrix  $\mathbf{A}$ be the original tensor,
-real symmetric matrix $\mathbf{B}$ the transformed tensor, and
-orthogonal matrix $\mathbf{T}$ a tranformation matrix in the form:
-
-\begin{equation}
-    \mathbf{A} = \begin{bmatrix}
-        \sigma^{A}_{11} & \sigma^{A}_{12} & \sigma^{A}_{13} \\
-        \sigma^{A}_{21} & \sigma^{A}_{22} & \sigma^{A}_{23} \\
-        \sigma^{A}_{31} & \sigma^{A}_{32} & \sigma^{A}_{33}
-    \end{bmatrix}
-,\end{equation}
-
-\begin{equation}
-    \mathbf{B} = \begin{bmatrix}
-        \sigma^{B}_{11} & \sigma^{B}_{12} & \sigma^{B}_{13} \\
-        \sigma^{B}_{21} & \sigma^{B}_{22} & \sigma^{B}_{23} \\
-        \sigma^{B}_{31} & \sigma^{B}_{32} & \sigma^{B}_{33}
-    \end{bmatrix}
-,\end{equation}
-
-\begin{equation}
-    \mathbf{T} = \begin{bmatrix}
-        x_1 & x_2 & x_3 \\
-        y_1 & y_2 & y_3 \\
-        z_1 & z_2 & z_3
-    \end{bmatrix} = \begin{bmatrix}
-        \mathbf{x} \\
-        \mathbf{y} \\
-        \mathbf{z}
-    \end{bmatrix}
-,\end{equation}
-
-where $\mathbf{x} = [x_1, x_2, x_3]$, $\mathbf{y} = [y_1, y_2, y_3]$ and
-$\mathbf{z} = [z_1, z_2, z_3]$ are the \textit{x-axis}, \textit{y-axis} and
-\textit{z-axis} \textbf{unit vectors}, respectively, of the new coordinate
-system defined in the original one, while sharing their origin.
-
-The transformation matrix $\mathbf{T}$ must satisfy
-$\mathbf{T}\mathbf{T}^{T} = \mathbf{T}^{T}\mathbf{T} = \mathbf{I}$, where $\mathbf{I}$
-is an identity matrix. This means that transformation matrix must be orthogonal,
-therefore satisfying $\mathbf{T}^{T} = \mathbf{T}^{-1}$.
-
-Then \textbf{tensor transformation} is performed as such:
-
-\begin{equation}
-    \mathbf{T} \times \mathbf{A} \times \mathbf{T}^{T} = \mathbf{B}
-.\end{equation}
-
-\begin{equation}
-    \mathbf{T}^{T} \times \mathbf{B} \times \mathbf{T} = \mathbf{A}
-.\end{equation}
-
-\begin{itemize}
-    \item \textbf{Principal values:}
-
-        The principal values can be found as the \textbf{eigenvalues} of the tensor
-        matrix.
-
-        Characteristic equation of tensor $\mathbf{\Sigma}$:
-
-        \begin{equation}
-            \mathbf{\Sigma}\mathbf{V} = \mathbf{\Lambda} \mathbf{V}
-        ,\end{equation}
-
-        therefore:
-
-        \begin{equation}
-            (\mathbf{\Sigma} - \mathbf{\Lambda}\mathbf{I})\mathbf{V} = 0
-        ,\end{equation}
-
-        and:
-
-        \begin{equation}
-            det(\mathbf{\Sigma} - \mathbf{\Lambda}\mathbf{I}) = 0
-        ,\end{equation}
-
-        where $\mathbf{\Lambda}$ is a diagonal matrix of eigenvalues (principal values)
-        and $\mathbf{V}$ is the eigenvector matrix.
-
-        The characteristic cubic equation can be also written as:
-
-        \begin{equation}
-            \lambda^{3} - I_{1}\lambda^{2} + I_{2}\lambda - I_{3} = 0
-            \label{eqn:cubic_cardano}
-        ,\end{equation}
-
-        giving three roots equal to tensor eigenvalues.
-
-        First compute \textbf{Invariants} $\mathbf{I}_{n}$:
-
-        \begin{equation}
-            \begin{array}{ll}
-                I_{1} &= \sigma_{11} + \sigma_{22} + \sigma_{33} \\
-                I_{2} &= \sigma_{11}\sigma_{22} + \sigma_{22}\sigma_{33} + \sigma_{33}\sigma_{11}
-                - \left|\sigma_{12}\right|^{2}
-                - \left|\sigma_{13}\right|^{2}
-                - \left|\sigma_{23}\right|^{2} \\
-                I_{3}
-                &=
-                - \sigma_{11}\left|\sigma_{23}\right|^{2}
-                - \sigma_{22}\left|\sigma_{13}\right|^{2}
-                - \sigma_{33}\left|\sigma_{12}\right|^{2}
-                + \sigma_{11}\sigma_{22}\sigma_{33}
-                + 2Re\left(\sigma_{12}\sigma_{13}\sigma_{23}\right)
-            \end{array}
-        .\end{equation}
-
-        where $ Re() $ means \textbf{real part} in case some of the values are complex.
-
-        In matrix form:
-
-        \begin{equation}
-            \begin{array}{ll}
-                I_{1} &= tr[\mathbf{\Sigma}] \\
-                I_{2} &= \left| \begin{matrix}
-                    \sigma_{11} & \sigma_{12} \\
-                    \sigma_{12} & \sigma_{22}
-                \end{matrix} \right| + \left| \begin{matrix}
-                    \sigma_{11} & \sigma_{13} \\
-                    \sigma_{13} & \sigma_{33}
-                \end{matrix} \right| + \left| \begin{matrix}
-                    \sigma_{22} & \sigma_{23} \\
-                    \sigma_{23} & \sigma_{33}
-                \end{matrix} \right| \\
-                    I_{3} &= det(\mathbf{\Sigma})
-            \end{array}
-        .\end{equation}
-
-        Then compute \textit{help values}:
-
-        \begin{equation}
-            Q = \frac{3 I_{2} - I_{1}^{2}}{9}
-        ,\end{equation}
-
-        \begin{equation}
-            R = \frac{2 I_{1}^{3} - 9 I_{1} I_{2} + 27 I_{3}}{54} \\
-        ,\end{equation}
-
-        \begin{equation}
-            \theta = cos^{-1} \left( \frac{ R }{ \sqrt{- Q^{3}}} \right)
-        .\end{equation}
-
-        Lastly to get \textbf{principal values}:
-
-        \begin{equation}
-            \overline{\sigma_{1}}
-            = 2 \sqrt{-Q} \cos{\left(\frac{\theta}{3}\right)} + \frac{1}{3}I_{1}
-        .\end{equation}
-
-        \begin{equation}
-            \overline{\sigma_{2}}
-            = 2 \sqrt{-Q} \cos{\left(\frac{\theta + 2 \pi}{3}\right)} + \frac{1}{3}I_{1}
-        .\end{equation}
-
-        \begin{equation}
-            \overline{\sigma_{3}}
-            = 2 \sqrt{-Q} \cos{\left(\frac{\theta + 4 \pi}{3}\right)} + \frac{1}{3}I_{1}
-        .\end{equation}
-
-        The \textbf{principal values are not sorted}. The principal tensor is then:
-
-        \begin{equation}
-            \mathbf{\Sigma} = \begin{bmatrix}
-                \sigma_{1} & 0 & 0 \\
-                0 & \sigma_{2}  & 0 \\
-                0 & 0 & \sigma_{3}
-            \end{bmatrix}
-        ,\end{equation}
-
-        where $\overline{\sigma}_{1}$, $\overline{\sigma}_{2}$ and $\overline{\sigma}_{3}$
-        $\implies$ $\sigma_1 > \sigma_2 > \sigma_3$.
-
-        Afterwards the \textbf{principal axes} are obtained as:
-
-        \begin{equation}
-            \begin{array}{l}
-                \mathbf{\Gamma}_{1} = \mathbf{\Sigma} - \sigma_{1}\mathbf{I} \\
-                \mathbf{\Gamma}_{2} = \mathbf{\Sigma} - \sigma_{2}\mathbf{I} \\
-                \mathbf{\Gamma}_{3} = \mathbf{\Sigma} - \sigma_{3}\mathbf{I}
-            \end{array}
-        ,\end{equation}
-
-        where $\mathbf{\Gamma}$ is a coordinate system corresponding to the
-        principal value \textit{i} and $\mathbf{I}$ is a $3 \times 3$
-        identity matrix.
-
-        The vectors corresponding to each \textbf{principal value} are obtained:
-
-        \begin{equation}
-            \mathbf{\Gamma}_{1}
-            = \begin{bmatrix}
-                \overline{x}_{11} & \overline{x}_{12} & \overline{x}_{13}\\
-                \overline{y}_{11} & \overline{y}_{12} & \overline{y}_{13}\\
-                \overline{z}_{11} & \overline{z}_{12} & \overline{z}_{13}
-            \end{bmatrix}
-            = \begin{bmatrix}
-                \overline{\mathbf{x}}_{1}\\
-                \overline{\mathbf{y}}_{1}\\
-                \overline{\mathbf{z}}_{1}
-            \end{bmatrix}
-        ,\end{equation}
-        \begin{equation}
-            \mathbf{\Gamma}_{2}
-            = \begin{bmatrix}
-                \overline{x}_{21} & \overline{x}_{22} & \overline{x}_{23}\\
-                \overline{y}_{21} & \overline{y}_{22} & \overline{y}_{23}\\
-                \overline{z}_{21} & \overline{z}_{22} & \overline{z}_{23}
-            \end{bmatrix}
-            = \begin{bmatrix}
-                \overline{\mathbf{x}}_{2}\\
-                \overline{\mathbf{y}}_{2}\\
-                \overline{\mathbf{z}}_{2}
-            \end{bmatrix} \\
-        ,\end{equation}
-        \begin{equation}
-            \mathbf{\Gamma}_{3}
-            = \begin{bmatrix}
-                \overline{x}_{31} & \overline{x}_{32} & \overline{x}_{33}\\
-                \overline{y}_{31} & \overline{y}_{32} & \overline{y}_{33}\\
-                \overline{z}_{31} & \overline{z}_{32} & \overline{z}_{33}
-            \end{bmatrix}
-            = \begin{bmatrix}
-                \overline{\mathbf{x}}_{3}\\
-                \overline{\mathbf{y}}_{3}\\
-                \overline{\mathbf{z}}_{3}
-            \end{bmatrix}
-        ,\end{equation}
-
-        where $\overline{\mathbf{x}}$, $\overline{\mathbf{y}}$ and $\overline{\mathbf{z}}$ are vectors of size 3.
-
-        \begin{equation}
-              \mathbf{x} = \frac{\overline{\mathbf{y}}_{1} \times \overline{\mathbf{z}}_{1}}
-              {|\overline{\mathbf{y}}_{1} \times \overline{\mathbf{z}}_{1}|}\\
-        ,\end{equation}
-        \begin{equation}
-              \mathbf{y} = \frac{\overline{\mathbf{z}}_{2} \times \overline{\mathbf{x}}_{2}}
-              {|\overline{\mathbf{z}}_{2} \times \overline{\mathbf{x}}_{2}|}\\
-        ,\end{equation}
-        \begin{equation}
-              \mathbf{z} = \frac{\overline{\mathbf{x}}_{3} \times \overline{\mathbf{y}}_{3}}
-              {|\overline{\mathbf{x}}_{3} \times \overline{\mathbf{y}}_{3}|}
-        .\end{equation}
-
-        The principal axes are also the \textbf{eigenvectors} of tensor $\mathbf{\Sigma}$:
-
-        \begin{equation}
-            \mathbf{V} = \begin{bmatrix}
-                \mathbf{x} & \mathbf{y} & \mathbf{z}
-            \end{bmatrix} = \begin{bmatrix}
-                x_1 & y_1 & z_1 \\
-                x_2 & y_2 & z_2 \\
-                x_3 & y_3 & z_3
-            \end{bmatrix}
-        .\end{equation}
-
-
-    \item \textbf{Principal values, Cardano's formula derivation and python implementation:}
-
-        An efficient way to compute the \textbf{roots of the cubic equation} is
-        the \textbf{Cardano's formula} or its variations. \textbf{Cardano's equation}
-        works only for \textbf{depressed} 3rd degree polynomials.
-
-        Once again we start with a \textbf{real, symmetric} tensor $ \Sigma $:
-
-        \begin{equation}
-            \mathbf{\Sigma} = \begin{bmatrix}
-                    \sigma_{xx} & \tau_{xy} & \tau_{xz} \\
-                    \tau_{yx} & \sigma_{yy} & \tau_{yz} \\
-                    \tau_{zx} & \tau_{zy} & \sigma_{zz}
-            \end{bmatrix}
-            \label{eqn:tensor}
-        ,\end{equation}
-
-        Then from the definition of eigenvalues and eignevectors:
-
-        \begin{equation}
-            \mathbf{\Sigma}\mathbf{V} = \mathbf{\Lambda} \mathbf{V}
-        ,\end{equation}
-
-        therefore:
-
-        \begin{equation}
-            (\mathbf{\Sigma} - \mathbf{\Lambda}\mathbf{I})\mathbf{V} = 0
-        ,\end{equation}
-
-        and:
-
-        \begin{equation}
-            det(\mathbf{\Sigma} - \mathbf{\Lambda}\mathbf{I}) = 0
-        ,\end{equation}
-
-        where $\mathbf{\Lambda}$ is a diagonal matrix of eigenvalues (principal values)
-        and $\mathbf{V}$ is the eigenvector matrix.
-
-        \begin{equation}
-            \mathbf{\Lambda_{i}} = \begin{bmatrix}
-                \lambda_{i} & 0 & 0 \\
-                0 & \lambda_{i} & 0 \\
-                0 & 0 & \lambda_{i}
-            \end{bmatrix}
-            \label{eqn:eigenvalues}
-        ,\end{equation}
-
-        \begin{equation}
-            \mathbf{V}_{i}
-            = \begin{bmatrix}
-                \overline{x}_{i1} & \overline{x}_{i2} & \overline{x}_{i3}\\
-                \overline{y}_{i1} & \overline{y}_{i2} & \overline{y}_{i3}\\
-                \overline{z}_{i1} & \overline{z}_{i2} & \overline{z}_{i3}
-            \end{bmatrix}
-            = \begin{bmatrix}
-                \overline{\mathbf{x}}_{i}\\
-                \overline{\mathbf{y}}_{i}\\
-                \overline{\mathbf{z}}_{i}
-            \end{bmatrix}
-        .\end{equation}
-
-        \begin{bbox}[0.85]
-            It needs to be noted that each \textbf{principal value} of
-            a \textbf{tensor matrix} corresponds to three vectors that define
-            a coordinate system where first vector is perpendicular to the
-            principal plane.
-        \end{bbox}
-
-        Rewriting the characteristic cubic equation:
-
-        \begin{eqarray}
-            0 =
-            & \lambda^{3} \\
-            &+ \lambda^{2} \left(-\sigma_{xx} - \sigma_{yy} - \sigma_{zz}\right) \\
-            &+ \lambda \left(\sigma_{xx} \sigma_{yy} + \sigma_{xx} \sigma_{zz}
-                + \sigma_{yy} \sigma_{zz}
-                - \tau_{xy}^{2} - \tau_{xz}^{2} - \tau_{yz}^{2}
-            \right) \\
-            &- \sigma_{xx} \sigma_{yy} \sigma_{zz}
-            + \sigma_{xx} \tau_{yz}^{2}
-            + \sigma_{yy} \tau_{xz}^{2}
-            + \sigma_{zz} \tau_{xy}^{2}
-            - 2 \tau_{xy} \tau_{xz} \tau_{yz}
-            \label{eqn:cubic_cardano2_expanded}
-        \end{eqarray}
-
-        and setting $ I_1, I_2, I_3 $ as invariants:
-
-        \begin{eqarray}
-            I_1 &= -\sigma_{xx} - \sigma_{yy} - \sigma_{zz} \\
-            I_2 &= \sigma_{xx} \sigma_{yy} + \sigma_{xx} \sigma_{zz}
-                + \sigma_{yy} \sigma_{zz}
-                - \tau_{xy}^{2} - \tau_{xz}^{2} - \tau_{yz}^{2}\\
-            I_3 &=
-              \sigma_{xx} \tau_{yz}^{2}
-            + \sigma_{yy} \tau_{xz}^{2}
-            + \sigma_{zz} \tau_{xy}^{2}
-            - \sigma_{xx} \sigma_{yy} \sigma_{zz}
-            - 2Re\left(\tau_{xy} \tau_{xz} \tau_{yz}\right) \\
-            \label{eqn:cardano_invariants_expanded}
-        \end{eqarray}
-
-        where $ Re() $ means \textbf{real part} (contrary to $ Im() $ which would
-        mean imaginarz part).
-
-        in \textbf{matrix} form:
-
-        \begin{eqarray}
-            I_1 &= -tr[\mathbf{\Sigma}] \\
-            I_2 &= \left| \begin{matrix}
-                \sigma_{11} & \sigma_{12} \\
-                \sigma_{12} & \sigma_{22}
-            \end{matrix} \right| + \left| \begin{matrix}
-                \sigma_{11} & \sigma_{13} \\
-                \sigma_{13} & \sigma_{33}
-            \end{matrix} \right| + \left| \begin{matrix}
-                \sigma_{22} & \sigma_{23} \\
-                \sigma_{23} & \sigma_{33}
-            \end{matrix} \right| \\
-                I_3 &= -det(\mathbf{\Sigma})
-        \end{eqarray}
-
-        substituting \ref{eqn:cardano_invariants_expanded} into \ref{eqn:cubic_cardano2_expanded}
-        we get:
-
-        \begin{equation}
-            \lambda^{3} + I_{1}\lambda^{2} + I_{2}\lambda + I_{3} = 0
-            \label{eqn:cubic_cardano2}
-        ,\end{equation}
-
-        where the inveriants are:
-
-        Cardano's method requires first transforming \ref{eqn:cubic_cardano2_expanded}
-        to the form:
-
-        \begin{equation}
-            x^3 - 3x = t
-            \label{eqn:cardano_depressed}
-        \end{equation}
-
-        by defining:
-
-        \begin{eqarray}
-            p &= {I_{1}}^2 - 3I_{2} \\
-            q &= -\frac{27}{2}I_{3} - I_{1}^3 + \frac{9}{2} I_{1} I_{2} \\
-            t &= 2p^{-3/2}q \\
-            x &= \frac{3}{\sqrt{p}}\left(\lambda + \frac{1}{3}I_{1} \right) \\
-        \end{eqarray}
-
-        the the solution to \ref{eqn:cardano_depressed} is given by:
-
-        \begin{equation}
-            x = \frac{1}{u} + u
-        \end{equation}
-
-        with
-
-        \begin{equation}
-            u = \sqrt[3]{\frac{t}{2} \pm \sqrt{\frac{t^2}{4} - 1}}
-        \end{equation}
-
-        We can then write $ u = e^{i\phi} $, with:
-
-        \begin{eqarray}
-            \phi &= \frac{1}{3} \arctan{\frac{\sqrt{\left|
-                    t^2 / 4 - 1
-                \right|}}{t / 2}} \\
-            \phi &= \frac{1}{3} \arctan{\frac{\sqrt{p^3 - q^2}}{q}} \\
-            \phi &= \frac{1}{3} \arctan{\frac{\sqrt{27 \left[
-                \frac{1}{4} I_2^2 \left(p - I_2\right)
-                + I_3 * \left(q + \frac{27}{4} I_3 \right)
-            \right]}}{q}}
-            \label{eqn:cardano_phi}
-        \end{eqarray}
-
-        The last step of \ref{eqn:cardano_phi} is necessary for numerical
-        stability and precision as the term $ p^3 - q^2 $ is highly sensitive.
-
-        \begin{bbox}[0.85]
-
-            The \ref{eqn:cardano_phi} equation can be for better stability
-            and to enforce the angle to the domain $ \phi \in \left< -\pi, \pi \right> $:
-
-            \begin{eqarray}
-                \phi &= \frac{1}{3} arctan2 \left(
-                    \sqrt{27 \left[ \frac{1}{4} I_2^2 \left(p - I_2\right)
-                    + I_3 * \left(q + \frac{27}{4} I_3 \right) \right]} , q \right)
-                \label{eqn:cardano_phi_adjusted}
-            \end{eqarray}
-
-        \end{bbox}
-
-        When evaluating either \ref{eqn:cardano_phi} or \ref{eqn:cardano_phi_adjusted},
-        care must be taken to correctly resolve the ambiguity in the arctan by
-        taking account of the sign of $ q $. For $ q > 0 $, the solution must lie
-        in the first quadrant, for $ q < 0 $, it must be located in the second.
-        In constrast to this, solutions differing by myltiples of $ 2\pi $ are
-        equivalent, so $ x $ can take three different values:
-
-        \begin{eqarray}
-            x_1 &= 2 \cos{\phi} \\
-            x_2 &= 2 \cos{\left(\phi + \frac{2\pi}{3}\right)} = -\cos{\phi} - \sqrt{3} \sin{\phi} \\
-            x_3 &= 2 \cos{\left(\phi - \frac{2\pi}{3}\right)} = -\cos{\phi} + \sqrt{3} \sin{\phi} \\
-        \end{eqarray}
-
-        These values correspond to the three eigenvalues of $ \mathbf{\Sigma} $:
-
-        \begin{equation}
-            \lambda_i = \frac{\sqrt{p}}{3}x_i - \frac{1}{3}I_1
-        \end{equation}
-
-
-        A python implementation:
-
-\begin{python}
-import numpy as np
-
-def principal_cardano_equation(flat_tensor_matrix: np.ndarray) -> np.ndarray:
-    """Eigenvalues of a Hermitian 3x3 matrix using Cardano equations
-
-    source: https://www.mpi-hd.mpg.de/personalhomes/globes/3x3/index.html
-            https://en.wikipedia.org/wiki/Cubic_equation
-
-    [ sx, txy, txz]   [a, d, f]
-    [txy,  sy, tyz] = [d, b, e]
-    [txz, tyz,  sz]   [f, e, c]
-
-    Args:
-        flat_tensor_matrix (np.ndarray): a symmetric, positive definite tensor components
-                                          [[sx, sy, sz, txy, tyz, txz],
-                                           [sx, sy, sz, txy, tyz, txz]
-                                                       .
-                                                       .
-                                                       .
-                                           [sx, sy, sz, txy, tyz, txz]]
-
-    Returns:
-        np.ndarray: prinicpal stresses sorted from largest to smallest [s1, s2, s3]
-    """
-    # store each component of the tensor into standalone vector
-    a, b, c, d, e, f = flat_tensor_matrix.T
-
-    # prepare values that are used multiple times
-    M_SQRT3 = np.sqrt(3)
-    de = d  *  e
-    dd = d  *  d
-    ee = e  *  e
-    ff = f  *  f
-
-    # tr(A)
-    m = a + b + c
-    # det(A23) + det(13) + det(12)
-    c1 = (a * b + a * c + b * c) - (dd + ee + ff)
-    # det(A)
-    c0 = c * dd + a * ee + b * ff - a * b * c - 2 * f * d * e
-
-    p = m * m - 3.0 * c1
-    q = m * (p - (3.0 / 2.0) * c1) - (27.0 / 2.0) * c0
-    sqrt_p = np.sqrt(np.abs(p))
-
-    phi = 27.0 * ( 0.25 * c1 * c1 * (p - c1) + c0 * (q + 27.0 / 4.0 * c0))
-    phi = (1.0 / 3.0) * np.arctan2(np.sqrt(np.abs(phi)), q)
-
-    c = sqrt_p * np.cos(phi)
-    s = (1.0 / M_SQRT3) * sqrt_p * np.sin(phi)
-
-    l2 = (1.0 / 3.0) * (m - c)
-    l3  = l2 + s
-    l1  = l2 + c
-    l2 -= s
-
-    # Sort the eigenvalues using a fast sorting network
-    l1, l2 = np.minimum(l1, l2), np.maximum(l1, l2)
-    l2, l3 = np.minimum(l2, l3), np.maximum(l2, l3)
-    l1, l2 = np.minimum(l1, l2), np.maximum(l1, l2)
-
-    return np.array([l3, l2, l1], dtype=float).T
-
-\end{python}
-
-
-
-    \item \textbf{Maximum Shear value:}
-
-
-        Maximum \textbf{shear stress} occurs at an angle of 45 degrees to principal axes.
-        If principal stresses are aligned such that $\sigma_1 > \sigma_2 > \sigma_3$
-        and the stress tensor is:
-
-        \begin{equation}
-            \mathbf{\Sigma} = \begin{bmatrix}
-                \sigma_1 & 0 & 0 \\
-                0 & \sigma_2 & 0 \\
-                0 & 0 & \sigma_3
-            \end{bmatrix}
-        ,\end{equation}
-
-        then maximum shear stress $\tau_{max}$ can be obtained as follows:
-
-        \begin{equation}
-            \tau_{max} = \frac{\sigma_1 - \sigma_3}{2}
-        \end{equation}
-
-        and is at 45 degrees angle in the 1-3 plane of the principal axes to the
-        principal coordinate system.
-
-        More generally (in 2D):
-
-        \begin{equation}
-            \tau_{max} = \sqrt{\left(\frac{\sigma_{x} - \sigma_{y}}{2}\right)^{2}
-            + \tau_{xy}^{2}}
-        .\end{equation}
-
-        \begin{bbox}[0.85]
-            When the principal tensor is rotated by 45 degrees to obtain \textbf{maximum
-            shear stress}, the axial stress components corresponding to this shear
-            stress are equal.
-
-            The value of maximal shear stress is obtained:
-
-            \begin{equation}
-                \tau_{max} = \frac{\sigma_{max} - \sigma_{min}}{2}
-            .\end{equation}
-
-            The value of axial stresses corresponding to maximal shear stress is
-            the average of maximal and minimal axial stresses:
-
-            \begin{equation}
-                \sigma_{\tau_{max}} = \frac{\sigma_{max} + \sigma_{min}}{2}
-            .\end{equation}
-
-        \end{bbox}
-
-    \item \textbf{Example:}
-
-        Let a stress tensor in principal coordinate system be:
-
-        \begin{equation}
-             \mathbf{\Sigma} = \begin{bmatrix}
-                 433 & 0 & 0 \\
-                 0 & 125 & 0 \\
-                 0 & 0 & 24
-             \end{bmatrix}
-        ,\end{equation}
-
-        then $\sigma_1 = \sigma_{max} = 433 \text{ MPa}$ and
-        $\sigma_3 = \sigma_{min} = 24 \text{ MPa}$.
-
-        Transformation matrix for rotating by 45 degrees in 3-1 plane is:
-
-        \begin{equation}
-            \mathbf{T} = \begin{bmatrix}
-                \frac{\sqrt{2}}{2} & 0 & -\frac{\sqrt{2}}{2} \\
-                0 & 1 & 0 \\
-                \frac{\sqrt{2}}{2} & 0 & \frac{\sqrt{2}}{2}
-            \end{bmatrix}
-        .\end{equation}
-
-        Rotating tensor $\mathbf{\Sigma}$ by transformation matrix $\mathbf{T}$ we get:
-
-        \begin{equation}
-            \mathbf{\Sigma}_{\tau} = \mathbf{T}\mathbf{\Sigma}\mathbf{T}^{T}
-            = \begin{bmatrix}
-                228.5 & 0 & 204.5 \\
-                0 & 125 & 0 \\
-                204.5 & 0 & 228.5
-            \end{bmatrix}
-        ,\end{equation}
-
-        where:
-
-        \begin{equation}
-            \begin{array}{l}
-                \tau_{max} = \sigma_{13} = \sigma_{31} = 204.5 \\
-                \sigma_{11} = \sigma_{33} = 228.5 \\
-                \sigma_{22} = \sigma_2
-            \end{array}
-        .\end{equation}
-
-        Check for correct values:
-
-        \begin{equation}
-            \tau_{max} = \frac{\sigma_1 - \sigma_3}{2} = \frac{433 - 24}{2}
-            = \frac{409}{2} = 204.5 \text{ MPa} \implies \text{OK!}
-        ,\end{equation}
-
-        \begin{equation}
-            \sigma_{11} = \sigma_{33} = \frac{\sigma_1 + \sigma_3}{2}
-            = \frac{433 + 24}{2} = 228.5 \text{ MPa} \implies \text{OK!}
-        .\end{equation}
-
-        \textbf{$\sigma_2$ has not changed as it is colinear with the axis of rotation.}
-
-        \begin{figure}[ht]
-            \centering
-            \includegraphics[width=0.8\textwidth]{img/stresses_as_function_of_angle}
-            \caption{Stresses as a function of angle}
-            \label{fig:stresses_as_function_of_angle-png}
-        \end{figure}
-
-        The relationship between principal normal streses and maximum shear stresses
-        can be better understood by examining a plot of the stresses as a function
-        of the rotation angle.
-
-        Notice that there are multiple $\theta_{p}$ and $\theta_{\tau - max}$
-        angles because of the periodical nature of the equations. However, they
-        will give the same absolute values.
-
-        At the principal stress angle, $\theta_{p}$, the shear stress will always be zero,
-        as shown on the diagram. And the maximum shear stress will occur when the
-        two principal normal stresses, $\sigma_1$ and $\sigma_2$, are equal.
-
-        \begin{bbox}[0.85]
-            When $\sigma_{x}$ or $\sigma_{y}$ are either max or min, the shear stress
-            $\tau_{xy}$ is equal to 0. When shear stress $\tau_{xy}$ is max or min,
-            the stresses $\sigma_{x}$ and $\sigma_{y}$ are equal to their average.
-        \end{bbox}
-
-
-    \item \textbf{Principal axes, obtaining principal axes with python implementation:}
-
-        The principal axes can be obtained from the following property
-
-        \begin{equation}
-            \mathbf{A}\mathbf{v} = \lambda \mathbf{v}
-        \end{equation}
-
-        As the \textbf{principal axis} (eigenvector) of $ \mathbf{A} $ is not changed
-        by $ \mathbf{A} $, only scaled, then it lies in the \textbf{nullspace} of the
-        matrix $ \mathbf{B} $ from the characteristic equation:
-
-        \begin{equation}
-            \mathbf{B} = (\mathbf{A} - \lambda \mathbf{I})
-        \end{equation}
-
-        The matrix $ \mathbf{B} $ is \textbf{singular} with 2 independent rows and
-        a third one being a linear combination of others. The vector that lies
-        in the \textbf{nullspace} can be obtained by using a cross product of any
-        two rows. This can be performed for the first two principal values
-        (eigenvalues $ \lambda_i $ and the third principal axis can be again
-        computed using a cross product of the two previously extracted axes.
-
-        Python example:
-
-        \begin{python}
-import numpy as np
-
-def gram_schmidt(vectors: np.ndarray) -> np.ndarray:
-    """Perform Gram-Schmidt orthogonalisation of vectors
-
-    Args:
-        vectors (np.ndarray) an array of row vectors to orthogonalise against
-                             each other, if the array is 3 dimensional then
-                             preform orthogonalisation for each array of
-                             row vectors separately
-    Returns:
-        (np.ndarray): an array of orthogonal vectors
-    """
-    ortho = np.copy(vectors)
-
-    if len(ortho.shape) == 3:
-        for i in range(1, ortho.shape[1]):
-            for j in range(i):
-                # np.sum(A * B, axis=1) is equal to row by row dot product of two sets of vectors
-                # written as a 2D matrix
-                vec = ortho[:,j,:] / np.linalg.norm(ortho[:,j,:], axis=1)[:,None]
-                ortho[:,i,:] -= vec * np.sum(ortho[:,i,:] * vec, axis=1)[:,None]
-    elif len(ortho.shape) == 2:
-        for i in range(1, ortho.shape[0]):
-            for j in range(i):
-                # np.sum(A * B, axis=1) is equal to row by row dot product of two sets of vectors
-                # written as a 2D matrix
-                vec = ortho[j,:] / np.linalg.norm(ortho[j,:])
-                ortho[i,:] -= vec * np.dot(ortho[i,:], vec)
-
-    return ortho
-
-
-def normalise(vectors: np.ndarray) -> np.ndarray:
-    """Normalise supplied vectors to a length of 1"""
-    normalised = np.copy(vectors)
-    if len(normalised.shape) == 3:
-        for i in range(vectors.shape[1]):
-            normalised[:,i,:] /= np.linalg.norm(normalised[:,i,:], axis=1)[:,None]
-
-    elif len(normalised.shape) == 2:
-        normalised /= np.linalg.norm(normalised, axis=1)[:,None]
-
-    elif len(normalised.shape) == 1:
-        normalised /= np.linalg.norm(normalised)
-
-    return normalised
-
-
-def orthonormalise(vectors: np.ndarray) -> np.ndarray:
-    """Orhtonormalise sets of supplied vectors using GramSchmidt method
-    first and then normalisation to a length of 1
-    """
-    return normalise(gram_schmidt(vectors))
-
-
-def principal_axes(tensors: np.ndarray, principal_values: np.ndarray) -> np.ndarray:
-    """Get the principal axes corrsponding to the principal values by
-    getting the vector that is in the nullspace of the rank 2 homogeneous
-    equation:
-         (A  - l I) = 0
-    by setting l to l1, l2 and l3, we can obtain three vectors that are
-    in the nullspace of the first, second and third eigenvalue by using
-    cross product of any two rows of the characteristic equation.
-
-    Args:
-        tensors (np.ndarray):          an array of tensors, one tensor
-                                       on each row
-                                       [[sx, sy, sz, txy, tyz, tzx], ... ]
-        principal_values (np.ndarray): an array of the same number of rows
-                                       as the tensors and 3 columns with
-                                       principal values
-
-    Returns:
-        (np.ndarray): the principal axes belonging to the supplied
-                      principal values
-    """
-    principal = np.copy(principal_values)
-    if len(principal.shape) == 1 and principal.shape[0] == 3:
-        principal = principal.reshape(1, 3)
-
-    if len(principal.shape) != len(tensor.shape):
-        raise ValueError(f"A mismatch in tensor and principal values dimensions " +
-            f"{str(tensor.shape):s} != {str(principal.shape):s}")
-    elif principal.shape[0] != tensor.shape[0]:
-        raise ValueError(f"The number of principal values does not match the number of tensors " +
-            f"{str(tensor.shape):s} != {str(principal.shape):s}")
-    elif principal.shape[1] != 3:
-        raise ValueError(f"The number of principal values is not 3: {str(principal.shape):s}")
-
-    # sort principal stresses by amount from largest to smallest
-    amount_idx = np.argsort(np.abs(principal), axis=1)[:,::-1]
-    principal  = np.take_along_axis(principal, amount_idx, axis=1)
-
-    # prepare reverse sort from largest to smallest
-    amount_idx = np.argsort(principal, axis=1)[:,::-1]
-
-    a, b, c, d, e, f = tensor.T
-    l1, l2, l3 = principal.T
-
-    # prepare the array to store the 3x3 transformation matrix composed of
-    # rows of principal axes
-    T = np.zeros((principal.shape[0], 3, 3), dtype=tensor.dtype)
-
-    # prepare a mask where True is if the stress tensor is 0
-    mask_zero = np.isclose(a ** 2 + b ** 2 + c ** 2, 0.)
-
-    # prepare a mask where True is if the prinicpal stresses are equal
-    mask_equal = np.equal(l1, l2, l3)
-
-    # other values - a general case
-    mask_nonz  = np.logical_not(mask_zero) & np.logical_not(mask_equal)
-
-    # a zero tensor
-    if np.any(mask_zero):
-        T[mask_zero] = np.array([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]], dtype=tensor.dtype)
-
-    # triaxial tensrion/compression
-    if np.any(mask_equal):
-        T[mask_equal] = np.array([[1., 0., 0.], [0., 1., 0.], [0., 0., 1.]], dtype=tensor.dtype)
-
-    # process each eigenvalue (principal stress) individually (only first two needed)
-    for i, l in enumerate([l1, l2]): # , l3]):
-        # get rows of the tensor (homogeneous equation)
-        v1 = np.array([a - l,     d,     f], dtype=tensor.dtype).T
-        v2 = np.array([    d, b - l,     e], dtype=tensor.dtype).T
-        v3 = np.array([    f,     e, c - l], dtype=tensor.dtype).T
-
-        # get the vector in the tensor nullspace for all combinations of rows
-        v0 = np.array([np.cross(v1, v2),
-                       np.cross(v1, v3),
-                       np.cross(v2, v3)], dtype=tensor.dtype).transpose(1,0,2)
-
-        # get the vector length
-        len_v0 = np.array([
-            np.linalg.norm(v0[:,0], axis=1),
-            np.linalg.norm(v0[:,1], axis=1),
-            np.linalg.norm(v0[:,2], axis=1)], dtype=tensor.dtype).T
-
-        # find the index of largest column value for each row
-        idx_v0 = np.argmax(len_v0, axis=1)
-
-        # select the longest vector in the nullspace of the homogeneous equation
-        v0     = np.take_along_axis(    v0, idx_v0[:,None,None], axis=1).reshape(-1,3)
-
-        # and its respective length
-        len_v0 = np.take_along_axis(len_v0,      idx_v0[:,None], axis=1).flatten()
-
-        # prepare an array masking vectors with 0 or close to 0 length
-        mask_zero_len = np.isclose(len_v0, 0.)
-        mask_some_len = np.logical_not(mask_zero_len)
-
-        # norm the vectors that have nonzero length
-        v0[mask_some_len] /= len_v0[mask_some_len,None]
-
-        # now to deal with vectors that have zero length
-        # 1. case where we are dealing with 1st eigenvalue
-        # should not happen due to the presorting of eigenvalues by
-        # magniture from largest to smallest. If the largest (by magnitude)
-        # eigenvalue has close to 0 length, it is a degenerative case where
-        # there are infinite possibilities for axs direction, so we can
-        # choose one aligned with the global x axis
-        if i == 0:
-            # fallback axis value - global x axis because it does not matter
-            v0[mask_zero_len] = np.array([1., 0., 0.], dtype=float)
-
-        # 2. case where we are dealing with 2nd eigenvalue
-        elif i == 1:
-            # get first principal axis
-            v = T[mask_zero_len,0,:]
-            # check whether it is the fallback axis
-            mask_occupied = np.all(np.isclose(v, np.array([1., 0., 0.])), axis=1)
-            # where it is a fallback axis, use global z axis
-            v[mask_occupied] = np.array([0., 0., 1.])
-            # obtain an arbitrary axis that is perpendicular to 1st and fallback
-            v = np.cross(v, np.array([1., 0., 0.]))
-            # norm it
-            v /= np.linalg.norm(v, axis=1)[:,None]
-            # store it
-            v0[mask_zero_len] = v
-
-        # 3. case where we are dealing with 3rd eigenvalue
-        else:
-            # create an axis perpendicular to the first 2
-            v = np.cross(T[mask_zero_len,0,:], T[mask_zero_len,1,:])
-            # norm it
-            v /= np.linalg.norm(v, axis=1)[:,None]
-            # store it
-            v0[mask_zero_len] = v
-
-        # store the axis
-        T[mask_nonz,i,:] = v0[mask_nonz,:]
-
-    # create the 3rd axis using a cross product of the two previous ones
-    T[:,2,:] = np.cross(T[:,0,:], T[:,1,:])
-    T[:,2,:] /= np.linalg.norm(T[:,2,:], axis=1)[:,None]
-
-
-    # reorder the principal values and axes back to s1 > s2 > s3
-    principal = np.take_along_axis(principal, amount_idx, axis=1) # for checking
-    T = np.take_along_axis(T, amount_idx[:,:,None], axis=1)
-
-    return orthonormalise(T)
-        \end{python}
-
-
-
-\end{itemize}
-
-
-\section{Moment of Inertia}
-
-From: \href{https://en.wikipedia.org/wiki/Parallel_axis_theorem}{Parallel axis theorem}
-
-\textit{Parallel axis theorem}, also known as \textit{Huygens-Steiner's theorem}
-or just \textit{Steiner's theorem} can be used to determine the \textbf{moment of inertia}
-or \textbf{second moment of area} of a rigid body about any axis, given the body's
-moment of inertia about a parallel axis through the objects center of gravity
-and the perpendicular distance between the axes.
-
-Moment of Inertia = \textbf{tensor}.
-
-\begin{itemize}
-    \item \textbf{Steiner's share:}
-
-        \begin{equation}
-            \mathbf{I}_{ss} = m \times \begin{bmatrix}
-                y^{2} + z^{2} & -xy & -xz \\
-                -yz & x^{2} + z^{2} & -yz \\
-                -zx & -zy & x^{2} + y^{2}
-            \end{bmatrix}
-        .\end{equation}
-
-        \textbf{Identities for a skew-symmetric matrix}
-
-        In order to compare formulations of the parallel axis theorem using
-        skew-symmetric matrices and the tensor formulation, the following
-        identities are useful.
-
-        Let $[\mathbf{R}]$ be the skew-symmetric matrix associated with the
-        position vector $\mathbf{R} = (x, y, z)$, then the product in
-        the inertia matrix becomes:
-
-        \begin{equation}
-            -[\mathbf{R}][\mathbf{R}] = \begin{bmatrix}
-                0 & -z & y \\
-                z & 0 & -x \\
-                -y & x & 0
-            \end{bmatrix}^{2}
-            = \begin{bmatrix}
-                y^{2} + z^{2} & -xy & -xz \\
-                -yz & x^{2} + z^{2} & -yz \\
-                -zx & -zy & x^{2} + y^{2}
-            \end{bmatrix}
-        .\end{equation}
-
-        This product can be computed using the matrix formed by the outer product
-        $[\mathbf{R} \mathbf{R}^{T}]$ using the identity
-
-        \begin{equation}
-            \begin{array}{ll}
-                 \\
-                -[\mathbf{R}]^{2}
-                &= |\mathbf{R}|^{2}|\mathbf{E}_{3}| - [\mathbf{R}\mathbf{R}^{T}] \\
-                &= \begin{bmatrix}
-                    x^{2} + y^{2} + z^{2} & 0 & 0 \\
-                    0 & x^{2} + y^{2} + z^{2} & 0 \\
-                    0 & 0 & 0
-                \end{bmatrix} - \begin{bmatrix}
-                    x^{2} & xy & xz \\
-                    yx & y^{2} & yz \\
-                    zx & zy & z^{2}
-                \end{bmatrix}
-            \end{array}
-        ,\end{equation}
-
-        where $[\mathbf{E}_{3}$ is the $n \times n$  identity matrix.
-
-        Also notice, that
-
-        \begin{equation}
-            |\mathbf{R}|^{2} = \mathbf{R} \cdot \mathbf{R} = tr [\mathbf{R}\mathbf{R}^{T}]
-        .\end{equation}
-
-        where $tr$ denotes the sum of the diagonal elements of the outer product
-        matrix, known as its \textit{trace}.
-
-        To obtain matrix of moments of inertia by rotating about any random
-        point $A$ while having the moment of inertia in the center of gravity of
-        the object $\mathbf{I}_{COG}$ and the coordinate distance $d = [x, y, z]$
-        between the point $A$ and \textbf{COG} we:
-
-        \begin{enumerate}
-            \item Compute the moment of inertia relative to point $A$
-
-                 \begin{equation}
-                    \mathbf{I}_{A} = \mathbf{I}_{COG} + m \times \mathbf{I}_{SS}^{A \to COG}
-                .\end{equation}
-
-            \item Transform the tensor $\mathbf{I}_{A}$ to new rotated coordinate
-                system using transformation matrix $\mathbf{T}$:
-
-                \begin{equation}
-                    \mathbf{I}_{A}^{'} = \mathbf{T} \times \mathbf{I}_{A} \times \mathbf{T}^{T}
-                .\end{equation}
-
-            \item Subtract the \textbf{Steiner's share} relative to new \textbf{COG}
-
-                \begin{equation}
-                    \mathbf{I}_{COG}^{'} = \mathbf{I}_{A}^{'} - \mathbf{I}_{SS}^{A' \to COG'}
-                .\end{equation}
-
-        \end{enumerate}
-
-\end{itemize}
-
-
-\newpage
-
-\section{Quaternions}
-
-In mathematics, the quaternion number system extends the complex numbers.
-Quaternions were first described by the Irish mathematician William Rowan
-Hamilton in 1843 and applied to mechanics in three-dimensional space.
-The algebra of quaternions is often denoted by $  \mathbf{H} $
-or $ \mathbb{H} $ (for Hamilton).
-
-Although multiplication of quaternions is noncommutative, it gives a definition
-of the quotient of two vectors in a three-dimensional space.
-Quaternions are generally represented in the form:
-
-\begin{equation}
-    a + b \mathbf{i} + c \mathbf{j} + d \mathbf{k}
-\end{equation}
-
-where the coefficients $ a, b, c, d $ are \textit{real numbers} and
-$ \mathbf{1}, \mathbf{i}, \mathbf{j}, \mathbf{k} $ are \textit{basis vectors} or
-\textit{basis elements}.
-
-The Quaterninon multiplication table (left column shows pre-multiplier, top
-row shows post-multiplier):
-
-\begin{table}[h!]
-    \centering
-    \renewcommand{\arraystretch}{1.25}
-    % \small
-    % \scriptsize
-    \scalebox{0.80}{
-    \begin{tabular}{||c | c | c | c | c ||}
-        \hline
-        \hline
-        r $ \times $ c  & $ \mathbf{1} $ & $ \quad \mathbf{i} $ & $ \quad \mathbf{j} $ & $ \quad \mathbf{k} $ \\
-        \hline
-        $ \mathbf{1} $  & $ \mathbf{1} $ & $ \quad \mathbf{i} $ & $ \quad \mathbf{j} $ & $ \quad \mathbf{k} $ \\
-        $ \mathbf{i} $  & $ \mathbf{i} $ & $ -\mathbf{1} $ & $ \quad \mathbf{k} $ & $ -\mathbf{j} $ \\
-        $ \mathbf{j} $  & $ \mathbf{j} $ & $ -\mathbf{k} $ & $ -\mathbf{1} $ & $ \quad \mathbf{i} $ \\
-        $ \mathbf{k} $  & $ \mathbf{k} $ & $ \quad \mathbf{j} $ & $ -\mathbf{i} $ & $ -\mathbf{1} $ \\
-        \hline
-        \hline
-    \end{tabular}}
-    \caption{Quaternion multiplication table}
-    \label{tab:quat-mult}
-\end{table}
-
-also, $ a \mathbf{b} = \mathbf{b} a $ and
-$ \mathbf{-b} = (-1) \mathbf{b} $ for $ a \in \mathbb{R}, \quad b = \mathbf{i}, \mathbf{j}, \mathbf{k} $.
-
-
-\subsection{Quaternion properties}
-
-The following properties apply:
-
-\begin{enumerate}
-    \item Addition:
-
-        \begin{eqarray}
-            ( a_1 + b_1 \mathbf{i} + c_1 \mathbf{j} + d_1 \mathbf{k} ) +
-            ( a_2 + b_2 \mathbf{i} + c_2 \mathbf{j} + d_2 \mathbf{k} ) = \\
-            = ( a_1 + a_2 ) + ( b_1 + b_2 ) \mathbf{i} + ( c_1 + c_2 ) \mathbf{j} + ( d_1 + d_2 ) \mathbf{k}
-        \end{eqarray}
-
-    \item Component-wise scalar multiplication:
-
-        \begin{equation}
-            \lambda ( a + b \mathbf{i} + c \mathbf{j} + d \mathbf{k} ) =
-            \lambda a + (\lambda b) \mathbf{i} + (\lambda c) \mathbf{j} + (\lambda d) \mathbf{k}
-        \end{equation}
-
-    \item Multiplication of basis elements (the revelation of Hamilton in 1943):
-
-        \begin{eqarray}
-            \mathbf{i}^2 = \mathbf{j}^2 = \mathbf{k}^2 &= -1 \\
-            \mathbf{i} \mathbf{j} \mathbf{k} &= -1
-        \end{eqarray}
-
-    \item Multiplicative identity:
-
-        \begin{eqarray}
-            \mathbf{i} 1 = \quad 1 \mathbf{i} &= \quad \mathbf{i} \\
-            \mathbf{j} 1 = \quad 1 \mathbf{j} &= \quad \mathbf{j} \\
-            \mathbf{k} 1 = \quad 1 \mathbf{k} &= \quad \mathbf{k}
-        \end{eqarray}
-
-    \item Products of basis elements:
-
-        \begin{eqarray}
-            \mathbf{i} \mathbf{j} = -\mathbf{j} \mathbf{i} &= \quad \mathbf{k} \\
-            \mathbf{j} \mathbf{k} = -\mathbf{k} \mathbf{j} &= \quad \mathbf{i} \\
-            \mathbf{k} \mathbf{i} = -\mathbf{i} \mathbf{k} &= \quad \mathbf{j}
-        \end{eqarray}
-
-    \item Inverse:
-
-        \begin{equation}
-            (a + b \mathbf{i} + c \mathbf{j} + d \mathbf{k})^{-1}
-            = \frac{1} {a^2 + b^2 + c^3 + d^2} (a - b \mathbf{i} - c \mathbf{j} - d \mathbf{k})
-        \end{equation}
-
-    \item Product of two \textbf{quaternions} (also called the \textbf{Hamilton product})
-        is determined by the products of the basis elements and the \textbf{distributive} law:
-
-        \begin{equation}
-            ( a_1 + b_1 \mathbf{i} + c_1 \mathbf{j} + d_1 \mathbf{k} ) \times
-            ( a_2 + b_2 \mathbf{i} + c_2 \mathbf{j} + d_2 \mathbf{k} ) = \\
-        \end{equation}
-
-        \begin{eqarray}
-            = & a_1 a_2 \quad &+& a_1 b_2 \mathbf{i} &+& a_1 c_2 \mathbf{j} &+& a_1 d_2 \mathbf{k} \\
-            + & b_1 a_2 \mathbf{i} &+& b_1 b_2 \mathbf{i}^2 &+& b_1 c_2 \mathbf{i} \mathbf{j} &+& b_1 d_2 \mathbf{i} \mathbf{k} \\
-            + & c_1 a_2 \mathbf{j} &+& c_1 b_2 \mathbf{i} \mathbf{j} &+& c_1 c_2 \mathbf{j}^2 &+& c_1 d_2 \mathbf{j} \mathbf{k} \\
-            + & d_1 a_2 \mathbf{k} &+& d_1 b_2 \mathbf{i} \mathbf{k} &+& d_1 c_2 \mathbf{j} \mathbf{k} &+& d_1 d_2 \mathbf{k}^2
-        \end{eqarray}
-
-        \begin{eqarray}
-            = & a_1 a_2 \quad &-& b_1 b_2 &-& c_1 c_2 &-& d_1 d_2 \\
-            + & ( a_1 b_2 &+& b_1 a_2 &+& c_1 d_2 &-& d_1 c_2 ) \times \mathbf{i} \\
-            + & ( a_1 c_2 &-& b_1 d_2 &+& c_1 a_2 &+& d_1 b_2 ) \times \mathbf{j} \\
-            + & ( a_1 d_2 &+& b_1 c_2 &-& c_1 b_2 &+& d_1 a_2 ) \times \mathbf{k}
-        \end{eqarray}
-
-\end{enumerate}
-
-
-\subsection{Scalar and vector parts}
-
-A quaternion of the form $ a + 0 \mathbf{i} + 0 \mathbf{j} + 0 \mathbf{k} $,
-where $ a $ is a real number, is called \textbf{scalar}, and a quaternion of the form
-$ 0 + b \mathbf{i} + c \mathbf{j} + d \mathbf{k} $ where $ b $, $ c $ and $ d $
-are real numbers, and at least on of $ b $, $ c $ or $ d $ is nonzero, is called
-a \textbf{vector quaternion}. If $ a + b \mathbf{i} + c \mathbf{j} + d \mathbf{k} $
-is any quaternion, then $ a $ is called its \textbf{scalar part} and
-$ b \mathbf{i} + c \mathbf{j} + d \mathbf{k} $ is called its \textbf{vector part}.
-Although every quaternion can be viewed as a vector in a four-dimensional
-vector space, it is common to refer to the \textbf{vector} part as vectors in
-three-dimensional space.
-
-Hamilton also called vector quaternions \textbf{right quaternions} and real
-numbers (considered as quaternions with zero vector part) \textbf{scalar quaternions}.
-
-If a quaternion is divided up into a scalar and a vector part, that is,
-
-\begin{equation}
-    \mathbf{q} = (r, \vec{v}), \mathbf{q} \in \mathbb{H}, r \in \mathbb{R}, \vec{v} \in \mathbb{R}^3
-\end{equation}
-
-then the formulas for \textbf{addition}, \textbf{multiplication}
-and \textbf{multiplicative inverse} are:
-
-\begin{equation}
-    (r_1, \vec{v}_1) + (r_2, \vec{v}_2) = (r_1 + r_2, \vec{v}_1 + \vec{v}_2 )
-\end{equation}
-
-\begin{equation}
-    (r_1, \vec{v}_1) \times (r_2, \vec{v}_2) = (r_1 r_2 - \vec{v}_1 \cdot \vec{v}_2, r_1 \vec{v}_2 + r_2 \vec{v}_1 + \vec{v}_1 \times \vec{v}_2)
-\end{equation}
-
-\begin{equation}
-    (r, \vec{v})^{-1} =
-    \left(
-        \frac{r} {r^2 + \vec{v} \cdot \vec{v}},
-        \frac{-\vec{v}} {r^2 + \vec{v} \cdot \vec{v}}
-    \right)
-\end{equation}
-
-
-\subsection{Conjugation, the norm and reciprocal}
-
-Conjugation of quaternions is analogous to conjugation of complex numbers.
-To define it, let $ \mathbf{q} = a + b \mathbf{i} + c \mathbf{j} + d \mathbf{k} $
-be a quaternion. The \textbf{conjugate} of $ \mathbf{q} $ is the quaternion
-$ \mathbf{q}^{*} = a - b \mathbf{i} - c \mathbf{j} - d \mathbf{k} $.
-It is denoted by $ \mathbf{q}^{*} $, $ \mathbf{q}^{t} $ or $ \bar{\mathbf{q}} $.
-
-\textbf{Conjugation} is \textbf{involution}, meaning that it is its own inverse,
-so \textbf{conjugating} an element \textbf{twice} returns the original element.
-The \textbf{conjugate} of a \textbf{product} of two quaternions is the product of the
-conjugates in the \textbf{reverse order}. That is, if $ \mathbf{p} $ and
-$ \mathbf{q} $ are quaterninos, then:
-
-\begin{equation}
-    ( \mathbf{p} \mathbf{q} )^{*} = \mathbf{q}^{*} \mathbf{p}^{*}
-\end{equation}
-
-
-The conjugation of a quaternion, in stark contrast to the complex setting, can be
-expressed with multiplication and addition of quaternions:
-
-\begin{equation}
-    \mathbf{q}^{*} = -\frac{1}{2} (\mathbf{q}
-    + \mathbf{i} \mathbf{q} \mathbf{i}
-    + \mathbf{j} \mathbf{q} \mathbf{j}
-    + \mathbf{k} \mathbf{q} \mathbf{i} )
-\end{equation}
-
-
-Conjugation can be used to extract the \textbf{scalar} and \textbf{vector} part of a
-quaternion. The \textbf{scalar} part of $ \mathbf{q} $ is:
-
-\begin{equation}
-    r_q = \frac{1}{2} ( \mathbf{q} + \mathbf{q}^{*} )
-\end{equation}
-
-The \textbf{vector} part of $ \mathbf{q} $ is:
-
-\begin{equation}
-    \vec{v}_q = \frac{1}{2} ( \mathbf{q} - \mathbf{q}^{*} )
-\end{equation}
-
-The \textbf{square root} of the product of a quaternion with its conjugate is called
-its \textbf{norm} and is denoted $ \| q \| $ (Hamilton called this quantity
-the \textbf{tensor} of $ \mathbf{q} $).
-
-\begin{equation}
-    \| \mathbf{q} \| = \sqrt{ \mathbf{q}^{*} \mathbf{q} }
-    = \sqrt{ \mathbf{q} \mathbf{q}^{*} }
-    = \sqrt{ a^2 + b^2 + c^2 + d^2 } \in \mathbb{R} \ge 0
-\end{equation}
-
-This is always a non-negative, real number and is the same as the Euclidean norm
-on $ \mathbb{H} $ considered as the vector space $ \mathbb{R}^4 $. Multiplying
-a quaternion by a real number scales its norm by the absolute value of the number.
-That is, if $ \alpha \in \mathbb{R} $ then:
-
-\begin{equation}
-    \norm{\alpha \m{q}} = \abs{\alpha} \norm{\m{q}}
-\end{equation}
-
-The norm is \textbf{multiplicative}, meaning that:
-
-\begin{equation}
-    \norm{\m{p} \m{q}} = \norm{\m{p}} \norm{\m{q}}
-\end{equation}
-
-for any two quaternion $ \m{p} $ and $ \m{q} $. Multiplicativity is a consequence of the
-formula for the conjugate of a product. Alternatively it follows fom the identity
-
-\begin{equation}
-    det \left( \begin{matrix}
-            a + i b & id + c \\
-            id - c & a - ib
-          \end{matrix} \right) = a^2 + b^2 + c^2 + d^2
-\end{equation}
-
-(where $ i $ denotes the usual imaginary unit) and hence from the multiplicative
-property of determinants of square matrices.
-
-This norm makes it possible to define the \textbf{distance} $ d(\m{p},\m{q}) $
-between $ \m{p} $ and $ \m{q} $ as the norm of their difference:
-
-\begin{equation}
-    d(\m{p},\m{q}) = \norm{\m{p} - \m{q}}
-\end{equation}
-
-This makes $ \mathbb{H} $ a \textbf{metric space}. Addition and multiplication are
-\textbf{continuous} in regard to the associated metric topology. This
-follows exactly the same proof as for the real numbers $ \mathbb{R} $ from the
-fact that $ \mathbb{H} $ is a \textbf{normed algebra}.
-
-
-\subsection{Unit quaternion (or versor)}
-
-A \textbf{unit quaternion} is a quaternion of norm one. Dividing a nonzero quaternion
-$ \m{q} $ by its norm produces a unit quaternion $ \m{Uq} $ called the \textbf{versor}
-of $ \m{q} $:
-
-\begin{equation}
-    \m{Uq} = \frac{\m{q}} {\norm{\m{q}}}
-\end{equation}
-
-Every nonzero quaternion has a unique \textbf{polar decomposition}
-$ \m{q} = \norm{\m{q}} \cdot \m{Uq} $, while the zero quaternion can be formed
-from any unit quaternion.
-
-Using conjugation and the norm makes it possible to define the \textbf{reciprocal}
-of a nonzero quaternion. The product of a quaternion with its reciprocal should
-be equal 1, and the considerations above imply that the product of $ \m{q} $ and
-$ \m{q}^{*} / \norm{\m{q}}^2 $ is 1 (for any order fo multiplication). So the
-\textbf{reciprocal} of $ \m{q} $ is defined to be:
-
-\begin{equation}
-    \m{q}^{-1} = \frac{\m{q}^{*}}{\norm{\m{q}}^2}
-\end{equation}
-
-Since the multiplication is non-commutative, the quotient quantities
-$ \m{p} \m{q}^{-1} $ or $ \m{q}^{-1} \m{p} $ are different (except if $ \m{p} $
-and $ \m{q} $ are scalar multiples of each other or if one is a scalar).
-The notation $ \frac{p}{q} $ is ambiguous and \textbf{should not be used}.
-
-
-
-\subsection{Quaternions and three-dimensional geometry}
-
-The vector part of a quaternion can be interpreted as a coordinate vector
-in $ \mathbb{R}^3 $, therefore the algebraic operations fo the quaternions reflect
-the geometry of $ \mathbb{R}^3 $. Operations such as the vector dot and cross
-products can be defined in terms of quaternions and thei makes it possible to apply
-quaternion techniques wherever spatial vectors arise. A useful application of quaternions
-has been to interpolate the orientations of key-frames in computer graphics.
-
-For the remainder of this section, $ \m{i} $, $ \m{j} $ and $ \m{k} $ wil denote
-both the three imaginary basis vectors of $ \mathbb{H} $ and a basis for $ \mathbb{R}^3 $.
-Replacing $ \m{i} $ by $ -\m{i} $, $ \m{j} $ by $ -\m{j} $ and $ \m{k} $ by $ -\m{k} $
-sends a vector to its \textbf{additive inverse}, so the additive inverse of a vector
-is the same as its conjugate as a quaternion. For this reason, conjugation
-is sometimes called the \textbf{spatial inverse}.
-
-For two vector quaternions $ \m{p} = b_1 \m{i} + c_1 \m{j} + d_1 \m{k} $ and
-$ \m{q} = b_2 \m{i} + c_2 \m{j} + d_2 \m{k} $ their \textbf{dot product}, by
-analogy to vectors in $ \mathbb{R}^3 $, is:
-
-\begin{equation}
-    \m{p} \cdot \m{q} = b_1 b_2 + c_1 c_2 + d_1 d_2
-\end{equation}
-
-It can also be expressed ina a component-free manner as:
-
-\begin{equation}
-    \m{p} \cdot \m{q} = \frac{1}{2} (\m{p}^{*} \m{q} + \m{q}^{*} \m{p})
-    = \frac{1}{2} (\m{p} \m{q}^{*} + \m{q} \m{p}^{*})
-\end{equation}
-
-This is equal to the scalar parts of the products $ \m{p} \m{q}^{*} $,
-$ \m{q} \m{p}^{*} $, $ \m{p}^{*} \m{q} $ and $ \m{q}^{*} \m{p} $. Note that their
-vector parts are different.
-
-The \textbf{cross product} of $ \m{p} $ and $ \m{q} $ relative to the orientation
-determined by the ordered basis $ \m{i} $, $ \m{j} $ and $ \m{k} $ is:
-
-\begin{equation}
-    \m{p} \times \m{q} = (c_1 d_2 - d_1 c_2) \m{i}
-    + (d_1 b_2 - b_1 d_2) \m{j} + (b_1 c_2 - c_1 b_2) \m{k}
-\end{equation}
-
-(The orientation is necessary to determine the sign.) This is equal to the vector
-part of the product $ \m{p} \m{q} $ (as quaternions), as well as the vector part of
-$ -\m{q}^{*} \m{p}^{*} $. It also has the formula:
-
-\begin{equation}
-    \m{p} \times \m{q} = \frac{1}{2} ( \m{p} \m{q} - \m{q} \m{p})
-\end{equation}
-
-For the \textbf{commutator}, $ [\m{p}, \m{q}] = \m{p} \m{q} - \m{q} \m{p} $ of two
-vector quaternions one obtains:
-
-\begin{equation}
-    [\m{p}, \m{q}] = 2 \m{p} \times \m{q}
-\end{equation}
-
-In general, let $ \m{p} $ and $ \m{q} $ be quaternions and write:
-
-\begin{eqarray}
-    \m{p} &= \m{p}_s + \m{p}_v \\
-    \m{q} &= \m{q}_s + \m{q}_v
-\end{eqarray}
-
-where $ \m{p}_s $ and $ \m{q}_s $ are the scalar parts, and $ \m{p}_v $ and $ \m{q}_v $.
-Then we have the formula:
-
-\begin{equation}
-    \m{p} \m{q} = (\m{p} \m{q})_s + (\m{p} \m{q})_v
-    = (\m{p}_s \m{q}_s -  \m{p}_v \cdot \m{q}_v )
-    + (\m{p}_s \m{q}_v + \m{q}_s \m{p}_v + \m{p}_v \times \m{q}_v)
-\end{equation}
-
-This shows that the noncommutativity of quaternion multiplication comes from the
-multiplication of vector quaternions. It also shows that two quaternions commute
-if and only if their vector parts are collinear. \textbf{Hamilton} showed that
-this product computes the third vertex of spherical triangle from two given
-vertices and their associated arc-lengths, which is also an algebra of points
-in \textbf{Elliptic geometry}.
-
-\textbf{Unit quaternions} can be identified with rotations in $ \mathbb{R}^3 $
-and were called \textbf{versors} by \textbf{Hamilton}.
-
-
-\subsection{Matrix representations}
-
-Just as complex numbers can be \textbf{represented as matrices}, co can be quaternions.
-There are \textit{at least} two ways to represent quaternions as matrices in
-such a way that quaternion \textbf{addition} and \textbf{multiplication} correspond
-to the matrix addition and multiplication.
-
-The quaternion $ a + b \m{i} + c \m{j} + d \m{k} $ can be represented:
-
-\begin{enumerate}
-    \item as a $ 2 \times 2 $ complex matrix:
-
-        \begin{equation}
-            \begin{bmatrix}
-                \q a + b i  &  c + d i \\
-                -c + d i  & a - bi
-            \end{bmatrix}
-        \end{equation}
-
-        This representation has the following properties:
-
-        \begin{itemize}
-            \item Constraining any two of $ b $, $ c $ and $ d $ to zero produces
-                a representation fo complex numbers. For example, setting $ c = d = 0 $
-                produces a diagonal complex matrix representation of complex numbers,
-                and setting $ b = d = 0 $ produces a real matrix representation.
-
-            \item The \textbf{norm} of a quaternion (the square root of the product
-                with its conjugate, as with complex numbers) is the square root
-                of the \textbf{determinant} of the corresponding matrix.
-
-            \item The \textbf{conjugate} of a quaternion corresponds to the
-                \textbf{conjugate transpose} of the matrix.
-
-            \item There is a strong relation between quaternion units and
-                \textbf{Pauli matrices} (these are needed to describe the
-                \textit{spin in quantum mechanics}). Obtain the eight quaternion unit matrices
-                by taking $ a $, $ b $, $ c $ and $ d $, set three of them to zero
-                and the fourth to $ 1 $ or $ -1 $. Multiplying any two Pauli matrices
-                always yields a quaternion unit matrix, all of them except for $ -1 $.
-                One obtains $ -1 $ via the last equality:
-
-                \begin{eqarray}
-                    \m{i}^2 = \m{j}^2 = \m{k}^2 = \m{i} \m{j} \m {k} = -1 \\
-                    i j k = \sigma_1 \sigma_2 \sigma_3 \sigma_1 \sigma_2 \sigma_3 = -1
-                \end{eqarray}
-
-        \end{itemize}
-
-    \item Using $ 4 \times 4 $ real matrix the same quaternion can be written as:
-
-        \begin{eqarray}
-            \begin{bmatrix}
-                a & -b & -c  & -d \\
-                b & \q a & -d & \q c \\
-                c & \q d & \q a & -b \\
-                d & -c & \q b & \q a \\
-            \end{bmatrix}
-            &= a \begin{bmatrix}
-                1 & \q 0 & \q 0 & \q 0 \\
-                0 & \q 1 & \q 0 & \q 0 \\
-                0 & \q 0 & \q 1 & \q 0 \\
-                0 & \q 0 & \q 0 & \q 1
-            \end{bmatrix} \\
-            &+ b \begin{bmatrix}
-                0 &   -1 & \q 0 & \q 0 \\
-                1 & \q 0 & \q 0 & \q 0 \\
-                0 & \q 0 & \q 0 &   -1 \\
-                0 & \q 0 & \q 1 & \q 0
-            \end{bmatrix} \\
-            &+ c \begin{bmatrix}
-                0 & \q 0 &   -1 & \q 0 \\
-                0 & \q 0 & \q 0 & \q 1 \\
-                1 & \q 0 & \q 0 & \q 0 \\
-                0 &   -1 & \q 0 & \q 0
-            \end{bmatrix} \\
-            &+ d \begin{bmatrix}
-                0 & \q 0 & \q 0 &   -1 \\
-                0 & \q 0 &   -1 & \q 0 \\
-                0 & \q 1 & \q 0 & \q 0 \\
-                1 & \q 0 & \q 0 & \q 0
-            \end{bmatrix} \\
-        \end{eqarray}
-
-        However the representation above is not unique. For example, the same quaternion
-        can be also represented as:
-
-        \begin{eqarray}
-            \begin{bmatrix}
-                \q a & \q d &   -b  &  -c \\
-                  -d & \q a & \q c &   -b \\
-                \q b &   -c & \q a &   -d \\
-                \q c & \q b & \q d & \q a \\
-            \end{bmatrix}
-            &= a \begin{bmatrix}
-                \q 1 & \q 0 & \q 0 & \q 0 \\
-                \q 0 & \q 1 & \q 0 & \q 0 \\
-                \q 0 & \q 0 & \q 1 & \q 0 \\
-                \q 0 & \q 0 & \q 0 & \q 1
-            \end{bmatrix} \\
-            &+ b \begin{bmatrix}
-                \q 0 & \q 0 &   -1 & \q 0 \\
-                \q 0 & \q 0 & \q 0 &   -1 \\
-                \q 1 & \q 0 & \q 0 & \q 0 \\
-                \q 0 & \q 1 & \q 0 & \q 0
-            \end{bmatrix} \\
-            &+ c \begin{bmatrix}
-                \q 0 & \q 0 & \q 0 &   -1 \\
-                \q 0 & \q 0 & \q 1 & \q 0 \\
-                \q 0 &   -1 & \q 0 & \q 0 \\
-                \q 1 & \q 0 & \q 0 & \q 0
-            \end{bmatrix} \\
-            &+ d \begin{bmatrix}
-                \q 0 & \q 1 & \q 0 & \q 0 \\
-                  -1 & \q 0 & \q 0 & \q 0 \\
-                \q 0 & \q 0 & \q 0 &   -1 \\
-                \q 0 & \q 0 & \q 1 & \q 0
-            \end{bmatrix} \\
-        \end{eqarray}
-
-        There exist 48 distinct matrix representations of thei form in which one of the
-        matrices represents the scalar part and the other three are all skew-symmetric.
-
-\end{enumerate}
-
-
-\subsection{Exponential, logarithm and power functions}
-
-Given a quaternion:
-
-\begin{equation}
-    \m{q} = a + b \m{i} + c \m{j} + d \m{k} = r + \vec{\m{v}}
-\end{equation}
-
-\begin{enumerate}
-    \item the exponential is computed as
-
-        \begin{equation}
-            \exp(\m{q}) = \sum_{n=0}^{\infty} \frac{\m{q}^n}{n!}
-            = e^a \left( \cos \norm{\vec{\m{v}}}
-            + \frac{\vec{\m{v}}}{\norm{\vec{\m{v}}}} \sin \norm{\vec{\m{v}}} \right)
-        \end{equation}
-
-    \item the logarithm is:
-
-        \begin{equation}
-            \ln(\m{q}) = \ln \norm{\m{q}}
-            + \frac{\vec{\m{v}}}{\norm{\vec{\m{v}}}}
-            \arccos \frac{r}{\norm{\m{q}}}
-        \end{equation}
-
-    \item it follows that the polar decomposition of a quaternion may be written
-
-        \begin{equation}
-            \m{q} = \norm{\m{q}}e^{\hat{\m{n}} \varphi} = \norm{\m{q}}
-            \left( \cos(\varphi) + \hat{\m{n}} \sin(\varphi) \right)
-        \end{equation}
-
-        where the angle $ \varphi $ is defined as
-
-        \begin{equation}
-            r = \norm{\m{q}} \cos(\varphi)
-        \end{equation}
-
-        and the unit vecotr $ \hat{\m{n}} $ is defined by
-
-        \begin{equation}
-            \vec{\m{v}} = \hat{\m{n}} \norm{\vec{\m{v}}}
-            = \hat{\m{n}} \norm{\m{q}} \sin(\varphi)
-        \end{equation}
-
-        Any unit quaternion may be expressed in polar form as:
-
-        \begin{equation}
-            \m{q} = \exp(\hat{\m{n}} \varphi)
-        \end{equation}
-
-    \item The power of a quaternion raised to an arbitrary (real) exponend $ x $ is
-        given by:
-
-        \begin{equation}
-            \m{q}^x = \norm{\m{q}}^x e^{\hat{\m{n}} x \varphi}
-            = \norm{\m{q}}^x
-            \left(\cos(x \varphi) + \hat{\m{n}} \sin(x \varphi) \right)
-        \end{equation}
-
-\end{enumerate}
-
-
-\subsection{Quaternions used for coordinate transformation}
-
-One can think of \textbf{quaternions} as a stored information about coordinate
-mapping from one space to another. We can split arbitrary \textbf{quaternion}\\
-$ \mathbf{q} = a + b \mathbf{i} + c \mathbf{j} + d \mathbf{k} $ into \textbf{two} parts:
-
-\begin{enumerate}
-    \item a \textbf{real} part $ r = a $ and
-
-    \item a \textbf{vector} part $ \mathbf{v} = \left[ b, c, d \right] $.
-
-\end{enumerate}
-
-Next, if we \textbf{impose} restrictions on such \textbf{quaternions} that:
-
-\begin{enumerate}
-    \item the \textbf{real} part must satisfy: $ r \in \left< -\pi; \pi \right> $
-
-    \item the \textbf{vector} part must have \textbf{unit} length:
-        $ | \textbf{v} | = \sqrt{b^2 + c^2 + d^2} = 0 $
-
-\end{enumerate}
-
-Then, if one thinks of the complex numbers $ \mathbf{i} $, $ \mathbf{j} $ and $ \mathbf{k} $
-as of basis vectors of cartesian system $ \mathbf{x} $, $ \mathbf{y} $ and $ \mathbf{z} $, where
-
-\begin{eqarray}
-    \mathbf{x} &= \left[ 1.0, 0.0, 0.0 \right] \\
-    \mathbf{y} &= \left[ 0.0, 1.0, 0.0 \right] \\
-    \mathbf{z} &= \left[ 0.0, 0.0, 1.0 \right]
-\end{eqarray}
-
-the quaternion multiplication table \ref{tab:quat-mult} makes sense in relation to \textbf{vector cross product}:
-
-\begin{table}[h!]
-    \centering
-    \renewcommand{\arraystretch}{1.25}
-    % \small
-    % \scriptsize
-    \scalebox{0.80}{
-    \begin{tabular}{||c | c | c | c | c ||}
-        \hline
-        \hline
-        r $ \times $ c  & $ \mathbf{1} $ & $ \quad \mathbf{x} $ & $ \quad \mathbf{y} $ & $ \quad \mathbf{z} $ \\
-        \hline
-        $ \mathbf{1} $  & $ \mathbf{1} $ & $ \quad \mathbf{x} $ & $ \quad \mathbf{y} $ & $ \quad \mathbf{z} $ \\
-        $ \mathbf{x} $  & $ \mathbf{x} $ & $ -\mathbf{1} $ & $ \quad \mathbf{z} $ & $ -\mathbf{y} $ \\
-        $ \mathbf{y} $  & $ \mathbf{y} $ & $ -\mathbf{z} $ & $ -\mathbf{1} $ & $ \quad \mathbf{x} $ \\
-        $ \mathbf{z} $  & $ \mathbf{z} $ & $ \quad \mathbf{y} $ & $ -\mathbf{x} $ & $ -\mathbf{1} $ \\
-        \hline
-        \hline
-    \end{tabular}}
-    \caption{Quaternion cartesian base vectors multiplication table}
-    \label{tab:quat-mult-cart}
-\end{table}
-
+Coordinate transformations are among the simplest-looking operations in
+computational mechanics and among the easiest to misunderstand. A physical
+vector does not change merely because we describe it in another coordinate
+system, while an \emph{active rotation} changes the physical orientation of the
+vector itself. A point also needs an origin, whereas a free vector does not.
+These distinctions matter directly in finite element work: supports are often
+defined in local directions, element matrices are formed in local frames and
+assembled globally, stresses are reported in material axes, and nonlinear
+algorithms repeatedly update orientations as the structure rotates.
+
+This chapter develops the subject at three levels:
+
+\begin{center}
+\textbf{engineering geometry}
+$\longleftrightarrow$
+\textbf{matrix formulation}
+$\longleftrightarrow$
+\textbf{discrete implementation}.
+\end{center}
+
+The engineering layer asks what is actually being rotated or re-expressed. The
+mathematical layer establishes the transformation and its work-conjugate forms.
+The implementation layer shows how coordinate frames become arrays, block
+matrices, index maps and update loops in a finite element program. Chapter~\ref{chap:boundary-conditions}
+uses these transformations to define skew, cylindrical and other directional
+supports; Chapters~\ref{chap:multifreedom-constraints}--\ref{chap:kinematic-constraints}
+reuse the same ideas for constraints, contact normals and rigid/interpolating
+couplings.
 
 \begin{bbox}
+\textbf{Python examples in this chapter.}
 
-    In 3-dimensional space, according to the \textbf{Euler's rotation theorem}, any
-    rotation or a sequence of rotations of a rigid body or coordinate system about a fixed
-    point is equivalent to a single rotation by a given angle $ \theta $ about
-    a fixed axis (called the \textit{Euler axis}) that runs through the fixed point.
-    The Euler axis is typically represented by a \textbf{unit vector} $ \vec{\m{u}} $.
-    Therefore, any rotation in three dimensions can be represented as via
-    a \textbf{vector} $ \vec{\m{u}} $ and and angle $ \theta $.
-
-    Quaternions give a simple way to encode this \textbf{axis-angle} representation
-    using four real numbers and can be used to apply (calculate) the corresponding
-    rotation to a \textbf{position vector} $ [x, y, z] $, representing a point
-    relative to the origin in $ \mathbb{R}^3 $.
-
+The examples use \texttt{numpy} only for array storage, indexing, elementary
+arithmetic and matrix products. No \texttt{numpy.linalg}, eigensolver, sparse
+solver or other numerical submodule is used. The intent is to expose the
+algorithm represented by the equations rather than to hide it behind a library
+routine.
 \end{bbox}
 
-Euclidean vectors such as $ [a_x, a_y, a_z] $ can be rewritten as
-$ a_x \m{i} + a_y \m{j} + a_z \m{k} $, where $ \m{i} $, $ \m{j} $ and $ \m{k} $ are
-unit vectors representing the three \textbf{Cartesian axies} (traditionally
-$ \m{x} $, $ \m{y} $ and $ \m{z} $) and also obey the \textbf{multiplication} rules
-of the fundamental quaternion units by interpreting the Euclidean vector
-$ [a_x, a_y, a_z] $ as the vector part of the pure quaternion
-$ (0, a_x, a_y, a_z) $.
+\section{What Is Being Transformed?}
 
-A rotation angle $ \theta $ around the axis defined by the unit vector
+\subsection{Points, vectors, bases and frames}
 
-\begin{equation}
-    \vec{\m{u}} = (u_x, u_y, u_z) = u_x \m{i} + u_y \m{j} + u_z \m{k}
+A \textbf{vector} is a geometric quantity with magnitude and direction. Its
+coordinate column depends on the basis chosen to describe it. If the same
+physical vector $\m{v}$ is expressed in a global basis and a local basis, the
+numbers in $\m{v}_g$ and $\m{v}_l$ are different even though the vector itself
+is unchanged.
+
+A \textbf{point} needs an origin in addition to a basis. If a local frame has
+origin $\m{o}$, the position of point $P$ in that frame is obtained from the
+relative vector $\m{x}_P-\m{o}$, not from the global position vector alone.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.88\textwidth]{img/coord_point_vector_frame.png}
+    \caption{A frame consists of both an origin and a basis. A free vector needs
+    only a basis for its coordinate representation, while point coordinates also
+    depend on the frame origin.}
+    \label{fig:coord-point-vector-frame}
+\end{figure}
+
+Let the orthonormal local basis vectors $\m{e}_{1l}$, $\m{e}_{2l}$ and
+$\m{e}_{3l}$ be written using global components. Define the global-to-local
+\textbf{direction-cosine matrix}
+
+\begin{equation}\label{eq:coord-C-lg}
+    \m{C}_{lg}
+    =
+    \begin{bmatrix}
+        \m{e}_{1l}^{T}\\
+        \m{e}_{2l}^{T}\\
+        \m{e}_{3l}^{T}
+    \end{bmatrix}.
 \end{equation}
 
-can be represented by \textbf{conjugation} by a unit quaternion $ \m{q} $.
-
-Since the quaternion product
+Each entry is a direction cosine,
 
 \begin{equation}
-    (0 + u_x \m{i} + u_y \m{j} + u_z \m{k})
-    (0 - u_x \m{i} - u_y \m{j} - u_z \m{k}) = -1
+    C_{ij}=\m{e}_{il}\cdot\m{e}_{jg},
 \end{equation}
 
-using \textbf{Taylor series} of the exponential function, the extension
-of the Euler's formula results in:
+so a vector transforms as
+
+\begin{equation}\label{eq:coord-vector-passive}
+    \boxed{\m{v}_l=\m{C}_{lg}\m{v}_g},
+    \qquad
+    \boxed{\m{v}_g=\m{C}_{lg}^{T}\m{v}_l}.
+\end{equation}
+
+Because the basis is orthonormal,
+
+\begin{equation}\label{eq:coord-orthogonal}
+    \m{C}_{lg}\m{C}_{lg}^{T}=\m{I},
+    \qquad
+    \m{C}_{lg}^{-1}=\m{C}_{lg}^{T},
+    \qquad
+    \det\m{C}_{lg}=+1
+\end{equation}
+
+for a proper right-handed frame. The determinant condition distinguishes a
+rotation from a reflection.
+
+For a point,
+
+\begin{equation}\label{eq:coord-point-transform}
+    \boxed{
+    \m{x}_{P,l}=\m{C}_{lg}\left(\m{x}_{P,g}-\m{o}_g\right)
+    }.
+\end{equation}
+
+The inverse mapping is
+
+\begin{equation}
+    \m{x}_{P,g}=\m{o}_g+\m{C}_{lg}^{T}\m{x}_{P,l}.
+\end{equation}
+
+\begin{bbox}
+\textbf{Engineering note -- Do not subtract an origin from a force, displacement
+increment or other free vector.}
+
+Translation of the coordinate-frame origin affects point coordinates, but it
+does not affect the components of a free vector. Only the basis rotation enters
+the vector transformation.
+\end{bbox}
+
+\subsection{Active rotation versus passive coordinate change}
+
+Two operations that use closely related matrices must be kept conceptually
+separate.
+
+An \textbf{active rotation} keeps the basis fixed and physically rotates the
+vector or body,
+
+\begin{equation}\label{eq:coord-active}
+    \m{v}'_g=\m{Q}\m{v}_g.
+\end{equation}
+
+A \textbf{passive coordinate transformation} keeps the physical vector fixed and
+changes the basis used to describe it,
+
+\begin{equation}
+    \m{v}_l=\m{C}_{lg}\m{v}_g.
+\end{equation}
+
+If the local basis is obtained by actively rotating the global basis with the
+proper rotation matrix $\m{Q}$, then
+
+\begin{equation}\label{eq:coord-active-passive}
+    \boxed{\m{C}_{lg}=\m{Q}^{T}}.
+\end{equation}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.94\textwidth]{img/coord_active_passive.png}
+    \caption{Active rotation changes the physical vector while retaining the
+    basis. Passive transformation retains the vector and changes only its
+    coordinate description. The matrices are transposes of one another when the
+    rotated basis is generated by the same proper rotation.}
+    \label{fig:coord-active-passive}
+\end{figure}
+
+This distinction explains many apparent sign disagreements between textbooks,
+computer graphics libraries and finite element manuals. Before comparing two
+rotation matrices, first ask whether each author is rotating a physical object
+or changing the coordinate basis, and whether vectors are stored as columns or
+rows.
+
+\section{Two-Dimensional Rotation}
+
+For an active counterclockwise rotation by angle $\theta$ in a fixed Cartesian
+basis,
+
+\begin{equation}\label{eq:coord-Q2}
+    \m{Q}(\theta)
+    =
+    \begin{bmatrix}
+        \cos\theta&-\sin\theta\\
+        \sin\theta& \cos\theta
+    \end{bmatrix}.
+\end{equation}
+
+If the \emph{local basis} is instead rotated counterclockwise by $\theta$, the
+coordinates of a fixed vector in that basis are obtained with
+
+\begin{equation}
+    \m{C}_{lg}(\theta)
+    =\m{Q}^{T}(\theta)
+    =
+    \begin{bmatrix}
+        \cos\theta& \sin\theta\\
+       -\sin\theta& \cos\theta
+    \end{bmatrix}.
+\end{equation}
+
+\subsection{Worked example}
+
+Let
+
+\begin{equation}
+    \m{v}_g=
+    \begin{bmatrix}4\\3\end{bmatrix},
+    \qquad
+    \theta=30^\circ.
+\end{equation}
+
+An active rotation gives
+
+\begin{equation}
+    \m{v}'_g
+    =
+    \begin{bmatrix}
+        \cos30^\circ&-\sin30^\circ\\
+        \sin30^\circ& \cos30^\circ
+    \end{bmatrix}
+    \begin{bmatrix}4\\3\end{bmatrix}
+    =
+    \begin{bmatrix}
+        1.964\\4.598
+    \end{bmatrix}.
+\end{equation}
+
+The coordinates of the original fixed vector in a basis rotated by the same
+$30^\circ$ are instead
+
+\begin{equation}
+    \m{v}_l
+    =\m{Q}^{T}\m{v}_g
+    =
+    \begin{bmatrix}
+        4.964\\0.598
+    \end{bmatrix}.
+\end{equation}
+
+Both operations preserve the Euclidean norm,
+
+\begin{equation}
+    \norm{\m{v}}=5.
+\end{equation}
+
+\begin{python}
+import numpy as np
+from math import cos, sin, pi, sqrt
+
+
+def norm(v):
+    return sqrt(float(v @ v))
+
+
+def rotation_2d(theta):
+    c = cos(theta)
+    s = sin(theta)
+    return np.array([[c, -s],
+                     [s,  c]], dtype=float)
+
+
+def rotate_vector_active(v, theta):
+    return rotation_2d(theta) @ np.array(v, dtype=float)
+
+
+def vector_global_to_local(v, theta):
+    Q = rotation_2d(theta)
+    return Q.T @ np.array(v, dtype=float)
+
+
+v = np.array([4.0, 3.0])
+theta = 30.0 * pi / 180.0
+
+v_rotated = rotate_vector_active(v, theta)
+v_local = vector_global_to_local(v, theta)
+
+print(v_rotated)
+print(v_local)
+print(norm(v), norm(v_rotated), norm(v_local))
+\end{python}
+
+The code makes the active/passive distinction visible: the same matrix is used,
+but the passive coordinate change uses its transpose.
+
+\section{Three-Dimensional Proper Rotations}
+
+\subsection{Rotations about Cartesian axes}
+
+Using the right-hand rule, active rotations about the fixed global axes are
+
+\begin{equation}
+\m{Q}_x(\varphi)=
+\begin{bmatrix}
+1&0&0\\
+0&\cos\varphi&-\sin\varphi\\
+0&\sin\varphi& \cos\varphi
+\end{bmatrix},
+\end{equation}
+
+\begin{equation}
+\m{Q}_y(\theta)=
+\begin{bmatrix}
+ \cos\theta&0&\sin\theta\\
+ 0&1&0\\
+-\sin\theta&0&\cos\theta
+\end{bmatrix},
+\end{equation}
+
+\begin{equation}
+\m{Q}_z(\psi)=
+\begin{bmatrix}
+\cos\psi&-\sin\psi&0\\
+\sin\psi& \cos\psi&0\\
+0&0&1
+\end{bmatrix}.
+\end{equation}
+
+A useful engineering interpretation is to think of an axis rotation as a
+rotation in the plane normal to that axis: rotation about $x$ acts in the
+$yz$-plane, rotation about $y$ in the $zx$-plane, and rotation about $z$ in the
+$xy$-plane.
+
+\subsection{Axis-angle rotation and Rodrigues' formula}
+
+Let $\m{a}$ be a unit vector defining the rotation axis. Introduce the
+skew-symmetric cross-product matrix
+
+\begin{equation}\label{eq:coord-skew}
+    [\m{a}]_{\times}
+    =
+    \begin{bmatrix}
+        0&-a_z&a_y\\
+        a_z&0&-a_x\\
+        -a_y&a_x&0
+    \end{bmatrix},
+\end{equation}
+
+so that
+
+\begin{equation}
+    [\m{a}]_{\times}\m{v}=\m{a}\times\m{v}.
+\end{equation}
+
+The active rotation through angle $\theta$ is
+
+\begin{equation}\label{eq:coord-rodrigues}
+    \boxed{
+    \m{Q}
+    =\m{I}
+    +\sin\theta[\m{a}]_{\times}
+    +(1-\cos\theta)[\m{a}]_{\times}^{2}
+    }.
+\end{equation}
+
+Rodrigues' formula is particularly useful in nonlinear finite element
+implementations because it converts an axis-angle increment directly into a
+proper orthogonal matrix.
+
+\begin{python}
+def cross_matrix(a):
+    ax, ay, az = a
+    return np.array([
+        [0.0, -az,  ay],
+        [ az, 0.0, -ax],
+        [-ay,  ax, 0.0],
+    ])
+
+
+def normalize(v, tol=1.0e-14):
+    v = np.array(v, dtype=float)
+    length = sqrt(float(v @ v))
+    if length < tol:
+        raise ValueError("zero or degenerate direction")
+    return v / length
+
+
+def rodrigues(axis, angle):
+    a = normalize(axis)
+    A = cross_matrix(a)
+    I = np.eye(3)
+    return I + sin(angle) * A + (1.0 - cos(angle)) * (A @ A)
+
+
+axis = [1.0, 1.0, 0.0]
+Q = rodrigues(axis, 20.0 * pi / 180.0)
+print(Q)
+print(Q @ Q.T)
+print(np.array([[Q[0,0], Q[0,1], Q[0,2]]]))
+\end{python}
+
+The printed product $\m{Q}\m{Q}^{T}$ should be the identity to roundoff.
+No matrix inverse is needed because orthogonality supplies it analytically.
+
+\section{Constructing a Local Frame from Engineering Geometry}
+
+Finite element inputs rarely define a local frame by three perfect orthonormal
+vectors. More commonly the analyst supplies a point-to-point direction and a
+second direction that indicates a plane. These data must first be converted into
+an orthonormal basis.
+
+Let $\m{u}$ define the desired local $x$-direction and let $\m{v}$ be a second
+non-collinear vector lying approximately in the desired $xy$-plane. Then
 
 \begin{eqarray}
-    \m{q} &= e^{\frac{\theta}{2}(u_x \m{i} + u_y \m{j} + u_z \m{k})} \\
-          &= \cos \frac{\theta}{2} + \left( u_x \m{i} + u_y \m{j} + u_z \m{k} \right)
-          \sin \frac{\theta}{2} \\
-          &= \cos \frac{\theta}{2} + \vec{\m{u}} \sin \frac{\theta}{2}
+    \m{e}_1
+    &=&\frac{\m{u}}{\norm{\m{u}}},\\
+    \m{v}_{\perp}
+    &=&\m{v}-(\m{e}_1^T\m{v})\m{e}_1,\\
+    \m{e}_2
+    &=&\frac{\m{v}_{\perp}}{\norm{\m{v}_{\perp}}},\\
+    \m{e}_3
+    &=&\m{e}_1\times\m{e}_2.
 \end{eqarray}
 
-It can be shown that the desired rotation can be applied to an ordinary vector
+The global-to-local matrix is then
 
-\begin{equation}
-    \m{p} = (p_x, p_y, p_z) = p_x \m{i} + p_y \m{j} + p_z \m{k}
+\begin{equation}\label{eq:coord-frame-from-geometry}
+    \boxed{
+    \m{C}_{lg}
+    =
+    \begin{bmatrix}
+    \m{e}_1^T\\
+    \m{e}_2^T\\
+    \m{e}_3^T
+    \end{bmatrix}
+    }.
 \end{equation}
 
-in 3-dimensional space, considered as the vector part of the pure quaternion $ \m{p}' $,
-by evaluating the \textbf{conjugation} of $ \m{p}' $ by $ \m{q} $, given by:
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.92\textwidth]{img/coord_frame_from_geometry.png}
+    \caption{Two engineering directions do not become a transformation matrix
+    directly. They first define an orthonormal frame. The second supplied vector
+    is a plane hint, not necessarily the final local $y$-axis.}
+    \label{fig:coord-frame-from-geometry}
+\end{figure}
+
+If $\m{u}$ and $\m{v}$ are parallel or nearly parallel, the frame is undefined or
+numerically ill-conditioned. A robust program must detect this geometry rather
+than silently constructing a nearly singular basis.
+
+\begin{python}
+def cross3(a, b):
+    return np.array([
+        a[1] * b[2] - a[2] * b[1],
+        a[2] * b[0] - a[0] * b[2],
+        a[0] * b[1] - a[1] * b[0],
+    ])
+
+
+def build_frame(x_direction, xy_plane_direction, tol=1.0e-12):
+    e1 = normalize(x_direction, tol)
+    v = np.array(xy_plane_direction, dtype=float)
+
+    # Gram-Schmidt: remove the part parallel to e1.
+    v_perp = v - float(e1 @ v) * e1
+    e2 = normalize(v_perp, tol)
+    e3 = normalize(cross3(e1, e2), tol)
+
+    C = np.vstack([e1, e2, e3])
+    return C
+
+
+C = build_frame([2.0, 1.0, 0.0], [1.0, 2.0, 1.0])
+print(C)
+print(C @ C.T)
+\end{python}
+
+The matrix is assembled from the basis vectors as rows because the convention of
+this chapter maps global components into local components. If a code stores basis
+vectors as columns instead, the corresponding transformation appears transposed.
+The geometry is the same; the storage convention is different.
+
+\section{Composing Rotations and Rotation Parameterizations}
+
+\subsection{Rotation order matters}
+
+Finite rotations do not commute. In general,
+
+\begin{equation}
+    \m{Q}_x(\alpha)\m{Q}_y(\beta)
+    \neq
+    \m{Q}_y(\beta)\m{Q}_x(\alpha).
+\end{equation}
+
+If active rotations about fixed global axes are applied first about $x$, then
+$y$, then $z$, the final vector is
+
+\begin{equation}\label{eq:coord-xyz-composition}
+    \m{v}'
+    =\m{Q}_z(\psi)\m{Q}_y(\theta)\m{Q}_x(\varphi)\m{v}.
+\end{equation}
+
+The rightmost operation acts first. The same matrix can also be interpreted as
+an intrinsic sequence about moving body axes in the reverse naming convention.
+This is why labels such as ``XYZ Euler angles'' are unsafe unless the active or
+passive interpretation, fixed or moving axes, and multiplication order are all
+specified.
+
+\subsection{Euler and Tait--Bryan angles}
+
+Three-angle parameterizations are compact and intuitive, but they are
+sequence-dependent. The six sequences that use three different axes are often
+called \textit{Tait--Bryan} sequences,
+
+\begin{equation}
+    XYZ,\ XZY,\ YXZ,\ YZX,\ ZXY,\ ZYX,
+\end{equation}
+
+while the six proper Euler sequences repeat the first axis,
+
+\begin{equation}
+    XYX,\ XZX,\ YXY,\ YZY,\ ZXZ,\ ZYZ.
+\end{equation}
+
+For the common active fixed-axis composition
+
+\begin{equation}
+    \m{Q}=\m{Q}_z(\psi)\m{Q}_y(\theta)\m{Q}_x(\varphi),
+\end{equation}
+
+and away from the singular configuration $\cos\theta=0$,
 
 \begin{eqarray}
-    L(\m{p}') &:= \m{q} \m{p}' \m{q}^{-1} \\
-    r &= \left(\cos^2 \frac{\theta}{2} - \norm{\m{u}}^2 \right)
-    + 2 ( \m{u} \cdot \m{p}) \m{u}
-    + 2 \cos \frac{\theta}{2} (\m{u} \times \m{p})
+    \theta&=&\arcsin(-Q_{31}),\\
+    \varphi&=&\atantwo(Q_{32},Q_{33}),\\
+    \psi&=&\atantwo(Q_{21},Q_{11}).
 \end{eqarray}
 
-using the \textbf{Hamilton product} where the vector part of the pute quaternion
-$ L(\m{p}') = (0, r_x, r_y, r_z) $ is the new position vector after the rotation.
-In a programmatic implementation \textbf{the conjugation} is achieved by constructing
-a pure quaternion whise vector part is $ \m{p} $, and then performing the quaternion
-conjugation. The vector part of the resulting pure quaternion is the desired
-vector $ \m{r} $. Clearly $ L $ provides a linear transformation of the quaternion
-space to itself, also, since $ \m{q} $ is unitary, the transformation is an
-isometry. Also $ L(\m{q}) = \m{q} $ ans so $ L $ leaves vectors parallel to
-$ \m{q} $ invariant. So, by decomposing $ \m{p} $ as a vector parallel to the
-vector part $ (u_x, u_y, u_z) \sin \frac{\theta}{2} $ of $ \m{q} $ and a vector
-normal to the vector part of $ \m{q} $ and showing that the application of
-$ L $ to the normal component of $ \m{p} $ rotates it, the claim is shown.
+At $\theta=\pm90^\circ$, two rotation axes align and the individual values of
+$\varphi$ and $\psi$ are no longer unique. This is \textbf{gimbal lock}: the
+physical orientation still exists, but this particular three-angle coordinate
+chart becomes singular.
 
-So let $ \m{n} $ be the component of $ \m{p} $ orthogonal to the vector part
-of $ \m{q} $ and let $ \m{n}_T = \m{n} \times \m{u} $. It turns out that the
-vector part of $ L(0, \m{n}) $ is given by:
+\begin{bbox}
+\textbf{Engineering note -- A singular parameterization is not a singular
+physical orientation.}
 
-\begin{equation}
-    \left(\cos^2 \frac{\theta}{2} - \sin^2 \frac{\theta}{2} \right) \m{n}
-    + 2 \left(\cos^2 \frac{\theta}{2} \sin^2 \frac{\theta}{2} \right) \m{n}_T
-    = \cos \theta \m{n} + \sin \theta \m{n}_T
-\end{equation}
+Gimbal lock is a failure of the chosen angle coordinates, not a physical loss of
+one rotational degree of freedom. Rotation matrices and unit quaternions still
+represent the same orientation without that coordinate singularity.
+\end{bbox}
 
-A geometric fact independent of quaternion is the existence of \textbf{two-to-one}
-mapping from physical rotations to rotational transformation matrices.
+\subsection{Axis-angle and rotation vector}
 
-If $ 0 \le \theta \le 2 \pi $, a physical rotaion about $ \vec{\m{u}} $ by
-$ \theta $ and a physical rotation about $ -\vec{\m{u}} $ by $ 2 \pi - \theta $
-both achieve the \textbf{same final orientation} by disjoint paths through
-intermediate orientations.
-
-By inserting those vectors and angles into the formula for $ \m{q} $ above,
-one findes that if $ \m{q} $ represents the first rotation, $ -\m{q} $
-represents the second rotation. This is a geometric proof that conjugation
-by $ \m{q} $ and by $ -\m{q} $ must produce the same rotational transformation
-matrix. That fact is confirmed algebraically by noting that the conjugation is
-quadratic in $ \m{q} $, so the sign of $ \m{q} $ cancels, and does not affect
-the result.
-
-If both rotations are a half-turn $ (\theta = \pi) $, both $ \m{q} $ and
-$ -\m{q} $ will have real coordinate equal to zero. Otherwise, one will have a positive
-real part, representing a rotation by an angle less than $ \pi $, and the other
-will have a negative real part, representing a rotation by an angle greater than $ \pi $.
-
-Mathemativally, this operation carries the set of all "pure" quaterninos
-$ \m{p} $ (thise with real part equal to zero) - which consitute a 3-dimensional
-space among the quaternions - into itself, by the desired rotation about the axis
-$ \m{u} $, by the angle $ \theta $.
-
-The rotation is \textbf{clockwise} if our line of sight points in the same direction
-as $ \vec{\m{u}} $.
-
-In the instance that $ \m{q} $ is a \textbf{unit quaternion} and
+Axis-angle representation stores a unit axis $\m{a}$ and angle $\theta$. A
+rotation vector combines them,
 
 \begin{equation}
-    \m{q}^{-1} = e^{-\frac{\theta}{2} ( u_x \m{i} + u_y \m{j} + u_z \m{k} )}
-    = \cos \frac{\theta}{2} - ( u_x \m{i} + u_y \m{j} + u_z \m{k} ) \sin \frac{\theta}{2}
+    \M{\phi}=\theta\m{a}.
 \end{equation}
 
-It follows that conjugation by the product of two quaternions is the composition of
-conjugations by these quaternions. If $ \m{p} $ and $ \m{q} $ are unit quaternions,
-then conjugation (\textbf{rotation}) by $ \m{p} \m{q} $ is:
+For small increments $\Delta\M{\phi}$ this is extremely convenient because its
+three components resemble small Cartesian rotations. For finite rotations,
+however, rotation vectors are not added componentwise to compose orientations;
+the corresponding finite rotations must be composed multiplicatively.
+
+\subsection{Unit quaternions}
+
+A unit quaternion stores the same axis-angle rotation as four real numbers,
+
+\begin{equation}\label{eq:coord-quaternion-axis-angle}
+    \m{q}
+    =
+    \begin{bmatrix}
+    q_0\\\m{q}_v
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+    \cos(\theta/2)\\
+    \m{a}\sin(\theta/2)
+    \end{bmatrix},
+    \qquad
+    \m{q}^{T}\m{q}=1.
+\end{equation}
+
+The two quaternions $\m{q}$ and $-\m{q}$ represent the same physical
+orientation. Their main numerical advantages are compact composition and the
+absence of Euler-angle gimbal lock; their main bookkeeping requirement is that
+the unit-norm constraint and sign continuity be handled consistently.
+
+For $\m{q}=[w,x,y,z]^T$, the corresponding active rotation matrix is
+
+\begin{equation}\label{eq:coord-quaternion-matrix}
+\m{Q}(\m{q})=
+\begin{bmatrix}
+1-2(y^2+z^2)&2(xy-wz)&2(xz+wy)\\
+2(xy+wz)&1-2(x^2+z^2)&2(yz-wx)\\
+2(xz-wy)&2(yz+wx)&1-2(x^2+y^2)
+\end{bmatrix}.
+\end{equation}
+
+Quaternion composition uses the Hamilton product. If $\m{q}_1$ is applied first
+and $\m{q}_2$ second, the combined active rotation is represented by
+$\m{q}_2\otimes\m{q}_1$.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.96\textwidth]{img/coord_rotation_parameterizations.png}
+    \caption{Common orientation parameterizations describe the same physical
+    rotation but have different storage, singularity and normalization
+    properties. The appropriate choice depends on the numerical task.}
+    \label{fig:coord-rotation-parameterizations}
+\end{figure}
+
+\begin{python}
+def quat_multiply(q2, q1):
+    w2, x2, y2, z2 = q2
+    w1, x1, y1, z1 = q1
+    return np.array([
+        w2*w1 - x2*x1 - y2*y1 - z2*z1,
+        w2*x1 + x2*w1 + y2*z1 - z2*y1,
+        w2*y1 - x2*z1 + y2*w1 + z2*x1,
+        w2*z1 + x2*y1 - y2*x1 + z2*w1,
+    ])
+
+
+def quat_from_axis_angle(axis, angle):
+    a = normalize(axis)
+    h = 0.5 * angle
+    return np.array([cos(h),
+                     a[0] * sin(h),
+                     a[1] * sin(h),
+                     a[2] * sin(h)])
+
+
+def quat_normalize(q):
+    q = np.array(q, dtype=float)
+    return q / sqrt(float(q @ q))
+
+
+def quat_to_matrix(q):
+    w, x, y, z = quat_normalize(q)
+    return np.array([
+        [1.0 - 2.0*(y*y + z*z), 2.0*(x*y - w*z),       2.0*(x*z + w*y)],
+        [2.0*(x*y + w*z),       1.0 - 2.0*(x*x + z*z), 2.0*(y*z - w*x)],
+        [2.0*(x*z - w*y),       2.0*(y*z + w*x),       1.0 - 2.0*(x*x + y*y)],
+    ])
+
+
+q1 = quat_from_axis_angle([0.0, 0.0, 1.0], 30.0*pi/180.0)
+q2 = quat_from_axis_angle([0.0, 1.0, 0.0], 20.0*pi/180.0)
+q = quat_multiply(q2, q1)
+Q = quat_to_matrix(q)
+print(q)
+print(Q @ Q.T)
+\end{python}
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.18}
+\begin{tabular}{|p{0.22\textwidth}|p{0.29\textwidth}|p{0.38\textwidth}|}
+\hline
+\textbf{Representation} & \textbf{Strength} & \textbf{Main caveat}\\ \hline
+Rotation matrix & Directly transforms vectors and tensors; no local singularity & Nine stored values; orthogonality can drift numerically\\ \hline
+Euler/Tait--Bryan angles & Compact and easy to interpret physically & Sequence-dependent and singular at gimbal-lock configurations\\ \hline
+Axis-angle / rotation vector & Natural for finite rotation increments and logarithmic maps & Finite rotations do not compose by vector addition\\ \hline
+Unit quaternion & Compact, smooth composition, no gimbal lock & Unit norm must be maintained; $\m{q}$ and $-\m{q}$ are equivalent\\ \hline
+\end{tabular}
+\caption{Engineering comparison of common three-dimensional rotation representations.}
+\label{tab:coord-rotation-representations}
+\end{table}
+
+\section{Finite Element DOF Transformations}
+
+The most important finite element use of a basis transformation is not rotating a
+picture but transforming nodal and element quantities between local and global
+DOF sets.
+
+\subsection{Three translational DOFs}
+
+If
 
 \begin{equation}
-    \m{p} \m{q} \vec{\m{v}} ( \m{p} \m{q} )^{-1}
-    = \m{p} \m{q} \vec{\m{v}} \m{q}^{-1} \m{p}^{-1}
-    = \m{p} ( \m{q} \vec{\m{v}} \m{q}^{-1} ) \m{p}^{-1}
+    \m{u}_l=\m{C}_{lg}\m{u}_g,
 \end{equation}
 
-which is \textbf{the same} as conjugating (\textbf{rotating}) by $ \m{q} $ and
-then by $ \m{p} $. The scalar component of the result is \textbf{necessarily zero}.
-
-The quaternion \textbf{inverse} of a rotation is the opposite rotation, since
+virtual work requires
 
 \begin{equation}
-    \m{q}^{-1} (\m{q} \vec{\m{v}} \m{q}^{-1} ) \m{q} = \vec{\m{v}}
+    \delta W
+    =\m{f}_l^T\delta\m{u}_l
+    =\m{f}_g^T\delta\m{u}_g.
 \end{equation}
 
-The square of a quaternion rotation is a rotation by twice the angle around the same axis.
+Therefore
+
+\begin{equation}\label{eq:coord-force-transform}
+    \boxed{\m{f}_g=\m{C}_{lg}^{T}\m{f}_l}.
+\end{equation}
+
+The transpose is not an arbitrary convention; it follows from work conjugacy.
+
+\subsection{Six translational and rotational DOFs}
+
+For a node carrying three translations and three small rotations, define
+
+\begin{equation}
+    \m{q}
+    =
+    \begin{bmatrix}
+    \m{u}\\\M{\theta}
+    \end{bmatrix}.
+\end{equation}
+
+Both vector blocks use the same orthonormal basis transformation,
+
+\begin{equation}\label{eq:coord-T6}
+    \boxed{
+    \m{T}_6
+    =
+    \begin{bmatrix}
+    \m{C}_{lg}&\m{0}\\
+    \m{0}&\m{C}_{lg}
+    \end{bmatrix}
+    },
+    \qquad
+    \m{q}_l=\m{T}_6\m{q}_g.
+\end{equation}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.92\textwidth]{img/coord_6dof_transform.png}
+    \caption{A six-DOF nodal basis transformation repeats the same spatial
+    direction-cosine matrix for the translational and rotational vector blocks.
+    Work conjugacy determines the corresponding force transformation.}
+    \label{fig:coord-6dof-transform}
+\end{figure}
+
+\subsection{Stiffness, mass and damping matrices}
+
+Suppose an element equation is available in local coordinates,
+
+\begin{equation}
+    \m{K}_l\m{q}_l=\m{f}_l,
+\end{equation}
+
+and
+
+\begin{equation}
+    \m{q}_l=\m{T}\m{q}_g.
+\end{equation}
+
+Substitution into the strain energy
+
+\begin{equation}
+    U=\frac{1}{2}\m{q}_l^T\m{K}_l\m{q}_l
+\end{equation}
+
+gives
+
+\begin{equation}\label{eq:coord-K-transform}
+    \boxed{
+    \m{K}_g=\m{T}^{T}\m{K}_l\m{T}
+    }.
+\end{equation}
+
+The same congruence transformation applies to mass and damping matrices,
+
+\begin{equation}
+    \m{M}_g=\m{T}^{T}\m{M}_l\m{T},
+    \qquad
+    \m{C}_g=\m{T}^{T}\m{C}_l\m{T}.
+\end{equation}
+
+This is the same algebraic pattern that appears later in constraint elimination
+and model reduction: the matrix changes because the coordinates used to describe
+the admissible vector change.
+
+\begin{python}
+def block_transform_6dof(C):
+    T = np.zeros((6, 6), dtype=float)
+    T[0:3, 0:3] = C
+    T[3:6, 3:6] = C
+    return T
 
 
+def transform_matrix_local_to_global(A_local, T):
+    return T.T @ A_local @ T
 
+
+def transform_force_local_to_global(f_local, T):
+    return T.T @ f_local
+
+
+C = build_frame([1.0, 1.0, 0.0], [0.0, 0.0, 1.0])
+T6 = block_transform_6dof(C)
+
+K_local = np.zeros((6, 6), dtype=float)
+for i, value in enumerate([1000.0, 2000.0, 3000.0,
+                           400.0, 500.0, 600.0]):
+    K_local[i, i] = value
+
+K_global = transform_matrix_local_to_global(K_local, T6)
+print(K_global)
+print(K_global - K_global.T)
+\end{python}
+
+The second printed matrix should be zero to roundoff, confirming that a symmetric
+local stiffness remains symmetric after a proper congruence transformation.
+
+\section{Changing Both Origin and Orientation}
+
+A rigid coordinate frame generally has both an origin and an orientation. For a
+point,
+
+\begin{equation}
+    \m{x}_l=\m{C}_{lg}(\m{x}_g-\m{o}_g).
+\end{equation}
+
+This affine transformation can be written as a homogeneous $4\times4$ matrix,
+
+\begin{equation}
+\begin{bmatrix}
+\m{x}_l\\1
+\end{bmatrix}
+=
+\underbrace{
+\begin{bmatrix}
+\m{C}_{lg}&-\m{C}_{lg}\m{o}_g\\
+\m{0}^T&1
+\end{bmatrix}}_{\m{H}_{lg}}
+\begin{bmatrix}
+\m{x}_g\\1
+\end{bmatrix}.
+\end{equation}
+
+Homogeneous matrices are convenient for composing rigid-frame mappings because
+rotation and translation then appear in one matrix multiplication. They are not,
+however, the transformation used for a free force or displacement vector; the
+translation column has no meaning for such vectors.
+
+\begin{bbox}
+\textbf{Engineering note -- Rigid-frame transformation and rigid-body element are
+not the same object.}
+
+A homogeneous frame transform maps the description of a point between coordinate
+frames. An RBE2 in Chapter~\ref{chap:kinematic-constraints} is a kinematic
+constraint that relates the physical motions of different finite element nodes.
+Both use rotation and lever-arm geometry, but they solve different problems.
+\end{bbox}
+
+\section{Position-Dependent Bases: Cylindrical and Spherical Directions}
+
+A local basis need not be constant over space. Cylindrical and spherical systems
+are particularly useful examples because the local directions depend on the
+point at which they are evaluated.
+
+For a cylindrical system with origin $\m{o}$ and unit axis $\m{a}$, let
+
+\begin{equation}
+    \m{d}=\m{x}-\m{o},
+    \qquad
+    \m{d}_{\perp}
+    =\m{d}-(\m{a}^T\m{d})\m{a}.
+\end{equation}
+
+Away from the axis,
+
+\begin{eqarray}
+    \m{e}_r
+    &=&\frac{\m{d}_{\perp}}{\norm{\m{d}_{\perp}}},\\
+    \m{e}_z
+    &=&\m{a},\\
+    \m{e}_{\varphi}
+    &=&\m{e}_z\times\m{e}_r.
+\end{eqarray}
+
+The corresponding global-to-local basis matrix is
+
+\begin{equation}\label{eq:coord-cylindrical-basis}
+    \m{C}_{cyl,g}(\m{x})
+    =
+    \begin{bmatrix}
+    \m{e}_r^T\\
+    \m{e}_{\varphi}^T\\
+    \m{e}_z^T
+    \end{bmatrix}.
+\end{equation}
+
+The explicit dependence on $\m{x}$ matters. Two nodes on the same cylinder have
+different radial and tangential directions. On the cylinder axis,
+$\norm{\m{d}_{\perp}}=0$ and the radial direction is undefined.
+
+\begin{python}
+def cylindrical_basis(point, origin, axis, tol=1.0e-12):
+    x = np.array(point, dtype=float)
+    o = np.array(origin, dtype=float)
+    ez = normalize(axis, tol)
+
+    d = x - o
+    radial = d - float(ez @ d) * ez
+    er = normalize(radial, tol)
+    ephi = normalize(cross3(ez, er), tol)
+
+    return np.vstack([er, ephi, ez])
+
+
+for point in ([1.0, 0.0, 0.0],
+              [0.0, 1.0, 0.0],
+              [-1.0, 0.0, 0.0]):
+    C = cylindrical_basis(point, [0.0, 0.0, 0.0], [0.0, 0.0, 1.0])
+    print(point)
+    print(C)
+\end{python}
+
+This is the basis-generation operation used by the cylindrical supports of
+Chapter~\ref{chap:boundary-conditions}. The finite element program does not need
+the cylindrical coordinate values $(r,\varphi,z)$ merely to constrain a radial
+DOF; it needs the local basis direction $\m{e}_r$ at each node.
+
+A spherical basis is constructed analogously. The radial direction is
+
+\begin{equation}
+    \m{e}_r=\frac{\m{x}-\m{o}}{\norm{\m{x}-\m{o}}},
+\end{equation}
+
+while two tangential directions require an additional reference direction or
+angular convention. The origin is singular because no radial direction can be
+constructed there.
+
+\section{Second-Order Tensor Transformation}
+
+Vectors have one directional index; second-order tensors have two. Consequently,
+a tensor requires the basis transformation on both sides.
+
+Let $\m{S}_g$ be the matrix of tensor components in the global basis. In the
+local basis,
+
+\begin{equation}\label{eq:coord-tensor-transform}
+    \boxed{
+    \m{S}_l
+    =\m{C}_{lg}\m{S}_g\m{C}_{lg}^{T}
+    }.
+\end{equation}
+
+The inverse is
+
+\begin{equation}
+    \m{S}_g
+    =\m{C}_{lg}^{T}\m{S}_l\m{C}_{lg}.
+\end{equation}
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.88\textwidth]{img/coord_tensor_transform.png}
+    \caption{Tensor transformation changes the components used to describe the
+    same physical tensor. Both tensor indices transform, which gives the matrix
+    product $\m{C}\m{S}\m{C}^{T}$.}
+    \label{fig:coord-tensor-transform}
+\end{figure}
+
+For stress, the transformation is consistent with Cauchy's traction relation,
+
+\begin{equation}
+    \m{t}=\M{\sigma}\m{n}.
+\end{equation}
+
+Indeed, with
+
+\begin{equation}
+    \m{n}_l=\m{C}_{lg}\m{n}_g,
+    \qquad
+    \M{\sigma}_l=\m{C}_{lg}\M{\sigma}_g\m{C}_{lg}^{T},
+\end{equation}
+
+we obtain
+
+\begin{equation}
+    \m{t}_l=\m{C}_{lg}\m{t}_g.
+\end{equation}
+
+\subsection{Stress and strain vectors in Voigt notation}
+
+Finite element programs often store symmetric tensors as six-component vectors.
+This storage is convenient, but the corresponding $6\times6$ transformation is
+\emph{not} simply a block copy of the $3\times3$ spatial rotation because normal
+and shear components mix. For engineering strain vectors an additional factor of
+two is commonly used for shear strain, so stress and engineering-strain Voigt
+vectors do not even use identical transformation matrices unless the convention
+is handled explicitly.
+
+The safest derivation strategy is:
+
+\begin{enumerate}
+    \item reconstruct the symmetric $3\times3$ tensor,
+    \item apply Eq.~\eqref{eq:coord-tensor-transform},
+    \item repack the transformed tensor using the chosen Voigt convention.
+\end{enumerate}
+
+Only after that mapping is understood should an optimized direct $6\times6$
+transformation be coded.
+
+\subsection{Worked plane-stress transformation}
+
+Consider
+
+\begin{equation}
+    \M{\sigma}_g
+    =
+    \begin{bmatrix}
+    100&30\\
+    30&20
+    \end{bmatrix}\ \mathrm{MPa}
+\end{equation}
+
+and a local basis rotated $25^\circ$ counterclockwise. Using
+$\m{C}_{lg}=\m{Q}^{T}(25^\circ)$,
+
+\begin{equation}
+    \M{\sigma}_l
+    =\m{C}_{lg}\M{\sigma}_g\m{C}_{lg}^{T}.
+\end{equation}
+
+The trace and determinant remain unchanged. These are coordinate invariants,
+not particular components.
+
+\begin{python}
+def transform_tensor_global_to_local(S_global, C):
+    return C @ S_global @ C.T
+
+
+def principal_stress_2d(sigma_x, sigma_y, tau_xy):
+    average = 0.5 * (sigma_x + sigma_y)
+    radius = sqrt((0.5 * (sigma_x - sigma_y))**2 + tau_xy**2)
+    sigma_1 = average + radius
+    sigma_2 = average - radius
+    angle = 0.5 * np.arctan2(2.0 * tau_xy, sigma_x - sigma_y)
+    return sigma_1, sigma_2, angle
+
+
+Sg = np.array([[100.0, 30.0],
+               [ 30.0, 20.0]])
+Q = rotation_2d(25.0 * pi / 180.0)
+C = Q.T
+Sl = transform_tensor_global_to_local(Sg, C)
+print(Sl)
+
+s1, s2, theta_p = principal_stress_2d(100.0, 20.0, 30.0)
+print(s1, s2, theta_p * 180.0 / pi)
+\end{python}
+
+The principal basis is the orientation for which the symmetric stress tensor is
+diagonal. In three dimensions this is an eigenvalue problem. The important
+concept for this chapter is not the eigensolver itself, but that a principal
+stress calculation is another search for a basis in which the tensor takes a
+particularly simple representation.
+
+\section{Moment of Inertia as a Tensor}
+
+The mass moment of inertia about a fixed point is also a symmetric second-order
+tensor. If only the coordinate basis changes,
+
+\begin{equation}
+    \m{I}_l
+    =\m{C}_{lg}\m{I}_g\m{C}_{lg}^{T}.
+\end{equation}
+
+Changing the \emph{origin} is a different operation. If $\m{I}_C$ is the inertia
+about the centre of mass and $\m{d}$ points from the new reference point to the
+centre of mass, the parallel-axis theorem gives
+
+\begin{equation}\label{eq:coord-parallel-axis}
+    \boxed{
+    \m{I}_O
+    =\m{I}_C
+    +m\left[
+       (\m{d}^{T}\m{d})\m{I}
+       -\m{d}\m{d}^{T}
+    \right]
+    }.
+\end{equation}
+
+This is another place where the distinction between \emph{basis change} and
+\emph{origin change} matters. A tensor rotation uses a congruence transformation;
+a shift of the inertia reference point changes the physical moment arms and
+therefore changes the tensor itself.
+
+\begin{python}
+def parallel_axis(I_center, mass, d):
+    d = np.array(d, dtype=float)
+    shift = np.zeros((3, 3), dtype=float)
+    d2 = float(d @ d)
+
+    for i in range(3):
+        for j in range(3):
+            shift[i, j] = -mass * d[i] * d[j]
+            if i == j:
+                shift[i, j] += mass * d2
+
+    return I_center + shift
+
+
+I_center = np.array([
+    [10.0, 0.0, 0.0],
+    [0.0, 20.0, 0.0],
+    [0.0, 0.0, 25.0],
+])
+
+I_origin = parallel_axis(I_center, 2.0, [0.3, 0.0, 0.0])
+print(I_origin)
+\end{python}
+
+\section{Finite Rotations and Updated Frames}
+
+In a geometrically linear analysis a local frame is often constructed once from
+the initial geometry. In a finite-rotation analysis the frame may have to evolve
+with the structure.
+
+For a spatial rotation increment $\Delta\m{Q}$ applied in the global frame,
+
+\begin{equation}\label{eq:coord-spatial-update}
+    \m{Q}_{n+1}=\Delta\m{Q}\,\m{Q}_{n}.
+\end{equation}
+
+If the increment is expressed in the current body frame instead,
+
+\begin{equation}\label{eq:coord-body-update}
+    \m{Q}_{n+1}=\m{Q}_{n}\,\Delta\m{Q}.
+\end{equation}
+
+The order is different because finite rotations do not commute.
+
+Small rotations can be linearized,
+
+\begin{equation}
+    \Delta\m{Q}
+    \approx
+    \m{I}+[\Delta\M{\theta}]_{\times},
+\end{equation}
+
+but repeatedly adding small rotation vectors is not an exact finite-rotation
+update. A robust nonlinear algorithm stores an orientation representation and
+composes finite increments.
+
+\subsection{Numerical drift}
+
+Repeated floating-point operations can cause a stored rotation matrix to drift
+away from exact orthogonality,
+
+\begin{equation}
+    \m{Q}\m{Q}^{T}\neq\m{I}
+\end{equation}
+
+by a small numerical amount. Common remedies include:
+
+\begin{itemize}
+    \item re-orthonormalizing the basis,
+    \item storing a unit quaternion and renormalizing it,
+    \item using an update formula that preserves orthogonality analytically.
+\end{itemize}
+
+The required correction is normally small; a large loss of orthogonality is a
+symptom of an algorithmic error, poor incremental rotation definition or a
+seriously ill-conditioned frame construction.
+
+\section{From Matrix Notation to Program Data}
+
+The mathematical expression
+
+\begin{equation}
+    \m{K}_g=\m{T}^{T}\m{K}_l\m{T}
+\end{equation}
+
+hides several discrete decisions that a program must make.
+
+\begin{enumerate}
+    \item \textbf{Construct geometry.} Identify element nodes, support points,
+    material axes or other data from which the local frame is defined.
+
+    \item \textbf{Build and validate the basis.} Normalize directions, detect
+    degeneracy, enforce right-handedness and verify orthogonality.
+
+    \item \textbf{Construct a DOF transformation.} Repeat the spatial basis in
+    the correct translational, rotational or other vector blocks.
+
+    \item \textbf{Transform local data.} Apply the correct one-sided or congruent
+    transformation to vectors and matrices.
+
+    \item \textbf{Map to global equation numbers.} The transformed element matrix
+    is still only an element matrix; its rows and columns must be accumulated into
+    the global sparse system using the element DOF map.
+
+    \item \textbf{Update when necessary.} In nonlinear analyses, geometry-dependent
+    frames, contact normals and follower directions may have to be rebuilt during
+    the iteration.
+\end{enumerate}
+
+In code, a block-diagonal transformation that looks like a single symbol in the
+textbook often becomes explicit loops and slices:
+
+\begin{python}
+def repeat_vector_basis(C, number_of_vector_blocks):
+    block_size = C.shape[0]
+    T = np.zeros((block_size * number_of_vector_blocks,
+                  block_size * number_of_vector_blocks), dtype=float)
+
+    for block in range(number_of_vector_blocks):
+        i0 = block * block_size
+        i1 = i0 + block_size
+        T[i0:i1, i0:i1] = C
+
+    return T
+
+
+C = build_frame([1.0, 0.2, 0.0], [0.0, 0.0, 1.0])
+T6 = repeat_vector_basis(C, 2)  # translation + rotation
+print(T6)
+\end{python}
+
+The mathematical matrix is therefore not an object that mysteriously exists in
+the computer. The program must construct its entries from geometry and attach
+those entries to a definite ordering of discrete DOFs.
+
+\section{Engineering Checks and Common Mistakes}
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.2}
+\begin{tabular}{|p{0.27\textwidth}|p{0.31\textwidth}|p{0.31\textwidth}|}
+\hline
+\textbf{Check} & \textbf{What it tests} & \textbf{Typical failure}\\ \hline
+$\m{C}\m{C}^{T}\approx\m{I}$ & Orthogonality of basis & Nearly parallel input directions, accumulated numerical drift\\ \hline
+$\det\m{C}\approx+1$ & Proper right-handed orientation & Accidental reflection or reversed cross-product order\\ \hline
+$\norm{\m{v}_l}=\norm{\m{v}_g}$ & Vector transformation & Wrong transpose or non-orthonormal basis\\ \hline
+$\m{K}_g=\m{K}_g^T$ if $\m{K}_l=\m{K}_l^T$ & Correct congruence transformation & Applying $\m{T}$ on only one side or using inconsistent DOF ordering\\ \hline
+Work $\m{f}^T\m{u}$ unchanged & Force/displacement conjugacy & Transforming force with the same direction as displacement instead of the transpose relation\\ \hline
+Round trip returns original components & Forward/inverse convention & Mixing active rotation with passive basis transformation\\ \hline
+\end{tabular}
+\caption{Simple diagnostics for coordinate transformations used in finite element models.}
+\label{tab:coord-checks}
+\end{table}
+
+\begin{bbox}
+\textbf{Common mistake -- Treating every $3\times3$ matrix with sine and cosine as
+``the rotation matrix''.}
+
+A rotation matrix is meaningful only together with its convention: active or
+passive, column or row vectors, fixed or moving axes, global-to-local or
+local-to-global, and the order of composed rotations. Most apparent sign errors
+between software packages come from comparing matrices without first aligning
+those conventions.
+\end{bbox}
+
+\section{Engineering Selection Guide}
+
+\begin{table}[ht]
+\centering
+\renewcommand{\arraystretch}{1.18}
+\begin{tabular}{|p{0.31\textwidth}|p{0.28\textwidth}|p{0.31\textwidth}|}
+\hline
+\textbf{Engineering task} & \textbf{Natural representation} & \textbf{Important caveat}\\ \hline
+Express a vector in another orthonormal basis & Direction-cosine matrix $\m{C}$ & Decide global-to-local versus local-to-global first\\ \hline
+Rotate a physical vector or body & Proper active rotation $\m{Q}$ & Do not confuse with passive coordinate change\\ \hline
+Create an element/material/support frame from geometry & Orthonormal basis from supplied directions & Detect zero or nearly parallel directions\\ \hline
+Transform nodal translations and rotations & Block-diagonal $\m{T}$ & Maintain the exact DOF ordering used by the element\\ \hline
+Transform stiffness/mass/damping & $\m{A}_g=\m{T}^T\m{A}_l\m{T}$ & Congruence transformation, not similarity transformation\\ \hline
+Transform stress/strain tensor & $\m{S}_l=\m{C}\m{S}_g\m{C}^T$ & Voigt engineering-shear conventions require special care\\ \hline
+Represent many finite orientation updates & Rotation matrix or unit quaternion & Re-orthogonalize or renormalize as required\\ \hline
+Define radial/tangential directions & Position-dependent cylindrical basis & Basis is singular on the axis\\ \hline
+Shift inertia to another reference point & Parallel-axis theorem & This is an origin change, not merely a basis rotation\\ \hline
+\end{tabular}
+\caption{Solver-independent guide to common transformation tasks.}
+\label{tab:coord-selection-guide}
+\end{table}
+
+\section{Summary}
+
+Coordinate transformations are best understood as changes in \emph{description}
+rather than as matrix tricks. A physical vector can be represented in many
+bases; a point additionally depends on the frame origin. A passive basis change
+and an active physical rotation are related by transpose but are not the same
+operation.
+
+For an orthonormal global-to-local basis matrix $\m{C}_{lg}$,
+
+\begin{equation*}
+\m{v}_l=\m{C}_{lg}\m{v}_g,
+\qquad
+\m{S}_l=\m{C}_{lg}\m{S}_g\m{C}_{lg}^{T}.
+\end{equation*}
+
+For finite element generalized coordinates $\m{q}_l=\m{T}\m{q}_g$, work and
+energy give
+
+\begin{equation*}
+\m{f}_g=\m{T}^{T}\m{f}_l,
+\qquad
+\m{K}_g=\m{T}^{T}\m{K}_l\m{T}.
+\end{equation*}
+
+The computational lesson is equally important: the transformation matrix is
+constructed from discrete geometry, checked for degeneracy and orthogonality,
+expanded according to a definite DOF order and finally used inside assembly and
+update loops. Understanding that path from geometry to matrix to code is what
+allows an engineer to derive and debug new formulations rather than merely apply
+predefined coordinate-system options.

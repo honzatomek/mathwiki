@@ -289,6 +289,10 @@ The transition from the continuum statement to a program begins with geometry.
 A contact solver does not receive a matrix row directly; it receives nodes,
 faces, current coordinates and search tolerances. It must determine which
 surface points correspond to each other before a gap equation can be assembled.
+The local normal/tangent contact frame is a position-dependent basis in exactly
+the sense developed in Chapter~\ref{chap:coordinate-transformations}; contact
+adds the additional requirement that this basis may have to be rebuilt as the
+projection point and surface orientation evolve.
 
 \begin{figure}[ht]
     \centering

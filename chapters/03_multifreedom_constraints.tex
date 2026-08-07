@@ -201,9 +201,12 @@ already known. This is appropriate for relations such as $u_2-u_6=0$, where the
 engineer can write the row directly. Many important constraints are instead
 generated from \textit{geometry}. A node may have to follow the interpolated
 motion of an element face, or two nonmatching finite element surfaces may have
-to remain tied together. In such cases the coefficients of $\m{A}$ are not
-specified explicitly; they are calculated from projection, element shape
-functions and, for distributed formulations, numerical integration.
+to remain tied together. The projection directions, surface normals and local
+bases used by these algorithms are ordinary coordinate transformations of the
+type developed in Chapter~\ref{chap:coordinate-transformations}. In such cases
+the coefficients of $\m{A}$ are not specified explicitly; they are calculated
+from projection, element shape functions and, for distributed formulations,
+numerical integration.
 
 This distinction is central to implementation. The mathematical statement
 

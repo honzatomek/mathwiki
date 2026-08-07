@@ -640,7 +640,7 @@ The local displacement components are
     \begin{bmatrix}
         n_x&n_y\\
         -n_y&n_x
-    \end{bmatrix}}_{\m{Q}}
+    \end{bmatrix}}_{\m{C}_{lg}}
     \begin{bmatrix}
         u_x\\u_y
     \end{bmatrix}.
@@ -669,15 +669,15 @@ constraint equation when written directly in the global basis.
 From \eqref{eq:skew-local-transform},
 
 \begin{equation}
-    \m{u}_l=\m{Q}\m{u}_g,
+    \m{u}_l=\m{C}_{lg}\m{u}_g,
     \qquad
-    \m{u}_g=\m{Q}^{T}\m{u}_l,
+    \m{u}_g=\m{C}_{lg}^{T}\m{u}_l,
 \end{equation}
 
-because $\m{Q}$ is orthonormal. With
+because $\m{C}_{lg}$ is orthonormal. With
 
 \begin{equation}
-    \m{T}=\m{Q}^{T},
+    \m{T}=\m{C}_{lg}^{T},
     \qquad
     \m{u}_g=\m{T}\m{u}_l,
 \end{equation}
@@ -855,7 +855,7 @@ define the local $xy$ plane. Then
 The global-to-local transformation is
 
 \begin{equation}\label{eq:cartesian-local-Q}
-    \m{Q}
+    \m{C}_{lg}
     =
     \begin{bmatrix}
         \m{e}_x^T\\
@@ -863,18 +863,18 @@ The global-to-local transformation is
         \m{e}_z^T
     \end{bmatrix},
     \qquad
-    \m{u}_l=\m{Q}\m{u}_g.
+    \m{u}_l=\m{C}_{lg}\m{u}_g.
 \end{equation}
 
 For a node carrying three translations and three small rotations, the same
 basis change is used for both vector blocks,
 
 \begin{equation}
-    \m{Q}_6
+    \m{C}_6
     =
     \begin{bmatrix}
-        \m{Q}&\m{0}\\
-        \m{0}&\m{Q}
+        \m{C}_{lg}&\m{0}\\
+        \m{0}&\m{C}_{lg}
     \end{bmatrix}.
 \end{equation}
 
@@ -973,7 +973,7 @@ The local directions are
     \m{e}_{\varphi}
     &=&
     \m{e}_z\times\m{e}_r,\\
-    \m{Q}_{cyl}
+    \m{C}_{cyl,g}
     &=&
     \begin{bmatrix}
         \m{e}_r^T\\
@@ -1015,10 +1015,10 @@ points = np.array([
 ])
 
 for point in points:
-    Qcyl = cylindrical_basis(point, origin=[0.0, 0.0, 0.0],
+    Ccyl = cylindrical_basis(point, origin=[0.0, 0.0, 0.0],
                              axis=[0.0, 0.0, 1.0])
     print("point", point)
-    print(Qcyl)
+    print(Ccyl)
 \end{python}
 
 The radial direction is undefined for a node exactly on the cylinder axis. A
@@ -1036,7 +1036,7 @@ If large motion is permitted and the support direction is intended to follow
 the current geometry, the basis must instead be updated,
 
 \begin{equation}
-    \m{Q}_{cyl}=\m{Q}_{cyl}(\m{x}+\m{u}).
+    \m{C}_{cyl,g}=\m{C}_{cyl,g}(\m{x}+\m{u}).
 \end{equation}
 
 The latter is a nonlinear constraint because its coefficients depend on the
