@@ -1816,6 +1816,103 @@ cylindrical joint leaves one translation and one rotation along a common axis.
 Dedicated joint elements merely package these relations, often with nonlinear
 updates, limits, friction or stiffness added.
 
+\subsection{Worked Example: Exact Distance versus the Initial Tangent}
+
+Consider a two-dimensional link of prescribed length
+
+\begin{equation}
+    L=100~\mathrm{mm}
+\end{equation}
+
+with point 1 fixed at the origin and point 2 initially at
+
+\begin{equation}
+    \m{X}_2=
+    \begin{bmatrix}
+        100 & 0
+    \end{bmatrix}^{T}\mathrm{mm}.
+\end{equation}
+
+Suppose point 2 is moved transversely by
+
+\begin{equation}
+    u_{2y}=20~\mathrm{mm}.
+\end{equation}
+
+The exact fixed-distance constraint requires the current point to remain on the
+circle $x_2^2+y_2^2=L^2$. Its horizontal coordinate must therefore be
+
+\begin{equation}
+    x_2=\sqrt{L^2-u_{2y}^2}
+       =\sqrt{100^2-20^2}
+       =97.9796~\mathrm{mm},
+\end{equation}
+
+so that the accompanying axial displacement is
+
+\begin{equation}
+    \boxed{u_{2x}=x_2-L=-2.0204~\mathrm{mm}}.
+\end{equation}
+
+This axial correction is not caused by axial elasticity; it is required purely
+by geometry. The exact constraint rotates with the link.
+
+Now linearize the same relation in the initial configuration. With
+$\m{r}_0=[L,0]^T$, Eq.~\eqref{fixed-distance-constraint} gives, to first
+order,
+
+\begin{equation}
+    \m{r}_0^T\delta\m{u}_2=0
+    \quad\Longrightarrow\quad
+    L\,\delta u_{2x}=0.
+\end{equation}
+
+The initial tangent therefore requires only
+
+\begin{equation}
+    \delta u_{2x}=0
+\end{equation}
+
+and places no first-order restriction on $\delta u_{2y}$. If the full
+$20~\mathrm{mm}$ transverse motion is applied while this initial tangent is kept
+fixed, the predicted point becomes $(100,20)~\mathrm{mm}$ and its distance from
+the origin is
+
+\begin{equation}
+    L_{\mathrm{lin}}=\sqrt{100^2+20^2}=101.9804~\mathrm{mm}.
+\end{equation}
+
+Thus the linearized relation has allowed a $1.9804~\mathrm{mm}$ length error,
+about $1.98\%$ of the prescribed length. A nonlinear constraint avoids this by
+relinearizing about the current direction
+
+\begin{equation}
+    \m{n}=\frac{\m{r}}{L}
+    =\begin{bmatrix}0.9798&0.2000\end{bmatrix}^{T},
+\end{equation}
+
+so the current incremental condition is
+
+\begin{equation}
+    \boxed{\m{n}^T(\delta\m{u}_2-\delta\m{u}_1)=0}.
+\end{equation}
+
+This is also the form seen by a linear perturbation or modal analysis about the
+deformed operating point: the nonlinear geometric relation is replaced by its
+current tangent. The example therefore illustrates why a fixed-distance link can
+be perfectly appropriate in a nonlinear transient analysis while its ordinary
+eigenshape extraction requires a frozen, linearized operating configuration.
+
+\begin{bbox}
+\textbf{Engineering note -- A fixed-distance link is not a very stiff spring.}
+
+An exact distance constraint carries whatever axial reaction is required to
+remain on the constraint manifold, but it introduces no axial compliance from
+which that reaction could be predicted independently. A spring or truss instead
+relates axial force to extension through a constitutive law. The two models may
+look similar in a preprocessor but represent different mechanics.
+\end{bbox}
+
 \section{Remote Couplings and Reference Points}\label{sec:remote-couplings}
 
 Modern preprocessors commonly expose a \textit{remote point}, \textit{reference
@@ -1909,6 +2006,145 @@ motion is connected to a compact spring, bushing or joint law. The connection
 stiffness and the load-distribution rule remain separate modelling decisions.
 The analyst can therefore change the support law without replacing the local
 mesh by an artificial rigid plate.
+
+\subsection{Worked Example: Deformable Remote Flange on a Bushing}
+
+Consider a square flange represented by four attachment nodes at
+
+\begin{equation}
+    (x_i,y_i)
+    =(-a,-a),\;(a,-a),\;(a,a),\;(-a,a),
+    \qquad a=50~\mathrm{mm}.
+\end{equation}
+
+For clarity, retain only the normal nodal displacements $w_i$ and two generalized
+remote coordinates: normal translation $w_r$ and rotation $\theta_y$. Equal
+weights give the interpolation
+
+\begin{equation}
+\begin{bmatrix}
+    w_r\\[2pt]\theta_y
+\end{bmatrix}
+=
+\underbrace{
+\begin{bmatrix}
+    \tfrac14&\tfrac14&\tfrac14&\tfrac14\\[4pt]
+    \tfrac{1}{4a}&-\tfrac{1}{4a}&-\tfrac{1}{4a}&\tfrac{1}{4a}
+\end{bmatrix}}_{\m{H}_{w\theta}}
+\begin{bmatrix}
+    w_1\\w_2\\w_3\\w_4
+\end{bmatrix}.
+\label{remote-flange-H}
+\end{equation}
+
+The first row measures the mean normal motion. The second row measures the
+best-fit rotation about $y$; the signs follow from $w\approx w_r-\theta_y x$.
+Attach the remote coordinates to ground through the diagonal bushing stiffness
+
+\begin{equation}
+    \m{K}_b=
+    \begin{bmatrix}
+        k_z&0\\0&k_{\theta y}
+    \end{bmatrix},
+    \qquad
+    k_z=40{,}000~\mathrm{N/mm},
+    \qquad
+    k_{\theta y}=100\times10^6~\mathrm{Nmm/rad}.
+\end{equation}
+
+Apply at the remote point
+
+\begin{equation}
+    F_z=8{,}000~\mathrm{N},
+    \qquad
+    M_y=200{,}000~\mathrm{Nmm}.
+\end{equation}
+
+In generalized coordinates the bushing response is immediately
+
+\begin{equation}
+    \begin{bmatrix}
+        w_r\\[2pt]\theta_y
+    \end{bmatrix}
+    =\m{K}_b^{-1}
+    \begin{bmatrix}
+        F_z\\M_y
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        0.200~\mathrm{mm}\\[2pt]0.002~\mathrm{rad}
+    \end{bmatrix}.
+\end{equation}
+
+The generalized load is distributed to the four attachment nodes by virtual
+work,
+
+\begin{equation}
+    \m{f}_a=\m{H}_{w\theta}^{T}
+    \begin{bmatrix}
+        F_z\\M_y
+    \end{bmatrix}.
+\end{equation}
+
+Since $1/(4a)=1/200~\mathrm{mm}^{-1}$, each node first receives
+$F_z/4=2{,}000~\mathrm{N}$. The moment adds $+1{,}000~\mathrm{N}$ to the two
+nodes at $x=-a$ and $-1{,}000~\mathrm{N}$ to the two nodes at $x=+a$. Hence
+
+\begin{equation}
+    \boxed{
+    \m{f}_a=
+    \begin{bmatrix}
+        3000&1000&1000&3000
+    \end{bmatrix}^{T}\mathrm{N}}.
+\end{equation}
+
+The resultant is $8~\mathrm{kN}$ and the nodal-force couple recovers exactly
+$M_y=200~\mathrm{kNmm}$. The bushing therefore sees a compact two-coordinate
+interface while the finite element mesh receives a statically equivalent
+distributed load.
+
+The crucial distinction from a rigid remote coupling appears in the kinematics.
+If the four nodes were rigidly tied to the remote point, their normal
+displacements would be forced to the plane
+
+\begin{equation}
+    w_i=w_r-\theta_y x_i,
+\end{equation}
+
+which gives $0.300~\mathrm{mm}$ at $x=-50~\mathrm{mm}$ and
+$0.100~\mathrm{mm}$ at $x=+50~\mathrm{mm}$. An interpolation coupling does
+not impose those four values. It requires only that the actual nodal field has
+the generalized mean and slope of Eq.~\eqref{remote-flange-H}. For example,
+the local warping field
+
+\begin{equation}
+    \delta\m{w}=
+    \delta
+    \begin{bmatrix}
+        1&-1&1&-1
+    \end{bmatrix}^{T}
+\end{equation}
+
+satisfies
+
+\begin{equation}
+    \m{H}_{w\theta}\,\delta\m{w}=\m{0}.
+\end{equation}
+
+It can therefore be superposed on the flange deformation without changing
+$w_r$, $\theta_y$ or the bushing force. The local flange stiffness determines
+that warping; the bushing acts only on the generalized interface coordinates.
+This is the mathematical content of a \emph{deformable remote support}.
+
+\begin{bbox}
+\textbf{Engineering note -- Coupling law and support law are separate.}
+
+Changing the RBE3-like interpolation to a rigid attachment changes the flange
+kinematics even if the same bushing matrix is retained. Changing the bushing
+stiffness changes the support compliance without changing how flange motion is
+measured. Keeping these two decisions separate is one of the main advantages of
+a reference-point formulation.
+\end{bbox}
 
 \begin{bbox}
 \textbf{Engineering note -- A remote point is not automatically an RBE2 or an RBE3.}
