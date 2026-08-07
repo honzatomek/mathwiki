@@ -1009,6 +1009,13 @@ HEX8_SIGNS = np.array([
 ], dtype=float)
 
 
+def hex8_shape_values(xi, eta, zeta):
+    N = np.zeros(8, dtype=float)
+    for n, (sx, sy, sz) in enumerate(HEX8_SIGNS):
+        N[n] = 0.125 * (1.0 + sx*xi) * (1.0 + sy*eta) * (1.0 + sz*zeta)
+    return N
+
+
 def hex8_shape_derivatives(xi, eta, zeta):
     dN = np.zeros((8, 3), dtype=float)
     for n, (sx, sy, sz) in enumerate(HEX8_SIGNS):
@@ -1340,7 +1347,520 @@ carefully selected enhancement fields; the simple modes above are intended to
 show the derivation mechanism, not to replace such formulations.
 \end{bbox}
 
-\section[Cyclic-Symmetry Sector Formulation]{Design Example IV: Cyclic-Symmetry Sector Formulation}
+
+\section[Eight-Node Brick with Nodal Rotations]{Design Example IV: An Eight-Node Brick with Six DOFs per Node}\label{sec:hex8-nodal-rotations}
+
+An ordinary three-dimensional Cauchy solid uses three translational DOFs per
+node. This is not an arbitrary software convention. In classical continuum
+mechanics the local material rotation is obtained from the displacement
+gradient,
+
+\begin{equation}
+    \M{\omega}
+    =\frac{1}{2}
+    \left(\nabla\m{u}-\nabla\m{u}^{T}\right),
+    \qquad
+    \m{\omega}=\frac{1}{2}\nabla\times\m{u},
+\end{equation}
+
+and is therefore not an independent kinematic variable. Merely appending
+$\theta_x,\theta_y,\theta_z$ to every HEX8 node without changing the continuum
+energy would produce a singular element: the new coordinates would have no
+work-conjugate stress measure and hence no stiffness.
+
+A meaningful six-DOF solid therefore requires one of two interpretations:
+
+\begin{enumerate}
+    \item the rotational coordinates are \textit{auxiliary} quantities constrained
+    to the rotation derived from the translational field, or
+    \item the continuum theory itself contains an \textit{independent rotation
+    field} with its own energetic conjugate quantities.
+\end{enumerate}
+
+The first route is useful when a classical solid merely needs rotational
+interface coordinates for coupling to beams or shells. The second route leads
+naturally to a micropolar, or Cosserat, continuum. The latter is used here
+because it gives a complete and internally consistent $8\times6=48$ DOF element
+without introducing an arbitrary numerical drilling stiffness.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.78\textwidth]{img/fe_hex8_six_dof.png}
+    \caption{Two different meanings of an eight-node brick. A classical Cauchy
+    HEX8 carries only the translational field $\m{u}$. A micropolar HEX8 carries
+    both translation $\m{u}$ and an independent microrotation $\M{\varphi}$ at
+    every node. The latter therefore has 48 external DOFs and requires couple
+    stresses in addition to the ordinary force stresses.}
+    \label{fig:fe-hex8-six-dof}
+\end{figure}
+
+\subsection{Independent Displacement and Rotation Fields}
+
+Let the nodal coordinates be ordered as
+
+\begin{equation}
+    \m{q}_e
+    =
+    \begin{bmatrix}
+        u_1&v_1&w_1&
+        \varphi_{x1}&\varphi_{y1}&\varphi_{z1}&
+        \cdots&
+        u_8&v_8&w_8&
+        \varphi_{x8}&\varphi_{y8}&\varphi_{z8}
+    \end{bmatrix}^{T}.
+\end{equation}
+
+Use the same trilinear HEX8 functions for both fields,
+
+\begin{equation}\label{eq:micropolar-interpolation}
+    \boxed{
+    \m{u}^{h}=\sum_{i=1}^{8}N_i\m{u}_i,
+    \qquad
+    \M{\varphi}^{h}=\sum_{i=1}^{8}N_i\M{\varphi}_i
+    }.
+\end{equation}
+
+The microrotation $\M{\varphi}$ is conceptually different from the
+macrorotation $\m{\omega}=\tfrac12\nabla\times\m{u}$. In a micropolar material
+the two may differ and that relative rotation stores energy.
+
+Introduce the skew matrix
+
+\begin{equation}
+    [\M{\varphi}]_{\times}
+    =
+    \begin{bmatrix}
+        0&-\varphi_z&\varphi_y\\
+        \varphi_z&0&-\varphi_x\\
+        -\varphi_y&\varphi_x&0
+    \end{bmatrix}.
+\end{equation}
+
+A convenient linear micropolar strain and curvature pair is
+
+\begin{equation}\label{eq:micropolar-kinematics}
+    \boxed{
+    \M{\gamma}=\nabla\m{u}-[\M{\varphi}]_{\times},
+    \qquad
+    \M{\kappa}=\nabla\M{\varphi}
+    }.
+\end{equation}
+
+Unlike the classical small-strain tensor, $\M{\gamma}$ is generally
+nonsymmetric. Its symmetric part measures the familiar infinitesimal strain,
+while its skew part measures the difference between the macroscopic spin and
+the independent microrotation. The curvature $\M{\kappa}$ measures spatial
+variation of the microrotation field.
+
+The rigid-body test is immediate. Let
+
+\begin{equation}
+    \m{u}=\m{a}+\M{\Omega}\times\m{x},
+    \qquad
+    \M{\varphi}=\M{\Omega},
+\end{equation}
+
+with constant translation $\m{a}$ and constant rotation $\M{\Omega}$. Then
+
+\begin{equation}
+    \nabla\m{u}=[\M{\Omega}]_{\times},
+    \qquad
+    \M{\gamma}=\m{0},
+    \qquad
+    \M{\kappa}=\m{0}.
+\end{equation}
+
+The element can therefore possess the expected six rigid-body modes without
+assigning zero energy to arbitrary nodal rotations.
+
+\subsection{A Simple Micropolar Constitutive Energy}
+
+The most general isotropic micropolar solid has more constitutive constants than
+a Cauchy solid because symmetric strain, relative rotation and curvature may
+have different stiffnesses. For the present derivation, use the deliberately
+compact energy density
+
+\begin{equation}\label{eq:micropolar-energy}
+    \boxed{
+    \Psi
+    =\frac{\lambda}{2}\left(\operatorname{tr}\M{\gamma}\right)^2
+    +\mu\,\operatorname{sym}\M{\gamma}:\operatorname{sym}\M{\gamma}
+    +\mu_c\,\operatorname{skw}\M{\gamma}:\operatorname{skw}\M{\gamma}
+    +\mu\ell^2\,\M{\kappa}:\M{\kappa}
+    }.
+\end{equation}
+
+Here $\lambda$ and $\mu$ are the usual Lam\'e constants, $\mu_c$ is a couple
+modulus penalising relative rotation, and $\ell$ is a material length scale.
+The corresponding force-stress and couple-stress tensors are
+
+\begin{equation}\label{eq:micropolar-constitutive}
+    \boxed{
+    \M{\sigma}
+    =\lambda\operatorname{tr}(\M{\gamma})\m{I}
+    +2\mu\operatorname{sym}\M{\gamma}
+    +2\mu_c\operatorname{skw}\M{\gamma},
+    \qquad
+    \M{m}=2\mu\ell^2\M{\kappa}
+    }.
+\end{equation}
+
+The force stress $\M{\sigma}$ need not be symmetric because its antisymmetric
+part is balanced by the couple-stress field. The parameter $\ell$ introduces a
+physical length into the continuum, so bending and rotation-gradient effects
+can become size dependent. This is a material assumption, not merely a numerical
+stabilisation parameter.
+
+\begin{bbox}
+\textbf{Engineering meaning -- Six solid DOFs change the material model.}
+
+A beam or shell node has rotations because the structural kinematics introduce
+cross-section orientation as a generalized coordinate. A classical three-
+dimensional solid does not. If three independent rotations are added to every
+solid node, some additional continuum law must say what those rotations mean
+and what work-conjugate moments act on them. In the formulation above that law is
+micropolar elasticity and the new boundary quantity is a couple traction.
+\end{bbox}
+
+\subsection{The $48\times48$ Element Matrix}
+
+For implementation, vectorize a second-order tensor row by row,
+
+\begin{equation}
+    \operatorname{vec}(\m{A})
+    =
+    \begin{bmatrix}
+        A_{11}&A_{12}&A_{13}&A_{21}&A_{22}&A_{23}&A_{31}&A_{32}&A_{33}
+    \end{bmatrix}^{T}.
+\end{equation}
+
+At an integration point the kinematic vectors can then be written
+
+\begin{equation}
+    \m{g}=\operatorname{vec}(\M{\gamma})=\m{B}_{\gamma}\m{q}_e,
+    \qquad
+    \m{k}=\operatorname{vec}(\M{\kappa})=\m{B}_{\kappa}\m{q}_e,
+\end{equation}
+
+where both $\m{B}_{\gamma}$ and $\m{B}_{\kappa}$ have size $9\times48$.
+For a single node with
+
+\begin{equation}
+    \nabla N_i=
+    \begin{bmatrix}N_{i,x}&N_{i,y}&N_{i,z}\end{bmatrix}^{T},
+\end{equation}
+
+its $9\times6$ contribution to $\m{B}_{\gamma}$ is
+
+\begin{equation}\label{eq:micropolar-Bgamma-node}
+\m{B}_{\gamma i}
+=
+\begin{bmatrix}
+N_x&0&0&0&0&0\\
+N_y&0&0&0&0&N\\
+N_z&0&0&0&-N&0\\
+0&N_x&0&0&0&-N\\
+0&N_y&0&0&0&0\\
+0&N_z&0&N&0&0\\
+0&0&N_x&0&N&0\\
+0&0&N_y&-N&0&0\\
+0&0&N_z&0&0&0
+\end{bmatrix}.
+\end{equation}
+
+The first three columns belong to nodal translation; the last three belong to
+nodal microrotation. The curvature block contains only derivatives of the
+rotation field,
+
+\begin{equation}\label{eq:micropolar-Bkappa-node}
+\m{B}_{\kappa i}
+=
+\begin{bmatrix}
+0&0&0&N_x&0&0\\
+0&0&0&N_y&0&0\\
+0&0&0&N_z&0&0\\
+0&0&0&0&N_x&0\\
+0&0&0&0&N_y&0\\
+0&0&0&0&N_z&0\\
+0&0&0&0&0&N_x\\
+0&0&0&0&0&N_y\\
+0&0&0&0&0&N_z
+\end{bmatrix}.
+\end{equation}
+
+Let $\m{C}_{\gamma}$ and $\m{C}_{\kappa}$ be the $9\times9$ matrix
+representations of Equation~\eqref{eq:micropolar-constitutive}. The virtual work
+contains two conjugate pairs,
+
+\begin{equation}\label{eq:micropolar-virtual-work}
+    \delta W_{\mathrm{int},e}
+    =\int_{\Omega_e}
+    \left(
+        \delta\M{\gamma}:\M{\sigma}
+        +\delta\M{\kappa}:\M{m}
+    \right)d\Omega.
+\end{equation}
+
+The corresponding external work may contain the ordinary body force $\m{b}$ and
+traction $\bar{\m{t}}$, together with a body couple $\m{c}$ and surface couple
+traction $\bar{\m{c}}$,
+
+\begin{equation}
+    \delta W_{\mathrm{ext},e}
+    =\int_{\Omega_e}
+      \left(\delta\m{u}^{T}\m{b}
+      +\delta\M{\varphi}^{T}\m{c}\right)d\Omega
+    +\int_{\Gamma_e}
+      \left(\delta\m{u}^{T}\bar{\m{t}}
+      +\delta\M{\varphi}^{T}\bar{\m{c}}\right)d\Gamma.
+\end{equation}
+
+Substitution of the discrete fields into
+$\delta W_{\mathrm{int},e}=\delta W_{\mathrm{ext},e}$ gives
+
+\begin{equation}
+    \delta W_{\mathrm{int},e}
+    =\delta\m{q}_e^T
+    \int_{\Omega_e}
+    \left(
+        \m{B}_{\gamma}^{T}\m{C}_{\gamma}\m{B}_{\gamma}
+        +\m{B}_{\kappa}^{T}\m{C}_{\kappa}\m{B}_{\kappa}
+    \right)d\Omega\,
+    \m{q}_e.
+\end{equation}
+
+The same result follows from the deformation-energy route. For the linear
+material of Equation~\eqref{eq:micropolar-energy},
+
+\begin{equation}
+    U_e=\int_{\Omega_e}\Psi\,d\Omega
+       =\frac12\m{q}_e^T\m{K}_e\m{q}_e,
+    \qquad
+    \m{f}_{\mathrm{int},e}
+       =\frac{\partial U_e}{\partial\m{q}_e}
+       =\m{K}_e\m{q}_e.
+\end{equation}
+
+Both routes therefore give
+
+\begin{equation}\label{eq:micropolar-hex8-stiffness}
+    \boxed{
+    \m{K}_e
+    =\int_{\Omega_e}
+    \left(
+        \m{B}_{\gamma}^{T}\m{C}_{\gamma}\m{B}_{\gamma}
+        +\m{B}_{\kappa}^{T}\m{C}_{\kappa}\m{B}_{\kappa}
+    \right)d\Omega
+    }.
+\end{equation}
+
+The matrix is $48\times48$. No special assembly rule is needed; the global DOF
+map simply contains six entries per node instead of three.
+
+For dynamics, an independent rotational field also needs a micro-inertia. A
+simple kinetic energy is
+
+\begin{equation}
+    T_e
+    =\frac12\int_{\Omega_e}
+    \rho\,\dot{\m{u}}^T\dot{\m{u}}
+    +\rho j\,\dot{\M{\varphi}}^T\dot{\M{\varphi}}\,d\Omega,
+\end{equation}
+
+where $j$ has units of length squared. The corresponding consistent mass matrix
+therefore contains translational and rotational inertia blocks.
+
+\subsection{Executable 48-DOF HEX8 Kernel}
+
+The following implementation builds the two kinematic matrices directly from
+$N_i$ and $\nabla N_i$. The $9\times9$ constitutive operators are generated by
+applying Equation~\eqref{eq:micropolar-constitutive} to the nine unit tensor
+components, which keeps the code consistent with the tensor equations rather
+than hiding a hand-written matrix.
+
+\begin{python}
+def cross_matrix(v):
+    x, y, z = v
+    return np.array([
+        [0.0, -z,   y],
+        [z,    0.0, -x],
+        [-y,   x,   0.0],
+    ], dtype=float)
+
+
+def build_micropolar_B(N, dN_dx):
+    Bgamma = np.zeros((9, 48), dtype=float)
+    Bkappa = np.zeros((9, 48), dtype=float)
+
+    for n in range(8):
+        Nx, Ny, Nz = dN_dx[n]
+        Ni = N[n]
+        c = 6*n
+
+        # vec(grad u - [phi]_x), row-major ordering.
+        Bgamma[:, c:c+6] = np.array([
+            [Nx, 0,  0,  0,   0,   0],
+            [Ny, 0,  0,  0,   0,   Ni],
+            [Nz, 0,  0,  0,  -Ni,  0],
+            [0,  Nx, 0,  0,   0,  -Ni],
+            [0,  Ny, 0,  0,   0,   0],
+            [0,  Nz, 0,  Ni,  0,   0],
+            [0,  0,  Nx, 0,   Ni,  0],
+            [0,  0,  Ny, -Ni, 0,   0],
+            [0,  0,  Nz, 0,   0,   0],
+        ], dtype=float)
+
+        # vec(grad phi), row-major ordering.
+        Bkappa[:, c:c+6] = np.array([
+            [0, 0, 0, Nx, 0,  0],
+            [0, 0, 0, Ny, 0,  0],
+            [0, 0, 0, Nz, 0,  0],
+            [0, 0, 0, 0,  Nx, 0],
+            [0, 0, 0, 0,  Ny, 0],
+            [0, 0, 0, 0,  Nz, 0],
+            [0, 0, 0, 0,  0,  Nx],
+            [0, 0, 0, 0,  0,  Ny],
+            [0, 0, 0, 0,  0,  Nz],
+        ], dtype=float)
+
+    return Bgamma, Bkappa
+
+
+def micropolar_constitutive(E, nu, couple_ratio, length_scale):
+    lam = E*nu / ((1.0 + nu)*(1.0 - 2.0*nu))
+    mu = E / (2.0*(1.0 + nu))
+    mu_c = couple_ratio * mu
+
+    Cgamma = np.zeros((9, 9), dtype=float)
+    Ckappa = np.zeros((9, 9), dtype=float)
+
+    for j in range(9):
+        G = np.zeros((3, 3), dtype=float)
+        G[j // 3, j % 3] = 1.0
+
+        sym = 0.5 * (G + G.T)
+        skw = 0.5 * (G - G.T)
+        trace = G[0, 0] + G[1, 1] + G[2, 2]
+
+        sigma = lam*trace*np.eye(3) + 2.0*mu*sym + 2.0*mu_c*skw
+        couple = 2.0*mu*(length_scale**2) * G
+
+        Cgamma[:, j] = sigma.reshape(9)
+        Ckappa[:, j] = couple.reshape(9)
+
+    return Cgamma, Ckappa
+
+
+def micropolar_hex8_stiffness(node_xyz, E, nu, couple_ratio, length_scale):
+    Cgamma, Ckappa = micropolar_constitutive(
+        E, nu, couple_ratio, length_scale
+    )
+    Ke = np.zeros((48, 48), dtype=float)
+    a = 1.0 / math.sqrt(3.0)
+
+    for xi in (-a, a):
+        for eta in (-a, a):
+            for zeta in (-a, a):
+                N = hex8_shape_values(xi, eta, zeta)
+                dN_dxi = hex8_shape_derivatives(xi, eta, zeta)
+
+                J = node_xyz.T @ dN_dxi
+                Jinv, detJ = inverse_3x3(J)
+                if detJ <= 0.0:
+                    raise ValueError("non-positive HEX8 Jacobian")
+
+                dN_dx = dN_dxi @ Jinv
+                Bg, Bk = build_micropolar_B(N, dN_dx)
+                Ke += (Bg.T @ Cgamma @ Bg + Bk.T @ Ckappa @ Bk) * detJ
+
+    return Ke
+
+
+def rigid_micropolar_state(node_xyz, translation, rotation):
+    q = np.zeros(48, dtype=float)
+    S = cross_matrix(rotation)
+    for n in range(8):
+        c = 6*n
+        q[c:c+3] = translation + S @ node_xyz[n]
+        q[c+3:c+6] = rotation
+    return q
+
+
+cube = HEX8_SIGNS.copy()
+K48 = micropolar_hex8_stiffness(
+    cube,
+    E=210000.0,
+    nu=0.3,
+    couple_ratio=0.5,
+    length_scale=0.2,
+)
+
+q_rigid = rigid_micropolar_state(
+    cube,
+    translation=np.array([0.3, -0.1, 0.2]),
+    rotation=np.array([0.02, -0.01, 0.03]),
+)
+
+r_rigid = K48 @ q_rigid
+energy_rigid = 0.5 * q_rigid @ r_rigid
+print("K shape =", K48.shape)
+print("rigid-body energy =", energy_rigid)
+
+q_micro = np.zeros(48, dtype=float)
+for n in range(8):
+    q_micro[6*n + 5] = 0.01
+energy_micro = 0.5 * q_micro @ K48 @ q_micro
+print("uniform independent microrotation energy =", energy_micro)
+\end{python}
+
+For the regular cube, the rigid-body energy is zero to round-off because the
+translation and rotation fields satisfy $\M{\gamma}=\M{\kappa}=\m{0}$. A
+uniform microrotation with zero translational rigid-body rotation, however,
+stores positive energy through the $\mu_c$ term. This is precisely what prevents
+the added nodal rotations from becoming free zero-energy coordinates.
+
+\subsection{If the Goal Is Only a Rotational Interface DOF}
+
+The micropolar brick above is appropriate only when independent material
+microrotation and couple stress are part of the intended physics. Often the
+engineering requirement is much more modest: a classical solid surface must
+connect to a beam, shell or joint that expects rotational coordinates.
+
+In that case the continuum spin
+
+\begin{equation}
+    \m{\omega}(\m{u})
+    =\frac12\nabla\times\m{u}
+\end{equation}
+
+may be projected to an auxiliary rotational field $\M{\theta}^{h}$. One can then
+construct constraints of the schematic form
+
+\begin{equation}\label{eq:auxiliary-solid-rotation}
+    \boxed{
+    \M{\theta}^{h}-\m{\omega}(\m{u}^{h})=\m{0}
+    }.
+\end{equation}
+
+These coordinates can be enforced by elimination, Lagrange multipliers or an
+appropriately designed mixed/penalty formulation. They do not create new
+physical deformation modes; they merely expose a rotational representation of
+the classical displacement field. The surface MPC and coupling machinery of
+Chapters~\ref{chap:multifreedom-constraints} and~\ref{chap:kinematic-constraints} is often a cleaner way to
+achieve the same engineering interface.
+
+\begin{bbox}
+\textbf{Do not confuse nodal rotations with continuum rotations.}
+
+A six-DOF node does not by itself define the physics. For beams and shells,
+rotations arise from the dimensional reduction and section kinematics. For a
+micropolar solid they are independent material variables. For a classical solid
+they can only be derived or introduced as auxiliary constrained coordinates.
+The same six numbers at a node can therefore represent three fundamentally
+different formulations.
+\end{bbox}
+
+\section[Cyclic-Symmetry Sector Formulation]{Design Example V: Cyclic-Symmetry Sector Formulation}
 
 A second route to a ``special element'' does not modify the continuum shape
 functions at all. Instead, it changes the admissible discrete space.
@@ -1549,7 +2069,8 @@ topology, not a unique numerical formulation. Two elements with the same eight
 corner nodes may differ in
 
 \begin{itemize}
-    \item interpolation and internal modes,
+    \item interpolation, exposed nodal DOFs and internal modes,
+    \item underlying continuum theory, including whether rotations are derived or independent,
     \item assumed strain fields,
     \item integration order,
     \item hourglass control,
@@ -1605,9 +2126,12 @@ The Timoshenko example demonstrates that even a mathematically consistent
 interpolation may lock if its discrete space cannot reproduce an important
 limiting kinematic state. The enriched HEX8 example shows how internal
 higher-order coordinates can improve the approximation while being condensed
-before global assembly. The cyclic example shows a different design mechanism:
-leave the ordinary continuum element unchanged and transform the admissible DOF
-space itself.
+before global assembly. The six-DOF brick shows a more fundamental design
+choice: adding independent nodal rotations requires a continuum theory with
+work-conjugate couple stresses, or else those rotations must remain auxiliary
+constraints derived from the classical displacement field. The cyclic example
+shows yet another design mechanism: leave the ordinary continuum element
+unchanged and transform the admissible DOF space itself.
 
 These examples lead to a broader engineering conclusion: deriving an element
 means designing a discrete approximation space, its energetically conjugate
