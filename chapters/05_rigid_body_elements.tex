@@ -113,8 +113,8 @@ Modern programs frequently place another abstraction above these definitions:
 remote points, reference points, surface-based constraints, joints and coupling
 objects. Such objects may internally generate classical constraint equations,
 interpolation relations, contact-based MPCs or dedicated constraint elements.
-The GUI object is consequently not the theory. The engineering behaviour of the
-underlying relation is what matters. Figure~\ref{fig:kinematic-coupling-evolution}
+The preprocessor object is consequently not the formulation. The engineering
+behaviour of the underlying relation is what matters. Figure~\ref{fig:kinematic-coupling-evolution}
 summarizes this development from explicit constraint coefficients toward
 increasingly specialized and higher-level engineering definitions.
 
@@ -128,7 +128,7 @@ increasingly specialized and higher-level engineering definitions.
 \section{Classification of Kinematic Constraints}
 
 It is useful to classify a coupling by the relative motion it permits before
-considering any solver command.
+considering its software implementation.
 
 \begin{center}
 \begin{tabular}{|p{0.22\textwidth}|p{0.33\textwidth}|p{0.32\textwidth}|}
@@ -149,6 +149,8 @@ Fixed distance & Constant distance between geometric points & Links, rods, mecha
 \hline
 Fixed angle / joint & Selected relative rotations or translations suppressed & Revolute, cylindrical, spherical and other joints \\
 \hline
+Remote/reference coupling & Higher-level interface coordinates combined with a rigid, interpolating or other coupling law & Remote loads, displacements, springs, bushings and joints \\
+\hline
 Contact & Inequality and complementarity conditions & Separation, sliding, impact and friction \\
 \hline
 \end{tabular}
@@ -157,7 +159,19 @@ Contact & Inequality and complementarity conditions & Separation, sliding, impac
 The last row is deliberately included even though contact was treated in the
 preceding chapter. It emphasizes that contact and permanent couplings answer the
 same broad engineering question -- which relative motion is admissible -- but
-have fundamentally different mathematical status.
+have fundamentally different mathematical status. A remote or reference coupling
+is listed separately because it is usually a higher-level modelling interface:
+its underlying relation may be rigid, interpolating or something more specialized.
+
+Throughout this chapter, \textit{reference node} or \textit{reference point}
+denotes the retained generalized coordinates of a coupling. The term
+\textit{dependent node} is reserved for a node whose selected DOFs are prescribed
+by an exact kinematic relation such as an RBE2. \textit{Attachment node} is used
+for a mesh node participating in an interpolation such as an RBE3, where local
+relative deformation is intentionally retained. \textit{Remote point} is used
+primarily when discussing a particular preprocessor abstraction. These words are
+not interchangeable: they describe different mathematical roles, not merely
+alternative GUI labels.
 
 \section{Mathematical Background}
 
@@ -209,32 +223,193 @@ show the distinction between the \textit{definition} $\m{g}$ and its
 \textit{enforcement}; the numerical properties of multiplier systems were
 discussed in Chapter~\ref{chap:multifreedom-constraints}.
 
-\section{RBE1 -- General Rigid Coupling}
+\section{RBE1 -- General Rigid Coupling}\label{sec:rbe1}
 
-RBE1 is the least specialized member of the classical family. It is useful to
-think of it as a structured way of defining a rigid relation between selected
-degrees of freedom rather than as a spider with one mandatory reference point.
-A set of independent degrees of freedom supplies the retained motion and a set of
-dependent degrees of freedom is related to it through rigid-body compatibility.
+\subsection{Engineering Meaning}
 
-Its historical importance is greater than its present visibility. Modern
-preprocessors often expose more convenient RBE2, RBE3, joint or remote-coupling
-objects, while a general constraint-equation facility covers cases that once
-motivated RBE1 directly. Nevertheless, RBE1 remains conceptually useful because
-it sits between a completely arbitrary MPC and the highly structured RBE2.
+RBE1 is the most general rigid member of the familiar RBE family. Its defining
+feature is not a particular spider shape but the way the rigid-body coordinates
+are selected. In an RBE2, the retained motion is normally represented by the
+translation and rotation of one reference node. In an RBE1, the independent
+scalar degrees of freedom may instead be distributed among several nodes. They
+must jointly be sufficient to describe the rigid-body motion of the coupled set.
+Selected dependent components are then obtained from those independent components
+by rigid-body compatibility.
 
-The important modelling question is not whether the solver literally contains an
-object named RBE1, but whether the generated equations impose a rigid relation
-between the selected DOFs. If they do, the same cautions concerning redundant
-constraints, thermal expansion and finite rotations apply.
+For a three-dimensional rigid body, six independent scalar components are needed
+to span the six rigid-body motions. They need not all belong to the same node.
+This makes RBE1 useful when the natural retained coordinates are already spread
+over several points, or when selected translational or rotational releases are
+desired without introducing a separate six-DOF reference node. Components that
+are not listed in the coupling remain outside that rigid relation.
+
+The distinction from a completely general MPC is therefore one of structure.
+The analyst identifies independent and dependent components, while the rigid-body
+geometry determines the coefficients that relate them. In compact form,
+
+\begin{equation}\label{rbe1-general-map}
+    \m{q}_D = \m{T}_{DI}\m{q}_I,
+\end{equation}
+
+where $\m{q}_I$ contains the selected independent scalar DOFs and
+$\m{q}_D$ the selected dependent DOFs. The transformation
+$\m{T}_{DI}$ is assembled from rigid-body kinematics. In the classical
+three-dimensional case $\m{q}_I$ contains six independent scalar components,
+but their distribution among physical nodes is arbitrary provided that the
+selected set has full rigid-body rank.
+
+This last requirement is essential. Choosing six scalar DOFs is not sufficient
+if their geometry cannot distinguish all rigid motions. For example, a set of
+translational components located on a degenerate or poorly chosen geometry may
+fail to determine one of the rotations. The resulting problem is one of
+kinematic rank, not material stiffness.
 
 \begin{bbox}
-\textbf{Common mistake -- Treating the RBE name as the formulation.}
+\textbf{Engineering note -- The main difference between RBE1 and RBE2 is where the retained rigid-body coordinates live.}
 
-Commercial programs expose the same engineering relation under different names.
-The command name should never replace checking which DOFs are dependent, whether
-the surrounding region is made rigid, how the equations are enforced and whether
-the formulation is valid for the selected analysis type.
+RBE2 collects the retained coordinates at one reference node and maps them to
+all dependent nodes. RBE1 allows the independent scalar components to be spread
+among several nodes. Both describe rigid-body compatibility; RBE1 simply offers
+more freedom in how the independent and dependent components are selected.
+\end{bbox}
+
+\subsection{Worked Planar Example}
+
+The three-dimensional definition is easiest to understand through its planar
+analogue. A rigid body moving in the $x$--$y$ plane has three rigid-body degrees
+of freedom: two translations $u_0$, $v_0$ and one small rotation
+$\theta_z$. Consider the square
+
+\begin{equation}
+    A=(0,0),\qquad
+    B=(L,0),\qquad
+    C=(0,L),\qquad
+    D=(L,L).
+\end{equation}
+
+For small rotation, the displacement of any point $(x,y)$ is
+
+\begin{equation}\label{rbe1-planar-rigid-motion}
+    u(x,y)=u_0-\theta_z y,
+    \qquad
+    v(x,y)=v_0+\theta_z x.
+\end{equation}
+
+Instead of introducing a separate reference node with
+$(u_0,v_0,\theta_z)$, choose the following three independent scalar DOFs:
+
+\begin{equation}\label{rbe1-planar-independent-set}
+    \m{q}_I=
+    \begin{bmatrix}
+        u_A & v_A & v_B
+    \end{bmatrix}^T.
+\end{equation}
+
+The first two components define the translation of point $A$. The vertical
+motion of point $B$ then determines the rotation because
+
+\begin{equation}
+    v_B=v_A+L\theta_z,
+    \qquad
+    \theta_z=\frac{v_B-v_A}{L}.
+\end{equation}
+
+The selected dependent components may now be recovered from rigid-body
+compatibility. For the remaining translation at $B$ and the translations at
+$C$ and $D$,
+
+\begin{align}
+    u_B &= u_A, \\
+    u_C &= u_A-L\theta_z = u_A+v_A-v_B, \\
+    v_C &= v_A, \\
+    u_D &= u_A-L\theta_z = u_A+v_A-v_B, \\
+    v_D &= v_B.
+\end{align}
+
+Thus
+
+\begin{equation}\label{rbe1-planar-transformation}
+    \underbrace{
+    \begin{bmatrix}
+        u_B\\
+        u_C\\
+        v_C\\
+        u_D\\
+        v_D
+    \end{bmatrix}}_{\m{q}_D}
+    =
+    \underbrace{
+    \begin{bmatrix}
+        1 & 0 & 0\\
+        1 & 1 & -1\\
+        0 & 1 & 0\\
+        1 & 1 & -1\\
+        0 & 0 & 1
+    \end{bmatrix}}_{\m{T}_{DI}}
+    \underbrace{
+    \begin{bmatrix}
+        u_A\\
+        v_A\\
+        v_B
+    \end{bmatrix}}_{\m{q}_I}.
+\end{equation}
+
+The example shows the characteristic RBE1 idea: the independent coordinates do
+not have to be collected at one reference point. One component of node $B$ is
+independent while another component at the same node can be dependent, and the
+other dependent nodal motions follow from the same rigid-body field.
+
+For a numerical check, let $L=100~\mathrm{mm}$ and prescribe
+
+\begin{equation}
+    u_A=1~\mathrm{mm},\qquad
+    v_A=2~\mathrm{mm},\qquad
+    v_B=3~\mathrm{mm}.
+\end{equation}
+
+The implied small rotation is
+
+\begin{equation}
+    \theta_z=\frac{3-2}{100}=0.01~\mathrm{rad}.
+\end{equation}
+
+Equation~\eqref{rbe1-planar-transformation} gives
+
+\begin{equation}
+    u_B=1~\mathrm{mm},\qquad
+    (u_C,v_C)=(0,2)~\mathrm{mm},\qquad
+    (u_D,v_D)=(0,3)~\mathrm{mm}.
+\end{equation}
+
+Substitution into Eq.~\eqref{rbe1-planar-rigid-motion} gives the same values,
+so the selected components lie on one planar rigid-body displacement field. The
+three independent scalar DOFs in this two-dimensional example play the same role
+as the six independent scalar components required to span a general rigid-body
+motion in three dimensions.
+
+\subsection{Modelling Consequences}
+
+RBE1 is useful when only selected components are to participate in the rigid
+relation or when a natural set of retained coordinates is distributed over
+several points. The additional freedom is also what makes the definition easier
+to misuse. The independent set must span the intended rigid-body modes, and a
+DOF chosen as dependent must not simultaneously be prescribed by another exact
+constraint unless the combined equations are intentionally compatible.
+
+The resulting coupling is still rigid in the selected components. It can
+therefore suppress structural deformation just as an RBE2 can, and the same
+advanced considerations apply: thermal expansion, finite rotations, modal
+admissibility and interaction with other constraints all depend on the actual
+kinematic equations and their implementation.
+
+\begin{bbox}
+\textbf{Common mistake -- Counting independent DOFs without checking their rank.}
+
+A full three-dimensional RBE1 requires an independent set capable of representing
+all six rigid-body motions. Six listed scalar components can still be deficient
+if their directions and locations are geometrically degenerate. The correct
+question is whether the selected components span the rigid-body motion, not merely
+whether their count equals six.
 \end{bbox}
 
 \section{RBE2 -- Rigid-Body Coupling}\label{sec:rbe2}
@@ -379,7 +554,7 @@ For $n$ dependent nodes, the individual relations are stacked vertically,
 The important asymmetry is immediately visible: the reference DOFs are retained,
 whereas the dependent DOFs are determined by them. The constraint consequently
 reduces the number of independent kinematic variables if it is imposed by the
-master--slave elimination procedure of
+dependent-DOF elimination procedure of
 Chapter~\ref{chap:multifreedom-constraints}.
 
 \subsection{Force and Moment Transfer}
@@ -646,7 +821,7 @@ dependent loads back to an equivalent force and moment at the reference point.
 
 \subsection{Elimination and Congruent Transformation}
 
-The algebraic reduction is exactly the master--slave transformation developed in
+The algebraic reduction is exactly the dependent-DOF transformation developed in
 Chapter~\ref{chap:multifreedom-constraints}. It is repeated here only in the form
 needed to show the structural consequence of the RBE2.
 
@@ -746,7 +921,7 @@ The correct reduced right-hand side is then
 \end{equation}
 
 This compact expression is preferable to deriving special load corrections case
-by case and is identical to the general nonhomogeneous master--slave result in
+by case and is identical to the general nonhomogeneous dependent-DOF result in
 Chapter~\ref{chap:multifreedom-constraints}.
 
 After solving for $\m{\hat{u}}$, the full displacement field is recovered from
@@ -1645,10 +1820,13 @@ updates, limits, friction or stiffness added.
 
 Modern preprocessors commonly expose a \textit{remote point}, \textit{reference
 point} or \textit{remote coupling} rather than asking the analyst to construct a
-classical spider manually. The most useful solver-independent interpretation is
-to regard the remote point as a set of generalized interface coordinates
-$\m{q}_r$ through which loads, prescribed motions, springs or joints can be
-connected to an extended region of the finite element mesh.
+classical spider manually. In the solver-independent discussion below,
+\textit{reference point} denotes the generalized interface coordinates, while
+\textit{remote point} is treated as one common implementation name. The most
+useful interpretation is therefore to regard the reference point as a set of
+generalized coordinates $\m{q}_r$ through which loads, prescribed motions,
+springs or joints can be connected to an extended region of the finite element
+mesh.
 
 This interpretation separates two questions:
 
@@ -2573,7 +2751,7 @@ implementation-specific restrictions that can change between element families
 and eigensolvers. Two examples illustrate why the manual still matters even when
 the underlying mechanics is clear.
 
-\paragraph{ANSYS.}
+\medskip\noindent\textbf{ANSYS.}\par\noindent
 Linear constraint equations are supported in modal systems and are normally
 handled by eliminating a suitable dependent DOF. The classical \texttt{CERIG}
 and \texttt{RBE3} commands generate linear constraint equations and are
@@ -2592,11 +2770,11 @@ perturbation analysis is therefore the appropriate interpretation: the nonlinear
 static solution determines the operating geometry, stress state and contact
 status, and the eigensolution acts on the tangent system about that state.
 
-\paragraph{PERMAS.}
+\medskip\noindent\textbf{PERMAS.}\par\noindent
 The ordinary linear MPC family belongs naturally to the displacement-reduction
 category described by Eq.~\eqref{coupling-modal-reduced-eigenproblem}. Thus
-linear uses of definitions such as \texttt{MPC\_RIGID}, \texttt{MPC\_WLSCON},
-\texttt{MPC\_GENERAL}, and the simpler assignment/joining MPCs are the kinds of
+linear uses of definitions such as \texttt{MPC\_\allowbreak RIGID}, \texttt{MPC\_\allowbreak WLSCON},
+\texttt{MPC\_\allowbreak GENERAL}, and the simpler assignment/joining MPCs are the kinds of
 constraints expected in a dynamic eigenvalue model. PERMAS documentation also
 describes explicit MPC handling in dynamic eigenvalue reduction and linear MPC
 surface couplings that are available for dynamic analyses. By contrast, contact
@@ -3182,8 +3360,10 @@ relative motion. Chapter~\ref{chap:multifreedom-constraints} established the
 numerical methods by which equality constraints can be enforced; this chapter
 has focused on constructing the constraints themselves.
 
-RBE1 represents a general rigid-coupling concept. RBE2 maps a reference-node
-translation and rotation to dependent nodes and therefore creates a rigid region.
+RBE1 represents a general rigid-coupling concept in which the retained rigid-body
+coordinates may be distributed among several nodal components. RBE2 collects the
+retained translation and rotation at a reference node and maps them to dependent
+nodes, thereby creating a rigid region.
 RBE3 reverses that logic: it interpolates generalized reference motion from a set
 of attachment nodes and transfers forces back by virtual-work equivalence,
 thereby preserving local deformation of the attached surface.
