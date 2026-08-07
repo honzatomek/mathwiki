@@ -712,6 +712,91 @@ DOF map. This transition from local mathematical notation to indexing and
 accumulation is one of the most fundamental implementation ideas in finite
 element programming.
 
+
+\section{Choosing the Approximation Space}\label{sec:fe-approximation-space}
+
+The finite element method does not require Lagrange polynomials.  What the
+method requires is a finite-dimensional trial space that is compatible with the
+variational problem and rich enough to represent the deformation states that
+matter.  The familiar nodal interpolation
+
+\begin{equation}
+    \m{u}^{h}(\m{x})=\sum_a N_a(\m{x})\m{q}_a
+\end{equation}
+
+therefore hides one of the most important design decisions in an element: the
+choice of the functions $N_a$ and of the generalized coordinates that multiply
+them.
+
+Lagrange polynomials are popular because they combine several useful properties:
+
+\begin{itemize}
+    \item the Kronecker property $N_i(\m{x}_j)=\delta_{ij}$ gives the
+          coefficients a direct nodal interpretation,
+    \item partition of unity reproduces rigid translations,
+    \item polynomial completeness makes constant-strain and higher-order patch
+          tests straightforward,
+    \item local support preserves sparse FE assembly,
+    \item derivatives and Gauss integration are inexpensive.
+\end{itemize}
+
+None of these properties is unique to Lagrange polynomials.  Other useful
+families include
+
+\begin{center}
+\begin{tabular}{>{\raggedright\arraybackslash}p{0.20\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}>{\raggedright\arraybackslash}p{0.30\textwidth}}
+\hline
+\textbf{Basis family} & \textbf{Why it is attractive} & \textbf{Typical use}\\
+\hline
+Lagrange polynomial & direct nodal values, simple $C^0$ assembly & standard solids and thermal elements\\
+Hermite polynomial & values and slopes are interpolation data & beams and $C^1$ problems\\
+Hierarchical polynomial & additional modes can be added without replacing the lower-order basis & $p$- and $hp$-refinement\\
+Trigonometric / Fourier & represents periodic and oscillatory fields efficiently & cyclic structures, spectral approximations\\
+Exponential / wave & follows the local solution of a propagation problem & dynamic stiffness and wave elements\\
+Spline/NURBS & high continuity and accurate geometric representation & isogeometric analysis\\
+Problem-specific enrichment & adds a known local deformation, singularity or discontinuity & incompatible modes, XFEM, partition-of-unity methods\\
+\hline
+\end{tabular}
+\end{center}
+
+A non-polynomial basis is therefore not an exotic departure from FEM.  It is
+simply a different finite-dimensional approximation space.  The questions that
+must be asked are more fundamental:
+
+\begin{enumerate}
+    \item \textbf{Completeness.} Does the space reproduce rigid-body motion and
+          the low-order strain states required for convergence?
+    \item \textbf{Compatibility.} Does the assembled field have the continuity
+          required by the weak form?
+    \item \textbf{Stability.} Does the space introduce unintended zero-energy
+          or spurious pressure/shear modes?
+    \item \textbf{Locality.} Does a basis coefficient affect only nearby
+          elements, or the complete structure?
+    \item \textbf{Conditioning.} Are the basis functions strongly linearly
+          dependent over the element domain?
+    \item \textbf{Integration.} Can the products that enter the residual and
+          tangent be integrated accurately and economically?
+    \item \textbf{Physics.} Does the space resemble the deformation or wave
+          field that the element is expected to represent?
+\end{enumerate}
+
+The last question is often the reason a richer element can replace many simpler
+ones.  A global Fourier basis may reproduce a periodic field with very few
+coefficients but loses the locality that makes FE matrices sparse.  A local sine
+or polynomial bubble mode, on the other hand, can enrich each element while
+preserving ordinary assembly because it vanishes at the element boundary.
+
+\begin{bbox}
+\textbf{A DOF is a coefficient of a basis function.}
+
+A quantity called a ``nodal rotation'' need not be an independent material
+rotation.  It may simply be the coefficient used to normalize a higher-order
+shape function so that its derivative at the node equals that rotation.  This
+is the reason Hermite beam rotations, rotation-enriched solids and micropolar
+solid rotations may all appear as $\theta_x,\theta_y,\theta_z$ in an input file
+while representing very different physics.
+\end{bbox}
+
 \section[Designing a Finite Element]{How to Design a Finite Element}\label{sec:design-own-element}
 
 A new element formulation should not begin by guessing a stiffness matrix. A
@@ -954,7 +1039,7 @@ integration stores a nonzero shear energy, the one-point shear evaluation sees
 zero shear at the centre, and the required higher-order internal coordinate is
 computed directly from the missing quadratic deformation.
 
-\section[Building an Eight-Node Brick]{Design Example II: Building an Eight-Node Brick}
+\section[Building an Eight-Node Brick]{Design Example II: Building an Eight-Node\\Brick}
 
 The next example develops the core of a three-dimensional solid element and then
 adds internal quadratic enrichment. This is deliberately more general than a
@@ -1087,7 +1172,7 @@ There is no hidden ``HEX8 stiffness formula.'' The element is a loop that
 constructs a local interpolation derivative, maps it to physical space,
 evaluates the constitutive energy and accumulates the result.
 
-\section[Quadratic Internal Enrichment of HEX8]{Design Example III: Quadratic Internal Enrichment of HEX8}
+\section[Quadratic Internal Enrichment of HEX8]{Design Example III: Quadratic Internal\\Enrichment of HEX8}
 
 A conventional eight-node brick is trilinear in its external nodal
 interpolation. Calling it a ``quadratic eight-node brick'' without qualification
@@ -1348,338 +1433,238 @@ show the derivation mechanism, not to replace such formulations.
 \end{bbox}
 
 
-\section[Eight-Node Brick with Nodal Rotations]{Design Example IV: An Eight-Node Brick with Six DOFs per Node}\label{sec:hex8-nodal-rotations}
 
-An ordinary three-dimensional Cauchy solid uses three translational DOFs per
-node. This is not an arbitrary software convention. In classical continuum
-mechanics the local material rotation is obtained from the displacement
-gradient,
+\section[Rotation-Enriched Eight-Node Brick]{Design Example IV: Rotation-Enriched\\Eight-Node Brick}\label{sec:hex8-nodal-rotations}
+
+The preceding enriched HEX8 introduced higher-order deformation through local
+coordinates that were condensed before assembly.  Another possibility is to
+expose part of the higher-order information as nodal slope or rotation
+coordinates.  The engineering objective considered here is very specific:
+
+\begin{quote}
+Can an eight-corner brick be made substantially richer in bending and twisting
+so that rotating one corner changes the displacement field inside the element,
+without interpreting that rotation as a new material degree of freedom?
+\end{quote}
+
+The answer is yes.  A useful way to understand such a formulation is to start
+from the ordinary 20-node quadratic hexahedron.  It has 20 nodes with three
+translations each,
 
 \begin{equation}
-    \M{\omega}
-    =\frac{1}{2}
-    \left(\nabla\m{u}-\nabla\m{u}^{T}\right),
-    \qquad
-    \m{\omega}=\frac{1}{2}\nabla\times\m{u},
+    \m{q}_{20}\in\mathbb{R}^{60}.
 \end{equation}
 
-and is therefore not an independent kinematic variable. Merely appending
-$\theta_x,\theta_y,\theta_z$ to every HEX8 node without changing the continuum
-energy would produce a singular element: the new coordinates would have no
-work-conjugate stress measure and hence no stiffness.
+Keep the eight corner translations but replace the twelve midside-node
+translations by three slope/rotation parameters at each corner,
 
-A meaningful six-DOF solid therefore requires one of two interpretations:
+\begin{equation}
+    \m{q}_{48}
+    =
+    \begin{bmatrix}
+        u_1&v_1&w_1&\theta_{x1}&\theta_{y1}&\theta_{z1}&\cdots&
+        u_8&v_8&w_8&\theta_{x8}&\theta_{y8}&\theta_{z8}
+    \end{bmatrix}^{T}.
+\end{equation}
 
-\begin{enumerate}
-    \item the rotational coordinates are \textit{auxiliary} quantities constrained
-    to the rotation derived from the translational field, or
-    \item the continuum theory itself contains an \textit{independent rotation
-    field} with its own energetic conjugate quantities.
-\end{enumerate}
+The element then still has only eight visible geometric nodes, but its
+displacement interpolation is inherited from a quadratic 20-node solid.
 
-The first route is useful when a classical solid merely needs rotational
-interface coordinates for coupling to beams or shells. The second route leads
-naturally to a micropolar, or Cosserat, continuum. The latter is used here
-because it gives a complete and internally consistent $8\times6=48$ DOF element
-without introducing an arbitrary numerical drilling stiffness.
+\subsection{The Edge Relation: Translation and Slope Replace a Midside Node}
+
+Consider one edge from corner $i$ to corner $j$ with
+
+\begin{equation}
+    \m{l}_{ij}=\m{x}_j-\m{x}_i,
+    \qquad L_{ij}=\lVert\m{l}_{ij}\rVert,
+    \qquad \m{t}_{ij}=\frac{\m{l}_{ij}}{L_{ij}}.
+\end{equation}
+
+For a scalar transverse displacement $w(s)$, cubic Hermite interpolation on
+$0\le s\le L$ gives at the midpoint
+
+\begin{equation}\label{eq:hermite-midpoint}
+    \boxed{
+    w_m
+    =\frac{w_i+w_j}{2}
+    +\frac{L}{8}(\theta_i-\theta_j)
+    }.
+\end{equation}
+
+The first term is the ordinary linear midpoint displacement.  The second term
+contains the missing curvature information.  In three dimensions a small
+rotation produces the edge slope
+
+\begin{equation}
+    \frac{\partial\m{u}}{\partial s}
+    =\M{\theta}\times\m{t}_{ij}.
+\end{equation}
+
+Equation~\eqref{eq:hermite-midpoint} therefore becomes
+
+\begin{equation}\label{eq:rot-hex-midpoint}
+    \boxed{
+    \m{u}_m
+    =\frac{1}{2}(\m{u}_i+\m{u}_j)
+    +\frac{1}{8}(\M{\theta}_i-\M{\theta}_j)\times\m{l}_{ij}
+    }.
+\end{equation}
+
+A rotation parallel to the edge produces no edge displacement, as expected.
+Rotations about the other two directions move the midside point transversely
+and thereby introduce bending information that a corner-translation-only HEX8
+does not possess.
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.78\textwidth]{img/fe_hex8_six_dof.png}
-    \caption{Two different meanings of an eight-node brick. A classical Cauchy
-    HEX8 carries only the translational field $\m{u}$. A micropolar HEX8 carries
-    both translation $\m{u}$ and an independent microrotation $\M{\varphi}$ at
-    every node. The latter therefore has 48 external DOFs and requires couple
-    stresses in addition to the ordinary force stresses.}
-    \label{fig:fe-hex8-six-dof}
+    \includegraphics[width=0.78\textwidth]{img/fe_rotation_enriched_hex8.png}
+    \caption{Concept of the rotation-enriched brick.  The visible mesh contains
+    only eight corner nodes.  Corner translations and rotations generate the
+    twelve hidden midside translations of a quadratic HEX20 interpolation.
+    Rotating one corner therefore changes the internal displacement field even
+    if the corner translation is fixed.}
+    \label{fig:rotation-enriched-hex8}
 \end{figure}
 
-\subsection{Independent Displacement and Rotation Fields}
+\subsection{Transformation from 48 to 60 Coordinates}
 
-Let the nodal coordinates be ordered as
+Collect Equation~\eqref{eq:rot-hex-midpoint} for the twelve edges.  Corner
+translations are copied directly and hidden midside translations are generated
+from the adjacent corners.  This defines
 
-\begin{equation}
-    \m{q}_e
-    =
-    \begin{bmatrix}
-        u_1&v_1&w_1&
-        \varphi_{x1}&\varphi_{y1}&\varphi_{z1}&
-        \cdots&
-        u_8&v_8&w_8&
-        \varphi_{x8}&\varphi_{y8}&\varphi_{z8}
-    \end{bmatrix}^{T}.
+\begin{equation}\label{eq:rot-hex-transform}
+    \boxed{
+    \m{q}_{20}=\m{T}_{r}\m{q}_{48}
+    },
+    \qquad
+    \m{T}_{r}\in\mathbb{R}^{60\times48}.
 \end{equation}
 
-Use the same trilinear HEX8 functions for both fields,
+For edge $(i,j)$ the $3\times48$ block corresponding to its midside node contains
 
-\begin{equation}\label{eq:micropolar-interpolation}
-    \boxed{
-    \m{u}^{h}=\sum_{i=1}^{8}N_i\m{u}_i,
+\begin{equation}
+    \m{T}_{m,i}^{(u)}=\frac12\m{I},
     \qquad
-    \M{\varphi}^{h}=\sum_{i=1}^{8}N_i\M{\varphi}_i
+    \m{T}_{m,j}^{(u)}=\frac12\m{I},
+\end{equation}
+
+and, using the skew matrix $[\m{l}]_{\times}\m{a}=\m{l}\times\m{a}$,
+
+\begin{equation}
+    \m{T}_{m,i}^{(\theta)}=-\frac18[\m{l}_{ij}]_{\times},
+    \qquad
+    \m{T}_{m,j}^{(\theta)}= \frac18[\m{l}_{ij}]_{\times}.
+\end{equation}
+
+The ordinary quadratic-brick displacement field
+
+\begin{equation}
+    \m{u}^{h}=\m{N}_{20}\m{q}_{20}
+\end{equation}
+
+can therefore be written directly in the visible coordinates,
+
+\begin{equation}
+    \boxed{
+    \m{u}^{h}=\m{N}_{20}\m{T}_{r}\m{q}_{48}
     }.
 \end{equation}
 
-The microrotation $\M{\varphi}$ is conceptually different from the
-macrorotation $\m{\omega}=\tfrac12\nabla\times\m{u}$. In a micropolar material
-the two may differ and that relative rotation stores energy.
+The rotations are thus \emph{parameters of an ordinary Cauchy displacement
+field}; no couple stresses or microrotation material constants are introduced.
 
-Introduce the skew matrix
+If the 20-node stiffness and mass are
 
 \begin{equation}
-    [\M{\varphi}]_{\times}
-    =
-    \begin{bmatrix}
-        0&-\varphi_z&\varphi_y\\
-        \varphi_z&0&-\varphi_x\\
-        -\varphi_y&\varphi_x&0
-    \end{bmatrix}.
+    \m{K}_{20}
+    =\int\m{B}_{20}^{T}\m{D}\m{B}_{20}\,d\Omega,
+    \qquad
+    \m{M}_{20}
+    =\int\rho\m{N}_{20}^{T}\m{N}_{20}\,d\Omega,
 \end{equation}
 
-A convenient linear micropolar strain and curvature pair is
+virtual work gives immediately
 
-\begin{equation}\label{eq:micropolar-kinematics}
+\begin{equation}\label{eq:rot-hex-km}
     \boxed{
-    \M{\gamma}=\nabla\m{u}-[\M{\varphi}]_{\times},
+    \m{K}_{48}=\m{T}_{r}^{T}\m{K}_{20}\m{T}_{r},
     \qquad
-    \M{\kappa}=\nabla\M{\varphi}
+    \m{M}_{48}=\m{T}_{r}^{T}\m{M}_{20}\m{T}_{r}
     }.
 \end{equation}
 
-Unlike the classical small-strain tensor, $\M{\gamma}$ is generally
-nonsymmetric. Its symmetric part measures the familiar infinitesimal strain,
-while its skew part measures the difference between the macroscopic spin and
-the independent microrotation. The curvature $\M{\kappa}$ measures spatial
-variation of the microrotation field.
+This is exactly the same congruence principle already encountered for
+constraints and reduced coordinates in Chapters~\ref{chap:multifreedom-constraints}
+and~\ref{chap:kinematic-constraints}.
 
-The rigid-body test is immediate. Let
+\subsection{Why a Corner Twist Changes the Interior Field}
 
-\begin{equation}
-    \m{u}=\m{a}+\M{\Omega}\times\m{x},
-    \qquad
-    \M{\varphi}=\M{\Omega},
-\end{equation}
-
-with constant translation $\m{a}$ and constant rotation $\M{\Omega}$. Then
+Set every coordinate to zero except, for example,
 
 \begin{equation}
-    \nabla\m{u}=[\M{\Omega}]_{\times},
-    \qquad
-    \M{\gamma}=\m{0},
-    \qquad
-    \M{\kappa}=\m{0}.
+    \theta_{z1}=\Theta.
 \end{equation}
 
-The element can therefore possess the expected six rigid-body modes without
-assigning zero energy to arbitrary nodal rotations.
+The corner displacement remains zero, but every hidden midside node on an edge
+meeting node~1 receives a transverse displacement according to
+Equation~\eqref{eq:rot-hex-midpoint}.  The quadratic HEX20 shape functions then
+carry that information across the complete element volume.  The rotational DOF
+therefore acts much like the slope DOF of a Hermite beam: it controls a
+higher-order displacement field between the geometric nodes.
 
-\subsection{A Simple Micropolar Constitutive Energy}
+This is the reason such an element may represent bending or twisting with fewer
+geometric elements than a low-order translational brick.  The relevant measure
+is not DOFs per element but total DOFs required to achieve the desired accuracy.
 
-The most general isotropic micropolar solid has more constitutive constants than
-a Cauchy solid because symmetric strain, relative rotation and curvature may
-have different stiffnesses. For the present derivation, use the deliberately
-compact energy density
+\subsection{An Important Stability Caveat}
 
-\begin{equation}\label{eq:micropolar-energy}
+Equation~\eqref{eq:rot-hex-midpoint} is an intuitive Hermite construction, but
+it also exposes a general difficulty of rotational solids: the mapping from
+corner rotations to midside translations need not make every rotational
+combination energetically visible.  Additional zero-energy rotational patterns
+can remain.  Established 48-DOF hexahedral formulations therefore supplement
+the transformed quadratic field with carefully designed stabilization or
+penalty terms and must be checked for patch-test consistency and rank.
+
+This is not a defect of the idea; it is an excellent example of why element
+design cannot stop after writing richer shape functions.  The complete
+formulation is
+
+\begin{equation}
     \boxed{
-    \Psi
-    =\frac{\lambda}{2}\left(\operatorname{tr}\M{\gamma}\right)^2
-    +\mu\,\operatorname{sym}\M{\gamma}:\operatorname{sym}\M{\gamma}
-    +\mu_c\,\operatorname{skw}\M{\gamma}:\operatorname{skw}\M{\gamma}
-    +\mu\ell^2\,\M{\kappa}:\M{\kappa}
+    \text{approximation space}
+    +\text{energy}
+    +\text{integration}
+    +\text{stabilization}
+    +\text{verification}
     }.
 \end{equation}
-
-Here $\lambda$ and $\mu$ are the usual Lam\'e constants, $\mu_c$ is a couple
-modulus penalising relative rotation, and $\ell$ is a material length scale.
-The corresponding force-stress and couple-stress tensors are
-
-\begin{equation}\label{eq:micropolar-constitutive}
-    \boxed{
-    \M{\sigma}
-    =\lambda\operatorname{tr}(\M{\gamma})\m{I}
-    +2\mu\operatorname{sym}\M{\gamma}
-    +2\mu_c\operatorname{skw}\M{\gamma},
-    \qquad
-    \M{m}=2\mu\ell^2\M{\kappa}
-    }.
-\end{equation}
-
-The force stress $\M{\sigma}$ need not be symmetric because its antisymmetric
-part is balanced by the couple-stress field. The parameter $\ell$ introduces a
-physical length into the continuum, so bending and rotation-gradient effects
-can become size dependent. This is a material assumption, not merely a numerical
-stabilisation parameter.
 
 \begin{bbox}
-\textbf{Engineering meaning -- Six solid DOFs change the material model.}
+\textbf{Do not confuse this rotation with a micropolar rotation.}
 
-A beam or shell node has rotations because the structural kinematics introduce
-cross-section orientation as a generalized coordinate. A classical three-
-dimensional solid does not. If three independent rotations are added to every
-solid node, some additional continuum law must say what those rotations mean
-and what work-conjugate moments act on them. In the formulation above that law is
-micropolar elasticity and the new boundary quantity is a couple traction.
+Here $\M{\theta}$ is a slope-like coordinate used to parameterize an ordinary
+Cauchy displacement interpolation.  A micropolar solid instead introduces an
+independent material rotation field and couple stresses.  Both may expose six
+numbers per node, but their continuum physics is different.
 \end{bbox}
 
-\subsection{The $48\times48$ Element Matrix}
+\subsection{Executable Transformation Builder}
 
-For implementation, vectorize a second-order tensor row by row,
-
-\begin{equation}
-    \operatorname{vec}(\m{A})
-    =
-    \begin{bmatrix}
-        A_{11}&A_{12}&A_{13}&A_{21}&A_{22}&A_{23}&A_{31}&A_{32}&A_{33}
-    \end{bmatrix}^{T}.
-\end{equation}
-
-At an integration point the kinematic vectors can then be written
-
-\begin{equation}
-    \m{g}=\operatorname{vec}(\M{\gamma})=\m{B}_{\gamma}\m{q}_e,
-    \qquad
-    \m{k}=\operatorname{vec}(\M{\kappa})=\m{B}_{\kappa}\m{q}_e,
-\end{equation}
-
-where both $\m{B}_{\gamma}$ and $\m{B}_{\kappa}$ have size $9\times48$.
-For a single node with
-
-\begin{equation}
-    \nabla N_i=
-    \begin{bmatrix}N_{i,x}&N_{i,y}&N_{i,z}\end{bmatrix}^{T},
-\end{equation}
-
-its $9\times6$ contribution to $\m{B}_{\gamma}$ is
-
-\begin{equation}\label{eq:micropolar-Bgamma-node}
-\m{B}_{\gamma i}
-=
-\begin{bmatrix}
-N_x&0&0&0&0&0\\
-N_y&0&0&0&0&N\\
-N_z&0&0&0&-N&0\\
-0&N_x&0&0&0&-N\\
-0&N_y&0&0&0&0\\
-0&N_z&0&N&0&0\\
-0&0&N_x&0&N&0\\
-0&0&N_y&-N&0&0\\
-0&0&N_z&0&0&0
-\end{bmatrix}.
-\end{equation}
-
-The first three columns belong to nodal translation; the last three belong to
-nodal microrotation. The curvature block contains only derivatives of the
-rotation field,
-
-\begin{equation}\label{eq:micropolar-Bkappa-node}
-\m{B}_{\kappa i}
-=
-\begin{bmatrix}
-0&0&0&N_x&0&0\\
-0&0&0&N_y&0&0\\
-0&0&0&N_z&0&0\\
-0&0&0&0&N_x&0\\
-0&0&0&0&N_y&0\\
-0&0&0&0&N_z&0\\
-0&0&0&0&0&N_x\\
-0&0&0&0&0&N_y\\
-0&0&0&0&0&N_z
-\end{bmatrix}.
-\end{equation}
-
-Let $\m{C}_{\gamma}$ and $\m{C}_{\kappa}$ be the $9\times9$ matrix
-representations of Equation~\eqref{eq:micropolar-constitutive}. The virtual work
-contains two conjugate pairs,
-
-\begin{equation}\label{eq:micropolar-virtual-work}
-    \delta W_{\mathrm{int},e}
-    =\int_{\Omega_e}
-    \left(
-        \delta\M{\gamma}:\M{\sigma}
-        +\delta\M{\kappa}:\M{m}
-    \right)d\Omega.
-\end{equation}
-
-The corresponding external work may contain the ordinary body force $\m{b}$ and
-traction $\bar{\m{t}}$, together with a body couple $\m{c}$ and surface couple
-traction $\bar{\m{c}}$,
-
-\begin{equation}
-    \delta W_{\mathrm{ext},e}
-    =\int_{\Omega_e}
-      \left(\delta\m{u}^{T}\m{b}
-      +\delta\M{\varphi}^{T}\m{c}\right)d\Omega
-    +\int_{\Gamma_e}
-      \left(\delta\m{u}^{T}\bar{\m{t}}
-      +\delta\M{\varphi}^{T}\bar{\m{c}}\right)d\Gamma.
-\end{equation}
-
-Substitution of the discrete fields into
-$\delta W_{\mathrm{int},e}=\delta W_{\mathrm{ext},e}$ gives
-
-\begin{equation}
-    \delta W_{\mathrm{int},e}
-    =\delta\m{q}_e^T
-    \int_{\Omega_e}
-    \left(
-        \m{B}_{\gamma}^{T}\m{C}_{\gamma}\m{B}_{\gamma}
-        +\m{B}_{\kappa}^{T}\m{C}_{\kappa}\m{B}_{\kappa}
-    \right)d\Omega\,
-    \m{q}_e.
-\end{equation}
-
-The same result follows from the deformation-energy route. For the linear
-material of Equation~\eqref{eq:micropolar-energy},
-
-\begin{equation}
-    U_e=\int_{\Omega_e}\Psi\,d\Omega
-       =\frac12\m{q}_e^T\m{K}_e\m{q}_e,
-    \qquad
-    \m{f}_{\mathrm{int},e}
-       =\frac{\partial U_e}{\partial\m{q}_e}
-       =\m{K}_e\m{q}_e.
-\end{equation}
-
-Both routes therefore give
-
-\begin{equation}\label{eq:micropolar-hex8-stiffness}
-    \boxed{
-    \m{K}_e
-    =\int_{\Omega_e}
-    \left(
-        \m{B}_{\gamma}^{T}\m{C}_{\gamma}\m{B}_{\gamma}
-        +\m{B}_{\kappa}^{T}\m{C}_{\kappa}\m{B}_{\kappa}
-    \right)d\Omega
-    }.
-\end{equation}
-
-The matrix is $48\times48$. No special assembly rule is needed; the global DOF
-map simply contains six entries per node instead of three.
-
-For dynamics, an independent rotational field also needs a micro-inertia. A
-simple kinetic energy is
-
-\begin{equation}
-    T_e
-    =\frac12\int_{\Omega_e}
-    \rho\,\dot{\m{u}}^T\dot{\m{u}}
-    +\rho j\,\dot{\M{\varphi}}^T\dot{\M{\varphi}}\,d\Omega,
-\end{equation}
-
-where $j$ has units of length squared. The corresponding consistent mass matrix
-therefore contains translational and rotational inertia blocks.
-
-\subsection{Executable 48-DOF HEX8 Kernel}
-
-The following implementation builds the two kinematic matrices directly from
-$N_i$ and $\nabla N_i$. The $9\times9$ constitutive operators are generated by
-applying Equation~\eqref{eq:micropolar-constitutive} to the nine unit tensor
-components, which keeps the code consistent with the tensor equations rather
-than hiding a hand-written matrix.
+The following code constructs the 60-by-48 transformation and demonstrates the
+response to a single corner twist.  It deliberately stops before adding a
+production stabilization law; the resulting rank check belongs to the element
+verification stage.
 
 \begin{python}
-def cross_matrix(v):
+HEX8_EDGES = (
+    (0, 1), (1, 2), (2, 3), (3, 0),
+    (4, 5), (5, 6), (6, 7), (7, 4),
+    (0, 4), (1, 5), (2, 6), (3, 7),
+)
+
+
+def skew_matrix(v):
     x, y, z = v
     return np.array([
         [0.0, -z,   y],
@@ -1688,179 +1673,457 @@ def cross_matrix(v):
     ], dtype=float)
 
 
-def build_micropolar_B(N, dN_dx):
-    Bgamma = np.zeros((9, 48), dtype=float)
-    Bkappa = np.zeros((9, 48), dtype=float)
+def rotation_enriched_hex8_transform(corner_xyz):
+    T = np.zeros((60, 48), dtype=float)
 
-    for n in range(8):
-        Nx, Ny, Nz = dN_dx[n]
-        Ni = N[n]
-        c = 6*n
+    # HEX20 corner translations are the visible corner translations.
+    for i in range(8):
+        T[3*i:3*i+3, 6*i:6*i+3] = np.eye(3)
 
-        # vec(grad u - [phi]_x), row-major ordering.
-        Bgamma[:, c:c+6] = np.array([
-            [Nx, 0,  0,  0,   0,   0],
-            [Ny, 0,  0,  0,   0,   Ni],
-            [Nz, 0,  0,  0,  -Ni,  0],
-            [0,  Nx, 0,  0,   0,  -Ni],
-            [0,  Ny, 0,  0,   0,   0],
-            [0,  Nz, 0,  Ni,  0,   0],
-            [0,  0,  Nx, 0,   Ni,  0],
-            [0,  0,  Ny, -Ni, 0,   0],
-            [0,  0,  Nz, 0,   0,   0],
-        ], dtype=float)
+    # Hidden HEX20 midside translations follow the Hermite midpoint relation.
+    for edge, (i, j) in enumerate(HEX8_EDGES):
+        row = 3 * (8 + edge)
+        l = corner_xyz[j] - corner_xyz[i]
 
-        # vec(grad phi), row-major ordering.
-        Bkappa[:, c:c+6] = np.array([
-            [0, 0, 0, Nx, 0,  0],
-            [0, 0, 0, Ny, 0,  0],
-            [0, 0, 0, Nz, 0,  0],
-            [0, 0, 0, 0,  Nx, 0],
-            [0, 0, 0, 0,  Ny, 0],
-            [0, 0, 0, 0,  Nz, 0],
-            [0, 0, 0, 0,  0,  Nx],
-            [0, 0, 0, 0,  0,  Ny],
-            [0, 0, 0, 0,  0,  Nz],
-        ], dtype=float)
+        T[row:row+3, 6*i:6*i+3] = 0.5 * np.eye(3)
+        T[row:row+3, 6*j:6*j+3] = 0.5 * np.eye(3)
 
-    return Bgamma, Bkappa
+        T[row:row+3, 6*i+3:6*i+6] = -skew_matrix(l) / 8.0
+        T[row:row+3, 6*j+3:6*j+6] =  skew_matrix(l) / 8.0
 
-
-def micropolar_constitutive(E, nu, couple_ratio, length_scale):
-    lam = E*nu / ((1.0 + nu)*(1.0 - 2.0*nu))
-    mu = E / (2.0*(1.0 + nu))
-    mu_c = couple_ratio * mu
-
-    Cgamma = np.zeros((9, 9), dtype=float)
-    Ckappa = np.zeros((9, 9), dtype=float)
-
-    for j in range(9):
-        G = np.zeros((3, 3), dtype=float)
-        G[j // 3, j % 3] = 1.0
-
-        sym = 0.5 * (G + G.T)
-        skw = 0.5 * (G - G.T)
-        trace = G[0, 0] + G[1, 1] + G[2, 2]
-
-        sigma = lam*trace*np.eye(3) + 2.0*mu*sym + 2.0*mu_c*skw
-        couple = 2.0*mu*(length_scale**2) * G
-
-        Cgamma[:, j] = sigma.reshape(9)
-        Ckappa[:, j] = couple.reshape(9)
-
-    return Cgamma, Ckappa
-
-
-def micropolar_hex8_stiffness(node_xyz, E, nu, couple_ratio, length_scale):
-    Cgamma, Ckappa = micropolar_constitutive(
-        E, nu, couple_ratio, length_scale
-    )
-    Ke = np.zeros((48, 48), dtype=float)
-    a = 1.0 / math.sqrt(3.0)
-
-    for xi in (-a, a):
-        for eta in (-a, a):
-            for zeta in (-a, a):
-                N = hex8_shape_values(xi, eta, zeta)
-                dN_dxi = hex8_shape_derivatives(xi, eta, zeta)
-
-                J = node_xyz.T @ dN_dxi
-                Jinv, detJ = inverse_3x3(J)
-                if detJ <= 0.0:
-                    raise ValueError("non-positive HEX8 Jacobian")
-
-                dN_dx = dN_dxi @ Jinv
-                Bg, Bk = build_micropolar_B(N, dN_dx)
-                Ke += (Bg.T @ Cgamma @ Bg + Bk.T @ Ckappa @ Bk) * detJ
-
-    return Ke
-
-
-def rigid_micropolar_state(node_xyz, translation, rotation):
-    q = np.zeros(48, dtype=float)
-    S = cross_matrix(rotation)
-    for n in range(8):
-        c = 6*n
-        q[c:c+3] = translation + S @ node_xyz[n]
-        q[c+3:c+6] = rotation
-    return q
+    return T
 
 
 cube = HEX8_SIGNS.copy()
-K48 = micropolar_hex8_stiffness(
-    cube,
-    E=210000.0,
-    nu=0.3,
-    couple_ratio=0.5,
-    length_scale=0.2,
-)
+Trot = rotation_enriched_hex8_transform(cube)
 
-q_rigid = rigid_micropolar_state(
-    cube,
-    translation=np.array([0.3, -0.1, 0.2]),
-    rotation=np.array([0.02, -0.01, 0.03]),
-)
+q48 = np.zeros(48, dtype=float)
+q48[5] = 0.10              # theta_z at corner 1
+q20 = Trot @ q48
 
-r_rigid = K48 @ q_rigid
-energy_rigid = 0.5 * q_rigid @ r_rigid
-print("K shape =", K48.shape)
-print("rigid-body energy =", energy_rigid)
-
-q_micro = np.zeros(48, dtype=float)
-for n in range(8):
-    q_micro[6*n + 5] = 0.01
-energy_micro = 0.5 * q_micro @ K48 @ q_micro
-print("uniform independent microrotation energy =", energy_micro)
+print("hidden midside translations on the 12 edges:")
+print(q20[24:].reshape((12, 3)))
 \end{python}
 
-For the regular cube, the rigid-body energy is zero to round-off because the
-translation and rotation fields satisfy $\M{\gamma}=\M{\kappa}=\m{0}$. A
-uniform microrotation with zero translational rigid-body rotation, however,
-stores positive energy through the $\mu_c$ term. This is precisely what prevents
-the added nodal rotations from becoming free zero-energy coordinates.
+The nonzero hidden midside translations are the discrete meaning of ``twisting
+one corner.''  A complete production element would next use a quadratic HEX20
+kernel, apply Equation~\eqref{eq:rot-hex-km}, add the required stabilization,
+and verify that exactly six rigid-body modes remain.
 
-\subsection{If the Goal Is Only a Rotational Interface DOF}
+\subsection{Advanced Aside: When Rotations Are Physical Fields}
 
-The micropolar brick above is appropriate only when independent material
-microrotation and couple stress are part of the intended physics. Often the
-engineering requirement is much more modest: a classical solid surface must
-connect to a beam, shell or joint that expects rotational coordinates.
-
-In that case the continuum spin
+There are also continua in which rotation is genuinely independent of the
+translation field.  A micropolar or Cosserat solid introduces a microrotation
+$\M{\varphi}$ together with strain and curvature measures such as
 
 \begin{equation}
-    \m{\omega}(\m{u})
-    =\frac12\nabla\times\m{u}
+    \M{\gamma}=\nabla\m{u}-[\M{\varphi}]_{\times},
+    \qquad
+    \M{\kappa}=\nabla\M{\varphi},
 \end{equation}
 
-may be projected to an auxiliary rotational field $\M{\theta}^{h}$. One can then
-construct constraints of the schematic form
+and couple stresses work-conjugate to $\M{\kappa}$.  Such a model also leads to
+six nodal coordinates per node, but it describes a different material theory.
+The rotation-enriched Cauchy brick above is the appropriate comparison when the
+engineering aim is simply richer bending and twisting interpolation with a
+coarse solid mesh.
 
-\begin{equation}\label{eq:auxiliary-solid-rotation}
+
+\section[Cable and String Formulations]{Design Example V: One Cable, Several Element Formulations}\label{sec:cable-element-family}
+
+A cable is an unusually clear demonstration that element topology does not
+define element physics.  The same two visible end nodes can represent a
+straight tie, a geometrically nonlinear cable, an exact catenary segment or a
+prestressed string, depending on the internal approximation and tangent
+formulation.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.88\textwidth]{img/fe_cable_formulations.png}
+    \caption{The same end-node topology can support very different internal
+    approximations: a straight tension-only tie, a piecewise nonlinear cable,
+    an analytical catenary and a prestressed string/spectral representation.}
+    \label{fig:fe-cable-formulations}
+\end{figure}
+
+\subsection{Level 1: Tension-Only Tie}
+
+The simplest cable model is a two-node truss with no bending or shear
+stiffness.  If $L_0$ is the reference length and $L$ the current chord length,
+
+\begin{equation}
+    \varepsilon=\frac{L-L_0}{L_0}.
+\end{equation}
+
+A tension-only constitutive law may be written
+
+\begin{equation}
+    N=\begin{cases}
+        EA\varepsilon, & \varepsilon>0,\\
+        0, & \varepsilon\le0.
+    \end{cases}
+\end{equation}
+
+With geometric nonlinearity, a chain of these elements can sag and reorient.
+However, one two-node straight tie cannot form a curved catenary inside the
+element because it possesses no internal geometric coordinates.  Curvature is
+created only by adding nodes.
+
+This is pure $h$-refinement: improve the cable geometry by shortening the
+piecewise straight segments.
+
+\subsection{Level 2: Exact Catenary as the Internal Static Field}
+
+A richer element can use the analytical equilibrium shape as its internal
+approximation instead of a polynomial.  For a uniform, perfectly flexible,
+inextensible cable hanging between equal-height supports with horizontal span
+$L_x$, let $w$ be the weight per unit cable length and let
+
+\begin{equation}
+    a=\frac{H}{w},
+\end{equation}
+
+where $H$ is the constant horizontal tension component.  With the origin at
+midspan, the catenary is
+
+\begin{equation}\label{eq:catenary-shape}
     \boxed{
-    \M{\theta}^{h}-\m{\omega}(\m{u}^{h})=\m{0}
+    y(x)=a\cosh\left(\frac{x}{a}\right)
+    -a\cosh\left(\frac{L_x}{2a}\right)
     }.
 \end{equation}
 
-These coordinates can be enforced by elimination, Lagrange multipliers or an
-appropriately designed mixed/penalty formulation. They do not create new
-physical deformation modes; they merely expose a rotational representation of
-the classical displacement field. The surface MPC and coupling machinery of
-Chapters~\ref{chap:multifreedom-constraints} and~\ref{chap:kinematic-constraints} is often a cleaner way to
-achieve the same engineering interface.
+Its total cable length is
+
+\begin{equation}\label{eq:catenary-length}
+    \boxed{
+    S=2a\sinh\left(\frac{L_x}{2a}\right)
+    }.
+\end{equation}
+
+Thus the element can determine $a$ from the prescribed span and cable length,
+then recover
+
+\begin{equation}
+    H=wa,
+    \qquad
+    V=\frac{wS}{2}
+\end{equation}
+
+at each support.  The complete static cable geometry exists inside the element
+although only the two end nodes are visible globally.
+
+A practical elastic catenary element generalizes this idea: endpoint force
+parameters are chosen as local unknowns, the distributed-load equilibrium and
+axial constitutive law are integrated along the cable, and a local nonlinear
+iteration enforces the prescribed endpoint separation.  Differentiating the
+endpoint residual gives the consistent element tangent.
+
+\begin{python}
+def symmetric_catenary(span, cable_length, weight_per_length, samples=11):
+    if cable_length <= span:
+        raise ValueError("a hanging catenary requires cable_length > span")
+
+    # Solve S = 2 a sinh(span/(2a)) by bisection in a.
+    a_lo = span * 1.0e-6
+    a_hi = span
+
+    def length_from_a(a):
+        return 2.0 * a * math.sinh(span / (2.0*a))
+
+    while length_from_a(a_hi) > cable_length:
+        a_hi *= 2.0
+
+    for _ in range(80):
+        a_mid = 0.5 * (a_lo + a_hi)
+        if length_from_a(a_mid) > cable_length:
+            a_lo = a_mid
+        else:
+            a_hi = a_mid
+
+    a = 0.5 * (a_lo + a_hi)
+    H = weight_per_length * a
+    V = 0.5 * weight_per_length * cable_length
+
+    x = np.linspace(-0.5*span, 0.5*span, samples)
+    y = np.zeros(samples, dtype=float)
+    y_support = a * math.cosh(span / (2.0*a))
+    for i, xi in enumerate(x):
+        y[i] = a * math.cosh(xi/a) - y_support
+
+    return x, y, H, V
+
+
+x, y, H, V = symmetric_catenary(
+    span=10.0,
+    cable_length=10.5,
+    weight_per_length=1.0,
+)
+print("midspan sag =", -y[len(y)//2])
+print("horizontal tension H =", H)
+print("vertical reaction V =", V)
+\end{python}
+
+\subsection{One Exact Element or Many?}
+
+An exact local field does not imply that the whole cable must be one element.
+A cable represented by 10 catenary elements is completely legitimate.  At an
+internal node, global equilibrium enforces
+
+\begin{equation}
+    \m{f}^{(e)}_{R}+\m{f}^{(e+1)}_{L}+\m{f}_{\mathrm{ext}}=\m{0}.
+\end{equation}
+
+For a perfectly flexible cable there is no bending-moment continuity
+requirement.  If there is no concentrated load at the shared node, force
+equilibrium causes the adjacent element tangents to be compatible with the
+continuous cable equilibrium.
+
+For the special uniform catenary problem, one exact element may already
+reproduce the assumed solution.  Subdivision becomes useful when
+
+\begin{itemize}
+    \item $EA$, mass or temperature varies along the cable,
+    \item distributed loading changes between regions,
+    \item intermediate attachments or concentrated loads are present,
+    \item contact or pulleys change the load path,
+    \item a local nonlinear solve is easier over shorter segments.
+\end{itemize}
+
+This is an important distinction between \emph{mesh refinement} and
+\emph{approximation enrichment}.  A richer local element reduces the amount of
+$h$-refinement required; it does not prohibit it.
+
+\subsection{Level 3: Prestressed String and Geometric Stiffness}
+
+Now consider small transverse vibration $w(x,t)$ about a straight equilibrium
+state carrying constant tension $T$.  The governing equation is
+
+\begin{equation}\label{eq:string-pde}
+    \mu\ddot{w}-T w''=0,
+\end{equation}
+
+where $\mu=\rho A$ is mass per unit length.  The weak form contains
+
+\begin{equation}
+    \delta W_g
+    =\int_0^L T\,\delta w' w'\,dx,
+\end{equation}
+
+so a two-node linear string segment has the prestress/geometric stiffness
+
+\begin{equation}\label{eq:string-linear-km}
+    \boxed{
+    \m{K}_{g,e}=\frac{T}{L_e}
+    \begin{bmatrix}1&-1\\-1&1\end{bmatrix},
+    \qquad
+    \m{M}_{e}=\frac{\mu L_e}{6}
+    \begin{bmatrix}2&1\\1&2\end{bmatrix}
+    }.
+\end{equation}
+
+The restoring stiffness is therefore created by the equilibrium tension, not by
+beam bending stiffness.  For a fixed-fixed ideal string the exact frequencies
+are
+
+\begin{equation}\label{eq:string-exact-freq}
+    \boxed{
+    \omega_n=\frac{n\pi}{L}\sqrt{\frac{T}{\mu}},
+    \qquad
+    f_n=\frac{n}{2L}\sqrt{\frac{T}{\mu}}
+    }.
+\end{equation}
+
+This is the simplest example of why a prestressed modal analysis must linearize
+about the loaded equilibrium state: without $T$, the transverse string has no
+restoring stiffness at all.
+
+\subsection{Mesh Refinement versus a Physics-Informed Basis}
+
+With ordinary linear elements, Equation~\eqref{eq:string-linear-km} is assembled
+along the cable and the eigenfrequencies converge under mesh refinement.  The
+following code avoids an eigensolver and instead evaluates the Rayleigh quotient
+using the exact first-mode nodal pattern $q_i=\sin(\pi x_i/L)$:
+
+\begin{python}
+def assemble_linear_string(nelem, length, tension, mass_per_length):
+    nnode = nelem + 1
+    K = np.zeros((nnode, nnode), dtype=float)
+    M = np.zeros((nnode, nnode), dtype=float)
+    Le = length / nelem
+
+    Ke = tension / Le * np.array([[1.0, -1.0], [-1.0, 1.0]])
+    Me = mass_per_length * Le / 6.0 * np.array([[2.0, 1.0], [1.0, 2.0]])
+
+    for e in range(nelem):
+        ids = (e, e + 1)
+        for a, I in enumerate(ids):
+            for b, J in enumerate(ids):
+                K[I, J] += Ke[a, b]
+                M[I, J] += Me[a, b]
+    return K, M
+
+
+def first_string_rayleigh(nelem, length, tension, mass_per_length):
+    K, M = assemble_linear_string(nelem, length, tension, mass_per_length)
+    x = np.linspace(0.0, length, nelem + 1)
+    q = np.sin(math.pi * x / length)
+    omega2 = (q @ K @ q) / (q @ M @ q)
+    return math.sqrt(omega2)
+
+
+L = 10.0
+T = 1000.0
+mu = 2.0
+omega_exact = math.pi / L * math.sqrt(T / mu)
+
+for nelem in (2, 4, 10, 20):
+    omega_h = first_string_rayleigh(nelem, L, T, mu)
+    error = 100.0 * (omega_h / omega_exact - 1.0)
+    print(nelem, omega_h, error)
+\end{python}
+
+For these values the first-mode Rayleigh estimate decreases from roughly 10.3\%
+error with two elements to about 0.10\% with twenty elements.  This is ordinary
+$h$-convergence.
+
+But the continuum solution itself suggests another approximation space.  Choose
+one global coordinate $a_1(t)$ and
+
+\begin{equation}
+    w^h(x,t)=a_1(t)\sin\left(\frac{\pi x}{L}\right).
+\end{equation}
+
+Then
+
+\begin{equation}
+    K_1
+    =T\int_0^L\left(\frac{dN_1}{dx}\right)^2dx
+    =\frac{T\pi^2}{2L},
+\end{equation}
+
+and
+
+\begin{equation}
+    M_1
+    =\mu\int_0^L N_1^2\,dx
+    =\frac{\mu L}{2}.
+\end{equation}
+
+Therefore
+
+\begin{equation}
+    \omega_1^2=\frac{K_1}{M_1}
+    =\frac{\pi^2T}{\mu L^2},
+\end{equation}
+
+which gives Equation~\eqref{eq:string-exact-freq} \emph{exactly with one
+coordinate}.  Adding
+
+\begin{equation}
+    N_n(x)=\sin\left(\frac{n\pi x}{L}\right)
+\end{equation}
+
+produces the corresponding exact ideal-string modes because the sine functions
+are orthogonal in both the mass and geometric-stiffness integrals.
 
 \begin{bbox}
-\textbf{Do not confuse nodal rotations with continuum rotations.}
+\textbf{Global versus local trigonometric enrichment.}
 
-A six-DOF node does not by itself define the physics. For beams and shells,
-rotations arise from the dimensional reduction and section kinematics. For a
-micropolar solid they are independent material variables. For a classical solid
-they can only be derived or introduced as auxiliary constrained coordinates.
-The same six numbers at a node can therefore represent three fundamentally
-different formulations.
+A global sine basis knows the complete span and can reproduce selected ideal
+string modes exactly, but its coordinates have global support.  A local bubble
+such as $\sin(\pi x_e/L_e)$ can instead enrich every finite element while
+preserving sparse assembly because it vanishes at the element ends.  The latter
+is no longer globally exact, but it combines physics-informed enrichment with
+ordinary FE locality.
 \end{bbox}
 
-\section[Cyclic-Symmetry Sector Formulation]{Design Example V: Cyclic-Symmetry Sector Formulation}
+\subsection{Level 4: Exact Dynamic Stiffness}
+
+For harmonic motion $w(x,t)=W(x)e^{\mathrm{i}\omega t}$,
+Equation~\eqref{eq:string-pde} becomes
+
+\begin{equation}
+    T W''+\mu\omega^2 W=0,
+    \qquad
+    k=\omega\sqrt{\frac{\mu}{T}}.
+\end{equation}
+
+The exact local field
+
+\begin{equation}
+    W(x)=A\cos(kx)+B\sin(kx)
+\end{equation}
+
+can be eliminated in favour of the endpoint values, giving the
+frequency dependent dynamic stiffness
+
+\begin{equation}\label{eq:string-dynamic-stiffness}
+    \boxed{
+    \m{K}_d(\omega)
+    =\frac{Tk}{\sin(kL_e)}
+    \begin{bmatrix}
+        \cos(kL_e)&-1\\
+        -1&\cos(kL_e)
+    \end{bmatrix}
+    }.
+\end{equation}
+
+A single local element therefore contains the exact wave solution rather than a
+polynomial approximation.  Multiple such elements may still be assembled for
+piecewise-varying $T$, $\mu$ or geometry.  The price is numerical: the global
+free-vibration problem is no longer the ordinary polynomial eigenproblem
+$\m{K}-\omega^2\m{M}$, but a nonlinear frequency equation
+
+\begin{equation}
+    \m{K}_d(\omega)\m{q}=\m{0}.
+\end{equation}
+
+Thus a richer approximation can reduce spatial DOFs while making the algebraic
+solution procedure more sophisticated.
+
+\subsection{Prestressed Modes of a Sagged Cable}
+
+For a realistic sagged cable, first solve the nonlinear equilibrium
+
+\begin{equation}
+    \m{r}(\m{q}_0)=\m{0}
+\end{equation}
+
+for the reference geometry and tension distribution.  Then linearize the cable
+about that state,
+
+\begin{equation}
+    \m{K}_{T}
+    =\m{K}_{\mathrm{material}}
+    +\m{K}_{\mathrm{geometric}}(\m{q}_0,N_0),
+\end{equation}
+
+and solve
+
+\begin{equation}
+    \boxed{
+    (\m{K}_{T}-\omega^2\m{M})\M{\phi}=\m{0}
+    }.
+\end{equation}
+
+The ideal string frequency is therefore a limiting case of the same prestressed
+linearization used for general nonlinear structures.  With several cable
+elements, each segment contributes the tangent associated with its own current
+orientation and axial force.
+
+\begin{bbox}
+\textbf{Element development lesson from the cable family.}
+
+The same two visible end nodes can support very different numerical models.
+Choosing more elements ($h$-refinement), richer local polynomials or bubbles
+($p$/enrichment), an exact static catenary, or an exact wave basis are different
+ways of moving approximation error between geometry, interpolation and the
+algebraic solution procedure.
+\end{bbox}
+
+
+\section[Cyclic-Symmetry Sector Formulation]{Design Example VI: Cyclic-Symmetry Sector Formulation}
 
 A second route to a ``special element'' does not modify the continuum shape
 functions at all. Instead, it changes the admissible discrete space.
@@ -2070,7 +2333,7 @@ corner nodes may differ in
 
 \begin{itemize}
     \item interpolation, exposed nodal DOFs and internal modes,
-    \item underlying continuum theory, including whether rotations are derived or independent,
+    \item underlying continuum theory and the meaning assigned to any rotational coordinates,
     \item assumed strain fields,
     \item integration order,
     \item hourglass control,
@@ -2126,12 +2389,13 @@ The Timoshenko example demonstrates that even a mathematically consistent
 interpolation may lock if its discrete space cannot reproduce an important
 limiting kinematic state. The enriched HEX8 example shows how internal
 higher-order coordinates can improve the approximation while being condensed
-before global assembly. The six-DOF brick shows a more fundamental design
-choice: adding independent nodal rotations requires a continuum theory with
-work-conjugate couple stresses, or else those rotations must remain auxiliary
-constraints derived from the classical displacement field. The cyclic example
-shows yet another design mechanism: leave the ordinary continuum element
-unchanged and transform the admissible DOF space itself.
+before global assembly. The rotation-enriched brick shows how slope-like corner
+coordinates can parameterize a richer quadratic Cauchy displacement field
+without becoming independent material rotations. The cable family shows that
+one topology can range from a simple tension-only tie to an exact catenary or a
+spectral string depending on the chosen approximation space and tangent state.
+The cyclic example shows yet another design mechanism: leave the ordinary
+continuum element unchanged and transform the admissible DOF space itself.
 
 These examples lead to a broader engineering conclusion: deriving an element
 means designing a discrete approximation space, its energetically conjugate
