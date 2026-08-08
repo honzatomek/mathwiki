@@ -643,6 +643,81 @@ so that
     = \m{B}(\m{r}_i)\m{\theta}_r.
 \end{equation}
 
+
+\subsubsection{Component Expansion of the Rigid-Arm Term}
+
+The compact matrix form is useful for implementation, but the individual
+coefficients are worth retaining because they make sign checks much easier. Let
+
+\begin{equation}
+    \m{r}_i=
+    \begin{bmatrix}
+        \overline{x}\\\overline{y}\\\overline{z}
+    \end{bmatrix}
+    =
+    \begin{bmatrix}
+        x_i-x_r\\y_i-y_r\\z_i-z_r
+    \end{bmatrix},
+    \qquad
+    \m{\theta}_r=
+    \begin{bmatrix}
+        \varphi_r\\\psi_r\\\theta_r
+    \end{bmatrix}.
+\end{equation}
+
+Then
+
+\begin{eqarray}
+    \m{\theta}_r\times\m{r}_i
+    &=
+    \begin{bmatrix}
+        \varphi_r\\\psi_r\\\theta_r
+    \end{bmatrix}
+    \times
+    \begin{bmatrix}
+        \overline{x}\\\overline{y}\\\overline{z}
+    \end{bmatrix} \\
+    &=
+    \begin{bmatrix}
+        \psi_r\overline{z}-\theta_r\overline{y}\\
+        \theta_r\overline{x}-\varphi_r\overline{z}\\
+        \varphi_r\overline{y}-\psi_r\overline{x}
+    \end{bmatrix} \\
+    &=
+    \begin{bmatrix}
+        0&\overline{z}&-\overline{y}\\
+        -\overline{z}&0&\overline{x}\\
+        \overline{y}&-\overline{x}&0
+    \end{bmatrix}
+    \begin{bmatrix}
+        \varphi_r\\\psi_r\\\theta_r
+    \end{bmatrix}.
+\end{eqarray}
+
+Consequently, writing all six dependent coordinates explicitly gives
+
+\begin{equation}\label{rbe2-component-six-dof-relation}
+\begin{bmatrix}
+    u_i\\v_i\\w_i\\\varphi_i\\\psi_i\\\theta_i
+\end{bmatrix}
+=
+\begin{bmatrix}
+    1&0&0&0&\overline{z}&-\overline{y}\\
+    0&1&0&-\overline{z}&0&\overline{x}\\
+    0&0&1&\overline{y}&-\overline{x}&0\\
+    0&0&0&1&0&0\\
+    0&0&0&0&1&0\\
+    0&0&0&0&0&1
+\end{bmatrix}
+\begin{bmatrix}
+    u_r\\v_r\\w_r\\\varphi_r\\\psi_r\\\theta_r
+\end{bmatrix}.
+\end{equation}
+
+This is the coefficient form of Eq.~\eqref{rbe2-rigid-motion}: the first three
+rows contain the translational rigid-arm terms and the last three rows copy the
+reference rotations when those rotational DOFs participate in the coupling.
+
 If rotational DOFs exist at the dependent node and are included in the coupling,
 they follow the reference rotation,
 
@@ -1141,6 +1216,292 @@ Eq.~\eqref{rbe2-global-transformation}. Prescribed single-point constraints,
 rotated nodal bases and reaction-force recovery are then handled by the general
 procedures already developed in Chapters~1--3; they are not specific to RBE2.
 
+
+\subsubsection{Editing the Master Stiffness Matrix: Expanded Block-by-Block Reduction}
+
+The compact congruent transformation is often sufficient for implementation,
+but expanding the matrix products shows exactly where every retained stiffness
+and load contribution goes. Use the traditional partition
+
+\begin{equation}
+    \m{u}=\begin{bmatrix}\m{u}_u\\\m{u}_m\\\m{u}_s\end{bmatrix},
+    \qquad
+    \m{K}=\begin{bmatrix}
+        \m{K}_{uu}&\m{K}_{um}&\m{K}_{us}\\
+        \m{K}_{mu}&\m{K}_{mm}&\m{K}_{ms}\\
+        \m{K}_{su}&\m{K}_{sm}&\m{K}_{ss}
+    \end{bmatrix},
+    \qquad
+    \m{f}=\begin{bmatrix}\m{f}_u\\\m{f}_m\\\m{f}_s\end{bmatrix},
+\end{equation}
+
+where $u$, $m$ and $s$ denote unconstrained, master/reference and
+slave/dependent coordinates in this hand derivation. With
+
+\begin{equation}
+    \m{u}_s=\m{D}\m{u}_m,
+\end{equation}
+
+the complete transformation is
+
+\begin{equation}\label{rbe2-expanded-transformation-T}
+    \begin{bmatrix}
+        \m{u}_u\\\m{u}_m\\\m{u}_s
+    \end{bmatrix}
+    =
+    \underbrace{\begin{bmatrix}
+        \m{I}&\m{0}\\
+        \m{0}&\m{I}\\
+        \m{0}&\m{D}
+    \end{bmatrix}}_{\m{T}}
+    \begin{bmatrix}
+        \m{u}_u\\\m{u}_m
+    \end{bmatrix}.
+\end{equation}
+
+The reduced equations follow from
+
+\begin{equation}
+    \m{T}^T\m{K}\m{T}\m{\hat{u}}
+    =\m{T}^T\m{f}.
+\end{equation}
+
+Writing the multiplication before collecting terms,
+
+\begin{equation}
+\scalebox{0.92}{$
+\begin{bmatrix}
+    \m{I}&\m{0}&\m{0}\\
+    \m{0}&\m{I}&\m{D}^T
+\end{bmatrix}
+\begin{bmatrix}
+    \m{K}_{uu}&\m{K}_{um}&\m{K}_{us}\\
+    \m{K}_{mu}&\m{K}_{mm}&\m{K}_{ms}\\
+    \m{K}_{su}&\m{K}_{sm}&\m{K}_{ss}
+\end{bmatrix}
+\begin{bmatrix}
+    \m{I}&\m{0}\\
+    \m{0}&\m{I}\\
+    \m{0}&\m{D}
+\end{bmatrix}
+\begin{bmatrix}\m{u}_u\\\m{u}_m\end{bmatrix}
+=
+\begin{bmatrix}
+    \m{I}&\m{0}&\m{0}\\
+    \m{0}&\m{I}&\m{D}^T
+\end{bmatrix}
+\begin{bmatrix}\m{f}_u\\\m{f}_m\\\m{f}_s\end{bmatrix}.
+$}
+\end{equation}
+
+The left multiplication gives
+
+\begin{equation}
+\scalebox{0.93}{$
+\begin{bmatrix}
+    \m{K}_{uu}&\m{K}_{um}&\m{K}_{us}\\
+    \m{K}_{mu}+\m{D}^T\m{K}_{su}&
+    \m{K}_{mm}+\m{D}^T\m{K}_{sm}&
+    \m{K}_{ms}+\m{D}^T\m{K}_{ss}
+\end{bmatrix}
+\begin{bmatrix}
+    \m{I}&\m{0}\\
+    \m{0}&\m{I}\\
+    \m{0}&\m{D}
+\end{bmatrix}
+\begin{bmatrix}\m{u}_u\\\m{u}_m\end{bmatrix}
+=
+\begin{bmatrix}\m{f}_u\\\m{f}_m+\m{D}^T\m{f}_s\end{bmatrix}.
+$}
+\end{equation}
+
+Completing the right multiplication gives
+
+\begin{equation}\label{rbe2-expanded-reduced-system}
+\scalebox{0.93}{$
+\begin{bmatrix}
+    \m{K}_{uu}&\m{K}_{um}+\m{K}_{us}\m{D}\\
+    \m{K}_{mu}+\m{D}^T\m{K}_{su}&
+    \m{K}_{mm}+\m{D}^T\m{K}_{sm}
+      +\m{K}_{ms}\m{D}+\m{D}^T\m{K}_{ss}\m{D}
+\end{bmatrix}
+\begin{bmatrix}\m{u}_u\\\m{u}_m\end{bmatrix}
+=
+\begin{bmatrix}\m{f}_u\\\m{f}_m+\m{D}^T\m{f}_s\end{bmatrix}.
+$}
+\end{equation}
+
+For a symmetric stiffness matrix,
+
+\begin{equation}
+    \m{K}_{mu}=\m{K}_{um}^T,
+    \qquad
+    \m{K}_{su}=\m{K}_{us}^T,
+    \qquad
+    \m{K}_{sm}=\m{K}_{ms}^T,
+\end{equation}
+
+so the reduced off-diagonal block can be written
+
+\begin{equation}
+    \m{\hat K}_{um}=\m{K}_{um}+\m{K}_{us}\m{D},
+\end{equation}
+
+and
+
+\begin{equation}
+\begin{aligned}
+    \m{\hat K}_{mm}
+    &=\m{K}_{mm}+\m{D}^T\m{K}_{ms}^T
+      +\m{K}_{ms}\m{D}+\m{D}^T\m{K}_{ss}\m{D}\\
+    &=\m{K}_{mm}+\m{K}_{ms}\m{D}
+      +(\m{K}_{ms}\m{D})^T+\m{D}^T\m{K}_{ss}\m{D}.
+\end{aligned}
+\end{equation}
+
+If no external load is applied directly to the dependent coordinates,
+$\m{f}_s=\m{0}$, Eq.~\eqref{rbe2-expanded-reduced-system} reduces to
+
+\begin{equation}
+    \begin{bmatrix}
+        \m{K}_{uu}&\m{\hat K}_{um}\\
+        \m{\hat K}_{um}^T&\m{\hat K}_{mm}
+    \end{bmatrix}
+    \begin{bmatrix}\m{u}_u\\\m{u}_m\end{bmatrix}
+    =
+    \begin{bmatrix}\m{f}_u\\\m{f}_m\end{bmatrix}.
+\end{equation}
+
+For the affine relation
+
+\begin{equation}
+    \m{u}_s=\m{D}\m{u}_m+\m{g},
+\end{equation}
+
+the same block structure remains and the prescribed offset contributes to the
+right-hand side. In compact form this is Eq.~\eqref{rbe2-affine-transformation};
+written with the above partitions it becomes
+
+\begin{equation}
+    \begin{bmatrix}
+        \m{K}_{uu}&\m{\hat K}_{um}\\
+        \m{\hat K}_{um}^T&\m{\hat K}_{mm}
+    \end{bmatrix}
+    \begin{bmatrix}\m{u}_u\\\m{u}_m\end{bmatrix}
+    =
+    \begin{bmatrix}
+        \m{f}_u-\m{K}_{us}\m{g}\\
+        \m{f}_m-\m{K}_{ms}\m{g}
+    \end{bmatrix}
+\end{equation}
+
+when no direct dependent load is present.
+
+\subsubsection{Complete RBE2 Solution Sequence}
+
+The preceding block reduction is only one stage of a complete structural solve.
+It is useful to keep the whole sequence together because an RBE2 may coexist
+with skewed nodal bases and prescribed single-point constraints.
+
+\paragraph{MPC application.}
+The RBE2 relation
+
+\begin{equation}
+    \m{u}_s=\m{D}\m{u}_m
+\end{equation}
+
+is expanded to the whole model by Eq.~\eqref{rbe2-expanded-transformation-T}.
+The resulting master equation is
+
+\begin{eqarray}
+    \m{T}^T\m{K}_g\m{T}\m{\hat u}_g&=\m{T}^T\m{f}_g,\\
+    \m{\hat K}_g\m{\hat u}_g&=\m{\hat f}_g,
+\end{eqarray}
+
+where the subscript $g$ only emphasizes that the transformation has been
+assembled into the global system.
+
+\paragraph{Rotated nodal basis.}
+If a node or an SPC is defined in a rotated, skewed or curvilinear coordinate
+system, its displacement components must be transformed consistently before the
+prescribed component is selected. In the compact Cartesian notation used in
+Chapter~\ref{chap:boundary-conditions},
+
+\begin{equation}
+    \m{u}_l=\m{C}_{lg}\m{u}_g.
+\end{equation}
+
+The same operation extends block-diagonally to translational and rotational
+components when six nodal DOFs are present.
+
+\paragraph{SPC application.}
+After MPC elimination, any remaining DOF may still be prescribed. The reduced
+system is therefore repartitioned into independent and constrained coordinates,
+
+\begin{equation}\label{rbe2-spc-partition}
+    \begin{bmatrix}
+        \m{K}_{ii}&\m{K}_{ic}\\
+        \m{K}_{ic}^T&\m{K}_{cc}
+    \end{bmatrix}
+    \begin{bmatrix}\m{u}_i\\\m{u}_c\end{bmatrix}
+    =
+    \begin{bmatrix}\m{f}_i\\\m{f}_c\end{bmatrix}.
+\end{equation}
+
+\paragraph{Solving linear equations.}
+The unknown quantities are $\m{u}_i$ and the reaction vector $\m{f}_c$.
+Expanding Eq.~\eqref{rbe2-spc-partition},
+
+\begin{eqarray}
+    \m{K}_{ii}\m{u}_i+\m{K}_{ic}\m{u}_c&=\m{f}_i,\\
+    \m{K}_{ic}^T\m{u}_i+\m{K}_{cc}\m{u}_c&=\m{f}_c.
+\end{eqarray}
+
+The displacement solution is therefore
+
+\begin{equation}
+    \boxed{
+    \m{u}_i=\m{K}_{ii}^{-1}
+    \left(\m{f}_i-\m{K}_{ic}\m{u}_c\right)}.
+\end{equation}
+
+In an implementation the system is solved directly rather than forming the
+inverse. Once $\m{u}_i$ is known, the constrained reactions follow from
+
+\begin{equation}
+    \boxed{
+    \m{f}_c=\m{K}_{ic}^T\m{u}_i+\m{K}_{cc}\m{u}_c}.
+\end{equation}
+
+\paragraph{Recovering the full displacement vector.}
+Collect the retained solution in
+
+\begin{equation}
+    \m{\hat u}=
+    \begin{bmatrix}\m{u}_u\\\m{u}_m\end{bmatrix},
+\end{equation}
+
+with its prescribed and independent entries placed back in their correct
+ordering. The complete displacement vector, including eliminated dependent
+coordinates, is then recovered by
+
+\begin{equation}
+    \m{u}=\m{T}\m{\hat u}
+    =
+    \begin{bmatrix}
+        \m{I}&\m{0}\\
+        \m{0}&\m{I}\\
+        \m{0}&\m{D}
+    \end{bmatrix}
+    \begin{bmatrix}\m{u}_u\\\m{u}_m\end{bmatrix}
+    =
+    \begin{bmatrix}\m{u}_u\\\m{u}_m\\\m{u}_s\end{bmatrix}.
+\end{equation}
+
+This closes the sequence from the RBE2 coefficient equations through global MPC
+reduction, skewed-basis handling, SPC solution, reaction recovery and restoration
+of the full displacement field.
+
 \subsection{Modelling Consequences and Typical Uses}
 
 RBE2 is appropriate when the neglected deformation of the coupled region is
@@ -1410,6 +1771,103 @@ Thus the same interpolation that recovers the generalized motion also defines
 the work-equivalent load distribution. No spring stiffness has been introduced
 and no rigid plate has been imposed. The attachment nodes are coupled only
 through the selected generalized reference motion.
+
+
+\begin{notebooknote}[Notebook note -- RBE3 load sharing is geometric, not stiffness based]
+One observation from the original RBE3 notes is especially useful in practice:
+for the ideal interpolation itself, the nodal load split in
+Eq.~\eqref{rbe3-force-transfer} is determined by $\m{H}$, hence by attachment
+geometry, selected DOFs and weights. The surrounding structural stiffness does
+not enter that transpose operation. Stiffness determines how the structure then
+deforms under the distributed load; it does not retroactively redistribute the
+RBE3 resultant according to which leg happens to be stiffer.
+\end{notebooknote}
+
+\subsubsection{Weighted-Centroid Hand Construction}
+
+The same RBE3 mechanics can be read directly as force and moment equilibrium
+about the weighted centroid. This form is useful for hand calculations and for
+understanding how the entries of $\m{H}^T$ act.
+
+The centroid is
+
+\begin{equation}
+    \m{x}_{COG}=\frac{\sum_i w_i\m{x}_i}{\sum_iw_i},
+    \qquad
+    \m{r}_i=\m{x}_i-\m{x}_{COG}.
+\end{equation}
+
+If a generalized load is applied at $\m{x}_{app}$, first translate it to the
+centroid by static equivalence,
+
+\begin{equation}
+    \m{F}_{COG}=\m{F}_{app},
+\end{equation}
+
+\begin{equation}
+    \m{M}_{COG}=\m{M}_{app}
+      +(\m{x}_{app}-\m{x}_{COG})\times\m{F}_{app}.
+\end{equation}
+
+The direct translational part is shared according to the selected weights,
+
+\begin{equation}\label{rbe3-hand-direct-force}
+    \m{F}_i=\m{F}_{COG}\frac{w_i}{\sum_jw_j}.
+\end{equation}
+
+The remaining nodal forces must have zero resultant and reproduce the centroidal
+moment. In the general three-dimensional form, write those forces as
+
+\begin{equation}\label{rbe3-hand-moment-forces}
+    \m{P}_i=-w_i\,\m{\lambda}\times\m{r}_i,
+\end{equation}
+
+where $\m{\lambda}$ is obtained from
+
+\begin{equation}
+    \m{J}_w\m{\lambda}=\m{M}_{COG},
+\end{equation}
+
+using the geometric inertia matrix of Eq.~\eqref{rbe3-geometric-inertia}. The
+total nodal load is therefore
+
+\begin{equation}
+    \m{f}_i=\m{F}_i+\m{P}_i.
+\end{equation}
+
+For a planar or symmetric case in which the requested moment is about a principal
+axis of $\m{J}_w$, Eq.~\eqref{rbe3-hand-moment-forces} reduces to the familiar
+scalar hand expression
+
+\begin{equation}
+    \m{P}_i
+    =-w_i\,
+      \frac{\m{M}_{COG}\times\m{r}_i}
+      {\sum_jw_j\,r_{\perp,j}^{2}},
+\end{equation}
+
+where $r_{\perp,j}$ is the distance of node $j$ from that moment axis. This makes
+visible the two ingredients of the distribution: the selected weights and the
+lever arms about the weighted centroid.
+
+The displacement interpretation is the kinematic dual of the same construction.
+First compute the weighted average translation
+
+\begin{equation}
+    \m{U}_{COG}=\frac{\sum_iw_i\m{U}_i}{\sum_iw_i}.
+\end{equation}
+
+Then fit an unknown small rotation $\m{R}$ so that the rigid-motion prediction at
+node $i$ is
+
+\begin{equation}
+    \m{U}^{fit}_i=\m{U}_{COG}+\m{R}\times\m{r}_i.
+\end{equation}
+
+The weighted least-squares equations for $\m{R}$ are precisely
+Eq.~\eqref{rbe3-rotation-normal-equations}. Thus the weighted-centroid hand
+construction, the least-squares interpolation and the transpose load transfer
+are three views of the same geometric operator.
 
 \subsection{Worked Example -- RBE3 Coefficients}
 
@@ -4033,6 +4491,7 @@ Choose the \textit{admissible relative motion} first, the \textit{constraint
 formulation} second and the solver command last. A correct command applied to the
 wrong physical constraint is still the wrong model.
 \end{bbox}
+
 
 \section{Summary}
 

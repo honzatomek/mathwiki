@@ -15,6 +15,31 @@
 
 \maketitle
 
+\chapter*{About this notebook}
+\addcontentsline{toc}{chapter}{About this notebook}
+
+This book is intentionally both a computational-mechanics reference and a
+personal engineering notebook. Its purpose is not to replace a finite element
+textbook or a solver manual, but to keep derivations, implementation details,
+engineering interpretations, useful side results and observations in one
+structured place so that a useful line of reasoning does not have to be
+rediscovered when the same problem appears again years later.
+
+The formal derivations are therefore only one layer of the text. Worked
+examples explain how the equations behave, small Python implementations expose
+how the discrete algorithms are actually built, and selected personal
+observations are retained even when they are not strictly required by the main
+argument. Those observations are marked as \textit{Notebook notes}.
+
+\begin{notebooknote}[Notebook convention]
+A Notebook note records a connection, shortcut, numerical caveat,
+implementation observation, reference derivation or side result that is useful
+enough to be worth keeping at hand. The criterion is practical retrieval: if a
+formula, derivation, code fragment or observation can save a future
+re-derivation, it belongs in the notebook even when it is more detailed or more
+specialised than the shortest pedagogical path through the subject.
+\end{notebooknote}
+
 \tableofcontents
 
 \input{./chapters/01_coordinate_transformations.tex}

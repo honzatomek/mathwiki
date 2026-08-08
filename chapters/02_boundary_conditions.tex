@@ -697,6 +697,79 @@ an element contribution before global assembly, as a nodal transformation of
 the assembled system, or by generating an equivalent MFC row. None of these is
 a universal requirement of the formulation.
 
+The same operation can be written directly for the complete dynamic equilibrium
+system. Starting from
+
+\begin{equation}
+    \m{M}\ddot{\m{u}}_g
+    +\m{C}\dot{\m{u}}_g
+    +\m{K}\m{u}_g
+    =\m{f}_g,
+\end{equation}
+
+and substituting $\m{u}_g=\m{T}\m{u}_l$ gives
+
+\begin{equation}
+    \closure{\m{M}}\ddot{\m{u}}_l
+    +\closure{\m{C}}\dot{\m{u}}_l
+    +\closure{\m{K}}\m{u}_l
+    =\closure{\m{f}},
+\end{equation}
+
+with
+
+\begin{eqarray}
+    \closure{\m{M}}&=&\m{T}^T\m{M}\m{T},\\
+    \closure{\m{C}}&=&\m{T}^T\m{C}\m{T},\\
+    \closure{\m{K}}&=&\m{T}^T\m{K}\m{T},\\
+    \closure{\m{f}}&=&\m{T}^T\m{f}.
+\end{eqarray}
+
+Although these expressions are written as transformations of the complete
+matrices, the actual arithmetic needs to touch only the affected nodal rows and
+columns. In an assembly-oriented implementation it is often convenient to
+transform the corresponding element contributions immediately before they are
+scattered into the global arrays.
+
+\begin{notebooknote}[Notebook note -- A skew support does not require rotating the whole model]
+This implementation detail is easy to miss when looking only at the compact
+congruence transformation. Only the DOFs
+whose basis changes are affected. A code can rotate the relevant element rows
+and columns immediately before assembly, transform an assembled nodal block, or
+replace the operation by an equivalent MFC. The mathematical operation is local
+even if it is written with full global matrices.
+\end{notebooknote}
+
+\subsection{Angle-Defined Cartesian Basis in Two Dimensions}
+
+For a planar model a local Cartesian system may be specified directly by an
+angle $\alpha$. If $(u,w)$ are the in-plane translations and $\psi$ is the
+out-of-plane small rotation, then
+
+\begin{equation}
+    \begin{bmatrix}
+        u_l\\
+        w_l\\
+        \psi_l
+    \end{bmatrix}
+    =
+    \underbrace{
+    \begin{bmatrix}
+        \phantom{-}\cos\alpha&\sin\alpha&0\\
+        -\sin\alpha&\cos\alpha&0\\
+        0&0&1
+    \end{bmatrix}}_{\m{C}_{lg}}
+    \begin{bmatrix}
+        u_g\\
+        w_g\\
+        \psi_g
+    \end{bmatrix}.
+\end{equation}
+
+The scalar rotation about the common out-of-plane axis is unchanged. Thus a
+planar node with a rotated translational support does not require any special
+rotation formula beyond the ordinary two-dimensional basis transformation.
+
 \subsection{Worked Example: Roller at 30 Degrees}
 
 Consider a two-component nodal stiffness and load
@@ -878,6 +951,89 @@ basis change is used for both vector blocks,
     \end{bmatrix}.
 \end{equation}
 
+
+Written out explicitly,
+
+\begin{equation}
+\begin{bmatrix}
+ u_l\\v_l\\w_l\\\phi_l\\\psi_l\\\rho_l
+\end{bmatrix}
+=
+\begin{bmatrix}
+ e_{x1}&e_{x2}&e_{x3}&0&0&0\\
+ e_{y1}&e_{y2}&e_{y3}&0&0&0\\
+ e_{z1}&e_{z2}&e_{z3}&0&0&0\\
+ 0&0&0&e_{x1}&e_{x2}&e_{x3}\\
+ 0&0&0&e_{y1}&e_{y2}&e_{y3}\\
+ 0&0&0&e_{z1}&e_{z2}&e_{z3}
+\end{bmatrix}
+\begin{bmatrix}
+ u_g\\v_g\\w_g\\\phi_g\\\psi_g\\\rho_g
+\end{bmatrix}.
+\end{equation}
+
+\subsection{Definition by an Origin and Two Points}
+
+A common engineering definition uses an origin
+
+\begin{equation}
+    \m{O}=\begin{bmatrix}x_O&y_O&z_O\end{bmatrix}^T,
+\end{equation}
+
+a point $\m{P}_x$ on the desired local $x$ axis and a point $\m{P}_{xy}$ in
+the desired local $xy$ plane. The two defining vectors are
+
+\begin{eqarray}
+    \m{a}
+    &=&
+    \m{P}_x-\m{O}
+    =
+    \begin{bmatrix}
+        x_{P_x}-x_O\\y_{P_x}-y_O\\z_{P_x}-z_O
+    \end{bmatrix},\\
+    \m{b}
+    &=&
+    \m{P}_{xy}-\m{O}
+    =
+    \begin{bmatrix}
+        x_{P_{xy}}-x_O\\y_{P_{xy}}-y_O\\z_{P_{xy}}-z_O
+    \end{bmatrix}.
+\end{eqarray}
+
+The local basis then follows from the same orthogonalization used above,
+
+\begin{eqarray}
+    \m{e}_x&=&\frac{\m{a}}{\norm{\m{a}}},\\
+    \widehat{\m{e}}_y&=&
+        \m{b}-(\m{e}_x^T\m{b})\m{e}_x,\\
+    \m{e}_y&=&\frac{\widehat{\m{e}}_y}{\norm{\widehat{\m{e}}_y}},\\
+    \m{e}_z&=&\m{e}_x\times\m{e}_y.
+\end{eqarray}
+
+This construction also shows why an origin plus two arbitrary independently
+normalized vectors is not sufficient: the second direction must be projected
+onto the plane perpendicular to the first before normalization.
+
+For a strictly planar model only one in-plane direction is needed. With
+
+\begin{equation}
+    \m{e}_z=\begin{bmatrix}0&0&1\end{bmatrix}^T,
+\end{equation}
+
+one may construct the remaining direction by
+
+\begin{equation}
+    \m{e}_y=\m{e}_z\times\m{e}_x,
+\end{equation}
+
+and the right-handed closure relations are
+
+\begin{eqarray}
+    \m{e}_x&=&\m{e}_y\times\m{e}_z,\\
+    \m{e}_y&=&\m{e}_z\times\m{e}_x,\\
+    \m{e}_z&=&\m{e}_x\times\m{e}_y.
+\end{eqarray}
+
 The detailed theory of coordinate transformations is developed in
 Chapter~\ref{chap:coordinate-transformations}; here the matrix is used only to
 define the local directions in which boundary conditions are applied.
@@ -940,6 +1096,14 @@ each node, construct a local Cartesian basis whose axes point in the radial,
 tangential and axial directions, and impose ordinary local DOF constraints in
 that basis.
 
+\begin{notebooknote}[Notebook note -- A cylindrical support is a node-by-node skew Cartesian support]
+For small-displacement structural work this is the most useful mental model: the solver does not need a special ``radial displacement
+variable''. It needs an ordinary local Cartesian frame at each node, with local
+$x$ chosen as $\m{e}_r$, local $y$ as $\m{e}_{\varphi}$ and local $z$ along the
+cylinder axis. The only unusual feature is that this Cartesian basis is different
+at every circumferential node.
+\end{notebooknote}
+
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.69\textwidth]{img/bc_cylindrical_basis.png}
@@ -948,6 +1112,179 @@ that basis.
     though all nodes refer to the same cylindrical coordinate system.}
     \label{fig:bc-cylindrical-basis}
 \end{figure}
+
+\subsection{Cylindrical Point Coordinates}
+
+The coordinate values $(r,\varphi,z)$ and the local vector basis
+$(\m{e}_r,\m{e}_{\varphi},\m{e}_z)$ should be kept conceptually separate. The
+former describe where a point is; the latter describe the directions in which a
+vector such as displacement, force or reaction is resolved.
+
+When a Cartesian and cylindrical coordinate system share the same origin and
+$z$ axis,
+
+\begin{eqarray}
+    x&=&r\cos\varphi,\\
+    y&=&r\sin\varphi,\\
+    z&=&z,
+\end{eqarray}
+
+and inversely
+
+\begin{eqarray}
+    r&=&\sqrt{x^2+y^2},\\
+    \varphi&=&\atantwo(y,x).
+\end{eqarray}
+
+The azimuth is indeterminate at $x=y=0$. An explicit principal-value
+reconstruction from $\arcsin$ is
+
+\begin{equation}
+\varphi=
+\begin{cases}
+ \phantom{-}\arcsin(y/r), & x>0,\\
+ \pi-\arcsin(y/r), & x<0,\;y\ge0,\\
+ -\pi-\arcsin(y/r), & x<0,\;y<0,\\
+ \phantom{-}\pi/2, & x=0,\;y>0,\\
+ -\pi/2, & x=0,\;y<0,\\
+ \text{indeterminate}, & x=0,\;y=0.
+\end{cases}
+\end{equation}
+
+Equivalently, the familiar quadrant-aware arctangent can be written
+
+\begin{equation}
+\atantwo(y,x)=
+\begin{cases}
+ \arctan(y/x), & x>0,\\
+ \arctan(y/x)+\pi, & x<0,\;y\ge0,\\
+ \arctan(y/x)-\pi, & x<0,\;y<0,\\
+ \phantom{-}\pi/2, & x=0,\;y>0,\\
+ -\pi/2, & x=0,\;y<0,\\
+ \text{indeterminate}, & x=0,\;y=0.
+\end{cases}
+\end{equation}
+
+This is the reason numerical libraries provide a two-argument
+$\atantwo(y,x)$ rather than requiring the user to reconstruct the quadrant from
+$\arctan(y/x)$.
+
+\subsection{A General Cylindrical Coordinate System Defined by Three Points}
+
+Let the cylindrical system be specified by an origin $\m{x}_O^c$, a point
+$\m{x}_R^c$ on its reference radial axis and a point $\m{x}_{RZ}^c$ in its
+reference $rz$ plane. Define
+
+\begin{eqarray}
+    \m{e}_{r0}
+    &=&
+    \frac{\m{x}_R^c-\m{x}_O^c}
+         {\norm{\m{x}_R^c-\m{x}_O^c}},\\
+    \widehat{\m{e}}_z
+    &=&
+    \frac{\m{x}_{RZ}^c-\m{x}_O^c}
+         {\norm{\m{x}_{RZ}^c-\m{x}_O^c}},\\
+    \m{e}_{y0}
+    &=&
+    \frac{\widehat{\m{e}}_z\times\m{e}_{r0}}
+         {\norm{\widehat{\m{e}}_z\times\m{e}_{r0}}},\\
+    \m{e}_{z0}
+    &=&
+    \m{e}_{r0}\times\m{e}_{y0}.
+\end{eqarray}
+
+The aligned Cartesian basis matrix is
+
+\begin{equation}
+    \m{C}_{0g}
+    =
+    \begin{bmatrix}
+        \m{e}_{r0}^T\\
+        \m{e}_{y0}^T\\
+        \m{e}_{z0}^T
+    \end{bmatrix}.
+\end{equation}
+
+A point is first translated to the cylindrical origin,
+
+\begin{equation}
+    \m{x}_1=\m{x}_g-\m{x}_O^c,
+\end{equation}
+
+then rotated into the aligned Cartesian system,
+
+\begin{equation}
+    \m{x}_2=\m{C}_{0g}\m{x}_1,
+\end{equation}
+
+and finally converted to cylindrical coordinate values,
+
+\begin{equation}
+    \boxed{
+    \begin{bmatrix}r\\\varphi\\z\end{bmatrix}
+    =
+    \begin{bmatrix}
+        \sqrt{x_2^2+y_2^2}\\
+        \atantwo(y_2,x_2)\\
+        z_2
+    \end{bmatrix}.}
+\end{equation}
+
+The translation and rotation can also be written in homogeneous coordinates,
+
+\begin{equation}
+    \begin{bmatrix}\m{x}_1\\1\end{bmatrix}
+    =
+    \underbrace{
+    \begin{bmatrix}
+      1&0&0&-x_O^c\\
+      0&1&0&-y_O^c\\
+      0&0&1&-z_O^c\\
+      0&0&0&1
+    \end{bmatrix}}_{\m{T}_T}
+    \begin{bmatrix}\m{x}_g\\1\end{bmatrix},
+\end{equation}
+
+\begin{equation}
+    \begin{bmatrix}\m{x}_2\\1\end{bmatrix}
+    =
+    \underbrace{
+    \begin{bmatrix}
+      e_{r0,1}&e_{r0,2}&e_{r0,3}&0\\
+      e_{y0,1}&e_{y0,2}&e_{y0,3}&0\\
+      e_{z0,1}&e_{z0,2}&e_{z0,3}&0\\
+      0&0&0&1
+    \end{bmatrix}}_{\m{T}_R}
+    \begin{bmatrix}\m{x}_1\\1\end{bmatrix}.
+\end{equation}
+
+Hence
+
+\begin{equation}
+    \m{T}=\m{T}_R\m{T}_T
+\end{equation}
+
+has the explicit form
+
+\begin{equation}
+\m{T}=
+\begin{bmatrix}
+ e_{r0,1}&e_{r0,2}&e_{r0,3}&-\m{e}_{r0}^T\m{x}_O^c\\
+ e_{y0,1}&e_{y0,2}&e_{y0,3}&-\m{e}_{y0}^T\m{x}_O^c\\
+ e_{z0,1}&e_{z0,2}&e_{z0,3}&-\m{e}_{z0}^T\m{x}_O^c\\
+ 0&0&0&1
+\end{bmatrix}.
+\end{equation}
+
+Conversely, if $\m{x}_{c}=[r\cos\varphi,\;r\sin\varphi,\;z]^T$ denotes the
+Cartesian representation inside the cylindrical frame, then
+
+\begin{equation}
+    \boxed{
+    \m{x}_g=\m{C}_{0g}^T\m{x}_{c}+\m{x}_O^c.}
+\end{equation}
+
+\subsection{Position-Dependent Boundary Basis}
 
 Let $\m{x}$ be the nodal position, $\m{x}_0$ a point on the cylinder axis, and
 $\m{a}$ the axis direction. First normalize the axis,
@@ -1026,6 +1363,80 @@ solver must therefore detect this geometric singularity and either reject the
 radial/tangential definition or apply an explicitly supplied local Cartesian
 basis. This is an implementation issue that disappears completely in the
 compact mathematical notation.
+
+\subsection{Boundary Basis When the Cylindrical Reference Frame Is Already Known}
+
+Suppose the fixed Cartesian frame associated with the cylindrical system has
+already been constructed so that
+
+\begin{equation}
+    \m{x}_{base}=\m{C}_{0g}(\m{x}_g-\m{x}_O^c).
+\end{equation}
+
+With $\m{x}_{base}=[x\;y\;z]^T$,
+
+\begin{eqarray}
+    r&=&\sqrt{x^2+y^2},\\
+    \varphi&=&\atantwo(y,x),\\
+    z_{cyl}&=&z.
+\end{eqarray}
+
+Since
+
+\begin{equation}
+    \cos\varphi=\frac{x}{r},
+    \qquad
+    \sin\varphi=\frac{y}{r},
+\end{equation}
+
+the matrix that resolves a vector from this base Cartesian frame into its
+radial, circumferential and axial components is
+
+\begin{equation}
+    \m{C}_{cyl,0}
+    =
+    \begin{bmatrix}
+        x/r&y/r&0\\
+        -y/r&x/r&0\\
+        0&0&1
+    \end{bmatrix}.
+\end{equation}
+
+The transpose performs the opposite vector transformation,
+
+\begin{equation}
+    \m{C}_{0,cyl}
+    =
+    \m{C}_{cyl,0}^T
+    =
+    \begin{bmatrix}
+        x/r&-y/r&0\\
+        y/r&\phantom{-}x/r&0\\
+        0&0&1
+    \end{bmatrix}.
+\end{equation}
+
+Thus a global displacement vector is resolved into the node-specific
+cylindrical boundary basis by
+
+\begin{equation}
+    \boxed{
+    \m{u}_{cyl}
+    =\m{C}_{cyl,0}\m{C}_{0g}\m{u}_g.}
+\end{equation}
+
+If the global equilibrium equation is transformed to these local coordinates,
+the same congruence relation used for an ordinary skew support applies,
+
+\begin{equation}
+    \m{T}^T\m{K}\m{T}\closure{\m{u}}
+    =\m{T}^T\m{f},
+\end{equation}
+
+with $\m{T}$ assembled from the appropriate local-to-global nodal basis blocks.
+The cylindrical nature of the support therefore enters through construction of
+the position-dependent basis, not through a different algebraic enforcement
+method.
 
 \subsection{Initial Versus Updated Local Directions}
 
@@ -1180,6 +1591,7 @@ Allow opening or one-sided motion & Contact, Chapter~\ref{chap:contact-formulati
 \hline
 \end{tabular}
 \end{center}
+
 
 \section{Summary}
 

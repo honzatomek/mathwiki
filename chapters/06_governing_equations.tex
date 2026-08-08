@@ -178,12 +178,19 @@ surrounding finite element machinery remains conceptually the same.
 
 \section[Reference Matrices]{Reference: Generalised Kinematic and Constitutive Matrices}
 
-The following tables are intentionally retained as a compact engineering
-reference. They collect the kinematic quantities and the common isotropic
+The following tables provide a compact engineering reference. They collect the kinematic quantities and the common isotropic
 constitutive matrices used in several standard problem reductions. Some rows,
 such as the beam and plate rows, contain \textit{generalised section stiffness}
 rather than a three-dimensional material matrix. That distinction is noted
 because the same matrix notation is often used for both in engineering texts.
+
+\begin{notebooknote}[Reference material is allowed to interrupt the narrative]
+This book has two jobs: to explain a formulation when it is being studied, and
+to make the useful result easy to find months or years later.  Compact lookup
+tables, derivations kept for reference, and apparently specialised side results
+are useful when they save having to derive the same thing again.
+They are part of the engineering notebook rather than editorial clutter.
+\end{notebooknote}
 
 \begin{table}[ht]
     \centering
@@ -786,8 +793,7 @@ coefficients but loses the locality that makes FE matrices sparse.  A local sine
 or polynomial bubble mode, on the other hand, can enrich each element while
 preserving ordinary assembly because it vanishes at the element boundary.
 
-\begin{bbox}
-\textbf{A DOF is a coefficient of a basis function.}
+\begin{notebooknote}[A DOF is a coefficient of a basis function]
 
 A quantity called a ``nodal rotation'' need not be an independent material
 rotation.  It may simply be the coefficient used to normalize a higher-order
@@ -795,7 +801,7 @@ shape function so that its derivative at the node equals that rotation.  This
 is the reason Hermite beam rotations, rotation-enriched solids and micropolar
 solid rotations may all appear as $\theta_x,\theta_y,\theta_z$ in an input file
 while representing very different physics.
-\end{bbox}
+\end{notebooknote}
 
 \section[Designing a Finite Element]{How to Design a Finite Element}\label{sec:design-own-element}
 
@@ -978,14 +984,13 @@ strain or introduce shear force/strain as an independent field. MITC, assumed
 natural strain and related formulations use this general idea in beams, plates
 and shells.
 
-\begin{bbox}
-\textbf{General lesson -- Locking is a discrete-space problem.}
+\begin{notebooknote}[General lesson -- Locking is a discrete-space problem]
 
 Shear locking, volumetric locking and many parasitic strain modes are best
 understood by asking whether the chosen interpolation can reproduce the
 constraint that should hold in the limiting physical case. More Gauss points do
 not repair a bad approximation space; they may enforce its defect more exactly.
-\end{bbox}
+\end{notebooknote}
 
 \subsection{Executable Shear-Locking Check}
 
@@ -2112,15 +2117,14 @@ linearization used for general nonlinear structures.  With several cable
 elements, each segment contributes the tangent associated with its own current
 orientation and axial force.
 
-\begin{bbox}
-\textbf{Element development lesson from the cable family.}
+\begin{notebooknote}[Element development lesson from the cable family]
 
 The same two visible end nodes can support very different numerical models.
 Choosing more elements ($h$-refinement), richer local polynomials or bubbles
 ($p$/enrichment), an exact static catenary, or an exact wave basis are different
 ways of moving approximation error between geometry, interpolation and the
 algebraic solution procedure.
-\end{bbox}
+\end{notebooknote}
 
 
 \section[Cyclic-Symmetry Sector Formulation]{Design Example VI: Cyclic-Symmetry Sector Formulation}
@@ -2349,15 +2353,15 @@ This is why commercial solvers may offer several ``HEX8'' or ``shell4'' options
 with very different performance. The element name describes the visible mesh
 topology; the formulation determines the numerical behaviour.
 
-\begin{bbox}
-\textbf{A practical rule for deriving an element.}
+\begin{notebooknote}[A practical rule for deriving an element]
 
 Start from the deformation states the element must reproduce, not from the
 matrix you hope to obtain. Choose an approximation space that can represent
 those states, derive its work-conjugate forces through virtual work or energy,
 and only then decide how much of that approximation should remain as global
 DOFs and how much can be integrated, condensed or stabilized locally.
-\end{bbox}
+\end{notebooknote}
+
 
 \section{Summary}
 

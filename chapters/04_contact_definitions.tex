@@ -1523,6 +1523,15 @@ separated surfaces. An excessively large distance increases search cost and can
 create unintended candidate pairs. Search tolerance affects detection; it does
 not by itself define the physical normal stiffness.
 
+
+\begin{notebooknote}[Notebook note -- Search distance is geometry bookkeeping, not contact physics]
+This distinction is worth keeping explicit because search settings and penalty
+settings often sit next to each other in a preprocessor. Increasing the candidate
+search distance may find more possible pairs, but it does not make contact
+``stiffer''. Conversely, increasing normal penalty stiffness cannot recover a
+pair that the geometric search never considered.
+\end{notebooknote}
+
 \section{Numerical Behaviour and Assessment}
 
 Contact results should not be assessed only by whether the nonlinear solver
@@ -1650,6 +1659,7 @@ mixed together:
 
 A contact setting is properly understood only when all three questions can be
 answered.
+
 
 \section{Summary}
 
